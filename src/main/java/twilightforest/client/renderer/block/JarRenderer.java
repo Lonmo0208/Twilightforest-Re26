@@ -2,11 +2,13 @@ package twilightforest.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.block.model.BlockDisplayContext;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -15,6 +17,7 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -25,11 +28,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import org.jspecify.annotations.Nullable;
 import tamaized.beanification.Autowired;
 import tamaized.beanification.Configurable;
+import twilightforest.TwilightForestMod;
 import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.block.entity.MasonJarBlockEntity;
 import twilightforest.client.state.block.JarRenderState;
@@ -41,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
-	public static final Map<Item, BlockState> LIDS = new HashMap<>();
+	public static final Map<Item, StandaloneModelKey<BlockModel>> LID_KEYS = new HashMap<>();
 
 	public record LidResource(Item lid, Identifier identifier, @Nullable String customPath) {
 		public LidResource(DeferredBlock<?> lid) {
@@ -54,6 +59,16 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 
 		public LidResource(Item item, String path, String customPath) {
 			this(item, Identifier.fromNamespaceAndPath("minecraft", path), customPath);
+		}
+
+		public Identifier getModelId() {
+			String name = this.identifier.getPath();
+			if (this.customPath() != null) name = this.customPath();
+			return TwilightForestMod.prefix("block/lid/" + name);
+		}
+
+		public StandaloneModelKey<BlockModel> createKey() {
+			return new StandaloneModelKey<>((ModelDebugName) () -> "jar_lid/" + this.identifier.getPath());
 		}
 	}
 
@@ -127,9 +142,12 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		this.blockResolver.update(state.jarModel, blockState, BlockDisplayContext.create());
 
 		// Lid model
-		if (LIDS.containsKey(blockEntity.lid)) {
-			BlockState lidState = LIDS.get(blockEntity.lid);
-			this.blockResolver.update(state.lidModel, lidState, BlockDisplayContext.create());
+		if (LID_KEYS.containsKey(blockEntity.lid)) {
+			StandaloneModelKey<BlockModel> key = LID_KEYS.get(blockEntity.lid);
+			BlockModel lidModel = Minecraft.getInstance().getModelManager().getStandaloneModel(key);
+			if (lidModel != null) {
+				lidModel.update(state.lidModel, blockState, BlockDisplayContext.create(), 42L);
+			}
 		}
 		state.lid = blockEntity.lid;
 
@@ -153,7 +171,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 
 		// Wobble
 		if (state.wobbleAmount >= 0.0F && state.wobbleAmount <= 1.0F) {
-			// Simplified wobble - we don't know the wobble style here, so use a generic animation
 			float f5 = Mth.sin(-state.wobbleAmount * 3.0F * (float) Math.PI) * state.wobbleAmplitude;
 			float f6 = 1.0F - state.wobbleAmount;
 			poseStack.rotateAround(Axis.YP.rotation(f5 * f6), 0.5F, 0.0F, 0.5F);
@@ -163,7 +180,7 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		state.jarModel.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
 		// Render lid model
-		if (state.lid != null && LIDS.containsKey(state.lid)) {
+		if (state.lid != null && LID_KEYS.containsKey(state.lid)) {
 			state.lidModel.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 		}
 

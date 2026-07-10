@@ -27,6 +27,13 @@ import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.BlockStateModelWrapper;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,10 +57,13 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.model.UnbakedModelLoader;
+import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.map.RegisterMapDecorationRenderersEvent;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
+import org.joml.Matrix4f;
 import tamaized.beanification.Component;
 import tamaized.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
@@ -114,9 +124,8 @@ public class ClientRegistrationEvents {
 	@PostConstruct
 	private void setup(IEventBus bus) {
 		bus.addListener(EntityRenderersEvent.AddLayers.class, this::attachRenderLayers);
-		bus.addListener(this::jarLidSetup);
 		bus.addListener(this::clientSetup);
-		bus.addListener(this::registerAdditionalModels);
+		bus.addListener(this::registerJarLidModels);
 		bus.addListener(this::registerClientReloadListeners);
 		bus.addListener(this::registerAtlases);
 		bus.addListener(this::registerEntityRenderers);
@@ -329,22 +338,19 @@ public class ClientRegistrationEvents {
 		event.register(TwilightForestMod.prefix("experiment_115_variant"), Experiment115Type.TYPE);
 	}
 
-	private void jarLidSetup(FMLClientSetupEvent event) {
-		// Populate JarRenderer.LIDS map from LID_LOCATION_LIST at init time.
-		// This replaces the old cacheJarLids which used the removed ModelEvent.BakingCompleted.
-		event.enqueueWork(() -> {
-			for (JarRenderer.LidResource lid : JarRenderer.LID_LOCATION_LIST.get()) {
-				BuiltInRegistries.BLOCK.getOptional(lid.identifier()).ifPresent(block -> {
-					JarRenderer.LIDS.put(lid.lid(), block.defaultBlockState());
-				});
-			}
-		});
-	}
-
-	private void registerAdditionalModels(ModelEvent.RegisterStandalone event) {
-		// Not needed in 26.1.2: TrollsteinnModel is registered via RegisterItemModelsEvent,
-		// ReactorDebrisModel is registered via RegisterBlockStateModels,
-		// Jar lids use block model resolver at render time.
+	private void registerJarLidModels(ModelEvent.RegisterStandalone event) {
+		for (JarRenderer.LidResource lid : JarRenderer.LID_LOCATION_LIST.get()) {
+			StandaloneModelKey<BlockModel> key = lid.createKey();
+			JarRenderer.LID_KEYS.put(lid.lid(), key);
+			event.register(key, new SimpleUnbakedStandaloneModel<>(
+				lid.getModelId(),
+				(model, baker, name) -> {
+					var part = SimpleModelWrapper.bake(baker, model, BlockModelRotation.IDENTITY);
+					BlockStateModel stateModel = new SingleVariant(part);
+					return new BlockStateModelWrapper(stateModel, java.util.List.of(), new Matrix4f());
+				}
+			));
+		}
 	}
 
 	private void clientSetup(FMLClientSetupEvent evt) {

@@ -21,6 +21,7 @@ import net.minecraft.world.item.Items;
 import twilightforest.init.TFSounds;
 
 public class GhastTearParticle extends SingleQuadParticle {
+	private final Layer layer;
 
 	public GhastTearParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite) {
 		super(level, x, y, z, 0.0D, 0.0D, 0.0D, sprite);
@@ -29,11 +30,12 @@ public class GhastTearParticle extends SingleQuadParticle {
 		this.gravity = 0.6F;
 		this.lifetime = 60 + this.random.nextInt(40);
 		this.hasPhysics = true;
+		this.layer = Layer.bySprite(sprite);
 	}
 
 	@Override
 	protected Layer getLayer() {
-		return Layer.OPAQUE_TERRAIN;
+		return this.layer;
 	}
 
 	@Override
