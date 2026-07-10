@@ -265,7 +265,6 @@ public class ClientGameEvents {
 					}
 				}
 			}
-
 			if (mc.player != null) {
 				fixTranslatableBookNames(mc.player);
 			}

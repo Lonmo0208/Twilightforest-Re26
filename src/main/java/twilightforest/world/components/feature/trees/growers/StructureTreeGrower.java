@@ -9,7 +9,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -18,15 +17,11 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 import twilightforest.init.TFStructures;
 import twilightforest.world.components.structures.TreeGrowerStartable;
 
-import java.util.Optional;
-
-public class StructureTreeGrower extends TreeGrower {
+public class StructureTreeGrower {
 	public StructureTreeGrower(String name) {
-		super(name, Optional.empty(), Optional.empty(), Optional.empty());
 	}
 
 	//copied from PlaceCommand.placeStructure
-	@Override
 	public boolean growTree(ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state, RandomSource random) {
 		Holder.Reference<Structure> structure = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(TFStructures.HOLLOW_TREE);
 

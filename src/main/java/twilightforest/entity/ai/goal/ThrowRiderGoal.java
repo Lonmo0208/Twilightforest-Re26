@@ -1,5 +1,6 @@
 package twilightforest.entity.ai.goal;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -52,8 +53,7 @@ public class ThrowRiderGoal extends MeleeAttackGoal {
 	}
 
 	// Vanilla Copy with edits
-	@Override
-	protected void checkAndPerformAttack(LivingEntity victim) {
+	protected void checkAndPerformAttack(ServerLevel level, LivingEntity victim) {
 		if (this.canPerformAttack(victim) && this.getTicksUntilNextAttack() <= 0 && this.mob.getPassengers().isEmpty() && this.cooldown-- == 0) {
 			this.cooldown = 3; // Gives the thrower a pause so it doesn't pick the target back up immediately after throwing; for whatever reason the attack cooldown isn't enough...
 			this.resetAttackCooldown();

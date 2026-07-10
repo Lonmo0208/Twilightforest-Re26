@@ -39,7 +39,7 @@ public class TFDispenserBehaviors {
 
 		DispenseItemBehavior idispenseitembehavior = new OptionalDispenseItemBehavior() {
 			@Override
-			protected ItemStack execute(BlockSource source, ItemStack stack) {
+			public ItemStack execute(BlockSource source, ItemStack stack) {
 				this.setSuccess(EquipmentDispenseItemBehavior.dispenseEquipment(source, stack));
 				return stack;
 			}

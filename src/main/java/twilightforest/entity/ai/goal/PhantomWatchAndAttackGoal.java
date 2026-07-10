@@ -25,7 +25,7 @@ public class PhantomWatchAndAttackGoal extends Goal {
 
 	@Override
 	public void tick() {
-		LivingEntity target = this.boss.getTarget();
+		LivingEntity target = (LivingEntity) this.boss.getTarget();
 		if (target != null) {
 			this.boss.lookAt(target, 10.0F, 500.0F);
 

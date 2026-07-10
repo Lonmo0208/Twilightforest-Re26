@@ -25,7 +25,7 @@ public class HoverSummonGoal extends HoverBaseGoal<SnowQueen> {
 
 	@Override
 	public boolean canUse() {
-		LivingEntity target = this.attacker.getTarget();
+		LivingEntity target = (LivingEntity) this.attacker.getTarget();
 
 		if (target == null) {
 			return false;
@@ -40,7 +40,7 @@ public class HoverSummonGoal extends HoverBaseGoal<SnowQueen> {
 
 	@Override
 	public boolean canContinueToUse() {
-		LivingEntity target = this.attacker.getTarget();
+		LivingEntity target = (LivingEntity) this.attacker.getTarget();
 
 		if (target == null || !target.isAlive()) {
 			return false;
@@ -61,7 +61,7 @@ public class HoverSummonGoal extends HoverBaseGoal<SnowQueen> {
 	public void tick() {
 
 		this.seekTimer++;
-		LivingEntity target = this.attacker.getTarget();
+		LivingEntity target = (LivingEntity) this.attacker.getTarget();
 
 		// are we there yet?
 		if (target != null && this.attacker.distanceToSqr(this.hoverPosX, this.hoverPosY, this.hoverPosZ) <= 3.0F) {
@@ -104,7 +104,7 @@ public class HoverSummonGoal extends HoverBaseGoal<SnowQueen> {
 
 	private void checkAndSummon() {
 		if (this.attacker.getSummonsRemaining() > 0 && this.attacker.countMyMinions() < MAX_MINIONS_AT_ONCE) {
-			this.attacker.summonMinionAt(this.attacker.getTarget());
+			this.attacker.summonMinionAt((LivingEntity) this.attacker.getTarget());
 		}
 	}
 }

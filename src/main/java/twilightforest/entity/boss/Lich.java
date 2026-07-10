@@ -168,7 +168,7 @@ public class Lich extends BaseTFBoss {
 			public void tick() {
 				if (Lich.this.getTeleportInvisibility() > 0) return;
 				if (Lich.this.getNavigation().getPath() == null || Lich.this.getNavigation().isStuck() || !Lich.this.getNavigation().getPath().canReach()) {
-					if (!Lich.this.teleportToNewTarget(Lich.this.getTarget(), 20.0F, null)) Lich.this.teleportHome();
+					if (!Lich.this.teleportToNewTarget((LivingEntity) Lich.this.getTarget(), 20.0F, null)) Lich.this.teleportHome();
 				}
 			}
 		});
@@ -358,7 +358,7 @@ public class Lich extends BaseTFBoss {
 
 		// if we're in a wall, teleport for gosh sakes
 		if (src.is(DamageTypes.IN_WALL) && this.getTarget() != null) {
-			this.teleportToNewTarget(this.getTarget(), 20.0F, null);
+			this.teleportToNewTarget((LivingEntity) this.getTarget(), 20.0F, null);
 		}
 
 		if (this.isShadowClone() && !src.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
@@ -399,7 +399,7 @@ public class Lich extends BaseTFBoss {
 		if (super.hurtServer(serverLevel, src, damage)) {
 			if (this.getRandom().nextInt(this.getPhase() == 3 ? 6 : 3) <= this.hitsWithoutTeleport++ && !this.isDeadOrDying()) {
 				this.hitsWithoutTeleport = 0;
-				this.teleportToNewTarget(this.getTarget(), 20.0F, null);
+				this.teleportToNewTarget((LivingEntity) this.getTarget(), 20.0F, null);
 			}
 
 			return true;

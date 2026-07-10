@@ -50,7 +50,7 @@ public class FallingIceRenderer extends EntityRenderer<FallingIce, FallingBlockR
 		super.extractRenderState(entity, state, partialTicks);
 		BlockPos pos = BlockPos.containing(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
 		state.movingBlockRenderState.randomSeedPos = entity.getStartPos();
-		state.movingBlockRenderState.blockPos = pos;
+		state.movingBlockRenderState.randomSeedPos = pos;
 		state.movingBlockRenderState.blockState = entity.getBlockState();
 		if (entity.level() instanceof ClientLevel clientLevel) {
 			state.movingBlockRenderState.biome = clientLevel.getBiome(pos);

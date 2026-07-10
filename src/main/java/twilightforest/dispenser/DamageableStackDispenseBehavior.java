@@ -2,6 +2,7 @@ package twilightforest.dispenser;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
+import net.minecraft.core.dispenser.DispenseSource;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.server.level.ServerLevel;
@@ -35,7 +36,7 @@ public abstract class DamageableStackDispenseBehavior extends DefaultDispenseIte
 	}
 
 	@Override
-	protected void playSound(BlockSource source) {
+	protected void playSound(DispenseSource source) {
 		if (this.fired) {
 			source.level().playSound(null, source.center().x(), source.center().y(), source.center().z(), this.getFiredSound(), SoundSource.NEUTRAL, 1.0F, 1.0F);
 			this.fired = false;

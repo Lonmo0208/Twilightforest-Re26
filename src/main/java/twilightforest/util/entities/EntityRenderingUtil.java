@@ -1,7 +1,5 @@
 package twilightforest.util.entities;
 
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -9,7 +7,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.entity.state.ItemEntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingBlockRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -18,7 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.ModContainer;
@@ -172,21 +170,14 @@ public class EntityRenderingUtil {
 	}
 
 	public static void renderItemEntity(GuiGraphicsExtractor graphics, ItemStack stack, @Nullable Level level, float bobOffset) {
-		// 26.1.2: Rewritten to use EntityRenderState pipeline.
-		// The old custom PoseStack + ItemEntityRenderer approach is replaced by graphics.entity().
-		ItemEntity item = (ItemEntity) fetchEntity(EntityType.ITEM, level);
-		Objects.requireNonNull(item).setItem(stack);
-		// item.bobOffs is final in 26.1.2; set on render state below
+		LivingBlock item = (LivingBlock) fetchEntity(EntityType.LIVING_BLOCK, level);
+		Objects.requireNonNull(item).setItemStack(stack);
 
 		EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-		EntityRenderer<? super ItemEntity, ?> renderer = dispatcher.getRenderer(item);
+		EntityRenderer<? super LivingBlock, ?> renderer = dispatcher.getRenderer(item);
 		float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks();
 		EntityRenderState renderState = renderer.createRenderState(item, partialTick);
 		renderState.shadowPieces.clear();
-		if (renderState instanceof ItemEntityRenderState itemState) {
-			itemState.bobOffset = bobOffset;
-			itemState.shouldBob = true;
-		}
 
 		Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
 		Quaternionf quaternion1 = Axis.XP.rotationDegrees(20.0F);
@@ -195,8 +186,6 @@ public class EntityRenderingUtil {
 		quaternion.mul(Axis.YN.rotationDegrees(145.0F));
 		quaternion1.conjugate();
 
-		// 26.1.2: Uses graphics.entity() with the item's render state.
-		// Lighting, bufferSource, flush, and getItemRenderer() are all handled internally by the PIP system.
 		graphics.entity(
 			renderState,
 			50,

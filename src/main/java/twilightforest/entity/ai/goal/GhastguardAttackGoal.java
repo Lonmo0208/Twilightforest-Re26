@@ -18,7 +18,7 @@ public class GhastguardAttackGoal extends Goal {
 
 	@Override
 	public boolean canUse() {
-		return this.ghast.getTarget() != null && this.ghast.shouldAttack(this.ghast.getTarget());
+		return this.ghast.getTarget() != null && this.ghast.shouldAttack((LivingEntity) this.ghast.getTarget());
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class GhastguardAttackGoal extends Goal {
 
 	@Override
 	public void tick() {
-		LivingEntity target = this.ghast.getTarget();
+		LivingEntity target = (LivingEntity) this.ghast.getTarget();
 
 		if (target.distanceToSqr(this.ghast) < 4096.0D && this.ghast.getSensing().hasLineOfSight(target)) {
 			this.prevAttackTimer = attackTimer;

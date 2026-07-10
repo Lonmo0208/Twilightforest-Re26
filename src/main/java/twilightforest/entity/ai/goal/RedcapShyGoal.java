@@ -29,7 +29,7 @@ public class RedcapShyGoal extends RedcapBaseGoal {
 
 	@Override
 	public boolean canUse() {
-		LivingEntity attackTarget = this.redcap.getTarget();
+		LivingEntity attackTarget = (LivingEntity) this.redcap.getTarget();
 
 		if (attackTarget == null
 			|| !this.redcap.isShy()
@@ -59,7 +59,7 @@ public class RedcapShyGoal extends RedcapBaseGoal {
 
 	@Override
 	public boolean canContinueToUse() {
-		LivingEntity attackTarget = this.redcap.getTarget();
+		LivingEntity attackTarget = (LivingEntity) this.redcap.getTarget();
 
 		if (attackTarget == null) {
 			return false;

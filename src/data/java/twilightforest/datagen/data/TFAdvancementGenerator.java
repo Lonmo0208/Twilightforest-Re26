@@ -8,6 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.core.component.DataComponentMap;
@@ -24,7 +25,6 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.minecraft.resources.Identifier;
 import twilightforest.TwilightForestMod;
 import twilightforest.advancements.*;
 import twilightforest.block.Experiment115Block;
@@ -37,6 +37,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class TFAdvancementGenerator implements AdvancementSubProvider {
+
+	private static final Identifier ADVANCEMENT_BACKGROUND = TwilightForestMod.prefix("block/mazestone_large_brick");
 
 	private static final Supplier<EntityType<?>[]> TF_KILLABLE = Lazy.of(() -> new EntityType<?>[]{TFEntities.ADHERENT.get(), TFEntities.ARMORED_GIANT.get(), TFEntities.BIGHORN_SHEEP.get(), TFEntities.BLOCKCHAIN_GOBLIN.get(), TFEntities.DWARF_RABBIT.get(), TFEntities.DEATH_TOME.get(), TFEntities.DEER.get(), TFEntities.FIRE_BEETLE.get(), TFEntities.GIANT_MINER.get(), TFEntities.LOWER_GOBLIN_KNIGHT.get(), TFEntities.UPPER_GOBLIN_KNIGHT.get(), TFEntities.HARBINGER_CUBE.get(), TFEntities.HEDGE_SPIDER.get(), TFEntities.HELMET_CRAB.get(), TFEntities.HOSTILE_WOLF.get(), TFEntities.HYDRA.get(), TFEntities.KING_SPIDER.get(), TFEntities.KNIGHT_PHANTOM.get(), TFEntities.KOBOLD.get(), TFEntities.LICH.get(), TFEntities.LICH_MINION.get(), TFEntities.MAZE_SLIME.get(), TFEntities.CARMINITE_GHASTLING.get(), TFEntities.MINOSHROOM.get(), TFEntities.MINOTAUR.get(), TFEntities.MIST_WOLF.get(), TFEntities.MOSQUITO_SWARM.get(), TFEntities.NAGA.get(), TFEntities.PENGUIN.get(), TFEntities.PINCH_BEETLE.get(), TFEntities.PLATEAU_BOSS.get(), TFEntities.QUEST_RAM.get(), TFEntities.RAVEN.get(), TFEntities.REDCAP.get(), TFEntities.REDCAP_SAPPER.get(), TFEntities.SKELETON_DRUID.get(), TFEntities.SLIME_BEETLE.get(), TFEntities.SNOW_GUARDIAN.get(), TFEntities.SNOW_QUEEN.get(), TFEntities.SQUIRREL.get(), TFEntities.STABLE_ICE_CORE.get(), TFEntities.SWARM_SPIDER.get(), TFEntities.TINY_BIRD.get(), TFEntities.CARMINITE_BROODLING.get(), TFEntities.CARMINITE_GHASTGUARD.get(), TFEntities.CARMINITE_GOLEM.get(), TFEntities.TOWERWOOD_BORER.get(), TFEntities.TROLL.get(), TFEntities.UNSTABLE_ICE_CORE.get(), TFEntities.UR_GHAST.get(), TFEntities.BOAR.get(), TFEntities.WINTER_WOLF.get(), TFEntities.WRAITH.get(), TFEntities.YETI.get(), TFEntities.ALPHA_YETI.get()});
 
@@ -52,8 +54,6 @@ public class TFAdvancementGenerator implements AdvancementSubProvider {
 		TFBlocks.TOWERWOOD, TFBlocks.CRACKED_TOWERWOOD, TFBlocks.MOSSY_TOWERWOOD, TFBlocks.ENCASED_TOWERWOOD,
 		TFBlocks.ROOT_BLOCK, TFBlocks.ROOT_STRAND, TFBlocks.LIVEROOT_BLOCK, TFItems.LIVEROOT, TFBlocks.HOLLOW_OAK_SAPLING, TFBlocks.RAINBOW_OAK_SAPLING, TFBlocks.RAINBOW_OAK_LEAVES, TFBlocks.GIANT_LOG, TFBlocks.GIANT_LEAVES, TFBlocks.HUGE_STALK, TFBlocks.BEANSTALK_LEAVES, TFBlocks.THORN_LEAVES, TFBlocks.THORN_ROSE, TFBlocks.HEDGE, TFBlocks.FALLEN_LEAVES, TFBlocks.MANGROVE_ROOT,
 	});
-
-	private static final Identifier ADVANCEMENT_BACKGROUND = TwilightForestMod.prefix("block/mazestone_large_brick");
 
 	private static final AdvancementDataMultiRequirements advancementDataMultiRequirements = new AdvancementDataMultiRequirements();
 
@@ -284,7 +284,7 @@ public class TFAdvancementGenerator implements AdvancementSubProvider {
 //						TFBlocks.BROWN_THORNS,
 //						Component.translatable("advancement.twilightforest.progress_thorns"),
 //						Component.translatable("advancement.twilightforest.progress_thorns.desc"),
-//						null, AdvancementType.GOAL, true, true, false)
+//						ADVANCEMENT_BACKGROUND, AdvancementType.GOAL, true, true, false)
 //				.addCriterion("castle", PlayerTrigger.TriggerInstance.located(LocationPredicate.inBiome(TFBiomes.FINAL_PLATEAU)))
 //				.addCriterion("previous_progression", this.advancementTrigger(lamp))
 //				.save(consumer, "twilightforest:progress_thorns");
@@ -293,7 +293,7 @@ public class TFAdvancementGenerator implements AdvancementSubProvider {
 //						TFBlocks.VIOLET_CASTLE_RUNE_BRICK,
 //						Component.translatable("advancement.twilightforest.progress_castle"),
 //						Component.translatable("advancement.twilightforest.progress_castle.desc"),
-//						null, AdvancementType.GOAL, true, true, false)
+//						ADVANCEMENT_BACKGROUND, AdvancementType.GOAL, true, true, false)
 //				.addCriterion("castle", PlayerTrigger.TriggerInstance.located(LocationPredicate.inStructure(TFStructures.FINAL_CASTLE)))
 //				.addCriterion("previous_progression", this.advancementTrigger(thornlands))
 //				.save(consumer, "twilightforest:progress_castle");

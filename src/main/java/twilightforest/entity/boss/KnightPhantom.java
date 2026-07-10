@@ -27,7 +27,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -284,10 +284,7 @@ public class KnightPhantom extends BaseTFBoss {
 					}
 				}
 			} else { // If all slots have been used up, throw the items on the ground, I guess, IDK
-				ItemEntity item = new ItemEntity(serverLevel, dropOff.x(), dropOff.y(), dropOff.z(), itemstack);
-				item.setExtendedLifetime();
-				item.setNoPickUpDelay();
-				serverLevel.addFreshEntity(item);
+				LivingBlock.createAt(serverLevel, BlockPos.containing(dropOff.x(), dropOff.y(), dropOff.z()), itemstack);
 			}
 		}
 	}

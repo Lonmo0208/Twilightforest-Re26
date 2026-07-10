@@ -55,7 +55,7 @@ public class LichShadowsGoal extends Goal {
 		if (this.lich.getTeleportInvisibility() > 0) return;
 
 		if (!this.lich.isShadowClone()) {
-			LivingEntity targetedEntity = this.lich.getTarget();
+			LivingEntity targetedEntity = (LivingEntity) this.lich.getTarget();
 
 			if (this.lich.getAttackCooldown() == 60) {
 				if (!this.lich.teleportToNewTarget(targetedEntity, this.attackRange, this)) this.lich.teleportHome();
@@ -63,7 +63,7 @@ public class LichShadowsGoal extends Goal {
 				if (this.lich.distanceTo(targetedEntity) < this.attackRange) {
 					this.attack(this.lich);
                     for (Lich clone : this.lich.getAllClones()) {
-						clone.setTarget(this.lich.getTarget());
+						clone.setTarget((LivingEntity) this.lich.getTarget());
 						this.attack(clone);
                     }
                 }
@@ -124,7 +124,7 @@ public class LichShadowsGoal extends Goal {
 				nearbyLich.addClone(this.lich.getUUID());
 
 				// animate our new linkage!
-				this.lich.setTarget(nearbyLich.getTarget());
+				this.lich.setTarget((LivingEntity) nearbyLich.getTarget());
 				break;
 			}
 		}

@@ -9,13 +9,23 @@
     },
     "has_trophy": {
       "conditions": {
-        "items": [
+        "entity": [
           {
-            "items": "twilightforest:snow_queen_trophy"
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:living_block",
+              "type_specific": {
+                "type": "minecraft:living_block",
+                "item": {
+                  "items": "twilightforest:snow_queen_trophy"
+                }
+              }
+            }
           }
         ]
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger": "minecraft:summoned_entity"
     }
   },
   "requirements": [

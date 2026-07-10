@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -52,7 +53,7 @@ public class TripleBowItem extends BowItem {
 	}
 
 	@Override
-	protected void shoot(ServerLevel level, LivingEntity living, InteractionHand hand, ItemStack stack, List<ItemStack> arrows, float speed, float accuracy, boolean crit, @Nullable LivingEntity target) {
+	protected void shoot(ServerLevel level, LivingEntity living, InteractionHand hand, ItemStack stack, List<ItemStack> arrows, float speed, float accuracy, boolean crit, @Nullable Entity target) {
 		float f1 = arrows.size() == 1 ? 0.0F : 20.0F / (float)(arrows.size() - 1);
 		float f2 = (float)((arrows.size() - 1) % 2) * f1 / 2.0F;
 		float f3 = 1.0F;

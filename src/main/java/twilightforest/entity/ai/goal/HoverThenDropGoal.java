@@ -34,7 +34,7 @@ public class HoverThenDropGoal extends HoverBaseGoal<SnowQueen> {
 
 	@Override
 	public boolean canUse() {
-		LivingEntity target = this.attacker.getTarget();
+		LivingEntity target = (LivingEntity) this.attacker.getTarget();
 
 		if (target == null) {
 			return false;
@@ -47,7 +47,7 @@ public class HoverThenDropGoal extends HoverBaseGoal<SnowQueen> {
 
 	@Override
 	public boolean canContinueToUse() {
-		LivingEntity target = this.attacker.getTarget();
+		LivingEntity target = (LivingEntity) this.attacker.getTarget();
 
 		if (target == null || !target.isAlive()) {
 			return false;
@@ -106,7 +106,7 @@ public class HoverThenDropGoal extends HoverBaseGoal<SnowQueen> {
 			this.attacker.push(velX, velY, velZ);
 
 			// look at target
-			LivingEntity target = this.attacker.getTarget();
+			LivingEntity target = (LivingEntity) this.attacker.getTarget();
 			if (target != null) {
 				this.attacker.lookAt(target, 30.0F, 30.0F);
 				this.attacker.getLookControl().setLookAt(target, 30.0F, 30.0F);

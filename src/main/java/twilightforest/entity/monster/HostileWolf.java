@@ -101,8 +101,8 @@ public class HostileWolf extends Monster {
 	}
 
 	@Override
-	public void setTarget(@Nullable LivingEntity entity) {
-		if (entity != null && entity != this.getTarget())
+	public void setTarget(@Nullable Entity entity) {
+		if (entity instanceof LivingEntity living && living != this.getTarget())
 			this.playSound(this.getTargetSound(), 4F, this.getVoicePitch());
 		super.setTarget(entity);
 	}

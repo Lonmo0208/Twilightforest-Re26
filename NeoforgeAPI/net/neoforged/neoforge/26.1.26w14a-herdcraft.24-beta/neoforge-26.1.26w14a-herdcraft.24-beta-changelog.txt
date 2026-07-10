@@ -1,0 +1,239 @@
+ - `26.1.26w14a.24-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.77` [26.1.x] Update FancyModLoader to `11.0.15` (#3225)
+ - `26.1.26w14a.22-beta` Merge branch 'pr/3225' into 26w14a
+ - `26.1.2.77` Update FancyModLoader
+ - `26.1.26w14a.20-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.76` Add missing nullable annotations to IPlayerExtension#openMenu (#3215)
+ - `26.1.26w14a.18-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.75` Fix lastHurt tracking post-reduction damage (#3203)
+   
+   Co-authored-by: Shadows_of_Fire <3682588+Shadows-of-Fire@users.noreply.github.com>
+ - `26.1.2.74` Fix some inconsistencies in FluidUtil#tryPlaceFluid and allow calling FluidUtil methods from a transactional context (#3207)
+   
+   - Added a variant of `FluidUtil#tryPickupFluid` that doesn't fall back to picking up from a fluid handler
+   - Fix `DispenseFluidContainer` deleting items due to passing the wrong stack to `consumeWithRemainder`
+ - `26.1.26w14a.15-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.73` Add flip frame event for managing per-frame GPU resources and rotating custom dynamic uniforms. (#3197)
+ - `26.1.26w14a.13-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.72` Expose a helper to clear StackCopySlot's cachedReturnStack (#3205)
+ - `26.1.26w14a.11-beta` Delete LivingEntity.java.rej.patch
+ - `26.1.26w14a.10-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.26w14a.2-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.71` 26.1.2 Stable
+ - `26.1.26w14a.1-beta` Update check-local-changes.yml
+ - `26.1.26w14a.0-beta` emmm
+ - `26.1.2.70-beta` Various fixes to damage pipeline events (#3101)
+ - `26.1.2.69-beta` [26.1] Allow a null return from ItemAcccess#update to indicate container item should be consumed (#3189)
+ - `26.1.2.68-beta` Fix invisible channel name text on ModMismatchDisconnectedScreen (#3196)
+ - `26.1.2.67-beta` Fix nullability on crafting player (#3188)
+ - `26.1.2.66-beta` Patch to fix MC-308222 by persisting `_WG` heightmap to and from worldgen chunk save (#3180)
+ - `26.1.2.65-beta` Add missing nullability annotations to ItemeAccess#exchange, and DataComponentHolderResource#with (#3187)
+ - `26.1.2.100-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.64-beta` Reimplement access to OBJ model part names and root parts, and remove double prefix from nested groups for part visibility checks (#3169)
+ - `26.1.2.63-beta` [26.1] Cleanup TagBuilder patch (#3183)
+ - `26.1.2.62-beta` Expose IWithData#getData helper to TypedInstance implementations (#3185)
+ - `26.1.2.96-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.61-beta` Fix CustomClickActionEvent missing player context in configuration phase (#3175)
+   
+   This PR adds `GameProfile` context to the CustomClickActionEvent so the sending player can be identified in the configuration phase.
+ - `26.1.2.60-beta` Query crafting remainders prior to shrinkage to fix bug caused by querying the empty stack's remainder (#3179)
+ - `26.1.2.93-beta` Add copyMinecraftVersion = 26.1... Change the version in minecraft.neoforge.mods.toml to start with 26.1.
+   
+   Add copyMinecraftVersion = 26.1... Change the version in minecraft.neoforge.mods.toml to start with 26.1, so that some mods available for the 26.1 release version can be directly compatible.
+ - `26.1.2.92-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.59-beta` [26.1] Retain datapack reload listeners in ReloadableServerResources (#3172)
+   
+   This PR allows mods to opt-in to retaining their reload listeners for the lifetime of the current reload. Opt-in is done via `AddServerReloadListenersEvent#addRetainedListener`, and retained listeners are available through `ReloadableServerResources#getListener`. You can get a `ReloadableServerResources` through `server.getServerResources().managers()`.
+ - `26.1.2.58-beta` Add CustomClickActionEvent (#3167)
+   
+   Co-authored-by: Swedz <me@swedz.net>
+   
+   This new event allows mods to react to players clicking chat components with custom click actions (`ClickEvent.Custom`).
+ - `26.1.2.57-beta` Use ItemStack sensitive `getCraftingRemainder` in vanilla code (#3157)
+ - `26.1.2.56-beta` Handle exception gracefully when reading optional pack meta (#3068)
+   
+   Also fixes some stale FML translation keys.
+ - `26.1.2.87-beta` Update EnchantedCountIncreaseFunction.java.patch
+ - `26.1.2.86-beta` Update EventHooks.java
+ - `26.1.2.85-beta` FIX
+ - `26.1.2.84-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.55-beta` Add enchanted loot events (#3065)
+   
+   This PR adds `EnchantedBlockLootEvent` and `EnchantedEntityLootEvent`, which replace the now-long-gone `LootingLevelEvent`, allowing mods to contextually modify the levels of enchantments requested in loot contexts.
+ - `26.1.2.54-beta` Fix AnyHolderSet being unusuable in datagen (#3170)
+   
+   This PR fixes the inability to datagen an AnyHolderSet for a data registry, due to a flawed assumption that we could pull a `RegistryLookup` out of the `BuildState`. Turns out we can only do that for builtin registries.
+ - `26.1.2.53-beta` [26.1] Split TagsUpdatedEvent and extend provided context (#3171)
+ - `26.1.2.52-beta` [26.1] Remove NoneBiomeModifier in favor of loading conditions (#3165)
+ - `26.1.2.51-beta` Add support for part visibility in ExtendedModelTemplate (#3166)
+ - `26.1.2.50-beta` Expose Game Profiles of Command Sources for Permission Checks (#3154)
+ - `26.1.2.49-beta` Update IClientItemExtensions#getArmPose with proper enum extension docs (#3160)
+ - `26.1.2.76-beta` Update Minecraft.java.patch
+ - `26.1.2.75-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.48-beta` [26.1] Re-implement support for emissivity in item layer models (#3137)
+   
+   This PR reimplements the ability for item layer models to be emissive, using the following syntax:  
+   
+   "layer0": {
+       "sprite": "minecraft:item/redstone",
+       "neoforge_data": {
+           "light_emission": 15
+       }
+   }
+ - `26.1.2.47-beta` [26.1] Froglight Conventional Tag (#3152)
+ - `26.1.2.46-beta` Fire LevelEvent.Unload from Minecraft#clearClientLevel (#3151)
+   
+   This PR fixes #3150 by firing LevelEvent.Unload from Minecraft#clearClientLevel, which is the remaining site (out of three) in Minecraft where the level changes.
+ - `26.1.2.71-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.45-beta` Move useful methods from StructureTemplateBuilder to TemplateBuilderHelper (#3159)
+ - `26.1.2.44-beta` [26.1] Limit initial capacity size for collections and maps during network decode (#3163)
+ - `26.1.2.68-beta` Add missing translations
+ - `26.1.2.67-beta` Add multilingual translations for new 26w14a content.
+ - `26.1.2.66-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.43-beta` [26.1] Rework the `RegisterDebugEntriesEvent` event (#3144)
+ - `26.1.2.64-beta` Change the version number to 26.1.26w14a-herdcraft
+   
+   Determine the version number as 26.1.26w14a-herdcraft
+   <26.1>-<26w14a-herdcraft>-<build number>-beta
+   This also ensures that some utility mods targeting 26.1.2 can work directly without modifying their version checks.
+ - `26.1.2.63-beta` Change version number to start with 26.1.2 and use the official name 'herdcraft'
+   
+   Maybe it could allow some utility mods to work directly without modifying their version checks.
+   Although I know that 26w14a is based on 26.1.1, but... .1 and .2 don't really make much difference...
+ - `26.1.2.62-beta` Add missing Chinese translations, including Traditional Chinese version.
+ - `26.1.2.61-beta` Update LivingBlock.java.patch
+ - `26.1.2.60-beta` Fix LivingBlock empty property crash
+ - `26.1.2.59-beta` genpatches
+ - `26.1.2.42-beta` Add window resize event (#3145)
+ - `26.1.2.57-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.41-beta` [26.1] Fix missing block model rendering with "random" texture (#3139)
+ - `26.1.2.40-beta` [26.1] Work around item atlas sprites being invisible behind translucent block atlas sprites in DynamicFluidContainerModel (#3131)
+ - `26.1.2.39-beta` Add additional registries to `c:hidden_from_recipe_viewers` (#3103)
+ - `26.1.2.38-beta` [26.1] Allow BEs to react to structure rotation (#3142)
+ - `26.1.2.37-beta` Unfinalize StackCopySlot#remove to allow extenders to increment crafting counts similar to vanilla result slots (#3147)
+ - `26.1.2.51-beta` Update GlobalLootModifiersTest.java
+ - `26.1.2.50-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.36-beta` Allow non immediately resolvable custom HolderSets to skip content validation similar to how HolderSet.Named already behaves (#3143)
+ - `26.1.2.35-beta` [26.1] Add optional `--uncached` flag to datagen (#2939)
+ - `26.1.2.34-beta` Add more context for ModifyDefaultComponentsEvent modifiers (#3122)
+ - `26.1.2.33-beta` [26.1] Fix GLMs failing to resolve tags during loading (#3130)
+   
+   In #3061 a bug was introduced that caused GLMs to be unable to deserialize tags (the same underlying issue as #1259). This fixes the GLM-specific issue and makes a small change to DataMap loading to further mitigate #1259.
+ - `26.1.2.45-beta` Update LivingEntity.java.patch
+ - `26.1.2.42-beta` Merge branch '26.1.x' into 26w14a
+ - `26.1.2.32-beta` [ci skip] New Crowdin updates (#3126)
+ - `26.1.2.31-beta` Capture final target position for EnderMan & item teleport hook (#3119)
+ - `26.1.2.41-beta` FixBug
+ - `26.1.2.40-beta` ok！
+ - `26.1.2.39-beta` ，，，，
+ - `26.1.2.38-beta` Update EnchantmentHelper.java.patch
+ - `26.1.2.37-beta` Fix bug
+ - `26.1.2.36-beta` Fix: Use correct canonical syntax
+ - `26.1.2.35-beta` Fix BUG & Test
+ - `26.1.2.34-beta` ok！
+ - `26.1.2.33-beta` Merge branch 'neoforged:26.1.x' into 26w14a
+ - `26.1.2.30-beta` [26.1] Fix potential memory leak in models baked with ComposedModelState (#3125)
+ - `26.1.2.31-beta` SetPatches 2
+ - `26.1.2.30-beta` SetPatches 1
+ - `26.1.2.29-beta` Add client config for skipping modded splashes when vanilla is modified (#3081)
+ - `26.1.2.28-beta` Update fancy_mod_loader_version to v11.0.13 (26.1.x) (#3127)
+   
+   Co-authored-by: neoforged-renovate[bot] <174042230+neoforged-renovate[bot]@users.noreply.github.com>
+ - `26.1.2.27-beta` Fail configs whose values do not accept their own defaults (#3120)
+ - `26.1.2.26-beta` Replace leather in vanilla recipes with c:leathers (#3083)
+ - `26.1.2.25-beta` Reset flat generator settings layers on refresh (#3117)
+ - `26.1.2.24-beta` Fix ValueInput#keySet throwing for empty inputs (#3123)
+ - `26.1.2.23-beta` Remove unimplemented hooks in IBaseRailBlockExtension (#3084)
+   
+   This removes `IBaseRailBlockExtension#getRailMaxSpeed` and `IBaseRailBlockExtension#onMinecartPass`, as re-implementing them effectively requires redesigning them.
+ - `26.1.2.22-beta` Fix TagEmptyCondition working for loaded-but-empty tags (#3114)
+   
+   This PR adds back `ICondition$IContext#getTag` and uses it in `TagEmptyCondition` to evaluate if a pending tag's contents are empty, instead of relying on `IContext#isTagLoaded`. This fixes `TagEmptyCondition` not working for loaded-but-empty tags.
+ - `26.1.2.21-beta` Fire the BreakBlockEvent on the client and server (#3064)
+   
+   This PR moves BlockEvent.BreakEvent to a standalone top-level class BreakBlockEvent, and updates the firing logic to fire BreakBlockEvent on the client, instead of only firing it on the server. It still preserves the ability to send a packet when cancelled only on the server, but this is an opt-in behavior now.
+ - `26.1.2.20-beta` Replace the GLM master list with a priority system (#3061)
+   
+   This MR removes the old `global_loot_modifiers.json` system which was used to dictate GLM execution order, and replaces it with a `priority` field on GLM data files. GLMs with a higher priority will be executed before those with a lower priority. The default priority is 1000. This allows anyone to decide, out of context, when their GLMs need to run, instead of needing to know the names of all GLMs in the environment first.
+   
+   This is a breaking change for mods that provide new GLM types, as it changes the constructor signature of `LootModifier`.
+ - `26.1.2.19-beta` [26.1] Move late stages of mod loading out of the first resource load (#3003)
+ - `26.1.2.18-beta` Update dependency net.fabricmc:sponge-mixin to v0.17.3+mixin.0.8.7 (26.1.x) (#3110)
+   
+   Co-authored-by: neoforged-renovate[bot] <174042230+neoforged-renovate[bot]@users.noreply.github.com>
+ - `26.1.2.17-beta` Fix chunk type cache being cleared too early during save (#3105)
+ - `26.1.2.16-beta` Fix NPE when getting an Attachment from a fake player (#3106)
+ - `26.1.2.15-beta` Update dependency net.neoforged:bus to v8.0.5 (26.1.x) (#3097)
+   
+   Co-authored-by: neoforged-renovate[bot] <174042230+neoforged-renovate[bot]@users.noreply.github.com>
+ - `26.1.2.14-beta` Bump MixinExtras to 0.5.4 (#3102)
+ - `26.1.2.13-beta` Update FML to v11.0.12 and Mixin to v0.17.1 (#3098)
+   
+   Mixin now has enum extensions
+ - `26.1.2.12-beta` Fix itemStack in RenderTooltipEvent.Texture always returning minecraft:air (#3091)
+ - `26.1.2.11-beta` Add iron and copper bars convention tags (#3054)
+ - `26.1.2.10-beta` [26.1] Remove broken PoseStack from AddSectionGeometryEvent.SectionRenderingContext (#3090)
+ - `26.1.2.9-beta` [26.1] Fix ModifyRecipeJsonsEvent implementing IModBusEvent despite firing on the game event bus (#3096)
+ - `26.1.2.8-beta` Make StackCopySlot take a slot idx and have ResourceHandlerSlot provide it (#3093)
+   
+   Co-authored-by: Shadows_of_Fire <3682588+Shadows-of-Fire@users.noreply.github.com>
+ - `26.1.2.7-beta` Clear memoized biome generation settings in FlatLevelSource (#3086)
+ - `26.1.2.6-beta` Add removeIf to BuildCreativeModeTabContentsEvent (#3080)
+ - `26.1.2.5-beta` Make built-in resource pack overlays work (#2868)
+ - `26.1.2.4-beta` Remove AbstractContainerScreen#slotColor and rename getters (#3082)
+ - `26.1.2.3-beta` Remove terminally deprecated methods and classes (#3028)
+ - `26.1.2.2-beta` Added convenience overloads to set sprite/material with defaulted transparency (#3079)
+ - `26.1.2.1-beta` [26.1] Allow arbitrary categories for the recipe advancement builder (#3072)
+ - `26.1.2.0-beta` Update to 26.1.2 (#3076)
+ - `26.1.1.15-beta` [26.1] Add optional player context to Item.TooltipContext (#3075)
+ - `26.1.1.14-beta` [26.1] Allow world clocks to ignore paused states (#3057)
+   
+   Co-authored-by: XFactHD <11262040+XFactHD@users.noreply.github.com>
+ - `26.1.1.13-beta` [26.1] Allow Hand Transforms for Items other than crossbows (#3017)
+ - `26.1.1.12-beta` [ci skip] Remove some patch rejects (#3047)
+ - `26.1.1.11-beta` [26.1] Add convenience method for AvatarRenderer render state modifier (#3067)
+ - `26.1.1.10-beta` Ensure commands are synced when waiting on a GL fence to avoid a deadlock (#3069)
+ - `26.1.1.9-beta` [ci skip] New Crowdin updates (#3050)
+ - `26.1.1.8-beta` [26.1] Add events for registering cauldron interactions (#2999)
+ - `26.1.1.7-beta` Fix MC-271761: Resource filter namespace leak (#2974)
+ - `26.1.1.6-beta` Create Dynamic Armor Trim System (#3038)
+   
+   Fixed the need to add armor trim palettes and patterns to the `armor_trims.json` atlas, as its now done automatically. This will fix modded trims and palettes not properly working with each other.
+   
+   Added a new item model that dynamically renders armor trims on items. Helper methods have been added to vanilla's item model datagen to allow for easy model registration. This removes the need to use vanilla's `TrimMaterialProperty` in the item json and will allow all registered armor trim palettes to work with your item.
+ - `26.1.1.5-beta` Tighten `getEnchantPowerBonus` to `BlockGetter` (#3062)
+   
+   Co-authored-by: Shadows_of_Fire <3682588+Shadows-of-Fire@users.noreply.github.com>
+ - `26.1.1.4-beta` Fix ECJ compile errors w/ Eclipse 2026-03 (#3060)
+   
+   Co-authored-by: Shadows_of_Fire <3682588+Shadows-of-Fire@users.noreply.github.com>
+ - `26.1.1.3-beta` Add a JSON recipe modification event (#3053)
+ - `26.1.1.2-beta` [26.1] Fix crash when freezing after applying registry sync with entries unknown to the client (#3049)
+ - `26.1.1.1-beta` Add ModelDebugName argument to UnbakedStandaloneModel#bake (#3040)
+ - `26.1.1.0-beta` Update to 26.1.1
+ - `26.1.0.19-beta` Add target level to EntityTeleportEvent (#2942)
+   
+   This PR adds `EntityTeleportEvent#getTargetLevel()`, which allows consumers of the teleport event(s) to determine where the target(s) are being sent to.
+   
+   Closes #1526 
+ - `26.1.0.18-beta` feat: do not try to sync data attachments to vanilla clients (#2964)
+ - `26.1.0.17-beta` Add optional neoforge:seed_override field to dimension codec (#2977)
+ - `26.1.0.16-beta` Improve ModifyDefaultComponentsEvent component access (#3048)
+ - `26.1.0.15-beta` Generate and populate the json for drink_containing tags (#3044)
+ - `26.1.0.14-beta` [26.1] Clean up component modifier internals (#3043)
+ - `26.1.0.13-beta` fix(network): correctly assign client/server versions in negotiation mismatch error (#2965)
+ - `26.1.0.12-beta` Revert "Unhook mayFly field from controlling flight" (#3046)
+ - `26.1.0.11-beta` Unhook mayFly field from controlling flight (#3034)
+ - `26.1.0.10-beta` Expose applied default components through ModifyDefaultComponentsEvent (#3041)
+ - `26.1.0.9-beta` [ci skip] New Crowdin updates (#3025)
+ - `26.1.0.8-beta` Add missing `includeBoundingBox` call to Beardifier patch (#3031)
+ - `26.1.0.7-beta` [26.1] Fix visual item cloning bug (#3035)
+ - `26.1.0.6-beta` Update fancy_mod_loader_version to v11.0.5 (26.1.x) (#3032)
+   
+   Fix production detection
+ - `26.1.0.5-beta` Bump GradleUtils to 5.1.1 (#3029)
+ - `26.1.0.4-beta` [26.1] Re-enable changelog publishing (#3020)
+ - `26.1.0.3-beta` [26.1] Update FML to use correct GLFW init and window hints in ELS (#3023)
+ - `26.1.0.2-beta` Update mixin version (#3024)
+ - `26.1.0.1-beta` Fix 4 version components in CI
+ - `26.1.0.0-beta` Update release branch pattern to include '26.*'

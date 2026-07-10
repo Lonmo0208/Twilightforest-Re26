@@ -26,7 +26,7 @@ public abstract class HoverBaseGoal<T extends Mob> extends Goal {
 
 	@Override
 	public void start() {
-		LivingEntity target = this.attacker.getTarget();
+		LivingEntity target = (LivingEntity) this.attacker.getTarget();
 		if (target != null) {
 			// find a spot above the player
 			this.makeNewHoverSpot(target);

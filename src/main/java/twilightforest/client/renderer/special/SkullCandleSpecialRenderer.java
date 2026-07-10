@@ -46,7 +46,7 @@ public record SkullCandleSpecialRenderer(PlayerSkinRenderCache playerSkinRenderC
 	public void submit(@Nullable Pair<PlayerSkinRenderCache.RenderInfo, SkullCandles> info, PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
 		RenderType rendertype = this.type();
 		if (rendertype == null) {
-			rendertype = info.getFirst() != null ? info.getFirst().renderType() : PlayerSkinRenderCache.DEFAULT_PLAYER_SKIN_RENDER_TYPE;
+			rendertype = info != null && info.getFirst() != null ? info.getFirst().renderType() : PlayerSkinRenderCache.DEFAULT_PLAYER_SKIN_RENDER_TYPE;
 		}
 		stack.pushPose();
 		stack.translate(0.5F, 0.0F, 0.5F);
@@ -57,8 +57,7 @@ public record SkullCandleSpecialRenderer(PlayerSkinRenderCache playerSkinRenderC
 		collector.submitModel(this.model(), modelState, stack, rendertype, light, OverlayTexture.NO_OVERLAY, outlineColor, null);
 		stack.popPose();
 
-		SkullCandles skullCandles = info.getSecond();
-
+		SkullCandles skullCandles = info != null ? info.getSecond() : SkullCandles.DEFAULT;
 		if (skullCandles != null) {
 			stack.translate(0.0F, 0.5F, 0.0F);
 			BlockModelRenderState state = new BlockModelRenderState();

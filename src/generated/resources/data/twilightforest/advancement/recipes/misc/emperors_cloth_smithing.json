@@ -3,13 +3,23 @@
   "criteria": {
     "has_cloth": {
       "conditions": {
-        "items": [
+        "entity": [
           {
-            "items": "twilightforest:emperors_cloth"
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:living_block",
+              "type_specific": {
+                "type": "minecraft:living_block",
+                "item": {
+                  "items": "twilightforest:emperors_cloth"
+                }
+              }
+            }
           }
         ]
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger": "minecraft:summoned_entity"
     },
     "has_the_recipe": {
       "conditions": {

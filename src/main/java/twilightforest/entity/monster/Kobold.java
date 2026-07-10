@@ -1,5 +1,6 @@
 package twilightforest.entity.monster;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -19,7 +20,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -201,8 +202,8 @@ public class Kobold extends Monster {
 	}
 
 	@Override
-	protected void pickUpItem(ServerLevel server, ItemEntity item) {
-		ItemStack itemstack = item.getItem();
+	protected void pickUpItem(ServerLevel server, LivingBlock item) {
+		ItemStack itemstack = item.getItemStack();
 		if (this.canHoldItem(itemstack)) {
 			int i = itemstack.getCount();
 			if (i > 1) {
@@ -238,8 +239,7 @@ public class Kobold extends Monster {
 	}
 
 	private void dropItemStack(ItemStack stack) {
-		ItemEntity itementity = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), stack);
-		this.level().addFreshEntity(itementity);
+		LivingBlock.createAt(this.level(), BlockPos.containing(this.getX(), this.getY(), this.getZ()), stack);
 	}
 
 	@Override
@@ -281,8 +281,8 @@ public class Kobold extends Monster {
 	//greatly inspired by Fox.FoxSearchForItemsGoal
 	private static class SeekBreadGoal extends Goal {
 
-		private static final Predicate<ItemEntity> ALLOWED_ITEMS = (item) ->
-			item.getItem().is(TFItemTags.KOBOLD_PACIFICATION_BREADS);
+		private static final Predicate<LivingBlock> ALLOWED_ITEMS = (item) ->
+			item.getItemStack().is(TFItemTags.KOBOLD_PACIFICATION_BREADS);
 
 		private final Kobold mob;
 
@@ -299,7 +299,7 @@ public class Kobold extends Monster {
 				if (this.mob.getRandom().nextInt(10) != 0) {
 					return false;
 				} else {
-					List<ItemEntity> list = this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ALLOWED_ITEMS);
+					List<LivingBlock> list = this.mob.level().getEntitiesOfClass(LivingBlock.class, this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ALLOWED_ITEMS);
 					return !list.isEmpty() && this.mob.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty();
 				}
 			} else {
@@ -309,7 +309,7 @@ public class Kobold extends Monster {
 
 		@Override
 		public void tick() {
-			List<ItemEntity> list = this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ALLOWED_ITEMS);
+			List<LivingBlock> list = this.mob.level().getEntitiesOfClass(LivingBlock.class, this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ALLOWED_ITEMS);
 			ItemStack itemstack = this.mob.getItemBySlot(EquipmentSlot.MAINHAND);
 			if (itemstack.isEmpty() && !list.isEmpty()) {
 				this.mob.getNavigation().moveTo(list.get(0), 1.2F);
@@ -319,7 +319,7 @@ public class Kobold extends Monster {
 
 		@Override
 		public void start() {
-			List<ItemEntity> list = this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ALLOWED_ITEMS);
+			List<LivingBlock> list = this.mob.level().getEntitiesOfClass(LivingBlock.class, this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ALLOWED_ITEMS);
 			if (!list.isEmpty()) {
 				this.mob.getNavigation().moveTo(list.get(0), 1.2F);
 			}

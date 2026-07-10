@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>net.neoforged</groupId>
+  <artifactId>testframework</artifactId>
+  <versioning>
+    <latest>26.1.26w14a-herdcraft.24-beta</latest>
+    <release>26.1.26w14a-herdcraft.24-beta</release>
+    <versions>
+      <version>26.1.26w14a-cp26.1-herdcraft.4</version>
+      <version>26.1.26w14a-herdcraft.24-beta</version>
+    </versions>
+    <lastUpdated>20260705023755</lastUpdated>
+  </versioning>
+</metadata>

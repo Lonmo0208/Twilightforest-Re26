@@ -7,7 +7,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -47,8 +47,7 @@ public class TrollRootBlock extends Block {
 		if (state.is(TFBlocks.TROLLBER)) {
 			level.setBlock(pos, TFBlocks.TROLLVIDR.get().defaultBlockState(), Block.UPDATE_CLIENTS);
 			level.playSound(null, pos, TFSounds.PICKED_TORCHBERRIES.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-			ItemEntity torchberries = new ItemEntity(level, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, new ItemStack(TFItems.TORCHBERRIES.get()));
-			level.addFreshEntity(torchberries);
+			LivingBlock.createAt(level, BlockPos.containing(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F), new ItemStack(TFItems.TORCHBERRIES.get()));
 			if (player instanceof ServerPlayer) player.awardStat(TFStats.TORCHBERRIES_HARVESTED.get());
 			return InteractionResult.SUCCESS;
 		}

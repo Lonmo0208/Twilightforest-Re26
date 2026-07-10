@@ -106,7 +106,7 @@ public class UnstableIceCore extends BaseIceMob {
 		BlockState state = this.level().getBlockState(pos);
 		Block block = state.getBlock();
 
-		if (block.getExplosionResistance() < 8F && state.getDestroySpeed(this.level(), pos) >= 0) {
+		if (block.getExplosionResistance() < 8F && state.getDestroySpeed() >= 0) {
 			int blockColor = state.getMapColor(this.level(), pos).col;
 
 			// do appropriate transformation

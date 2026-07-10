@@ -14,13 +14,23 @@
     },
     "has_uncrafting_table": {
       "conditions": {
-        "items": [
+        "entity": [
           {
-            "items": "twilightforest:uncrafting_table"
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:living_block",
+              "type_specific": {
+                "type": "minecraft:living_block",
+                "item": {
+                  "items": "twilightforest:uncrafting_table"
+                }
+              }
+            }
           }
         ]
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger": "minecraft:summoned_entity"
     }
   },
   "requirements": [

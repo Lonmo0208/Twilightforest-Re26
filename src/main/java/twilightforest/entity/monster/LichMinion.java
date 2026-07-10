@@ -50,7 +50,6 @@ public class LichMinion extends Zombie {
 		this.goalSelector.addGoal(2, new ZombieAttackGoal(this, 1.0, false));
 		this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Lich.class) {
-			@Override
 			protected boolean canAttack(@Nullable LivingEntity potentialTarget, TargetingConditions targetPredicate) {
 				return !(potentialTarget instanceof Lich) && super.canAttack(potentialTarget, targetPredicate);
 			}
@@ -60,7 +59,7 @@ public class LichMinion extends Zombie {
 
 	@Override
 	public boolean hurtServer(ServerLevel server, DamageSource source, float amount) {
-		LivingEntity prevTarget = getTarget();
+		LivingEntity prevTarget = (LivingEntity) getTarget();
 
 		if (super.hurtServer(server, source, amount)) {
 			if (source.getEntity() instanceof Lich) {
@@ -118,7 +117,7 @@ public class LichMinion extends Zombie {
 				}
 
 				// become angry at our masters target
-				this.setTarget(this.master.getTarget());
+				this.setTarget((LivingEntity) this.master.getTarget());
 
 				// quit looking
 				break;

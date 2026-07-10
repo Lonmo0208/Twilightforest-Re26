@@ -10,7 +10,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -116,9 +116,9 @@ public class SkullChestBlock extends BaseEntityBlock implements BlockLoggingEnum
 			BlockEntity tile = level.getBlockEntity(pos);
 			if (tile instanceof SkullChestBlockEntity chest) {
 				ItemStack stack = new ItemStack(this);
-				ItemEntity itementity = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), stack);
 				this.modifyDrop(state, stack);
-				if (chest.hasCustomName()) {
+				LivingBlock itementity = LivingBlock.createAt(level, BlockPos.containing(pos.getX(), pos.getY(), pos.getZ()), stack);
+				if (itementity != null && chest.hasCustomName()) {
 					if (chest.owner != null)
 						itementity.setCustomName(chest.getDisplayName());
 					else itementity.setCustomName(chest.getCustomName());
@@ -127,13 +127,9 @@ public class SkullChestBlock extends BaseEntityBlock implements BlockLoggingEnum
 					Block block = state.getValue(BlockLoggingEnum.MULTILOGGED).getBlock();
 					if (block != Blocks.AIR) {
 						ItemStack blockstack = new ItemStack(block);
-						ItemEntity item = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), blockstack);
-						item.setDefaultPickUpDelay();
-						level.addFreshEntity(item);
+						LivingBlock.createAt(level, BlockPos.containing(pos.getX(), pos.getY(), pos.getZ()), blockstack);
 					}
 				}
-				itementity.setDefaultPickUpDelay();
-				level.addFreshEntity(itementity);
 			}
 		}
 		return super.playerWillDestroy(level, pos, state, player);

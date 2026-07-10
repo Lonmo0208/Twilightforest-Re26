@@ -11,6 +11,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedItemContents;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.recipebook.ServerPlaceRecipe;
@@ -65,6 +66,8 @@ public class UncraftingMenu extends RecipeBookMenu {
 	private final ContainerLevelAccess positionData;
 	private final Level level;
 	private final Player player;
+	@Nullable
+	private LivingBlock livingBlock;
 
 	// Conflict resolution
 	public int unrecipeInCycle = 0;
@@ -77,15 +80,20 @@ public class UncraftingMenu extends RecipeBookMenu {
 	public Recipe<?> storedGhostRecipe = null;
 
 	public static UncraftingMenu fromNetwork(int id, Inventory inventory) {
-		return new UncraftingMenu(id, inventory, inventory.player.level(), ContainerLevelAccess.NULL);
+		return new UncraftingMenu(id, inventory, inventory.player.level(), ContainerLevelAccess.NULL, null);
 	}
 
 	public UncraftingMenu(int id, Inventory inventory, Level level, ContainerLevelAccess positionData) {
+		this(id, inventory, level, positionData, null);
+	}
+
+	public UncraftingMenu(int id, Inventory inventory, Level level, ContainerLevelAccess positionData, @Nullable LivingBlock livingBlock) {
 		super(TFMenuTypes.UNCRAFTING.get(), id);
 
 		this.positionData = positionData;
 		this.level = level;
 		this.player = inventory.player;
+		this.livingBlock = livingBlock;
 
 		this.addSlot(new Slot(this.tinkerInput, 0, 13, 35));
 		this.addSlot(new UncraftingResultSlot(inventory.player, this.tinkerInput, this.uncraftingMatrix, this.assemblyMatrix, this.tinkerResult, 0, 147, 35));
@@ -634,7 +642,9 @@ public class UncraftingMenu extends RecipeBookMenu {
 
 	@Override
 	public boolean stillValid(Player player) {
-		return !TFConfig.disableEntireTable && stillValid(this.positionData, player, TFBlocks.UNCRAFTING_TABLE.get());
+		if (TFConfig.disableEntireTable) return false;
+		if (this.livingBlock != null) return this.livingBlock.isAlive();
+		return stillValid(this.positionData, player, TFBlocks.UNCRAFTING_TABLE.get());
 	}
 
 	@Override
@@ -679,7 +689,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public RecipeBookMenu.PostPlaceAction handlePlacement(boolean useMaxItems, boolean allowDroppingItemsToClear, RecipeHolder<?> recipe, ServerLevel level, Inventory inventory) {
+	public RecipeBookMenu.PostPlaceAction handlePlacement(boolean useMaxItems, boolean allowDroppingItemsToClear, RecipeHolder<?> recipe, ServerLevel level, Inventory inventory, RecipeManager.ServerDisplayInfo displayInfo) {
 		return ServerPlaceRecipe.placeRecipe(
 			new ServerPlaceRecipe.CraftingMenuAccess<CraftingRecipe>() {
 				@Override

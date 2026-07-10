@@ -17,7 +17,7 @@ public class SimplifiedAttackGoal extends Goal {
 
 	@Override
 	public boolean canUse() {
-		LivingEntity target = mob.getTarget();
+		LivingEntity target = (LivingEntity) mob.getTarget();
 		return target != null && this.mob.isWithinMeleeAttackRange(target);
 	}
 
@@ -41,7 +41,7 @@ public class SimplifiedAttackGoal extends Goal {
 		if (this.attackTick > 0) {
 			this.attackTick--;
 		} else {
-			LivingEntity livingentity = this.mob.getTarget();
+			LivingEntity livingentity = (LivingEntity) this.mob.getTarget();
 			if (livingentity == null) {
 				this.stop();
 				return;

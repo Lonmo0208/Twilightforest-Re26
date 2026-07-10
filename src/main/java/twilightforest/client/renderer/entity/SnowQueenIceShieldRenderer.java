@@ -42,7 +42,7 @@ public class SnowQueenIceShieldRenderer extends EntityRenderer<SnowQueenIceShiel
 		MultipartHooks.registerStateRenderer(state, SnowQueenIceShield.RENDERER);
 		BlockPos pos = BlockPos.containing(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
 		state.movingBlockRenderState.randomSeedPos = pos;
-		state.movingBlockRenderState.blockPos = pos;
+		state.movingBlockRenderState.randomSeedPos = pos;
 		state.movingBlockRenderState.blockState = Blocks.PACKED_ICE.defaultBlockState();
 		if (entity.level() instanceof ClientLevel clientLevel) {
 			state.movingBlockRenderState.biome = clientLevel.getBiome(pos);

@@ -11,7 +11,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,10 +61,7 @@ public interface IBossLootBuffer {
 				//If our loot stack size is bigger than the inventory, drop everything else outside it. Don't want to lose any loot now do we?
 				if (stacks.size() > CONTAINER_SIZE) {
 					for (ItemStack stack : stacks.subList(CONTAINER_SIZE, stacks.size())) {
-						ItemEntity item = new ItemEntity(serverLevel, boss.getX(), boss.getY(), boss.getZ(), stack);
-						item.setExtendedLifetime();
-						item.setNoPickUpDelay();
-						serverLevel.addFreshEntity(item);
+						LivingBlock.createAt(serverLevel, BlockPos.containing(boss.getX(), boss.getY(), boss.getZ()), stack);
 					}
 				}
 			});

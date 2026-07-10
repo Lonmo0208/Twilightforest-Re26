@@ -212,7 +212,7 @@ public class AntibuilderBlockEntity extends BlockEntity {
 		if (stateThere.isAir() && !replaceWith.blocksMotion()) {
 			return false;
 		}
-		if (stateThere.getDestroySpeed(level, pos) < 0 || this.isUnrevertable(stateThere, replaceWith)) {
+		if (stateThere.getDestroySpeed() < 0 || this.isUnrevertable(stateThere, replaceWith)) {
 			return false;
 		} else if (this.rand.nextInt(REVERT_CHANCE) == 0) {
 			// don't revert everything instantly

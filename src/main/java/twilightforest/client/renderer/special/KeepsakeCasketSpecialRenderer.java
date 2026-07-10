@@ -8,6 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -21,19 +22,14 @@ import twilightforest.init.TFDataComponents;
 
 import java.util.function.Consumer;
 
-public record KeepsakeCasketSpecialRenderer(KeepsakeCasketModel model, float openness) implements SpecialModelRenderer<Integer> {
+public record KeepsakeCasketSpecialRenderer(KeepsakeCasketModel model, float openness) implements NoDataSpecialModelRenderer {
 
 	@Override
-	public Integer extractArgument(ItemStack stack) {
-		return stack.getOrDefault(TFDataComponents.CASKET_DAMAGE, 0);
-	}
-
-	@Override
-	public void submit(@Nullable Integer argument, PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
+	public void submit(PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
 		stack.translate(0.5F, 0.0F, 0.5F);
 		stack.mulPose(Direction.NORTH.getRotation());
 		stack.mulPose(Axis.XP.rotationDegrees(90.0F));
-		collector.submitModel(this.model(), this.openness(), stack, KeepsakeCasketRenderer.getTextureLocation(argument), light, overlay, outlineColor, null);
+		collector.submitModel(this.model(), this.openness(), stack, KeepsakeCasketRenderer.getTextureLocation(0), light, overlay, outlineColor, null);
 	}
 
 	@Override
@@ -45,7 +41,7 @@ public record KeepsakeCasketSpecialRenderer(KeepsakeCasketModel model, float ope
 		this.model.root().getExtentsForGui(poseStack, output);
 	}
 
-	public record Unbaked(float openness) implements SpecialModelRenderer.Unbaked<Integer> {
+	public record Unbaked(float openness) implements NoDataSpecialModelRenderer.Unbaked {
 		public static final MapCodec<KeepsakeCasketSpecialRenderer.Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				Codec.FLOAT.optionalFieldOf("openness", 0.0F).forGetter(KeepsakeCasketSpecialRenderer.Unbaked::openness))
 			.apply(instance, KeepsakeCasketSpecialRenderer.Unbaked::new));
@@ -60,7 +56,7 @@ public record KeepsakeCasketSpecialRenderer(KeepsakeCasketModel model, float ope
 		}
 
 		@Override
-		public SpecialModelRenderer<Integer> bake(BakingContext context) {
+		public KeepsakeCasketSpecialRenderer bake(BakingContext context) {
 			KeepsakeCasketModel model = new KeepsakeCasketModel(context.entityModelSet().bakeLayer(TFModelLayers.KEEPSAKE_CASKET));
 			return new KeepsakeCasketSpecialRenderer(model, this.openness);
 		}

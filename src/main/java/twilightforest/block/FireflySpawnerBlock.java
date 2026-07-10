@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -65,8 +65,7 @@ public class FireflySpawnerBlock extends AbstractParticleSpawnerBlock implements
 			return InteractionResult.SUCCESS;
 		} else if (player.isShiftKeyDown() && state.getValue(RADIUS) > 1) {
 			level.setBlockAndUpdate(pos, state.setValue(RADIUS, state.getValue(RADIUS) - 1));
-			ItemEntity bug = new ItemEntity(level, pos.getX() + 0.5D, pos.getY() + 1, pos.getZ() + 0.5D, new ItemStack(TFBlocks.FIREFLY.get()));
-			level.addFreshEntity(bug);
+			LivingBlock.createAt(level, BlockPos.containing(pos.getX() + 0.5D, pos.getY() + 1, pos.getZ() + 0.5D), new ItemStack(TFBlocks.FIREFLY.get()));
 			player.sendOverlayMessage(Component.translatable("misc.twilightforest.firefly_spawner_radius", state.getValue(RADIUS) - 1));
 			return InteractionResult.SUCCESS;
 		}

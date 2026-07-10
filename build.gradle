@@ -209,6 +209,10 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
 	mavenLocal()
 	maven {
+		name = "NeoforgeAPI"
+		url = "file:///${rootProject.projectDir}/NeoforgeAPI".replace('\\', '/')
+	}
+	maven {
 		name 'Tama\'s Maven' // Beanification
 		url 'https://maven.tamaized.com/releases/'
 		content {
@@ -219,10 +223,10 @@ repositories {
 		name 'Jared\'s Maven' // JEI
 		url 'https://maven.blamejared.com/'
 	}
-	maven {
-		name = "OctoStudios" //Curios
-		url = uri("https://maven.octo-studios.com/releases")
-	}
+//	maven {
+//		name = "OctoStudios" //Curios
+//		url = uri("https://maven.octo-studios.com/releases")
+//	}
 	maven {
 		name 'Shedaniel\'s Maven' //REI
 		url "https://maven.shedaniel.me"

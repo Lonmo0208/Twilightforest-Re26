@@ -1,5 +1,6 @@
 package twilightforest.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.recipebook.GhostSlots;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -28,10 +29,31 @@ public class UncraftingRecipeBookComponent extends RecipeBookComponent<Uncraftin
 	}
 
 	@Override
+	public void init(int width, int height, Minecraft minecraft, boolean widthTooNarrow) {
+	}
+
+	@Override
+	public void tick() {
+	}
+
+	@Override
+	public void toggleVisibility() {
+	}
+
+	@Override
+	protected void setVisible(boolean visible) {
+	}
+
+	@Override
 	public void setupGhostRecipe(RecipeHolder<?> recipe, List<Slot> slots) {
 		CraftingRecipe craftingRecipe = (CraftingRecipe) recipe.value();
 		ItemStack itemstack = craftingRecipe.assemble(CraftingInput.EMPTY);
 		this.placeRecipe(this.menu.getStateId(), this.menu.getGridHeight(), this.menu.getResultSlotIndex(), recipe, craftingRecipe.placementInfo().ingredients().iterator(), 0);
+	}
+
+	@Override
+	public boolean isVisible() {
+		return false;
 	}
 
 	@Override

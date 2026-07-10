@@ -63,15 +63,13 @@ public class AlphaYeti extends BaseTFBoss implements RangedAttackMob, IHostileMo
 		this.goalSelector.addGoal(1, new YetiTiredGoal(this, 100));
 		this.goalSelector.addGoal(3, new YetiRampageGoal(this, 10, 180));
 		this.goalSelector.addGoal(4, new RangedAttackGoal(this, 1.0D, 40, 40, 40.0F) {
-			@Override
 			public boolean canUse() {
-				return AlphaYeti.this.getRandom().nextInt(50) > 0 && AlphaYeti.this.getTarget() != null && AlphaYeti.this.distanceToSqr(AlphaYeti.this.getTarget()) >= 16.0D && super.canUse(); // Give us a chance to move to the next AI
+				return AlphaYeti.this.getRandom().nextInt(50) > 0 && AlphaYeti.this.getTarget() != null && AlphaYeti.this.distanceToSqr(AlphaYeti.this.getTarget()) >= 16.0D && super.canUse();
 			}
 		});
 		this.goalSelector.addGoal(4, new ThrowRiderGoal(this, 1.0D, false) {
-			@Override
-			protected void checkAndPerformAttack(LivingEntity victim) {
-				super.checkAndPerformAttack(victim);
+			protected void checkAndPerformAttack(ServerLevel level, LivingEntity victim) {
+				super.checkAndPerformAttack(level, victim);
 				if (!AlphaYeti.this.getPassengers().isEmpty())
 					AlphaYeti.this.playSound(TFSounds.ALPHA_YETI_GRAB.get(), 4.0F, 0.75F + AlphaYeti.this.getRandom().nextFloat() * 0.25F);
 			}
@@ -157,8 +155,8 @@ public class AlphaYeti extends BaseTFBoss implements RangedAttackMob, IHostileMo
 	}
 
 	@Override
-	public void setTarget(@Nullable LivingEntity entity) {
-		if (entity != null && entity != this.getTarget())
+	public void setTarget(@Nullable Entity entity) {
+		if (entity instanceof LivingEntity living && living != this.getTarget())
 			this.playSound(TFSounds.ALPHA_YETI_ALERT.get(), 4.0F, 0.5F + this.getRandom().nextFloat() * 0.5F);
 		super.setTarget(entity);
 	}
@@ -258,7 +256,7 @@ public class AlphaYeti extends BaseTFBoss implements RangedAttackMob, IHostileMo
 	}
 
 	@Override
-	public void performRangedAttack(LivingEntity target, float distanceFactor) {
+	public void performRangedAttack(Entity target, float distanceFactor) {
 		if (!this.canRampage()) {
 			IceBomb ice = new IceBomb(this.level(), this, new ItemStack(TFItems.ICE_BOMB.get()));
 

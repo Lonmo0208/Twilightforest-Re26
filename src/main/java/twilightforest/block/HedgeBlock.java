@@ -6,7 +6,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -102,6 +102,6 @@ public class HedgeBlock extends Block {
 
 	//TODO tag
 	private boolean shouldDamage(Entity entity) {
-		return !(entity instanceof Spider || entity instanceof ItemEntity || entity.isIgnoringBlockTriggers() || entity.getVehicle() != null && !this.shouldDamage(entity.getVehicle()));
+		return !(entity instanceof Spider || entity instanceof LivingBlock || entity.isIgnoringBlockTriggers() || entity.getVehicle() != null && !this.shouldDamage(entity.getVehicle()));
 	}
 }

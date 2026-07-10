@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -149,7 +149,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 		return Fluids.WATER.getFlowing(1, false); // 1 is minimum value. Minecraft wiki at time of this writing has the values backwards.
 	}
 
-	public boolean tryToCreatePortal(ServerLevel level, BlockPos pos, ItemEntity catalyst, @Nullable Player player) {
+	public boolean tryToCreatePortal(ServerLevel level, BlockPos pos, LivingBlock catalyst, @Nullable Player player) {
 		BlockState state = level.getBlockState(pos);
 
 		if (this.canFormPortal(state) && level.getBlockState(pos.below()).isFaceSturdy(level, pos, Direction.UP)) {
@@ -171,7 +171,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 					}
 				}
 
-				catalyst.getItem().shrink(1);
+				catalyst.getItemStack().shrink(1);
 				causeLightning(level, pos, TFConfig.destructivePortalLightning);
 
 				for (Map.Entry<BlockPos, Boolean> checkedPos : blocksChecked.entrySet()) {

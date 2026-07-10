@@ -19,7 +19,9 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.MultiblockChestResources;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BuiltInBlockModels;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -32,8 +34,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.phys.AABB;
@@ -52,7 +57,11 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
 import tamaized.beanification.Component;
 import tamaized.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
+import twilightforest.block.AbstractSkullCandleBlock;
+import twilightforest.block.TrophyBlock;
+import twilightforest.block.TrophyWallBlock;
 import twilightforest.client.*;
+import twilightforest.enums.BossVariant;
 import twilightforest.init.TFDimension;
 import net.minecraft.client.model.object.boat.BoatModel;
 import net.minecraft.client.renderer.entity.BoatRenderer;
@@ -127,6 +136,7 @@ public class ClientRegistrationEvents {
 		bus.addListener(RegisterKeyMappingsEvent.class, event -> TFKeyBinds.KEY_MAPPINGS.forEach(event::register));
 
 		bus.addListener(this::registerSpecialModelRenderers);
+		bus.addListener(this::registerBlockModels);
 
 		bus.addListener(ColorHandler::registerBlockColors);
 		bus.addListener(ColorHandler::registerItemColors);
@@ -168,6 +178,101 @@ public class ClientRegistrationEvents {
 		event.register(TwilightForestMod.prefix("cicada"), CicadaSpecialRenderer.Unbaked.MAP_CODEC);
 		event.register(TwilightForestMod.prefix("knightmetal_shield"), KnightmetalShieldSpecialRenderer.Unbaked.MAP_CODEC);
 		event.register(TwilightForestMod.prefix("brazier"), BrazierSpecialRenderer.Unbaked.MAP_CODEC);
+	}
+
+	private void registerBlockModels(RegisterBlockModelsEvent event) {
+		// Chests — identical pattern to BuiltInBlockModels.addDefaults() lines 161-163
+		registerWoodChests(event);
+		registerTrophyBlocks(event);
+		registerSkullCandleBlocks(event);
+		event.register(BuiltInBlockModels.special(new SkullChestSpecialRenderer.Unbaked()), TFBlocks.SKULL_CHEST.get());
+		event.register(BuiltInBlockModels.special(new KeepsakeCasketSpecialRenderer.Unbaked()), TFBlocks.KEEPSAKE_CASKET.get());
+	}
+
+	private static final String[] WOOD_TYPES = {
+		"twilight_oak", "canopy", "mangrove", "darkwood",
+		"time", "transformation", "mining", "sorting"
+	};
+
+	private Block woodChest(String wood) {
+		return switch (wood) {
+			case "twilight_oak" -> TFBlocks.TWILIGHT_OAK_CHEST.get();
+			case "canopy" -> TFBlocks.CANOPY_CHEST.get();
+			case "mangrove" -> TFBlocks.MANGROVE_CHEST.get();
+			case "darkwood" -> TFBlocks.DARK_CHEST.get();
+			case "time" -> TFBlocks.TIME_CHEST.get();
+			case "transformation" -> TFBlocks.TRANSFORMATION_CHEST.get();
+			case "mining" -> TFBlocks.MINING_CHEST.get();
+			case "sorting" -> TFBlocks.SORTING_CHEST.get();
+			default -> throw new IllegalArgumentException("Unknown wood: " + wood);
+		};
+	}
+
+	private Block woodTrappedChest(String wood) {
+		return switch (wood) {
+			case "twilight_oak" -> TFBlocks.TWILIGHT_OAK_TRAPPED_CHEST.get();
+			case "canopy" -> TFBlocks.CANOPY_TRAPPED_CHEST.get();
+			case "mangrove" -> TFBlocks.MANGROVE_TRAPPED_CHEST.get();
+			case "darkwood" -> TFBlocks.DARK_TRAPPED_CHEST.get();
+			case "time" -> TFBlocks.TIME_TRAPPED_CHEST.get();
+			case "transformation" -> TFBlocks.TRANSFORMATION_TRAPPED_CHEST.get();
+			case "mining" -> TFBlocks.MINING_TRAPPED_CHEST.get();
+			case "sorting" -> TFBlocks.SORTING_TRAPPED_CHEST.get();
+			default -> throw new IllegalArgumentException("Unknown wood: " + wood);
+		};
+	}
+
+	private void registerWoodChests(RegisterBlockModelsEvent event) {
+		for (String wood : WOOD_TYPES) {
+			event.register(BuiltInBlockModels.createXmasChest(new MultiblockChestResources<>(
+				TwilightForestMod.prefix(wood + "/normal"),
+				TwilightForestMod.prefix(wood + "/normal_left"),
+				TwilightForestMod.prefix(wood + "/normal_right")
+			)), woodChest(wood));
+			event.register(BuiltInBlockModels.createXmasChest(new MultiblockChestResources<>(
+				TwilightForestMod.prefix(wood + "/trapped"),
+				TwilightForestMod.prefix(wood + "/trapped_left"),
+				TwilightForestMod.prefix(wood + "/trapped_right")
+			)), woodTrappedChest(wood));
+		}
+	}
+
+	private void registerTrophyBlocks(RegisterBlockModelsEvent event) {
+		record TrophyPair(BossVariant variant, TrophyBlock floor, TrophyWallBlock wall) {}
+		TrophyPair[] trophies = {
+			new TrophyPair(BossVariant.NAGA, TFBlocks.NAGA_TROPHY.get(), TFBlocks.NAGA_WALL_TROPHY.get()),
+			new TrophyPair(BossVariant.LICH, TFBlocks.LICH_TROPHY.get(), TFBlocks.LICH_WALL_TROPHY.get()),
+			new TrophyPair(BossVariant.HYDRA, TFBlocks.HYDRA_TROPHY.get(), TFBlocks.HYDRA_WALL_TROPHY.get()),
+			new TrophyPair(BossVariant.UR_GHAST, TFBlocks.UR_GHAST_TROPHY.get(), TFBlocks.UR_GHAST_WALL_TROPHY.get()),
+			new TrophyPair(BossVariant.KNIGHT_PHANTOM, TFBlocks.KNIGHT_PHANTOM_TROPHY.get(), TFBlocks.KNIGHT_PHANTOM_WALL_TROPHY.get()),
+			new TrophyPair(BossVariant.SNOW_QUEEN, TFBlocks.SNOW_QUEEN_TROPHY.get(), TFBlocks.SNOW_QUEEN_WALL_TROPHY.get()),
+			new TrophyPair(BossVariant.MINOSHROOM, TFBlocks.MINOSHROOM_TROPHY.get(), TFBlocks.MINOSHROOM_WALL_TROPHY.get()),
+			new TrophyPair(BossVariant.ALPHA_YETI, TFBlocks.ALPHA_YETI_TROPHY.get(), TFBlocks.ALPHA_YETI_WALL_TROPHY.get()),
+			new TrophyPair(BossVariant.QUEST_RAM, TFBlocks.QUEST_RAM_TROPHY.get(), TFBlocks.QUEST_RAM_WALL_TROPHY.get()),
+		};
+		for (var pair : trophies) {
+			var unbaked = new TrophySpecialRenderer.Unbaked(pair.variant(), ItemDisplayContext.FIXED);
+			event.register(BuiltInBlockModels.special(unbaked), pair.floor());
+			event.register(BuiltInBlockModels.special(unbaked), pair.wall());
+		}
+	}
+
+	private void registerSkullCandleBlocks(RegisterBlockModelsEvent event) {
+		record CandlePair(AbstractSkullCandleBlock floor, AbstractSkullCandleBlock wall) {}
+		record CandleRegistration(SkullBlock.Type kind, CandlePair pair) {}
+		CandleRegistration[] candles = {
+			new CandleRegistration(SkullBlock.Types.ZOMBIE, new CandlePair(TFBlocks.ZOMBIE_SKULL_CANDLE.get(), TFBlocks.ZOMBIE_WALL_SKULL_CANDLE.get())),
+			new CandleRegistration(SkullBlock.Types.SKELETON, new CandlePair(TFBlocks.SKELETON_SKULL_CANDLE.get(), TFBlocks.SKELETON_WALL_SKULL_CANDLE.get())),
+			new CandleRegistration(SkullBlock.Types.WITHER_SKELETON, new CandlePair(TFBlocks.WITHER_SKELE_SKULL_CANDLE.get(), TFBlocks.WITHER_SKELE_WALL_SKULL_CANDLE.get())),
+			new CandleRegistration(SkullBlock.Types.CREEPER, new CandlePair(TFBlocks.CREEPER_SKULL_CANDLE.get(), TFBlocks.CREEPER_WALL_SKULL_CANDLE.get())),
+			new CandleRegistration(SkullBlock.Types.PLAYER, new CandlePair(TFBlocks.PLAYER_SKULL_CANDLE.get(), TFBlocks.PLAYER_WALL_SKULL_CANDLE.get())),
+			new CandleRegistration(SkullBlock.Types.PIGLIN, new CandlePair(TFBlocks.PIGLIN_SKULL_CANDLE.get(), TFBlocks.PIGLIN_WALL_SKULL_CANDLE.get())),
+		};
+		for (var entry : candles) {
+			var unbaked = new SkullCandleSpecialRenderer.Unbaked(entry.kind());
+			event.register(BuiltInBlockModels.special(unbaked), entry.pair().floor());
+			event.register(BuiltInBlockModels.special(unbaked), entry.pair().wall());
+		}
 	}
 
 	private void registerModelLoaders(ModelEvent.RegisterLoaders event) {

@@ -9,13 +9,23 @@
     },
     "has_tropical_fish": {
       "conditions": {
-        "items": [
+        "entity": [
           {
-            "items": "minecraft:tropical_fish"
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:living_block",
+              "type_specific": {
+                "type": "minecraft:living_block",
+                "item": {
+                  "items": "minecraft:tropical_fish"
+                }
+              }
+            }
           }
         ]
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger": "minecraft:summoned_entity"
     }
   },
   "requirements": [

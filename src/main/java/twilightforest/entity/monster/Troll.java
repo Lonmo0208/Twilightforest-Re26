@@ -233,7 +233,7 @@ public class Troll extends Monster implements RangedAttackMob {
 	}
 
 	@Override
-	public void performRangedAttack(LivingEntity target, float distanceFactor) {
+	public void performRangedAttack(Entity target, float distanceFactor) {
 		if (this.hasRock()) {
 			ThrownBlock blocc = new ThrownBlock(this.level(), this, this.rock);
 
