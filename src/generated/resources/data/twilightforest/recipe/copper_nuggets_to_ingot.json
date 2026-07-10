@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "twilightforest:copper_nugget",
+    "twilightforest:copper_nugget",
+    "twilightforest:copper_nugget",
+    "twilightforest:copper_nugget",
+    "twilightforest:copper_nugget",
+    "twilightforest:copper_nugget",
+    "twilightforest:copper_nugget",
+    "twilightforest:copper_nugget",
+    "twilightforest:copper_nugget"
+  ],
+  "result": {
+    "id": "minecraft:copper_ingot"
+  }
+}

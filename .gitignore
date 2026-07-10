@@ -1,0 +1,36 @@
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+secrets.properties
+
+# other
+eclipse
+run
+classes
+logs
+run-data
+gource.sh
+.noai
+.profileconfig.json
+profile.jfr
+/.vscode
+AGENTS.md
+
+# test mod jars - users must supply these manually
+libs/iris*.jar
+libs/sodium*.jar

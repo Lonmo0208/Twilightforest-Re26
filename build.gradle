@@ -1,0 +1,434 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import net.neoforged.moddevgradle.internal.RunGameTask
+
+buildscript {
+	repositories {
+		maven {
+			name 'Beanification'
+			url 'https://maven.tamaized.com/releases/'
+			content {
+				includeGroup("tamaized")
+			}
+		}
+	}
+	dependencies {
+		classpath "tamaized:beanification:${beanification_version}:gradle"
+	}
+}
+
+plugins {
+	id 'java-library'
+	id 'eclipse'
+	id 'idea'
+	id 'maven-publish'
+	// Version List: https://projects.neoforged.net/neoforged/ModDevGradle
+	id 'net.neoforged.moddev' version "${mdg_version}"
+	id "com.dorongold.task-tree" version "4.0.1"
+	id 'com.gradleup.shadow' version '9.4.1'
+}
+
+apply plugin: 'tamaized.beanification'
+
+configurations {
+	shade
+}
+
+shadowJar {
+	archiveClassifier.set('universal')
+	dependsOn(tasks.named("jar"))
+	configurations = [project.configurations.shade]
+	relocate 'tamaized.beanification', "${project.mod_id}.beanification"
+
+	// Include slim JAR content + explicitly preserve jarJar nested JAR
+	// (shadowJar strips META-INF/jarjar/ during default repackaging)
+	afterEvaluate {
+		from({ tasks.named("jar").get().outputs.files.filter { f -> !f.name.endsWith('-slim.jar') } })
+		from({ zipTree(tasks.named("jar").get().archiveFile.get().asFile).matching { include 'META-INF/jarjar/**' } })
+	}
+}
+
+jar {
+	archiveClassifier = "slim"
+}
+
+def secrets = new Properties()
+def secretsFile = file('secrets.properties')
+if (secretsFile.exists()) {
+	secretsFile.withInputStream {
+		stream -> secrets.load(stream)
+	}
+
+	fileTree("secrets").matching {
+		include "**/*.properties"
+	}.each {
+		File file ->
+			file.withInputStream {
+				stream -> secrets.load(stream)
+			}
+	}
+}
+
+idea {
+	module {
+		downloadJavadoc = true
+		downloadSources = true
+	}
+}
+
+version = (hasProperty("CIRevision") ? CIRevision : project.mod_version)
+group = group_name
+
+java {
+	toolchain {
+		languageVersion.set(JavaLanguageVersion.of(25))
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs.addAll(["-Xlint:all,-classfile,-processing,-deprecation,-this-escape", "-Xmaxerrs", "5000"])
+	options.encoding = 'UTF-8'
+	options.release = 25
+}
+
+tasks.withType(Test).configureEach {
+	javaLauncher = javaToolchains.launcherFor {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+}
+
+tasks.named('compileTestJava') {
+	dependsOn tasks.named('compileDataJava')
+	classpath += sourceSets.data.output
+}
+
+base {
+	archivesName = "${project.mod_id}-${project.minecraft_version}"
+}
+
+subprojects {
+	version = project(":").version
+}
+
+sourceSets {
+	data {
+		compileClasspath += main.compileClasspath + main.output
+
+		java {
+			srcDirs = ['src/main/java', 'src/data/java']
+		}
+		resources {
+			srcDirs = ['src/main/resources']
+		}
+	}
+}
+
+configurations {
+	dataImplementation.extendsFrom implementation
+}
+
+neoForge {
+	// we need the subprojects to evaluate first so that the sourceSets are properly constructed
+	evaluationDependsOnChildren()
+
+	def mod_id = project.mod_id
+	version = project.neo_version
+
+	validateAccessTransformers = true
+
+	addModdingDependenciesTo sourceSets.data
+
+	mods {
+		"${mod_id}" {
+			it.sourceSet this.sourceSets.main
+		}
+
+		'tf-asm' {
+			it.sourceSet project(":tf-asm").sourceSets.main
+		}
+
+		"${mod_id}-data" {
+			it.sourceSet this.sourceSets.main
+			it.sourceSet this.sourceSets.data
+			it.sourceSet this.sourceSets.test
+		}
+	}
+
+	def mainMod = mods."${project.mod_id}"
+	def asmMod = mods."tf-asm"
+	def dataMod = mods."${project.mod_id}-data"
+
+	unitTest {
+		enable()
+		// For whatever reason, tests break if we dont combine all source sets, which the data source set does
+		testedMod = dataMod
+	}
+
+	runs {
+		configureEach {
+			gameDirectory = project.file('run')
+			systemProperty 'forge.logging.console.level', 'debug'
+			logLevel = org.slf4j.event.Level.DEBUG
+			loadedMods = [mainMod, asmMod]
+		}
+
+		client {
+			client()
+			systemProperty 'forge.enabledGameTestNamespaces', mod_id
+			programArguments.addAll '--username', secrets.getProperty("username") ?: 'Dev', secrets.getProperty("uuid") ? '--uuid' : '', secrets.getProperty("uuid") ?: ''
+		}
+
+		server {
+			server()
+			systemProperty 'forge.enabledGameTestNamespaces', mod_id
+			programArgument '--nogui'
+		}
+
+		clientData {
+			clientData()
+			gameDirectory = project.file('run-data')
+			programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+			sourceSet = this.sourceSets.data
+			loadedMods = [dataMod, asmMod]
+		}
+	}
+}
+
+afterEvaluate { // DO NOT ASK... it fixes the runClient and family tasks :harold:
+	tasks.withType(RunGameTask).configureEach {
+		classpathProvider.setFrom(classpathProvider.files.stream().filter(f -> !f.toString().contains('tf-asm')).toList())
+	}
+}
+
+jar {
+	exclude 'data/twilightforest/function/**'
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+	mavenLocal()
+	maven {
+		name 'Tama\'s Maven' // Beanification
+		url 'https://maven.tamaized.com/releases/'
+		content {
+			includeGroup("tamaized")
+		}
+	}
+	maven {
+		name 'Jared\'s Maven' // JEI
+		url 'https://maven.blamejared.com/'
+	}
+	maven {
+		name = "OctoStudios" //Curios
+		url = uri("https://maven.octo-studios.com/releases")
+	}
+	maven {
+		name 'Shedaniel\'s Maven' //REI
+		url "https://maven.shedaniel.me"
+	}
+	maven {
+		name = "TerraformersMC" //EMI
+		url = "https://maven.terraformersmc.com/"
+	}
+	maven { // TOP
+		url "https://maven.k-4u.nl"
+	}
+	maven { //CS
+		url "https://nexus.resourcefulbees.com/repository/maven-public/"
+	}
+	maven {
+		name 'Curseforge Maven' // Jade
+		url "https://www.cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
+	flatDir {
+		dirs 'libs'
+	}
+}
+
+dependencies {
+	jarJar implementation(project(":tf-asm"))
+
+	def beanification = "tamaized:beanification:${project.beanification_version}"
+	implementation beanification
+	shade beanification
+	testImplementation "${beanification}:tests"
+	testCompileOnly "${beanification}:test-sources"
+
+	//make sure to only pick one of these when testing (switch others to compileOnly)
+//	implementation "mezz.jei:jei-${project.minecraft_version}-neoforge:${project.jei_version}"
+//	compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+//	compileOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.base_minecraft_version}"
+
+	// theillusivec4
+//	implementation "top.theillusivec4.curios:curios-neoforge:${project.curios_version}+${project.base_minecraft_version}"
+
+	//curse maven
+//	implementation "curse.maven:jade-324717:6170888"
+//	implementation "curse.maven:cosmetic-armor-reworked-237307:5961480"
+//	runtimeOnly "curse.maven:jeed-532286:5483315"
+//	runtimeOnly "curse.maven:museum-curator-859070:4629894"
+//	if (project.enable_tips_mod == 'true') {
+//		runtimeOnly "curse.maven:tips-306549:5844057"
+//		runtimeOnly "curse.maven:bookshelf-228525:6098975"
+//		runtimeOnly "curse.maven:prickle-1023259:5836410"
+//	}
+//	runtimeOnly "curse.maven:suggestion-provider-fix-469647:5598604"
+
+//	compileOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
+
+	//mods we dont have compat with but are nice to have
+//	runtimeOnly "com.telepathicgrunt:CommandStructures-Neoforge:4.4.3+1.21.4"
+//	runtimeOnly "curse.maven:world-edit-225608:6013137"
+
+	// test mods for Iris/Sodium compatibility
+	runtimeOnly files(
+		'libs/sodium-neoforge-0.8.12+mc26.1.2.jar',
+		'libs/iris-neoforge-1.10.9+mc26.1.1.jar'
+	)
+
+	testImplementation group: 'net.neoforged', name: 'testframework', version: project.neo_version
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.10.3'
+	testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.3'
+	testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
+	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.12.0'
+	testImplementation files(sourceSets.data.output.classesDirs)
+}
+
+configurations {
+	testImplementation {
+		exclude module: 'tf-asm'
+	}
+	// Only override fancymodloader for test runtime, NOT for game runtime.
+	// The patched loader is incompatible with NeoForge 26.1.2.76 at runtime.
+	testRuntimeClasspath {
+		resolutionStrategy {
+			force 'net.neoforged.fancymodloader:loader:11.0.26.0'
+			force 'net.neoforged.fancymodloader:junit-fml:11.0.26.0'
+		}
+	}
+}
+
+test {
+	useJUnitPlatform()
+	// ClassLoadingGuardian patched to throw inline (no cross-class reference), fixing JDK 24+ compatibility
+	// Remaining failures on JDK 25 are Mockito retransformClasses0 native JVM limitation only
+	jvmArgs('-Dnet.bytebuddy.experimental=true') // Byte Buddy doesn't officially support JDK 25 yet
+
+	testLogging {
+		events "failed"
+
+		showExceptions true
+		exceptionFormat "full"
+		showCauses true
+		showStackTraces true
+
+		showStandardStreams = false
+	}
+}
+
+processResources {
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+	def ver = project.version
+	filesMatching("META-INF/neoforge.mods.toml") {
+		expand([
+			'file': [
+				'jarVersion': ver
+			]
+		])
+	}
+	exclude ".cache"
+	def lazyTree = providers.provider {
+		fileTree(dir: getOutputs().getFiles().getAsPath(), includes: ["**/*.json", "**/*.mcmeta"])
+	}
+	doLast {
+		lazyTree.get().each {
+			File file ->
+				if (file.length() == 0) {
+					println "Skipping empty file: ${file.path}"
+					return
+				}
+				try {
+					file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+				} catch (Exception e) {
+					println "Error processing JSON file: ${file.path}"
+					println "Error: ${e.message}"
+					throw e
+				}
+		}
+	}
+}
+
+jar {
+	manifest {
+		attributes([
+			'Specification-Title'     : mod_id,
+			'Specification-Vendor'    : "TeamTwilight",
+			'Specification-Version'   : "1",
+			'Implementation-Title'    : this.project.name,
+			'Implementation-Version'  : this.project.jar.archiveVersion,
+			'Implementation-Vendor'   : "TeamTwilight",
+			'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+		])
+	}
+}
+
+def mavenUser = System.getenv("MAVEN_USER")?: secrets.getProperty("maven_username")
+def mavenToken = System.getenv("MAVEN_PASS")?: secrets.getProperty("maven_password")
+
+publishing {
+	publications {
+		create('mavenJava', MavenPublication) {
+			afterEvaluate {
+				artifact this.project.shadowJar
+				artifact this.project.sourceJar
+				artifact this.project.dataJar
+				artifact this.project.dataSourceJar
+			}
+			groupId 'team-twilight'
+			artifactId this.project.mod_id
+		}
+	}
+	repositories {
+		maven {
+			url "https://maven.tamaized.com/releases"
+			credentials {
+				username mavenUser
+				password mavenToken
+			}
+		}
+	}
+}
+
+tasks.register('sourceJar', Jar) {
+	dependsOn 'classes'
+	from sourceSets.main.allSource
+	archiveClassifier = 'sources'
+}
+
+tasks.register('dataClassesForPublishing', JavaCompile) {
+	dependsOn "dataClasses"
+	source = fileTree('src/data/java')
+	classpath = sourceSets.named('data').get().compileClasspath
+	destinationDirectory = layout.buildDirectory.dir("classes/java/dataForPublishing")
+}
+
+tasks.register('dataJar', Jar) {
+	dependsOn 'dataClassesForPublishing'
+	from layout.buildDirectory.dir("classes/java/dataForPublishing")
+	archiveClassifier = 'data'
+}
+
+tasks.register('dataSourceJar', Jar) {
+	from sourceSets.data.allSource
+	archiveClassifier = 'data-sources'
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+}
+
+build.dependsOn shadowJar

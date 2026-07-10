@@ -1,0 +1,9 @@
+{
+  "parent": "twilightforest:block/template_trophy_pedestal",
+  "textures": {
+    "east": "twilightforest:block/pedestal/snow_queen_latent",
+    "north": "twilightforest:block/pedestal/lich_latent",
+    "south": "twilightforest:block/pedestal/hydra_latent",
+    "west": "twilightforest:block/pedestal/ur-ghast_latent"
+  }
+}

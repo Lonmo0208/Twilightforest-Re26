@@ -1,0 +1,9 @@
+{
+  "parent": "twilightforest:block/climbable_hollow_log",
+  "textures": {
+    "climbable": "minecraft:block/ladder",
+    "inner": "twilightforest:block/stripped_time_log",
+    "side": "twilightforest:block/time_log",
+    "top": "twilightforest:block/time_log_top"
+  }
+}

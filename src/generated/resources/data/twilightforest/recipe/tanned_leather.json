@@ -1,0 +1,8 @@
+{
+  "type": "twilightforest:drying",
+  "filter_time": 6000,
+  "input": "minecraft:leather",
+  "result": {
+    "id": "twilightforest:tanned_leather"
+  }
+}
