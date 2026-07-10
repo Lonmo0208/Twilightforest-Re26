@@ -1,9 +1,13 @@
 package twilightforest.client;
 
 import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.blaze3d.pipeline.BindGroupLayout;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.renderer.RenderPipelines;
 import twilightforest.client.renderer.TFRenderPipelines;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
@@ -17,12 +21,15 @@ public class TFShaders {
 	public static void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
 		RenderPipeline auroraPipeline = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
 			.withLocation(TwilightForestMod.prefix("aurora/aurora"))
+			.withBindGroupLayout(BindGroupLayout.builder()
+				.withUniform("TFRenderParameters", UniformType.UNIFORM_BUFFER)
+				.build())
 			.withVertexShader(TwilightForestMod.prefix("core/aurora/aurora"))
 			.withFragmentShader(TwilightForestMod.prefix("core/aurora/aurora"))
 			.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
 			.withPrimitiveTopology(PrimitiveTopology.QUADS)
 			.withCull(false)
-			.withColorTargetState(new com.mojang.blaze3d.pipeline.ColorTargetState(com.mojang.blaze3d.pipeline.BlendFunction.TRANSLUCENT))
+			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
 			.build();
 		event.registerPipeline(auroraPipeline);
 		AURORA = new PositionAwareShaderInstance(auroraPipeline);

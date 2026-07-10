@@ -8,6 +8,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import twilightforest.TwilightForestMod;
@@ -36,6 +37,7 @@ public class TFRenderPipelines {
 
 	public static final RenderPipeline PROTECTION_BOX = RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
 		.withLocation(TwilightForestMod.prefix("pipeline/energy_swirl"))
+		.withBindGroupLayout(BindGroupLayouts.SAMPLER1)
 		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
 		.withShaderDefine("EMISSIVE")
 		.withShaderDefine("NO_CARDINAL_LIGHTING")
@@ -49,6 +51,7 @@ public class TFRenderPipelines {
 
 	public static final RenderPipeline SHADOW_CLONE = RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
 		.withLocation(TwilightForestMod.prefix("pipeline/entity_translucent_cull"))
+		.withBindGroupLayout(BindGroupLayouts.SAMPLER1)
 		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
 		.withShaderDefine("EMISSIVE")
 		.withCull(false)

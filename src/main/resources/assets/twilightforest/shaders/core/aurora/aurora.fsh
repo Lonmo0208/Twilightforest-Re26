@@ -1,10 +1,12 @@
 #version 330
 
 #moj_import <minecraft:fog.glsl>
+#moj_import <minecraft:globals.glsl>
 
-uniform float GameTime;
-uniform int seedContext;
-uniform vec3 positionContext;
+layout(std140) uniform TFRenderParameters {
+    int seedContext;
+    vec3 positionContext;
+};
 
 //////////////// K.jpg's Re-oriented 4-Point BCC Noise (OpenSimplex2) ////////////////
 ////////////////////// Output: vec4(dF/dx, dF/dy, dF/dz, value) //////////////////////
