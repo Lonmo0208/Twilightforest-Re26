@@ -15,6 +15,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -42,7 +43,7 @@ public class EntityRenderingUtil {
 	public static Entity fetchEntity(EntityType<?> type, @Nullable Level level) {
 		if (level != null && !IGNORED_ENTITIES.contains(type)) {
 			Entity entity;
-			if (type == EntityType.PLAYER) {
+			if (type == EntityTypes.PLAYER) {
 				entity = Minecraft.getInstance().player;
 			} else {
 				entity = ENTITY_MAP.computeIfAbsent(type, new Function<>() {
@@ -152,20 +153,20 @@ public class EntityRenderingUtil {
 	// 26.1.2: Adapted to use EntityRenderState instead of PoseStack.
 	private static void applyAdditionalTransforms(EntityType<?> entityType, EntityRenderState renderState, Vector3f translationOut) {
 		if (renderState instanceof LivingEntityRenderState livingState) {
-			if (entityType == EntityType.GHAST) {
+			if (entityType == EntityTypes.GHAST) {
 				translationOut.add(0.0F, -12.5F, 0.0F);
 				livingState.scale *= 0.5F;
 			}
-			if (entityType == EntityType.ENDER_DRAGON) {
+			if (entityType == EntityTypes.ENDER_DRAGON) {
 				translationOut.add(0.0F, -4.0F, 0.0F);
 			}
-			if (entityType == EntityType.WITHER) {
+			if (entityType == EntityTypes.WITHER) {
 				translationOut.add(0.0F, 8.0F, 0.0F);
 			}
-			if (entityType == EntityType.SQUID || entityType == EntityType.GLOW_SQUID) {
+			if (entityType == EntityTypes.SQUID || entityType == EntityTypes.GLOW_SQUID) {
 				translationOut.add(0.0F, -19.0F, 0.0F);
 			}
-			if (entityType == EntityType.ELDER_GUARDIAN) {
+			if (entityType == EntityTypes.ELDER_GUARDIAN) {
 				livingState.scale *= 0.6F;
 			}
 		}
@@ -174,7 +175,7 @@ public class EntityRenderingUtil {
 	public static void renderItemEntity(GuiGraphicsExtractor graphics, ItemStack stack, @Nullable Level level, float bobOffset) {
 		// 26.1.2: Rewritten to use EntityRenderState pipeline.
 		// The old custom PoseStack + ItemEntityRenderer approach is replaced by graphics.entity().
-		ItemEntity item = (ItemEntity) fetchEntity(EntityType.ITEM, level);
+		ItemEntity item = (ItemEntity) fetchEntity(EntityTypes.ITEM, level);
 		Objects.requireNonNull(item).setItem(stack);
 		// item.bobOffs is final in 26.1.2; set on render state below
 

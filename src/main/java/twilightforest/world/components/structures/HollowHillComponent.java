@@ -10,6 +10,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.CommonLevelAccessor;
 import net.minecraft.world.level.StructureManager;
@@ -97,8 +98,8 @@ public class HollowHillComponent extends TFStructureComponentOld {
 		//float drainRadius = this.radius * this.radius * 0.95f;
 		float drainRadius = this.hillSize * 16.5f;
 
-		TwilightForestMod.LOGGER.error("TF-HollowHill: postProcess hillSize={}, center={}, writeableBounds={}, radius={}, speleothemConfig type={}", this.hillSize, center, writeableBounds, this.radius, this.speleothemConfig.speleothemVarietyType());
-		TwilightForestMod.LOGGER.error("TF-HollowHill: varietyConfig is null? {}", this.speleothemConfig.getVarietyConfig() == null);
+		TwilightForestMod.LOGGER.debug("TF-HollowHill: postProcess hillSize={}, center={}, writeableBounds={}, radius={}, speleothemConfig type={}", this.hillSize, center, writeableBounds, this.radius, this.speleothemConfig.speleothemVarietyType());
+		TwilightForestMod.LOGGER.debug("TF-HollowHill: varietyConfig is null? {}", this.speleothemConfig.getVarietyConfig() == null);
 
 		drainWater(generator, writeableBounds, this.boundingBox, world, this.hillSize * 3 + 2, Blocks.CAVE_AIR.defaultBlockState(), center.getX(), center.getZ(), drainRadius * drainRadius, Blocks.STONE.defaultBlockState());
 
@@ -113,13 +114,13 @@ public class HollowHillComponent extends TFStructureComponentOld {
 			if (distSq > shortenedRadiusSq) continue;
 			count++;
 			if (count <= 5) {
-				TwilightForestMod.LOGGER.error("TF-HollowHill: Placing features at latticePos={}, distSq={}, floorY={}, ceilingY={}", latticePos, distSq, this.getFloorY(distSq), this.getCeilingY(distSq));
+				TwilightForestMod.LOGGER.debug("TF-HollowHill: Placing features at latticePos={}, distSq={}, floorY={}, ceilingY={}", latticePos, distSq, this.getFloorY(distSq), this.getCeilingY(distSq));
 			}
 
 			this.setFeatures(world, rand, writeableBounds, latticePos, distSq);
 		}
 
-		TwilightForestMod.LOGGER.error("TF-HollowHill: Total feature positions to place: {}", count);
+		TwilightForestMod.LOGGER.debug("TF-HollowHill: Total feature positions to place: {}", count);
 
 		// Cakes!
 		//drainWater(generator, writeableBounds, this.boundingBox, world, this.hillSize * 3 + 2, Blocks.MAGENTA_CANDLE.defaultBlockState(), center.getX(), center.getZ(), drainRadius * drainRadius, Blocks.CAKE.defaultBlockState());
@@ -272,7 +273,7 @@ public class HollowHillComponent extends TFStructureComponentOld {
 			return this.getLevel3Mob(rand);
 		}
 
-		return EntityType.SPIDER;
+		return EntityTypes.SPIDER;
 	}
 
 	/**
@@ -280,9 +281,9 @@ public class HollowHillComponent extends TFStructureComponentOld {
 	 */
 	public EntityType<?> getLevel1Mob(RandomSource rand) {
 		return switch (rand.nextInt(10)) {
-			case 3, 4, 5 -> EntityType.SPIDER;
-			case 6, 7 -> EntityType.ZOMBIE;
-			case 8 -> EntityType.SILVERFISH;
+			case 3, 4, 5 -> EntityTypes.SPIDER;
+			case 6, 7 -> EntityTypes.ZOMBIE;
+			case 8 -> EntityTypes.SILVERFISH;
 			case 9 -> TFEntities.REDCAP.get();
 			default -> TFEntities.SWARM_SPIDER.get();
 		};
@@ -293,10 +294,10 @@ public class HollowHillComponent extends TFStructureComponentOld {
 	 */
 	public EntityType<?> getLevel2Mob(RandomSource rand) {
 		return switch (rand.nextInt(10)) {
-			case 3, 4, 5 -> EntityType.ZOMBIE;
-			case 6, 7 -> EntityType.SKELETON;
+			case 3, 4, 5 -> EntityTypes.ZOMBIE;
+			case 6, 7 -> EntityTypes.SKELETON;
 			case 8 -> TFEntities.SWARM_SPIDER.get();
-			case 9 -> EntityType.CAVE_SPIDER;
+			case 9 -> EntityTypes.CAVE_SPIDER;
 			default -> TFEntities.REDCAP.get();
 		};
 	}
@@ -309,9 +310,9 @@ public class HollowHillComponent extends TFStructureComponentOld {
 			case 0 -> TFEntities.SLIME_BEETLE.get();
 			case 1 -> TFEntities.FIRE_BEETLE.get();
 			case 2 -> TFEntities.PINCH_BEETLE.get();
-			case 3, 4, 5 -> EntityType.SKELETON;
-			case 6, 7, 8 -> EntityType.CAVE_SPIDER;
-			case 9 -> EntityType.CREEPER;
+			case 3, 4, 5 -> EntityTypes.SKELETON;
+			case 6, 7, 8 -> EntityTypes.CAVE_SPIDER;
+			case 9 -> EntityTypes.CREEPER;
 			default -> TFEntities.WRAITH.get();
 		};
 	}

@@ -223,7 +223,7 @@ public class GraveyardFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	public static class WebTemplateProcessor extends StructureProcessor {
+	public static class WebTemplateProcessor implements StructureProcessor {
 		public static final WebTemplateProcessor INSTANCE = new WebTemplateProcessor();
 		public static final MapCodec<WebTemplateProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -231,7 +231,7 @@ public class GraveyardFeature extends Feature<NoneFeatureConfiguration> {
 		}
 
 		@Override
-		protected StructureProcessorType<?> getType() {
+		public MapCodec<? extends StructureProcessor> codec() {
 			return TFStructureProcessors.WEB.get();
 		}
 

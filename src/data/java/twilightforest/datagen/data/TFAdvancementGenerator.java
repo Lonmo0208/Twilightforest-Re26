@@ -1,13 +1,28 @@
 package twilightforest.datagen.data;
 
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.criterion.*;
+import net.minecraft.advancements.predicates.BlockPredicate;
+import net.minecraft.advancements.predicates.ContextAwarePredicate;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.predicates.LocationPredicate;
+import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.advancements.predicates.StatePropertiesPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.predicates.entity.PlayerPredicate;
+import net.minecraft.advancements.triggers.ConsumeItemTrigger;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.InventoryChangeTrigger;
+import net.minecraft.advancements.triggers.ItemUsedOnLocationTrigger;
+import net.minecraft.advancements.triggers.KilledTrigger;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.PlayerTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.core.component.DataComponentMap;
@@ -22,9 +37,9 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.minecraft.resources.Identifier;
 import twilightforest.TwilightForestMod;
 import twilightforest.advancements.*;
 import twilightforest.block.Experiment115Block;
@@ -40,6 +55,8 @@ public class TFAdvancementGenerator implements AdvancementSubProvider {
 
 	private static final Supplier<EntityType<?>[]> TF_KILLABLE = Lazy.of(() -> new EntityType<?>[]{TFEntities.ADHERENT.get(), TFEntities.ARMORED_GIANT.get(), TFEntities.BIGHORN_SHEEP.get(), TFEntities.BLOCKCHAIN_GOBLIN.get(), TFEntities.DWARF_RABBIT.get(), TFEntities.DEATH_TOME.get(), TFEntities.DEER.get(), TFEntities.FIRE_BEETLE.get(), TFEntities.GIANT_MINER.get(), TFEntities.LOWER_GOBLIN_KNIGHT.get(), TFEntities.UPPER_GOBLIN_KNIGHT.get(), TFEntities.HARBINGER_CUBE.get(), TFEntities.HEDGE_SPIDER.get(), TFEntities.HELMET_CRAB.get(), TFEntities.HOSTILE_WOLF.get(), TFEntities.HYDRA.get(), TFEntities.KING_SPIDER.get(), TFEntities.KNIGHT_PHANTOM.get(), TFEntities.KOBOLD.get(), TFEntities.LICH.get(), TFEntities.LICH_MINION.get(), TFEntities.MAZE_SLIME.get(), TFEntities.CARMINITE_GHASTLING.get(), TFEntities.MINOSHROOM.get(), TFEntities.MINOTAUR.get(), TFEntities.MIST_WOLF.get(), TFEntities.MOSQUITO_SWARM.get(), TFEntities.NAGA.get(), TFEntities.PENGUIN.get(), TFEntities.PINCH_BEETLE.get(), TFEntities.PLATEAU_BOSS.get(), TFEntities.QUEST_RAM.get(), TFEntities.RAVEN.get(), TFEntities.REDCAP.get(), TFEntities.REDCAP_SAPPER.get(), TFEntities.SKELETON_DRUID.get(), TFEntities.SLIME_BEETLE.get(), TFEntities.SNOW_GUARDIAN.get(), TFEntities.SNOW_QUEEN.get(), TFEntities.SQUIRREL.get(), TFEntities.STABLE_ICE_CORE.get(), TFEntities.SWARM_SPIDER.get(), TFEntities.TINY_BIRD.get(), TFEntities.CARMINITE_BROODLING.get(), TFEntities.CARMINITE_GHASTGUARD.get(), TFEntities.CARMINITE_GOLEM.get(), TFEntities.TOWERWOOD_BORER.get(), TFEntities.TROLL.get(), TFEntities.UNSTABLE_ICE_CORE.get(), TFEntities.UR_GHAST.get(), TFEntities.BOAR.get(), TFEntities.WINTER_WOLF.get(), TFEntities.WRAITH.get(), TFEntities.YETI.get(), TFEntities.ALPHA_YETI.get()});
 
+	private static final Identifier ADVANCEMENT_BACKGROUND = TwilightForestMod.prefix("block/mazestone_large_brick");
+
 	private static final Supplier<ItemLike[]> DENDROLOGIST_BLOCKS = Lazy.of(() -> new ItemLike[]{
 		TFBlocks.TWILIGHT_OAK_LOG, TFBlocks.TWILIGHT_OAK_WOOD, TFBlocks.STRIPPED_TWILIGHT_OAK_LOG, TFBlocks.STRIPPED_TWILIGHT_OAK_WOOD, TFBlocks.HOLLOW_TWILIGHT_OAK_LOG_HORIZONTAL, TFBlocks.TWILIGHT_OAK_LEAVES, TFBlocks.TWILIGHT_OAK_SAPLING, TFBlocks.TWILIGHT_OAK_PLANKS, TFBlocks.TWILIGHT_OAK_SLAB, TFBlocks.TWILIGHT_OAK_STAIRS, TFBlocks.TWILIGHT_OAK_BUTTON, TFBlocks.TWILIGHT_OAK_FENCE, TFBlocks.TWILIGHT_OAK_GATE, TFBlocks.TWILIGHT_OAK_PLATE, TFBlocks.TWILIGHT_OAK_DOOR, TFBlocks.TWILIGHT_OAK_TRAPDOOR, TFBlocks.TWILIGHT_OAK_SIGN, TFBlocks.TWILIGHT_OAK_HANGING_SIGN, TFBlocks.TWILIGHT_OAK_CHEST, TFBlocks.TWILIGHT_OAK_TRAPPED_CHEST, TFBlocks.TWILIGHT_OAK_BANISTER, TFItems.TWILIGHT_OAK_BOAT, TFItems.TWILIGHT_OAK_CHEST_BOAT,
 		TFBlocks.CANOPY_LOG, TFBlocks.CANOPY_WOOD, TFBlocks.STRIPPED_CANOPY_LOG, TFBlocks.STRIPPED_CANOPY_WOOD, TFBlocks.HOLLOW_CANOPY_LOG_HORIZONTAL, TFBlocks.CANOPY_LEAVES, TFBlocks.CANOPY_SAPLING, TFBlocks.CANOPY_PLANKS, TFBlocks.CANOPY_SLAB, TFBlocks.CANOPY_STAIRS, TFBlocks.CANOPY_BUTTON, TFBlocks.CANOPY_FENCE, TFBlocks.CANOPY_GATE, TFBlocks.CANOPY_PLATE, TFBlocks.CANOPY_DOOR, TFBlocks.CANOPY_TRAPDOOR, TFBlocks.CANOPY_SIGN, TFBlocks.CANOPY_HANGING_SIGN, TFBlocks.CANOPY_CHEST, TFBlocks.CANOPY_TRAPPED_CHEST, TFBlocks.CANOPY_BANISTER, TFBlocks.CANOPY_BOOKSHELF, TFBlocks.CHISELED_CANOPY_BOOKSHELF, TFItems.CANOPY_BOAT, TFItems.CANOPY_CHEST_BOAT,
@@ -52,8 +69,6 @@ public class TFAdvancementGenerator implements AdvancementSubProvider {
 		TFBlocks.TOWERWOOD, TFBlocks.CRACKED_TOWERWOOD, TFBlocks.MOSSY_TOWERWOOD, TFBlocks.ENCASED_TOWERWOOD,
 		TFBlocks.ROOT_BLOCK, TFBlocks.ROOT_STRAND, TFBlocks.LIVEROOT_BLOCK, TFItems.LIVEROOT, TFBlocks.HOLLOW_OAK_SAPLING, TFBlocks.RAINBOW_OAK_SAPLING, TFBlocks.RAINBOW_OAK_LEAVES, TFBlocks.GIANT_LOG, TFBlocks.GIANT_LEAVES, TFBlocks.HUGE_STALK, TFBlocks.BEANSTALK_LEAVES, TFBlocks.THORN_LEAVES, TFBlocks.THORN_ROSE, TFBlocks.HEDGE, TFBlocks.FALLEN_LEAVES, TFBlocks.MANGROVE_ROOT,
 	});
-
-	private static final Identifier ADVANCEMENT_BACKGROUND = TwilightForestMod.prefix("block/mazestone_large_brick");
 
 	private static final AdvancementDataMultiRequirements advancementDataMultiRequirements = new AdvancementDataMultiRequirements();
 
@@ -503,7 +518,7 @@ public class TFAdvancementGenerator implements AdvancementSubProvider {
 				Component.translatable("advancement.twilightforest.experiment_115_3"),
 				Component.translatable("advancement.twilightforest.experiment_115_3.desc"),
 				ADVANCEMENT_BACKGROUND, AdvancementType.CHALLENGE, true, true, true)
-			.addCriterion("eat_115_e115", PlayerTrigger.TriggerInstance.located(Optional.of(EntityPredicate.Builder.entity().subPredicate(PlayerPredicate.Builder.player().addStat(Stats.CUSTOM, registries.lookupOrThrow(Registries.CUSTOM_STAT).getOrThrow(TFStats.E115_SLICES_EATEN.getKey()), MinMaxBounds.Ints.atLeast(115)).build()).build())))
+			.addCriterion("eat_115_e115", PlayerTrigger.TriggerInstance.located(EntityPredicate.Builder.entity().player(PlayerPredicate.Builder.player().addStat(Stats.CUSTOM, registries.lookupOrThrow(Registries.CUSTOM_STAT).getOrThrow(TFStats.E115_SLICES_EATEN.getKey()), MinMaxBounds.Ints.atLeast(115)).build())))
 			.save(consumer, "twilightforest:experiment_115_115");
 
 		Advancement.Builder.advancement().parent(e115).display(
@@ -589,6 +604,8 @@ public class TFAdvancementGenerator implements AdvancementSubProvider {
 	}
 
 	private Criterion<PlayerTrigger.TriggerInstance> advancementTrigger(String name) {
-		return CriteriaTriggers.TICK.createCriterion(new PlayerTrigger.TriggerInstance(Optional.of(ContextAwarePredicate.create(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().subPredicate(PlayerPredicate.Builder.player().checkAdvancementDone(TwilightForestMod.prefix(name), true).build())).build()))));
+		PlayerPredicate playerPredicate = PlayerPredicate.Builder.player().checkAdvancementDone(TwilightForestMod.prefix(name), true).build();
+		EntityPredicate entityPredicate = EntityPredicate.Builder.entity().player(playerPredicate).build();
+		return CriteriaTriggers.TICK.createCriterion(new PlayerTrigger.TriggerInstance(Optional.of(ContextAwarePredicate.create(new LootItemCondition[]{LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, entityPredicate).build()}))));
 	}
 }

@@ -2,13 +2,12 @@ package twilightforest.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.BlockModelResolver;
-import net.minecraft.client.renderer.block.model.BlockDisplayContext;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -17,7 +16,6 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -46,7 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
-	public static final Map<Item, StandaloneModelKey<BlockModel>> LID_KEYS = new HashMap<>();
+	public static final Map<Item, StandaloneModelKey<BlockStateModel>> LID_KEYS = new HashMap<>();
+	public static final Map<Item, BlockModel> LIDS = new HashMap<>();
 
 	public record LidResource(Item lid, Identifier identifier, @Nullable String customPath) {
 		public LidResource(DeferredBlock<?> lid) {
@@ -59,16 +58,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 
 		public LidResource(Item item, String path, String customPath) {
 			this(item, Identifier.fromNamespaceAndPath("minecraft", path), customPath);
-		}
-
-		public Identifier getModelId() {
-			String name = this.identifier.getPath();
-			if (this.customPath() != null) name = this.customPath();
-			return TwilightForestMod.prefix("block/lid/" + name);
-		}
-
-		public StandaloneModelKey<BlockModel> createKey() {
-			return new StandaloneModelKey<>((ModelDebugName) () -> "jar_lid/" + this.identifier.getPath());
 		}
 	}
 
@@ -137,28 +126,27 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPosition, breakProgress);
 
 		BlockState blockState = blockEntity.getBlockState();
-
-		// Jar model
 		this.blockResolver.update(state.jarModel, blockState, BlockDisplayContext.create());
 
-		// Lid model
-		if (LID_KEYS.containsKey(blockEntity.lid)) {
-			StandaloneModelKey<BlockModel> key = LID_KEYS.get(blockEntity.lid);
-			BlockModel lidModel = Minecraft.getInstance().getModelManager().getStandaloneModel(key);
-			if (lidModel != null) {
-				lidModel.update(state.lidModel, blockState, BlockDisplayContext.create(), 42L);
-			}
-		}
 		state.lid = blockEntity.lid;
+		if (state.lid != null && LIDS.containsKey(state.lid)) {
+			BlockModel lidModel = LIDS.get(state.lid);
+			lidModel.update(state.lidModel, blockState, BlockDisplayContext.create(), 42L);
+		}
 
-		// Wobble animation
 		WobbleStyle wobbleStyle = blockEntity.lastWobbleStyle;
 		if (wobbleStyle != null && blockEntity.getLevel() != null) {
 			float f = (float) (blockEntity.getLevel().getGameTime() - blockEntity.wobbleStartedAtTick) + partialTick;
 			state.wobbleAmplitude = WOBBLE_AMPLITUDE;
 			state.wobbleAmount = f / (float) wobbleStyle.duration;
+			if (wobbleStyle == WobbleStyle.POSITIVE) {
+				state.wobbleStyle = 1;
+			} else {
+				state.wobbleStyle = 0;
+			}
 		} else {
 			state.wobbleAmount = -1.0F;
+			state.wobbleStyle = 0;
 		}
 	}
 
@@ -169,32 +157,34 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 		poseStack.translate(-0.5, 0.0, -0.5);
 
-		// Wobble
 		if (state.wobbleAmount >= 0.0F && state.wobbleAmount <= 1.0F) {
-			float f5 = Mth.sin(-state.wobbleAmount * 3.0F * (float) Math.PI) * state.wobbleAmplitude;
-			float f6 = 1.0F - state.wobbleAmount;
-			poseStack.rotateAround(Axis.YP.rotation(f5 * f6), 0.5F, 0.0F, 0.5F);
+			float f = state.wobbleAmount;
+			if (state.wobbleStyle == 1) {
+				float f1 = 0.015625F;
+				float f2 = f * (float) (Math.PI * 2);
+				float f3 = -1.5F * (Mth.cos(f2) + 0.5F) * Mth.sin(f2 / 2.0F);
+				poseStack.rotateAround(Axis.XP.rotation(f3 * f1), 0.5F, 0.0F, 0.5F);
+				float f4 = Mth.sin(f2);
+				poseStack.rotateAround(Axis.ZP.rotation(f4 * f1), 0.5F, 0.0F, 0.5F);
+			} else {
+				float f5 = Mth.sin(-f * 3.0F * (float) Math.PI) * state.wobbleAmplitude;
+				float f6 = 1.0F - f;
+				poseStack.rotateAround(Axis.YP.rotation(f5 * f6), 0.5F, 0.0F, 0.5F);
+			}
 		}
 
-		// Render jar model
-		state.jarModel.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
-
-		// Render lid model
-		if (state.lid != null && LID_KEYS.containsKey(state.lid)) {
+		if (state.lid != null && LIDS.containsKey(state.lid)) {
 			state.lidModel.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 		}
 
-		// Render contents (for MasonJar)
-		if (state.itemStack != null && !state.itemStack.isEmpty()) {
-			poseStack.pushPose();
-			poseStack.translate(0.5D, 0.4375D, 0.5D);
-			poseStack.mulPose(Axis.YN.rotationDegrees(RotationSegment.convertToDegrees(state.itemRotation)));
-			poseStack.scale(0.5F, 0.5F, 0.5F);
-			state.itemStack.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
-			poseStack.popPose();
-		}
+		state.jarModel.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+
+		renderContents(state, poseStack, submitNodeCollector);
 
 		poseStack.popPose();
+	}
+
+	protected void renderContents(JarRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
 	}
 
 	@Configurable
@@ -227,6 +217,18 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 				state.itemRotation = blockEntity.getItemRotation();
 			} else {
 				state.itemStack = null;
+			}
+		}
+
+		@Override
+		protected void renderContents(JarRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
+			if (state.itemStack != null && !state.itemStack.isEmpty()) {
+				poseStack.pushPose();
+				poseStack.translate(0.5D, 0.4375D, 0.5D);
+				poseStack.mulPose(Axis.YN.rotationDegrees(RotationSegment.convertToDegrees(state.itemRotation)));
+				poseStack.scale(0.5F, 0.5F, 0.5F);
+				state.itemStack.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+				poseStack.popPose();
 			}
 		}
 	}

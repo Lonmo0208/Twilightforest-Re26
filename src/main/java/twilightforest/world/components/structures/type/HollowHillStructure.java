@@ -11,6 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -96,8 +97,8 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 		return new HollowHillStructure(
 			1,
 			ControlledSpawningConfig.create(List.of(WeightedList.<MobSpawnSettings.SpawnerData>builder()
-				.add(new MobSpawnSettings.SpawnerData(EntityType.SPIDER, 4, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.ZOMBIE, 4, 4), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SPIDER, 4, 4), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 4, 4), 10)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP.get(), 4, 4), 10)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.SWARM_SPIDER.get(), 4, 4), 10)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), 4, 8), 10)
@@ -122,13 +123,13 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP.get(), 1, 2), 10)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP_SAPPER.get(), 1, 2), 2)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), 2, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 2, 3), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 2, 3), 10)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.SWARM_SPIDER.get(), 2, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.SPIDER, 1, 3), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.CREEPER, 1, 2), 5)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SPIDER, 1, 3), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, 1, 2), 5)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.FIRE_BEETLE.get(), 1, 1), 5)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.SLIME_BEETLE.get(), 1, 1), 5)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.WITCH, 1, 1), 1)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, 1, 1), 1)
 				.build()
 			), WeightedList.of(), WeightedList.of()),
 			context.lookup(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS).getOrThrow(StructureSpeleothemConfigs.MEDIUM_HILL),
@@ -149,15 +150,15 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 			ControlledSpawningConfig.firstIndexMonsters(WeightedList.<MobSpawnSettings.SpawnerData>builder()
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP.get(), 2, 4), 10)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP_SAPPER.get(), 1, 2), 2)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 2, 3), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.CAVE_SPIDER, 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.CREEPER, 1, 1), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.ENDERMAN, 1, 1), 1)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 2, 3), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CAVE_SPIDER, 1, 2), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, 1, 1), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.ENDERMAN, 1, 1), 1)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.WRAITH.get(), 1, 2), 2)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.FIRE_BEETLE.get(), 1, 2), 10)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.SLIME_BEETLE.get(), 1, 2), 10)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.PINCH_BEETLE.get(), 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.WITCH, 1, 1), 1)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, 1, 1), 1)
 				.build()
 			),
 			context.lookup(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS).getOrThrow(StructureSpeleothemConfigs.LARGE_HILL),

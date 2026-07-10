@@ -14,24 +14,20 @@ public class TFRenderTypes {
 
 	public static final RenderType RED_THREAD = RenderType.create("twilightforest:red_thread", RenderSetup.builder(TFRenderPipelines.RED_THREAD)
 		.withTexture("Sampler0", RedThreadRenderer.TEXTURE)
-		.affectsCrumbling()
 		.useLightmap()
-		.useOverlay()
-		.setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)
+		.affectsCrumbling()
 		.createRenderSetup());
+
+	public static final RenderType GIANT_BLOCK_LINES = RenderType.create("twilightforest:giant_block_lines", RenderSetup.builder(TFRenderPipelines.GIANT_BLOCK_LINES).createRenderSetup());
 
 	public static final RenderType PROTECTION_BOX = RenderType.create("twilightforest:protection_box", RenderSetup.builder(TFRenderPipelines.PROTECTION_BOX)
 		.withTexture("Sampler0", TwilightForestMod.getModelTexture("protectionbox.png"))
 		.setTextureTransform(new ProtectionBoxTextureTransform())
-		.useLightmap()
-		.useOverlay()
 		.sortOnUpload()
 		.createRenderSetup());
 
 	public static final RenderType SHADOW_CLONE = RenderType.create("twilightforest:shadow_clone", RenderSetup.builder(TFRenderPipelines.SHADOW_CLONE)
 		.withTexture("Sampler0", LichRenderer.TEXTURE)
-		.useLightmap()
-		.useOverlay()
 		.affectsCrumbling()
 		.sortOnUpload()
 		.setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)

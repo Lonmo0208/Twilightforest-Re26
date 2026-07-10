@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -58,14 +59,14 @@ public class StructureDistanceCommand {
 			BoundingBox boundingBox = new BoundingBox(minX, sectionY, minZ, maxX, sectionY + 15, maxZ);
 
 			BlockState displayState = switch (squareRadiusDist) {
-				case 1 -> Blocks.RED_STAINED_GLASS.defaultBlockState();
-				case 2 -> Blocks.ORANGE_STAINED_GLASS.defaultBlockState();
-				case 3 -> Blocks.YELLOW_STAINED_GLASS.defaultBlockState();
-				case 4 -> Blocks.LIME_STAINED_GLASS.defaultBlockState();
-				case 5 -> Blocks.BLUE_STAINED_GLASS.defaultBlockState();
-				case 6 -> Blocks.PURPLE_STAINED_GLASS.defaultBlockState();
-				case 7 -> Blocks.MAGENTA_STAINED_GLASS.defaultBlockState();
-				case 8 -> Blocks.PINK_STAINED_GLASS.defaultBlockState();
+				case 1 -> Blocks.STAINED_GLASS.pick(DyeColor.RED).defaultBlockState();
+				case 2 -> Blocks.STAINED_GLASS.pick(DyeColor.ORANGE).defaultBlockState();
+				case 3 -> Blocks.STAINED_GLASS.pick(DyeColor.YELLOW).defaultBlockState();
+				case 4 -> Blocks.STAINED_GLASS.pick(DyeColor.LIME).defaultBlockState();
+				case 5 -> Blocks.STAINED_GLASS.pick(DyeColor.BLUE).defaultBlockState();
+				case 6 -> Blocks.STAINED_GLASS.pick(DyeColor.PURPLE).defaultBlockState();
+				case 7 -> Blocks.STAINED_GLASS.pick(DyeColor.MAGENTA).defaultBlockState();
+				case 8 -> Blocks.STAINED_GLASS.pick(DyeColor.PINK).defaultBlockState();
 				default -> Blocks.GLASS.defaultBlockState();
 			};
 

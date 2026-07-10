@@ -178,7 +178,7 @@ public class SlideBlock extends Entity {
 				double kx = (this.getX() - entity.getX()) * 2.0D;
 				double kz = (this.getZ() - entity.getZ()) * 2.0D;
 
-				living.knockback(2.0F, kx, kz);
+				living.knockback(2.0F, kx, kz, living.damageSources().generic(), 0.0F, false);
 			}
 		}
 	}

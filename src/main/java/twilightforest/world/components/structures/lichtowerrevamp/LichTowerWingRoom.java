@@ -6,9 +6,11 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.*;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -17,6 +19,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -512,27 +515,27 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Piec
 			case "chest" -> this.putChest(pos, level, random, parameters, dataRotation, Blocks.CHEST.defaultBlockState());
 			case "trapped_chest" -> this.putChest(pos, level, random, parameters, dataRotation, Blocks.TRAPPED_CHEST.defaultBlockState());
 			case "candle", "candles" -> this.putCandles(parameters, random, level, pos, Blocks.CANDLE.defaultBlockState());
-			case "white_candle" -> this.putCandles(parameters, random, level, pos, Blocks.WHITE_CANDLE.defaultBlockState());
-			case "orange_candle" -> this.putCandles(parameters, random, level, pos, Blocks.ORANGE_CANDLE.defaultBlockState());
-			case "magenta_candle" -> this.putCandles(parameters, random, level, pos, Blocks.MAGENTA_CANDLE.defaultBlockState());
-			case "light_blue_candle" -> this.putCandles(parameters, random, level, pos, Blocks.LIGHT_BLUE_CANDLE.defaultBlockState());
-			case "yellow_candle" -> this.putCandles(parameters, random, level, pos, Blocks.YELLOW_CANDLE.defaultBlockState());
-			case "lime_candle" -> this.putCandles(parameters, random, level, pos, Blocks.LIME_CANDLE.defaultBlockState());
-			case "pink_candle" -> this.putCandles(parameters, random, level, pos, Blocks.PINK_CANDLE.defaultBlockState());
-			case "gray_candle" -> this.putCandles(parameters, random, level, pos, Blocks.GRAY_CANDLE.defaultBlockState());
-			case "light_gray_candle" -> this.putCandles(parameters, random, level, pos, Blocks.LIGHT_GRAY_CANDLE.defaultBlockState());
-			case "cyan_candle" -> this.putCandles(parameters, random, level, pos, Blocks.CYAN_CANDLE.defaultBlockState());
-			case "purple_candle" -> this.putCandles(parameters, random, level, pos, Blocks.PURPLE_CANDLE.defaultBlockState());
-			case "blue_candle" -> this.putCandles(parameters, random, level, pos, Blocks.BLUE_CANDLE.defaultBlockState());
-			case "brown_candle" -> this.putCandles(parameters, random, level, pos, Blocks.BROWN_CANDLE.defaultBlockState());
-			case "green_candle" -> this.putCandles(parameters, random, level, pos, Blocks.GREEN_CANDLE.defaultBlockState());
-			case "red_candle" -> this.putCandles(parameters, random, level, pos, Blocks.RED_CANDLE.defaultBlockState());
-			case "black_candle" -> this.putCandles(parameters, random, level, pos, Blocks.BLACK_CANDLE.defaultBlockState());
+			case "white_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("white_candle")).get().value().defaultBlockState());
+			case "orange_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("orange_candle")).get().value().defaultBlockState());
+			case "magenta_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("magenta_candle")).get().value().defaultBlockState());
+			case "light_blue_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("light_blue_candle")).get().value().defaultBlockState());
+			case "yellow_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("yellow_candle")).get().value().defaultBlockState());
+			case "lime_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("lime_candle")).get().value().defaultBlockState());
+			case "pink_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("pink_candle")).get().value().defaultBlockState());
+			case "gray_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("gray_candle")).get().value().defaultBlockState());
+			case "light_gray_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("light_gray_candle")).get().value().defaultBlockState());
+			case "cyan_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("cyan_candle")).get().value().defaultBlockState());
+			case "purple_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("purple_candle")).get().value().defaultBlockState());
+			case "blue_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("blue_candle")).get().value().defaultBlockState());
+			case "brown_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("brown_candle")).get().value().defaultBlockState());
+			case "green_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("green_candle")).get().value().defaultBlockState());
+			case "red_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("red_candle")).get().value().defaultBlockState());
+			case "black_candle" -> this.putCandles(parameters, random, level, pos, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("black_candle")).get().value().defaultBlockState());
 			case "water_cauldron" -> this.putWaterCauldron(parameters, random, level, pos);
 			case "zombie_trap" -> this.putZombieTrap(random, level, pos);
 			case "wrought_iron_post" -> {
 				level.setBlock(pos, TFBlocks.WROUGHT_IRON_FENCE.value().defaultBlockState().setValue(WroughtIronFenceBlock.POST, WroughtIronFenceBlock.PostState.POST), Block.UPDATE_CLIENTS);
-				level.getChunk(pos).markPosForPostprocessing(pos);
+				level.getChunk(pos).markPosForPostProcessing(pos);
 			}
 			case "empty_lectern" -> {
 				Rotation stateRotation = this.placeSettings.getRotation().getRotated(dataRotation);
@@ -666,12 +669,12 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Piec
 	@NotNull
 	private EntityType<?> defaultRandomMob(RandomSource random) {
 		return switch (random.nextInt(10)) {
-			case 7, 8, 9 -> EntityType.SKELETON;
-			case 6 -> EntityType.SPIDER;
-			case 5 -> EntityType.CAVE_SPIDER;
+			case 7, 8, 9 -> EntityTypes.SKELETON;
+			case 6 -> EntityTypes.SPIDER;
+			case 5 -> EntityTypes.CAVE_SPIDER;
 			case 4 -> TFEntities.HEDGE_SPIDER.value();
 			case 3 -> TFEntities.SWARM_SPIDER.value();
-			default -> EntityType.ZOMBIE;
+			default -> EntityTypes.ZOMBIE;
 		};
 	}
 
@@ -680,7 +683,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Piec
 		return switch (label) {
 			case "hedge_spider" -> TFEntities.HEDGE_SPIDER.value();
 			case "swarm_spider" -> TFEntities.SWARM_SPIDER.value();
-			default -> EntityType.byString(label).orElse(EntityType.ZOMBIE);
+			default -> BuiltInRegistries.ENTITY_TYPE.get(Identifier.tryParse(label)).map(Holder.Reference::value).orElse(EntityTypes.ZOMBIE);
 		};
 	}
 
@@ -702,7 +705,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Piec
 		WroughtIronFenceBlock.PostState postProperty = level.getBlockState(pos.above()).isAir() ? WroughtIronFenceBlock.PostState.CAPPED : WroughtIronFenceBlock.PostState.POST;
 		BlockState fenceBlock = TFBlocks.WROUGHT_IRON_FENCE.value().defaultBlockState().setValue(WroughtIronFenceBlock.POST, postProperty);
 		level.setBlock(pos, fenceBlock, Block.UPDATE_CLIENTS);
-		level.getChunk(pos).markPosForPostprocessing(pos);
+		level.getChunk(pos).markPosForPostProcessing(pos);
 
 		Direction randomDirection = this.getRandomDirectionInsideChunk(level, random, pos);
 
@@ -710,8 +713,8 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Piec
 
 		BlockPos zombiePos = pos.relative(randomDirection, 1);
 
-		var knot = EntityUtil.createEntityIgnoreException(level, EntityType.LEASH_KNOT);
-		var trapEntity = EntityUtil.createEntityIgnoreException(level, EntityType.ZOMBIE);
+		var knot = EntityUtil.createEntityIgnoreException(level, EntityTypes.LEASH_KNOT);
+		var trapEntity = EntityUtil.createEntityIgnoreException(level, EntityTypes.ZOMBIE);
 		if (knot == null || trapEntity == null)
 			return;
 

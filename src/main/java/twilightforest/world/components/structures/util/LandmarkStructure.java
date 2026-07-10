@@ -81,7 +81,7 @@ public abstract class LandmarkStructure extends Structure implements DecorationC
 		int z = (chunkPos.z() << 4) + (this.centerInChunk ? 7 : 0);
 		int y = this.adjustForTerrain(context, x, z);
 
-		TwilightForestMod.LOGGER.error("TF-LandmarkStructure: findGenerationPoint for {} at ({},{}), adjustForTerrain returned y={}, seaLevel={}", this.getClass().getSimpleName(), x, z, y, context.chunkGenerator().getSeaLevel());
+		TwilightForestMod.LOGGER.warn("TF-LandmarkStructure: findGenerationPoint for {} at ({},{}), adjustForTerrain returned y={}, seaLevel={}", this.getClass().getSimpleName(), x, z, y, context.chunkGenerator().getSeaLevel());
 
 		return Optional
 			.ofNullable(this.getFirstPiece(context, RandomSource.create(context.seed() + chunkPos.x() * 25117L + chunkPos.z() * 151121L), chunkPos, x, y, z))

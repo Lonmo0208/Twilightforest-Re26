@@ -1,6 +1,7 @@
 package twilightforest.client.event;
 
 import com.ibm.icu.text.RuleBasedNumberFormat;
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -9,11 +10,8 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShapeRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.core.BlockPos;
@@ -56,6 +54,7 @@ import twilightforest.block.entity.GrowingBeanstalkBlockEntity;
 import twilightforest.client.BugModelAnimationHelper;
 import twilightforest.client.OptifineWarningScreen;
 import twilightforest.client.TFShaders;
+import twilightforest.client.renderer.TFRenderTypes;
 import twilightforest.client.renderer.TFSkyRenderer;
 import twilightforest.client.renderer.entity.MagicPaintingRenderer;
 import twilightforest.config.TFConfig;
@@ -125,7 +124,7 @@ public class ClientGameEvents {
 		if (firstTitleScreenShown || !(event.getScreen() instanceof TitleScreen)) return;
 
 		if (ClientRegistrationEvents.isOptifinePresent() && !TFConfig.disableOptifineNagScreen) {
-			Minecraft.getInstance().setScreen(new OptifineWarningScreen(event.getScreen()));
+			Minecraft.getInstance().gui.setScreen(new OptifineWarningScreen(event.getScreen()));
 		}
 
 		firstTitleScreenShown = true;
@@ -151,7 +150,7 @@ public class ClientGameEvents {
 	private void setMusicInDimension(SelectMusicEvent event) {
 		Music music = event.getOriginalMusic();
 		if (Minecraft.getInstance().level != null && Minecraft.getInstance().player != null && (music == Musics.CREATIVE || music == Musics.UNDER_WATER) && TFDimension.isTwilightWorldOnClient(Minecraft.getInstance().level)) {
-			event.setMusic(Minecraft.getInstance().gameRenderer.getMainCamera().attributeProbe().getValue(EnvironmentAttributes.BACKGROUND_MUSIC, 1.0F).select(Minecraft.getInstance().player.getAbilities().instabuild && Minecraft.getInstance().player.getAbilities().mayfly, Minecraft.getInstance().player.isUnderWater()).orElse(Musics.GAME));
+			event.setMusic(Minecraft.getInstance().gameRenderer.mainCamera().attributeProbe().getValue(EnvironmentAttributes.BACKGROUND_MUSIC, 1.0F).select(Minecraft.getInstance().player.getAbilities().instabuild && Minecraft.getInstance().player.getAbilities().mayfly, Minecraft.getInstance().player.isUnderWater()).orElse(Musics.GAME));
 		}
 	}
 
@@ -173,8 +172,8 @@ public class ClientGameEvents {
 		if (Minecraft.getInstance().level == null) return;
 
 		if (event instanceof RenderLevelStageEvent.AfterTranslucentParticles && (aurora > 0 || lastAurora > 0) && TFShaders.AURORA != null) {
-			Tesselator tesselator = Tesselator.getInstance();
-			BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+			BufferBuilder buffer = new BufferBuilder(new ByteBufferBuilder(DefaultVertexFormat.POSITION_COLOR.getVertexSize() * 256), PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_COLOR);
+			
 
 			final float scale = 2048F * (Minecraft.getInstance().options.getEffectiveRenderDistance() / 32F);
 			Vec3 pos = event.getLevelRenderState().cameraRenderState.pos;
@@ -203,11 +202,11 @@ public class ClientGameEvents {
 		Minecraft minecraft = Minecraft.getInstance();
 		// only fire if we're in the twilight forest
 		if (minecraft.level != null && TFDimension.DIMENSION_KEY.equals(minecraft.level.dimension())) {
-			minecraft.gui.vignetteBrightness = 0.0F;
+			minecraft.gui.hud.vignetteBrightness = 0.0F;
 		}
 
 		if (minecraft.player != null && HostileMountEvents.isRidingUnfriendly(minecraft.player)) {
-			minecraft.gui.setOverlayMessage(Component.empty(), false);
+			minecraft.gui.hud.setOverlayMessage(Component.empty(), false);
 		}
 	}
 
@@ -265,7 +264,6 @@ public class ClientGameEvents {
 					}
 				}
 			}
-
 			if (mc.player != null) {
 				fixTranslatableBookNames(mc.player);
 			}
@@ -361,11 +359,22 @@ public class ClientGameEvents {
 				BlockPos offsetPos = new BlockPos(pos.getX() & ~0b11, pos.getY() & ~0b11, pos.getZ() & ~0b11);
 				event.addCustomRenderer(new CustomBlockOutlineRenderer() {
 					@Override
-					public boolean render(BlockOutlineRenderState renderState, MultiBufferSource.BufferSource buffer, PoseStack poseStack, boolean translucentPass, LevelRenderState levelRenderState) {
-						VertexConsumer consumer = buffer.getBuffer(RenderTypes.lines());
-						Vec3 xyz = Vec3.atLowerCornerOf(offsetPos).subtract(levelRenderState.cameraRenderState.pos);
-						ShapeRenderer.renderShape(poseStack, consumer, GIANT_BLOCK, xyz.x(), xyz.y(), xyz.z(), ARGB.colorFromFloat(0.45F, 0.0F, 0.0F, 0.0F), 1.0F);
-						return true; // Suppress vanilla outline rendering
+					public boolean render(BlockOutlineRenderState renderState, SubmitNodeCollector submitNodeCollector, PoseStack poseStack, LevelRenderState levelRenderState) {
+						submitNodeCollector.submitCustomGeometry(poseStack, TFRenderTypes.GIANT_BLOCK_LINES, (pose, consumer) -> {
+							Vec3 xyz = Vec3.atLowerCornerOf(offsetPos).subtract(levelRenderState.cameraRenderState.pos);
+							GIANT_BLOCK.forAllEdges((x1, y1, z1, x2, y2, z2) -> {
+								Vec3 normal = new Vec3(x2 - x1, y2 - y1, z2 - z1).normalize();
+								consumer.addVertex(pose, (float)(xyz.x() + x1), (float)(xyz.y() + y1), (float)(xyz.z() + z1))
+									.setColor(ARGB.colorFromFloat(0.45F, 0.0F, 0.0F, 0.0F))
+									.setNormal(pose, (float)normal.x, (float)normal.y, (float)normal.z)
+									.setLineWidth(1.0F);
+								consumer.addVertex(pose, (float)(xyz.x() + x2), (float)(xyz.y() + y2), (float)(xyz.z() + z2))
+									.setColor(ARGB.colorFromFloat(0.45F, 0.0F, 0.0F, 0.0F))
+									.setNormal(pose, (float)normal.x, (float)normal.y, (float)normal.z)
+									.setLineWidth(1.0F);
+							});
+						});
+						return true;
 					}
 				});
 			}

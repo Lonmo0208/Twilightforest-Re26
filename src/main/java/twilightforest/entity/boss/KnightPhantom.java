@@ -315,22 +315,6 @@ public class KnightPhantom extends BaseTFBoss {
 	}
 
 	@Override
-	public void knockback(double damage, double xRatio, double zRatio) {
-		super.knockback(damage, xRatio, zRatio);
-		float f = Mth.sqrt((float) (xRatio * xRatio + zRatio * zRatio));
-		float distance = 0.2F;
-		this.setDeltaMovement(new Vec3(this.getDeltaMovement().x() / 2.0D, this.getDeltaMovement().y() / 2.0D, this.getDeltaMovement().z() / 2.0D));
-		this.setDeltaMovement(new Vec3(
-			this.getDeltaMovement().x() - xRatio / f * distance,
-			this.getDeltaMovement().y() + distance,
-			this.getDeltaMovement().z() - zRatio / f * distance));
-
-		if (this.getDeltaMovement().y() > 0.4D) {
-			this.setDeltaMovement(this.getDeltaMovement().x(), 0.4D, this.getDeltaMovement().z());
-		}
-	}
-
-	@Override
 	protected void checkFallDamage(double y, boolean onGround, BlockState state, BlockPos pos) {
 	}
 

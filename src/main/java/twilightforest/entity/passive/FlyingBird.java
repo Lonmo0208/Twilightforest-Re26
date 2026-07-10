@@ -177,11 +177,6 @@ public abstract class FlyingBird extends Bird {
 	protected void pushEntities() {
 	}
 
-	@Override
-	public boolean isBaby() {
-		return false;
-	}
-
 	public abstract boolean isSpooked();
 
 	public abstract TagKey<Item> getTemptItems();

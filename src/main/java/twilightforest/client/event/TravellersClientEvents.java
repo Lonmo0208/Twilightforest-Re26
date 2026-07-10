@@ -271,7 +271,7 @@ public class TravellersClientEvents {
 
 	private boolean ignoreKeyEvent(InputEvent.Key event, KeyMapping key) {
 		// 26.1.2: KeyMapping.matches now takes a single KeyEvent parameter instead of (int key, int scancode)
-		return !key.matches(new net.minecraft.client.input.KeyEvent(event.getKey(), event.getScanCode(), event.getModifiers())) || Minecraft.getInstance().screen != null;
+		return !key.matches(new net.minecraft.client.input.KeyEvent(event.getKey(), event.getScanCode(), event.getModifiers())) || Minecraft.getInstance().gui.screen() != null;
 	}
 
 	private void renderGlovesInFirstPerson(RenderArmEvent event) {

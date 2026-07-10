@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SkyRenderer;
 import net.minecraft.client.renderer.Lightmap;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 import net.minecraft.client.renderer.state.level.WeatherRenderState;
@@ -74,13 +73,13 @@ public class TwilightForestRenderInfo implements CustomSkyboxRenderer, CustomWea
 	}
 
 	@Override
-	public boolean renderSnowAndRain(LevelRenderState levelRenderState, WeatherRenderState weatherRenderState, MultiBufferSource bufferSource, Vec3 camPos) {
+	public boolean renderSnowAndRain(LevelRenderState levelRenderState, WeatherRenderState weatherRenderState, Vec3 camPos) {
 		Minecraft mc = Minecraft.getInstance();
 		return TFWeatherRenderer.renderSnowAndRain(mc.level, (int) mc.level.getGameTime(), mc.getDeltaTracker().getGameTimeDeltaPartialTick(false), camPos);
 	}
 
 	@Override
-	public boolean tickRain(ClientLevel level, int ticks, Camera camera) {
-		return TFWeatherRenderer.tickRain(level, ticks, camera.blockPosition());
+	public boolean tickRain(ClientLevel level, long ticks, Camera camera) {
+		return TFWeatherRenderer.tickRain(level, (int) ticks, camera.blockPosition());
 	}
 }

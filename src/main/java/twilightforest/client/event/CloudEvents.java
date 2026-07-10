@@ -1,12 +1,13 @@
 package twilightforest.client.event;
 
 
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.GraphicsPreset;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ParticleStatus;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.Lightmap;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -47,7 +48,7 @@ public class CloudEvents {
 
 		if (!mc.isPaused()) {
 			if (mc.level != null && TFConfig.getClientCloudBlockPrecipitationDistance() > 0) { // Semi vanilla copy of the weather tick, but made to work with cloud blocks instead
-				Vec3 vec3 = mc.gameRenderer.getMainCamera().position();
+				Vec3 vec3 = mc.gameRenderer.mainCamera().position();
 				if (mc.level.getGameTime() % 10L == 0L) {
 					RENDER_HELPER.clear();
 
@@ -94,7 +95,7 @@ public class CloudEvents {
 				}
 
 				if (!RENDER_HELPER.isEmpty()) {
-					RandomSource randomsource = RandomSource.create((long) mc.levelRenderer.getTicks() * 312987231L);
+					RandomSource randomsource = RandomSource.create(mc.level.getGameTime() * 312987231L);
 					BlockPos particlePos = null;
 					int particleCount = 100 / (mc.options.particles().get() == ParticleStatus.DECREASED ? 2 : 1);
 
@@ -157,7 +158,7 @@ public class CloudEvents {
 			float partialTick = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 			// TODO: 26.1.2 - lightmap() now returns GpuTextureView, lightmap API changed
 			// Lightmap lightmap = minecraft.gameRenderer.lightmap();
-			int ticks = minecraft.levelRenderer.getTicks();
+			int ticks = (int)(minecraft.level.getGameTime() & 0xFFFFFFFFL);
 			// TODO: 26.1.2 - turnOnLightLayer no longer exists
 			// lightmap.turnOnLightLayer();
 
@@ -170,7 +171,7 @@ public class CloudEvents {
 			int floorY = Mth.floor(camY);
 			int floorZ = Mth.floor(camZ);
 
-			Tesselator tesselator = Tesselator.getInstance();
+			BufferBuilder buffer = new BufferBuilder(new ByteBufferBuilder(DefaultVertexFormat.POSITION_COLOR.getVertexSize() * 256), PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_COLOR);
 			BufferBuilder bufferbuilder = null;
 
 			int renderDistance = Minecraft.getInstance().options.graphicsPreset().get() == GraphicsPreset.FANCY ? 10 : 5;
@@ -198,7 +199,7 @@ public class CloudEvents {
 				if (helper.precipitation() == Biome.Precipitation.RAIN) {
 					if (tesselatorCheck != 0) {
 						tesselatorCheck = 0;
-						bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+						bufferbuilder = new BufferBuilder(new ByteBufferBuilder(DefaultVertexFormat.PARTICLE.getVertexSize() * 256), PrimitiveTopology.QUADS, DefaultVertexFormat.PARTICLE);
 					}
 
 					int offset = ticks + roofX * roofX * 3121 + roofX * 45238971 + roofZ * roofZ * 418711 + roofZ * 13761 & 31;
@@ -208,7 +209,7 @@ public class CloudEvents {
 					float distance = (float) Math.sqrt(xDiff * xDiff + zDiff * zDiff) / (float) renderDistance;
 					float alpha = ((1.0F - distance * distance) * 0.5F + 0.5F) * helper.precipitationLevel();
 					mutableBlockPos.set(roofX, Math.max(helper.rainOnY(), floorY), roofZ);
-					int lightColor = LevelRenderer.getLightCoords(minecraft.level, mutableBlockPos);
+					int lightColor = LightCoordsUtil.getLightCoords(minecraft.level, mutableBlockPos);
 
 					bufferbuilder.addVertex((float) (roofX - camX - rainX + 0.5D), (float) (topY - camY), (float) (roofZ - camZ - rainZ + 0.5D)).setUv(0.0F, (float) botY * 0.25F + uvOffset).setColor(1.0F, 1.0F, 1.0F, alpha).setLight(lightColor);
 					bufferbuilder.addVertex((float) (roofX - camX + rainX + 0.5D), (float) (topY - camY), (float) (roofZ - camZ + rainZ + 0.5D)).setUv(1.0F, (float) botY * 0.25F + uvOffset).setColor(1.0F, 1.0F, 1.0F, alpha).setLight(lightColor);
@@ -217,7 +218,7 @@ public class CloudEvents {
 				} else if (helper.precipitation() == Biome.Precipitation.SNOW) {
 					if (tesselatorCheck != 1) {
 						tesselatorCheck = 1;
-						bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+						bufferbuilder = new BufferBuilder(new ByteBufferBuilder(DefaultVertexFormat.PARTICLE.getVertexSize() * 256), PrimitiveTopology.QUADS, DefaultVertexFormat.PARTICLE);
 					}
 
 					float offset = -((float) (ticks & 511) + partialTick) / 512.0F;
@@ -229,7 +230,7 @@ public class CloudEvents {
 					float alpha = ((1.0F - distance * distance) * 0.3F + 0.5F) * helper.precipitationLevel();
 					mutableBlockPos.set(roofX, Math.max(helper.rainOnY(), floorY), roofZ);
 
-					int lightColor = LevelRenderer.getLightCoords(minecraft.level, mutableBlockPos);
+					int lightColor = LightCoordsUtil.getLightCoords(minecraft.level, mutableBlockPos);
 					int v = lightColor >> 16 & '\uffff';
 					int u = lightColor & '\uffff';
 					v = (v * 3 + 240) / 4;

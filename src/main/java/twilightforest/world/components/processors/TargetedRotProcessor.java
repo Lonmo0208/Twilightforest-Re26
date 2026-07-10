@@ -9,10 +9,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockRotProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.Nullable;
-import twilightforest.init.TFStructureProcessors;
 
 import java.util.ArrayList;
 
@@ -37,7 +35,7 @@ public final class TargetedRotProcessor extends BlockRotProcessor {
 	}
 
 	@Override
-	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.TARGETED_ROT.get();
+	public MapCodec<BlockRotProcessor> codec() {
+		return BlockRotProcessor.MAP_CODEC;
 	}
 }

@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.Music;
 import net.minecraft.tags.BlockTags;
@@ -59,7 +60,7 @@ public class TFDimensionData {
 			-32, // Minimum Y Level
 			32 + 256, // Height + Min Y = Max Y
 			32 + 256, // Logical Height
-			BlockTags.INFINIBURN_OVERWORLD, //infiburn tag
+			context.lookup(Registries.BLOCK).getOrThrow(BlockTags.INFINIBURN_OVERWORLD), //infiburn tag
 			0.01F, //ambient light
 			new DimensionType.MonsterSettings(UniformInt.of(0, 7), 7), //monster settings
 			DimensionType.Skybox.OVERWORLD, //skybox
@@ -91,9 +92,10 @@ public class TFDimensionData {
 	public static NoiseGeneratorSettings makeNoiseSettings(BootstrapContext<NoiseGeneratorSettings> context, boolean skylight) {
 		HolderGetter<DensityFunction> densityFunctions = context.lookup(Registries.DENSITY_FUNCTION);
 		DensityFunction finalDensity = new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(skylight ? TFDensityFunctions.SKYLIGHT_TERRAIN : TFDensityFunctions.FORESTED_TERRAIN));
+		HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
 
 		NoiseSettings tfNoise = NoiseSettings.create(
-			-32, //TODO Deliberate over this. For now it'll be -32
+			-32,
 			256,
 			2,
 			2
@@ -120,7 +122,7 @@ public class TFDimensionData {
 				DensityFunctions.zero(),
 				DensityFunctions.zero()
 			),
-			TFSurfaceRules.tfSurface(),
+			TFSurfaceRules.tfSurface(biomes),
 			List.of(),
 			TFDimensionData.SEALEVEL,
 			false,

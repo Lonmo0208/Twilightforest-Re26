@@ -23,14 +23,14 @@ config = "mixins.twilightforest.json"
 [[dependencies.twilightforest]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.1.2,)"
+versionRange = "[26.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.twilightforest]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.1.2]"
+versionRange = "[26.2]"
 ordering = "NONE"
 side = "BOTH"
 

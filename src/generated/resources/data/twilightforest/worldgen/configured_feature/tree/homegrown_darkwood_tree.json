@@ -2,24 +2,10 @@
   "type": "twilightforest:dark_canopy_tree",
   "config": {
     "below_trunk_provider": {
-      "type": "minecraft:rule_based_state_provider",
-      "rules": [
-        {
-          "if_true": {
-            "type": "minecraft:not",
-            "predicate": {
-              "type": "minecraft:matching_block_tag",
-              "tag": "minecraft:cannot_replace_below_tree_trunk"
-            }
-          },
-          "then": {
-            "type": "minecraft:simple_state_provider",
-            "state": {
-              "Name": "minecraft:dirt"
-            }
-          }
-        }
-      ]
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "minecraft:air"
+      }
     },
     "decorators": [
       {
@@ -73,8 +59,7 @@
     "minimum_size": {
       "type": "minecraft:two_layers_feature_size",
       "limit": 4,
-      "lower_size": 1,
-      "upper_size": 1
+      "lower_size": 1
     },
     "trunk_placer": {
       "type": "twilightforest:branching_trunk_placer",

@@ -59,7 +59,7 @@ public class FinalCastleStructure extends ControlledSpawningStructure {
 				//.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), 1, 2), 10)
 				//.add(new MobSpawnSettings.SpawnerData(TFEntities.ADHERENT.get(), 1, 1), 10)
 				//.add(new MobSpawnSettings.SpawnerData(TFEntities.HARBINGER_CUBE.get(), 1, 1), 10)
-				//.add(new MobSpawnSettings.SpawnerData(EntityType.ENDERMAN, 1, 1), 10)
+				//.add(new MobSpawnSettings.SpawnerData(EntityTypes.ENDERMAN, 1, 1), 10)
 				.build()
 			, WeightedList.<MobSpawnSettings.SpawnerData>builder()
 				// internal castle

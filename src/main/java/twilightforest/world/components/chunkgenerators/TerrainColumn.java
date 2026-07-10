@@ -24,9 +24,9 @@ public final class TerrainColumn {
 		instance.group(
 			RegistryFixedCodec.create(Registries.BIOME).fieldOf("key_biome").forGetter(o -> o.keyBiome),
 			Codecs.doubleTreeCodec(Biome.CODEC).fieldOf("biome_layers").forGetter(o -> o.biomes),
-			DensityFunction.HOLDER_HELPER_CODEC.fieldOf("depth").forGetter(o -> o.noiseDepth),
-			DensityFunction.HOLDER_HELPER_CODEC.fieldOf("scale").forGetter(o -> o.noiseScale),
-			DensityFunction.HOLDER_HELPER_CODEC.fieldOf("weight").forGetter(o -> o.noiseWeight)
+			DensityFunction.CODEC.fieldOf("depth").forGetter(o -> o.noiseDepth),
+			DensityFunction.CODEC.fieldOf("scale").forGetter(o -> o.noiseScale),
+			DensityFunction.CODEC.fieldOf("weight").forGetter(o -> o.noiseWeight)
 		).apply(instance, TerrainColumn::new));
 	private final ResourceKey<Biome> resourceKey;
 	private final Holder<Biome> keyBiome;

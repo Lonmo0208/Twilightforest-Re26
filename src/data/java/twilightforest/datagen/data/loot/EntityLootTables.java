@@ -1,11 +1,15 @@
 package twilightforest.datagen.data.loot;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.EntityLootSubProvider;
+import net.minecraft.resources.Identifier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -48,33 +52,33 @@ public class EntityLootTables extends EntityLootSubProvider {
 		add(TFEntities.PINCH_BEETLE.get(), emptyLootTable());
 		add(TFEntities.QUEST_RAM.get(), emptyLootTable());
 		add(TFEntities.SQUIRREL.get(), emptyLootTable());
-		add(TFEntities.DWARF_RABBIT.get(), fromEntityLootTable(EntityType.RABBIT));
-		add(TFEntities.HEDGE_SPIDER.get(), fromEntityLootTable(EntityType.SPIDER));
-		add(TFEntities.HOSTILE_WOLF.get(), fromEntityLootTable(EntityType.WOLF));
-		add(TFEntities.KING_SPIDER.get(), fromEntityLootTable(EntityType.SPIDER));
-		add(TFEntities.MIST_WOLF.get(), fromEntityLootTable(EntityType.WOLF));
+		add(TFEntities.DWARF_RABBIT.get(), fromEntityLootTable(EntityTypes.RABBIT));
+		add(TFEntities.HEDGE_SPIDER.get(), fromEntityLootTable(EntityTypes.SPIDER));
+		add(TFEntities.HOSTILE_WOLF.get(), fromEntityLootTable(EntityTypes.WOLF));
+		add(TFEntities.KING_SPIDER.get(), fromEntityLootTable(EntityTypes.SPIDER));
+		add(TFEntities.MIST_WOLF.get(), fromEntityLootTable(EntityTypes.WOLF));
 		add(TFEntities.REDCAP_SAPPER.get(), fromEntityLootTable(TFEntities.REDCAP.get()));
-		add(TFEntities.SWARM_SPIDER.get(), fromEntityLootTable(EntityType.SPIDER));
-		add(TFEntities.CARMINITE_BROODLING.get(), fromEntityLootTable(EntityType.SPIDER));
-		add(TFEntities.CARMINITE_GHASTGUARD.get(), fromEntityLootTable(EntityType.GHAST));
-		add(TFEntities.BIGHORN_SHEEP.get(), fromEntityLootTable(EntityType.SHEEP));
-		add(TFEntities.RISING_ZOMBIE.get(), fromEntityLootTable(EntityType.ZOMBIE));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_BLACK, sheepLootTableBuilderWithDrop(Blocks.BLACK_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_BLUE, sheepLootTableBuilderWithDrop(Blocks.BLUE_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_BROWN, sheepLootTableBuilderWithDrop(Blocks.BROWN_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_CYAN, sheepLootTableBuilderWithDrop(Blocks.CYAN_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_GRAY, sheepLootTableBuilderWithDrop(Blocks.GRAY_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_GREEN, sheepLootTableBuilderWithDrop(Blocks.GREEN_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_LIGHT_BLUE, sheepLootTableBuilderWithDrop(Blocks.LIGHT_BLUE_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_LIGHT_GRAY, sheepLootTableBuilderWithDrop(Blocks.LIGHT_GRAY_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_LIME, sheepLootTableBuilderWithDrop(Blocks.LIME_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_MAGENTA, sheepLootTableBuilderWithDrop(Blocks.MAGENTA_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_ORANGE, sheepLootTableBuilderWithDrop(Blocks.ORANGE_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_PINK, sheepLootTableBuilderWithDrop(Blocks.PINK_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_PURPLE, sheepLootTableBuilderWithDrop(Blocks.PURPLE_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_RED, sheepLootTableBuilderWithDrop(Blocks.RED_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_WHITE, sheepLootTableBuilderWithDrop(Blocks.WHITE_WOOL));
-		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_YELLOW, sheepLootTableBuilderWithDrop(Blocks.YELLOW_WOOL));
+		add(TFEntities.SWARM_SPIDER.get(), fromEntityLootTable(EntityTypes.SPIDER));
+		add(TFEntities.CARMINITE_BROODLING.get(), fromEntityLootTable(EntityTypes.SPIDER));
+		add(TFEntities.CARMINITE_GHASTGUARD.get(), fromEntityLootTable(EntityTypes.GHAST));
+		add(TFEntities.BIGHORN_SHEEP.get(), fromEntityLootTable(EntityTypes.SHEEP));
+		add(TFEntities.RISING_ZOMBIE.get(), fromEntityLootTable(EntityTypes.ZOMBIE));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_BLACK, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.BLACK)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_BLUE, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.BLUE)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_BROWN, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.BROWN)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_CYAN, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.CYAN)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_GRAY, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.GRAY)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_GREEN, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.GREEN)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_LIGHT_BLUE, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.LIGHT_BLUE)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_LIGHT_GRAY, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.LIGHT_GRAY)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_LIME, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.LIME)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_MAGENTA, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.MAGENTA)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_ORANGE, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.ORANGE)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_PINK, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.PINK)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_PURPLE, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.PURPLE)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_RED, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.RED)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_WHITE, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.WHITE)));
+		add(TFEntities.BIGHORN_SHEEP.get(), TFLootTables.BIGHORN_SHEEP_YELLOW, sheepLootTableBuilderWithDrop(Blocks.WOOL.pick(DyeColor.YELLOW)));
 
 		add(TFEntities.FIRE_BEETLE.get(),
 			LootTable.lootTable()
@@ -114,7 +118,7 @@ public class EntityLootTables extends EntityLootSubProvider {
 			LootTable.lootTable()
 				.withPool(LootPool.lootPool()
 					.setRolls(ConstantValue.exactly(1))
-					.add(NestedLootTable.lootTableReference(EntityType.GHAST.getDefaultLootTable().orElseThrow()))
+					.add(NestedLootTable.lootTableReference(EntityTypes.GHAST.getDefaultLootTable().orElseThrow()))
 					.when(IsMinionCondition.builder(true))));
 
 		/*registerLootTable(TFEntities.BOGGARD.get(),
@@ -601,7 +605,7 @@ public class EntityLootTables extends EntityLootSubProvider {
 		add(TFEntities.QUEST_RAM.get(), TFLootTables.QUESTING_RAM_REWARD_BLOCKS, LootTable.lootTable()
 			.withPool(LootPool.lootPool().add(LootItem.lootTableItem(Blocks.COAL_BLOCK)))
 			.withPool(LootPool.lootPool().add(LootItem.lootTableItem(Blocks.IRON_BLOCK)))
-			.withPool(LootPool.lootPool().add(LootItem.lootTableItem(Blocks.COPPER_BLOCK)))
+			.withPool(LootPool.lootPool().add(LootItem.lootTableItem(BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("copper_block")).get().value())))
 			.withPool(LootPool.lootPool().add(LootItem.lootTableItem(Blocks.LAPIS_BLOCK)))
 			.withPool(LootPool.lootPool().add(LootItem.lootTableItem(Blocks.GOLD_BLOCK)))
 			.withPool(LootPool.lootPool().add(LootItem.lootTableItem(Blocks.DIAMOND_BLOCK)))
@@ -621,7 +625,7 @@ public class EntityLootTables extends EntityLootSubProvider {
 	}
 
 	private static LootTable.Builder sheepLootTableBuilderWithDrop(ItemLike wool) {
-		return LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(LootItem.lootTableItem(wool))).withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(NestedLootTable.lootTableReference(EntityType.SHEEP.getDefaultLootTable().orElseThrow())));
+		return LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(LootItem.lootTableItem(wool))).withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(NestedLootTable.lootTableReference(EntityTypes.SHEEP.getDefaultLootTable().orElseThrow())));
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package twilightforest.util;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;

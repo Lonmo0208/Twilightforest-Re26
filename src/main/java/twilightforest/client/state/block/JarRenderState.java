@@ -12,6 +12,7 @@ public class JarRenderState extends BlockEntityRenderState {
 	public Item lid = null;
 	public float wobbleAmount;
 	public float wobbleAmplitude;
+	public int wobbleStyle;
 	@Nullable
 	public ItemStackRenderState itemStack;
 	public int itemRotation;

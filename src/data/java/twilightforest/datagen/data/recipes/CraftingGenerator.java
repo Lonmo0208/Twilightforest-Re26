@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.data.recipes.*;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
@@ -151,12 +152,12 @@ public class CraftingGenerator extends CraftingDataHelper {
 			.unlockedBy("has_item", has(TFBlocks.CICADA))
 			.save(this.output);
 
-		ShapelessRecipeBuilder.shapeless(getter, RecipeCategory.MISC, Items.MAGENTA_DYE)
+		ShapelessRecipeBuilder.shapeless(getter, RecipeCategory.MISC, BuiltInRegistries.ITEM.get(Identifier.withDefaultNamespace("magenta_dye")).get().value())
 			.requires(Ingredient.of(TFBlocks.HUGE_WATER_LILY))
 			.unlockedBy("has_item", has(TFBlocks.HUGE_WATER_LILY))
 			.save(this.output, this.createKey("waterlily_to_magenta"));
 
-		ShapelessRecipeBuilder.shapeless(getter, RecipeCategory.MISC, Items.RED_DYE)
+		ShapelessRecipeBuilder.shapeless(getter, RecipeCategory.MISC, BuiltInRegistries.ITEM.get(Identifier.withDefaultNamespace("red_dye")).get().value())
 			.requires(Ingredient.of(TFBlocks.THORN_ROSE))
 			.unlockedBy("has_item", has(TFBlocks.THORN_ROSE))
 			.save(this.output, this.createKey("thorn_rose_to_red"));

@@ -2,20 +2,9 @@
 
 #moj_import <minecraft:fog.glsl>
 
-layout(std140) uniform Globals {
-    ivec3 CameraPosition;
-    vec3  CameraFraction;
-    vec2  ScreenSize;
-    float GlintAlpha;
-    float GameTime;
-    int   MenuBlurRadius;
-    int   UseRgss;
-};
-
-layout(std140) uniform AuroraSettings {
-    int seedContext;
-    vec3 positionContext;
-};
+uniform float GameTime;
+uniform int seedContext;
+uniform vec3 positionContext;
 
 //////////////// K.jpg's Re-oriented 4-Point BCC Noise (OpenSimplex2) ////////////////
 ////////////////////// Output: vec4(dF/dx, dF/dy, dF/dz, value) //////////////////////

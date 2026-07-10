@@ -1,5 +1,7 @@
 package twilightforest.command;
 
+import net.minecraft.world.item.DyeColor;
+
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -50,12 +52,12 @@ public class DisplayPiecesCommand {
 		StructureStart structureAt = level.structureManager().getStructureAt(commandPos, structure.value());
 
 		BoundingBox structureBox = structureAt.getBoundingBox();
-		int successes = this.displayUtil.spawnBlockDisplay(level, structureBox, Blocks.RED_STAINED_GLASS.defaultBlockState(), 0.01f) ? 1 : 0;
+		int successes = this.displayUtil.spawnBlockDisplay(level, structureBox, Blocks.STAINED_GLASS.pick(DyeColor.RED).defaultBlockState(), 0.01f) ? 1 : 0;
 
 		List<StructurePiece> structurePieces = structureAt.getPieces();
 		int maxPieces = structurePieces.size();
 		for (StructurePiece piece : structurePieces) {
-			BlockState displayState = piece instanceof ProgressionPiece shieldablePiece && shieldablePiece.isComponentProtected() ? Blocks.LIME_STAINED_GLASS.defaultBlockState() : Blocks.LIGHT_BLUE_STAINED_GLASS.defaultBlockState();
+			BlockState displayState = piece instanceof ProgressionPiece shieldablePiece && shieldablePiece.isComponentProtected() ? Blocks.STAINED_GLASS.pick(DyeColor.LIME).defaultBlockState() : Blocks.STAINED_GLASS.pick(DyeColor.LIGHT_BLUE).defaultBlockState();
 			Identifier key = BuiltInRegistries.STRUCTURE_PIECE.getKey(piece.getType());
 			float padding = Mth.lerp((float) successes / maxPieces, 0.003f, 0.025f);
 			BoundingBox boundingBox = piece.getBoundingBox();

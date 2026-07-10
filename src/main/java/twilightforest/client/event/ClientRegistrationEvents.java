@@ -4,6 +4,10 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.BlockStateModelWrapper;
+import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -19,19 +23,11 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.renderer.block.dispatch.SingleVariant;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.BlockStateModelWrapper;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -58,7 +54,6 @@ import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.map.RegisterMapDecorationRenderersEvent;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
-import org.joml.Matrix4f;
 import tamaized.beanification.Component;
 import tamaized.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
@@ -102,10 +97,12 @@ import twilightforest.item.mapdata.TFMagicMapData;
 import twilightforest.item.travellers_gear.TravellersArmorBeltItem;
 import twilightforest.item.travellers_gear.TravellersArmorItem;
 import twilightforest.item.travellers_gear.TravellersGogglesItem;
-import twilightforest.util.woods.TFWoodTypes;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import org.joml.Matrix4f;
 
 @Component(dist = Dist.CLIENT)
 public class ClientRegistrationEvents {
@@ -115,8 +112,9 @@ public class ClientRegistrationEvents {
 	@PostConstruct
 	private void setup(IEventBus bus) {
 		bus.addListener(EntityRenderersEvent.AddLayers.class, this::attachRenderLayers);
+		bus.addListener(this::cacheJarLids);
 		bus.addListener(this::clientSetup);
-		bus.addListener(this::registerJarLidModels);
+		bus.addListener(this::registerAdditionalModels);
 		bus.addListener(this::registerClientReloadListeners);
 		bus.addListener(this::registerAtlases);
 		bus.addListener(this::registerEntityRenderers);
@@ -233,18 +231,28 @@ public class ClientRegistrationEvents {
 		event.register(TwilightForestMod.prefix("experiment_115_variant"), Experiment115Type.TYPE);
 	}
 
-	private void registerJarLidModels(ModelEvent.RegisterStandalone event) {
+	private void cacheJarLids(ModelEvent.BakingCompleted event) {
 		for (JarRenderer.LidResource lid : JarRenderer.LID_LOCATION_LIST.get()) {
-			StandaloneModelKey<BlockModel> key = lid.createKey();
-			JarRenderer.LID_KEYS.put(lid.lid(), key);
-			event.register(key, new SimpleUnbakedStandaloneModel<>(
-				lid.getModelId(),
-				(model, baker, name) -> {
-					var part = SimpleModelWrapper.bake(baker, model, BlockModelRotation.IDENTITY);
-					BlockStateModel stateModel = new SingleVariant(part);
-					return new BlockStateModelWrapper(stateModel, java.util.List.of(), new Matrix4f());
+			StandaloneModelKey<BlockStateModel> key = JarRenderer.LID_KEYS.get(lid.lid());
+			if (key != null) {
+				BlockStateModel model = event.getModelManager().getStandaloneModel(key);
+				if (model != null) {
+					BlockModel wrapped = new BlockStateModelWrapper(model, List.of(), new Matrix4f());
+					JarRenderer.LIDS.put(lid.lid(), wrapped);
 				}
-			));
+			}
+		}
+	}
+
+	private void registerAdditionalModels(ModelEvent.RegisterStandalone event) {
+		for (JarRenderer.LidResource lid : JarRenderer.LID_LOCATION_LIST.get()) {
+			String name = lid.identifier().getPath();
+			if (lid.customPath() != null) name = lid.customPath();
+			Identifier lidModelId = TwilightForestMod.prefix("block/lid/" + name);
+			ModelDebugName debugName = () -> lidModelId.toString();
+			StandaloneModelKey<BlockStateModel> key = new StandaloneModelKey<>(debugName);
+			JarRenderer.LID_KEYS.put(lid.lid(), key);
+			event.register(key, SimpleUnbakedStandaloneModel.blockStateModel(lidModelId));
 		}
 	}
 
@@ -257,14 +265,6 @@ public class ClientRegistrationEvents {
 		}
 
 		evt.enqueueWork(() -> {
-			Sheets.addWoodType(TFWoodTypes.TWILIGHT_OAK_WOOD_TYPE);
-			Sheets.addWoodType(TFWoodTypes.CANOPY_WOOD_TYPE);
-			Sheets.addWoodType(TFWoodTypes.MANGROVE_WOOD_TYPE);
-			Sheets.addWoodType(TFWoodTypes.DARK_WOOD_TYPE);
-			Sheets.addWoodType(TFWoodTypes.TIME_WOOD_TYPE);
-			Sheets.addWoodType(TFWoodTypes.TRANSFORMATION_WOOD_TYPE);
-			Sheets.addWoodType(TFWoodTypes.MINING_WOOD_TYPE);
-			Sheets.addWoodType(TFWoodTypes.SORTING_WOOD_TYPE);
 		});
 	}
 

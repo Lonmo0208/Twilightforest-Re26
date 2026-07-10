@@ -3,7 +3,6 @@ package twilightforest.network;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -30,7 +29,7 @@ public class AreaProtectionPacket implements CustomPacketPayload {
 		this.pos = pos;
 	}
 
-	public AreaProtectionPacket(FriendlyByteBuf buf) {
+	public AreaProtectionPacket(RegistryFriendlyByteBuf buf) {
 		this.sbb = new ArrayList<>();
 		int len = buf.readInt();
 		for (int i = 0; i < len; i++) {

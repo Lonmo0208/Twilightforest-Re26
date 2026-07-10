@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -373,7 +374,7 @@ public class MagicPaintingRenderer extends EntityRenderer<MagicPainting, MagicPa
 						lightZ = Mth.floor(lightZ + (double) widthOffset);
 				}
 
-				state.lightCoords[w + h * widthAsBlock] = LevelRenderer.getLightCoords(level, new BlockPos(lightX, lightY, lightZ));
+				state.lightCoords[w + h * widthAsBlock] = LightCoordsUtil.getLightCoords(level, new BlockPos(lightX, lightY, lightZ));
 			}
 		}
 	}

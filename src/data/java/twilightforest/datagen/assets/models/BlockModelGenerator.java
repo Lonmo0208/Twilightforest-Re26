@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.joml.Vector3f;
@@ -131,22 +132,22 @@ public class BlockModelGenerator extends BlockModelBuilders {
 			.with(sideOminous.with(Y_ROT_270))
 		);
 		this.createParticleOnlyBlock(TFBlocks.OMINOUS_CANDLE.get(), Blocks.CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_BROWN_CANDLE.get(), Blocks.BROWN_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_WHITE_CANDLE.get(), Blocks.WHITE_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_LIGHT_GRAY_CANDLE.get(), Blocks.LIGHT_GRAY_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_GRAY_CANDLE.get(), Blocks.GRAY_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_BLACK_CANDLE.get(), Blocks.BLACK_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_RED_CANDLE.get(), Blocks.RED_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_ORANGE_CANDLE.get(), Blocks.ORANGE_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_YELLOW_CANDLE.get(), Blocks.YELLOW_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_GREEN_CANDLE.get(), Blocks.GREEN_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_LIME_CANDLE.get(), Blocks.LIME_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_BLUE_CANDLE.get(), Blocks.BLUE_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_CYAN_CANDLE.get(), Blocks.CYAN_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_LIGHT_BLUE_CANDLE.get(), Blocks.LIGHT_BLUE_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_PURPLE_CANDLE.get(), Blocks.PURPLE_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_MAGENTA_CANDLE.get(), Blocks.MAGENTA_CANDLE);
-		this.createParticleOnlyBlock(TFBlocks.OMINOUS_PINK_CANDLE.get(), Blocks.PINK_CANDLE);
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_BROWN_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.BROWN));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_WHITE_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.WHITE));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_LIGHT_GRAY_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.LIGHT_GRAY));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_GRAY_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.GRAY));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_BLACK_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.BLACK));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_RED_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.RED));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_ORANGE_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.ORANGE));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_YELLOW_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.YELLOW));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_GREEN_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.GREEN));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_LIME_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.LIME));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_BLUE_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.BLUE));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_CYAN_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.CYAN));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_LIGHT_BLUE_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.LIGHT_BLUE));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_PURPLE_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.PURPLE));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_MAGENTA_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.MAGENTA));
+		this.createParticleOnlyBlock(TFBlocks.OMINOUS_PINK_CANDLE.get(), Blocks.DYED_CANDLE.pick(DyeColor.PINK));
 
 		this.generateHugeLilyPad();
 		this.createCrossBlockWithDefaultItem(TFBlocks.HUGE_WATER_LILY.get(), PlantType.NOT_TINTED);
@@ -163,11 +164,11 @@ public class BlockModelGenerator extends BlockModelBuilders {
 		this.wrapTintedBlockItem(TFBlocks.SMOKER.get(), new GrassColorSource(), block -> this.blockStateOutput.accept(createSimpleBlock(block, plainVariant(TFModelTemplates.TINTED_CUBE_BOTTOM_TOP.create(block, new TextureMapping()
 			.put(TextureSlot.SIDE, new Material(TwilightForestMod.prefix("block/firejet_side")))
 			.put(TextureSlot.TOP, new Material(TwilightForestMod.prefix("block/firejet_top")))
-			.put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(Blocks.BLACK_CONCRETE_POWDER)), this.modelOutput)))));
+			.put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(Blocks.CONCRETE_POWDER.pick(DyeColor.BLACK))), this.modelOutput)))));
 		this.wrapTintedBlockItem(TFBlocks.FIRE_JET.get(), new GrassColorSource(), block -> this.blockStateOutput.accept(createSimpleBlock(block, plainVariant(TFModelTemplates.TINTED_CUBE_BOTTOM_TOP.create(block, new TextureMapping()
 			.put(TextureSlot.SIDE, new Material(TwilightForestMod.prefix("block/firejet_side")))
 			.put(TextureSlot.TOP, new Material(TwilightForestMod.prefix("block/firejet_top")))
-			.put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(Blocks.BLACK_CONCRETE_POWDER)), this.modelOutput)))));
+			.put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(Blocks.CONCRETE_POWDER.pick(DyeColor.BLACK))), this.modelOutput)))));
 		this.wrapBlockItem(TFBlocks.UNDERBRICK.get(), this::createTrivialCube);
 		this.wrapBlockItem(TFBlocks.CRACKED_UNDERBRICK.get(), this::createTrivialCube);
 		this.wrapBlockItem(TFBlocks.MOSSY_UNDERBRICK.get(), this::createTrivialCube);
@@ -241,7 +242,7 @@ public class BlockModelGenerator extends BlockModelBuilders {
 			String suffix = String.format("_%d_8", 8 - bites);
 			Identifier model;
 			if (regen) {
-				model = TFModelTemplates.create("twilightforest:experiment115" + suffix, suffix + "_regenerating", TFTextureSlot.TOP_2).create(TFBlocks.EXPERIMENT_115.get(), new TextureMapping().put(TFTextureSlot.TOP_2, new Material(TwilightForestMod.prefix("block/experiment115/experiment115_sprinkle"))), this.modelOutput);
+				model = TFModelTemplates.create("twilightforest:experiment_115" + suffix, suffix + "_regenerating", TFTextureSlot.TOP_2).create(TFBlocks.EXPERIMENT_115.get(), new TextureMapping().put(TFTextureSlot.TOP_2, new Material(TwilightForestMod.prefix("block/experiment115/experiment115_sprinkle"))), this.modelOutput);
 			} else {
 				model = ModelLocationUtils.getModelLocation(TFBlocks.EXPERIMENT_115.get(), suffix);
 			}
@@ -314,7 +315,7 @@ public class BlockModelGenerator extends BlockModelBuilders {
 		this.forcefield(TFBlocks.VIOLET_FORCE_FIELD.get(), 0xFF5C1074);
 
 		this.generateSpecialModel(TFBlocks.KEEPSAKE_CASKET.get(), Blocks.NETHERITE_BLOCK, block -> ItemModelUtils.specialModel(TwilightForestMod.prefix("item/keepsake_casket"), new KeepsakeCasketSpecialRenderer.Unbaked()));
-		this.generateSpecialModel(TFBlocks.SKULL_CHEST.get(), Blocks.LIGHT_GRAY_CONCRETE_POWDER, block -> ItemModelUtils.specialModel(TwilightForestMod.prefix("item/skull_chest"), new SkullChestSpecialRenderer.Unbaked()));
+		this.generateSpecialModel(TFBlocks.SKULL_CHEST.get(), Blocks.CONCRETE_POWDER.pick(DyeColor.LIGHT_GRAY), block -> ItemModelUtils.specialModel(TwilightForestMod.prefix("item/skull_chest"), new SkullChestSpecialRenderer.Unbaked()));
 		this.generateSpecialModel(TFBlocks.CICADA.get(), Blocks.SLIME_BLOCK, block -> ItemModelUtils.specialModel(TwilightForestMod.prefix("item/cicada"), new CicadaSpecialRenderer.Unbaked()));
 		this.generateSpecialModel(TFBlocks.FIREFLY.get(), Blocks.SLIME_BLOCK, block -> ItemModelUtils.specialModel(TwilightForestMod.prefix("item/firefly"), new FireflySpecialRenderer.Unbaked()));
 		this.generateSpecialModel(TFBlocks.MOONWORM.get(), Blocks.SLIME_BLOCK, block -> ItemModelUtils.specialModel(TwilightForestMod.prefix("item/moonworm"), new MoonwormSpecialRenderer.Unbaked()));

@@ -286,8 +286,8 @@ dependencies {
 
 	// test mods for Iris/Sodium compatibility
 	runtimeOnly files(
-		'libs/sodium-neoforge-0.8.12+mc26.1.2.jar',
-		'libs/iris-neoforge-1.10.9+mc26.1.1.jar'
+		//'libs/sodium-neoforge-0.8.12+mc26.1.2.jar',
+		//'libs/iris-neoforge-1.10.9+mc26.1.1.jar'
 	)
 
 	testImplementation group: 'net.neoforged', name: 'testframework', version: project.neo_version

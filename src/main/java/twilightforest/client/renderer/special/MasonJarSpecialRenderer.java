@@ -4,13 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
@@ -18,11 +15,9 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
 import tamaized.beanification.Autowired;
@@ -46,10 +41,9 @@ public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolv
 			stack.pushPose();
 			JarLid jarLid = map.get(TFDataComponents.JAR_LID.get());
 			Item testLid = jarLid == null ? this.defaultLid().orElse(null) : jarLid.lid();
-			Item lid = testLid == null || !JarRenderer.LID_KEYS.containsKey(testLid) ? null : testLid;
+			Item lid = testLid == null || !JarRenderer.LIDS.containsKey(testLid) ? null : testLid;
 			if (lid != null) {
-				StandaloneModelKey<BlockModel> key = JarRenderer.LID_KEYS.get(lid);
-				BlockModel lidModel = Minecraft.getInstance().getModelManager().getStandaloneModel(key);
+				BlockModel lidModel = JarRenderer.LIDS.get(lid);
 				if (lidModel != null) {
 					BlockModelRenderState lidState = new BlockModelRenderState();
 					lidModel.update(lidState, TFBlocks.MASON_JAR.get().defaultBlockState(), BlockDisplayContext.create(), 42L);

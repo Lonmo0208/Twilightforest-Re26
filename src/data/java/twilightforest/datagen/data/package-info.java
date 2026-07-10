@@ -1,7 +1,4 @@
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 package twilightforest.datagen.data;
-
-import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

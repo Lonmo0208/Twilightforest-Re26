@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -68,7 +69,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 	}
 
 	private static void causeLightning(Level level, BlockPos pos, boolean destructive) {
-		LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
+		LightningBolt bolt = new LightningBolt(EntityTypes.LIGHTNING_BOLT, level);
 		bolt.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
 		bolt.setVisualOnly(destructive);
 		level.addFreshEntity(bolt);

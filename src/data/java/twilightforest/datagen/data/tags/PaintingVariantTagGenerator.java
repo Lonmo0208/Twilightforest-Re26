@@ -3,7 +3,7 @@ package twilightforest.datagen.data.tags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.KeyTagProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.entity.decoration.painting.PaintingVariant;
 import net.minecraft.world.entity.decoration.painting.PaintingVariants;
 import twilightforest.TwilightForestMod;
@@ -11,7 +11,7 @@ import twilightforest.tags.TFPaintingVariantTags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class PaintingVariantTagGenerator extends KeyTagProvider<PaintingVariant> {
+public class PaintingVariantTagGenerator extends TagsProvider<PaintingVariant> {
 
 	public PaintingVariantTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
 		super(output, Registries.PAINTING_VARIANT, provider, TwilightForestMod.ID);

@@ -150,13 +150,10 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 
 	@Override
 	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(graphics, mouseX, mouseY, partialTicks);
 		int frameX = this.leftPos;
 		int frameY = (this.height - this.imageHeight) / 2;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, frameX, frameY, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
-		super.extractBackground(graphics, mouseX, mouseY, partialTicks);
-		if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
-			// background is handled by extractBackground
-		}
 	}
 
 	@Override
@@ -172,9 +169,9 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 
 	@Override
 	public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractContents(graphics, mouseX, mouseY, partialTicks);
 		int frameX = this.leftPos;
 		int frameY = (this.height - this.imageHeight) / 2;
-		super.extractContents(graphics, mouseX, mouseY, partialTicks);
 
 		UncraftingMenu tfContainer = this.menu;
 

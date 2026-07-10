@@ -1,35 +1,35 @@
 package twilightforest.client;
 
-import com.mojang.blaze3d.shaders.UniformType;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.renderer.RenderPipelines;
+import twilightforest.client.renderer.TFRenderPipelines;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 
 public class TFShaders {
 
-	public static RenderPipeline RED_THREAD;
 	public static PositionAwareShaderInstance AURORA;
 
 	public static void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
-		RED_THREAD = RenderPipeline.builder(RenderPipelines.BLOCK_SNIPPET)
-			.withLocation(TwilightForestMod.prefix("red_thread/red_thread"))
-			.build();
-		event.registerPipeline(RED_THREAD);
-
-		RenderPipeline auroraPipeline = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+		RenderPipeline auroraPipeline = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
 			.withLocation(TwilightForestMod.prefix("aurora/aurora"))
 			.withVertexShader(TwilightForestMod.prefix("core/aurora/aurora"))
 			.withFragmentShader(TwilightForestMod.prefix("core/aurora/aurora"))
-			.withUniform("AuroraSettings", UniformType.UNIFORM_BUFFER)
-			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+			.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
+			.withPrimitiveTopology(PrimitiveTopology.QUADS)
 			.withCull(false)
 			.withColorTargetState(new com.mojang.blaze3d.pipeline.ColorTargetState(com.mojang.blaze3d.pipeline.BlendFunction.TRANSLUCENT))
 			.build();
 		event.registerPipeline(auroraPipeline);
 		AURORA = new PositionAwareShaderInstance(auroraPipeline);
+		event.registerPipeline(TFRenderPipelines.GIANT_BLOCK_LINES);
+		event.registerPipeline(TFRenderPipelines.RED_THREAD);
+		event.registerPipeline(TFRenderPipelines.PROTECTION_BOX);
+		event.registerPipeline(TFRenderPipelines.SHADOW_CLONE);
 	}
 
 	@Nullable

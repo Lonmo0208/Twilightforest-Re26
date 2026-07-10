@@ -6,6 +6,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -38,7 +40,7 @@ public class TrollCloudComponent extends TFStructureComponentOld {
 	}
 
 	protected void placeCloud(WorldGenLevel world, BoundingBox sbb, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
-		this.generateBox(world, sbb, minX, minY, minZ, maxX, maxY, maxZ, Blocks.WHITE_STAINED_GLASS.defaultBlockState(), Blocks.WHITE_STAINED_GLASS.defaultBlockState(), false);
+		this.generateBox(world, sbb, minX, minY, minZ, maxX, maxY, maxZ, BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("white_stained_glass")).get().value().defaultBlockState(), BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("white_stained_glass")).get().value().defaultBlockState(), false);
 		this.generateBox(world, sbb, minX + 2, minY + 2, minZ + 2, maxX - 2, maxY - 1, maxZ - 2, Blocks.QUARTZ_BLOCK.defaultBlockState(), Blocks.QUARTZ_BLOCK.defaultBlockState(), false);
 
 	}

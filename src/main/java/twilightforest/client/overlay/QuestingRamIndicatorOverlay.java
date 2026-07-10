@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.neoforged.api.distmarker.Dist;
@@ -26,8 +27,8 @@ public class QuestingRamIndicatorOverlay {
 	private static QuestingRamCurrentContext questingRamCurrentContext;
 
 	public static void render(Minecraft minecraft, GuiGraphicsExtractor graphics, Gui gui, Player player) {
-		if (player != null && !minecraft.options.hideGui && TFConfig.showQuestRamCrosshairIndicator) {
-			if (minecraft.options.getCameraType().isFirstPerson() && (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR || gui.canRenderCrosshairForSpectator(minecraft.hitResult)) && minecraft.crosshairPickEntity instanceof QuestRam ram) {
+		if (player != null && true && TFConfig.showQuestRamCrosshairIndicator) {
+			if (minecraft.options.getCameraType().isFirstPerson() && (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR || (minecraft.hitResult != null && minecraft.hitResult.getType() != net.minecraft.world.phys.HitResult.Type.MISS)) && minecraft.crosshairPickEntity instanceof QuestRam ram) {
 				ItemStack stack = player.getInventory().getItem(player.getInventory().getSelectedSlot());
 				if (!stack.isEmpty()) {
 					for (var questEntry : questingRamCurrentContext.getContext().questItems().entrySet()) {

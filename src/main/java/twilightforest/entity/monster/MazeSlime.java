@@ -13,7 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.cubemob.Slime;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,7 +34,6 @@ public class MazeSlime extends Slime {
 		super.setSize(size, resetHealth);
 		this.getAttribute(Attributes.MAX_HEALTH).addOrReplacePermanentModifier(DOUBLE_HEALTH);
 		this.setHealth(this.getMaxHealth());
-		this.xpReward = size + 3;
 	}
 
 	public static boolean getCanSpawnHere(EntityType<MazeSlime> entity, ServerLevelAccessor world, EntitySpawnReason reason, BlockPos pos, RandomSource random) {

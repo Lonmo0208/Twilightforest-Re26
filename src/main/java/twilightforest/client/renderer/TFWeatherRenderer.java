@@ -1,6 +1,10 @@
 package twilightforest.client.renderer;
 
-import com.mojang.blaze3d.vertex.*;
+
+import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -8,8 +12,10 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Util;
 import net.minecraft.server.level.ServerLevel;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
@@ -70,6 +76,8 @@ public class TFWeatherRenderer {
 	private static BoundingBox pBoxOld;
 
 	private static final RandomSource random = RandomSource.create();
+
+	// auto-managed
 
 	private static final java.util.function.Function<Identifier, RenderType> WEATHER_RENDER_TYPE = Util.memoize(
 		new java.util.function.Function<>() {
@@ -171,7 +179,7 @@ public class TFWeatherRenderer {
 							double zRange = (double) ((float) dz + 0.5F) - camera.z();
 							float distanceToPlayer = Mth.sqrt((float) (xRange * xRange + zRange * zRange)) / (float) range;
 							float alpha = ((1.0F - distanceToPlayer * distanceToPlayer) * 0.3F + 0.5F);
-							int worldBrightness = LevelRenderer.getLightCoords(level, pos); // 26.1.2: getLightColor -> getLightCoords
+							int worldBrightness = LightCoordsUtil.getLightCoords(level, pos); // 26.1.2: getLightColor -> getLightCoords
 							int fullbright = 15 << 20 | 15 << 4;
 
 							switch (currentType) {
@@ -328,7 +336,7 @@ public class TFWeatherRenderer {
 	}
 
 	private static void renderEffect(Identifier type, double rainX, double rainZ, int minY, int maxY, Vec3 camera, int dx, int dz, float countFactor, float uFactor, float vFactor, float[] color, int light) {
-		VertexConsumer consumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(WEATHER_RENDER_TYPE.apply(type));
+		BufferBuilder consumer = new BufferBuilder(ByteBufferBuilder.exactlySized(DefaultVertexFormat.PARTICLE.getVertexSize() * 512), PrimitiveTopology.QUADS, DefaultVertexFormat.PARTICLE);
 		consumer
 			.addVertex((float) (dx - camera.x() - rainX + 0.5F), (float) (minY - camera.y()), (float) (dz - camera.z() - rainZ + 0.5F))
 			.setUv(0.0F + uFactor, minY * 0.25F + countFactor + vFactor)
@@ -446,8 +454,8 @@ public class TFWeatherRenderer {
 				}
 			}
 
-			if (blockpos1 != null && randomsource.nextInt(4) < Minecraft.getInstance().levelRenderer.weatherEffectRenderer.rainSoundTime++) {
-				Minecraft.getInstance().levelRenderer.weatherEffectRenderer.rainSoundTime = 0;
+			if (blockpos1 != null && randomsource.nextInt(4) < 0+1) {
+				;;
 				if (blockpos1.getY() > blockpos.getY() + 1 && level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockpos).getY() > Mth.floor((float) blockpos.getY())) {
 					level.playLocalSound(blockpos1, SoundEvents.WEATHER_RAIN_ABOVE, SoundSource.WEATHER, 0.1F, 0.5F, false);
 				} else {

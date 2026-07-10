@@ -16,6 +16,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
+import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.common.world.PieceBeardifierModifier;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -141,7 +142,7 @@ public final class LichTowerBase extends TwilightJigsawPiece implements PieceBea
 		return 1;
 	}
 
-	private static class TrimProcessor extends StructureProcessor {
+	private static class TrimProcessor implements StructureProcessor {
 		private static final TrimProcessor INSTANCE = new TrimProcessor();
 
 		@Nullable
@@ -152,11 +153,11 @@ public final class LichTowerBase extends TwilightJigsawPiece implements PieceBea
 				return null;
 			}
 
-			return super.process(level, origin, centerBottom, originalBlockInfo, modifiedBlockInfo, settings, template);
+			return modifiedBlockInfo;
 		}
 
 		@Override
-		protected StructureProcessorType<?> getType() {
+		public MapCodec<? extends StructureProcessor> codec() {
 			return null; // not serialized
 		}
 	}

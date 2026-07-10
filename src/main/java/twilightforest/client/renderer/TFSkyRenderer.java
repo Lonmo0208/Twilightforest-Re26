@@ -2,11 +2,13 @@ package twilightforest.client.renderer;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.*;
+
 import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -25,12 +27,11 @@ import twilightforest.TwilightForestMod;
 import java.lang.Math;
 import java.util.Optional;
 import java.util.OptionalDouble;
-import java.util.OptionalInt;
 
 public class TFSkyRenderer implements AutoCloseable {
 
 	public static final ContextKey<Boolean> RENDER_DARK_DISC = new ContextKey<>(TwilightForestMod.prefix("render_dark_disc"));
-	private final RenderSystem.AutoStorageIndexBuffer starIndices = RenderSystem.getSequentialBuffer(VertexFormat.Mode.QUADS);
+	private final RenderSystem.AutoStorageIndexBuffer starIndices = RenderSystem.getSequentialBuffer(PrimitiveTopology.QUADS);
 	private final GpuBuffer starBuffer;
 	private int starIndexCount;
 
@@ -85,20 +86,20 @@ public class TFSkyRenderer implements AutoCloseable {
 		matrix.pushMatrix();
 		matrix.mul(stack.last().pose());
 		RenderPipeline renderPipeline = RenderPipelines.STARS;
-		GpuTextureView colorTexture = Minecraft.getInstance().getMainRenderTarget().getColorTextureView();
-		GpuTextureView depthTexture = Minecraft.getInstance().getMainRenderTarget().getDepthTextureView();
+		GpuTextureView colorTexture = Minecraft.getInstance().gameRenderer.mainRenderTarget().getColorTextureView();
+		GpuTextureView depthTexture = Minecraft.getInstance().gameRenderer.mainRenderTarget().getDepthTextureView();
 		GpuBuffer indices = this.starIndices.getBuffer(this.starIndexCount);
 		GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms()
 			.writeTransform(matrix, new Vector4f(1.0F, 1.0F, 1.0F, 1.0F), new Vector3f(), new Matrix4f());
 		try (RenderPass renderPass = RenderSystem.getDevice()
 				.createCommandEncoder()
-				.createRenderPass(() -> "Stars", colorTexture, OptionalInt.empty(), depthTexture, OptionalDouble.empty())) {
+				.createRenderPass(() -> "Stars", colorTexture, Optional.empty(), depthTexture, OptionalDouble.empty())) {
 			renderPass.setPipeline(renderPipeline);
 			RenderSystem.bindDefaultUniforms(renderPass);
 			renderPass.setUniform("DynamicTransforms", dynamicTransforms);
-			renderPass.setVertexBuffer(0, this.starBuffer);
+			renderPass.setVertexBuffer(0, new GpuBufferSlice(this.starBuffer, 0, 4096L));
 			renderPass.setIndexBuffer(indices, this.starIndices.type());
-			renderPass.drawIndexed(0, 0, this.starIndexCount, 1);
+			renderPass.drawIndexed(this.starIndexCount, 1, 0, 0, 0);
 		}
 
 		matrix.popMatrix();
@@ -110,7 +111,7 @@ public class TFSkyRenderer implements AutoCloseable {
 		GpuBuffer gpuBuffer;
 
 		try (ByteBufferBuilder byteBufferBuilder = ByteBufferBuilder.exactlySized(DefaultVertexFormat.POSITION.getVertexSize() * 3000 * 4)) {
-			BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+			BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION);
 
 			// TF - 1500 -> 3000
 			for (int i = 0; i < 3000; ++i) {

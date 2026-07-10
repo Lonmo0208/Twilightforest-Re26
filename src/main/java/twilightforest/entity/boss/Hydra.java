@@ -89,8 +89,6 @@ public class Hydra extends BaseTFBoss {
 
 		this.partArray = parts.toArray(new HydraPart[0]);
 
-		this.setId(ENTITY_COUNTER.getAndAdd(this.partArray.length + 1) + 1);
-
 		this.xpReward = 511;
 	}
 
@@ -682,10 +680,6 @@ public class Hydra extends BaseTFBoss {
 
 	@Override
 	protected void doPush(Entity entity) {
-	}
-
-	@Override
-	public void knockback(double strength, double xRatio, double zRatio) {
 	}
 
 	@Override

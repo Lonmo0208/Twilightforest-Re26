@@ -2,10 +2,13 @@ package twilightforest.world.components.structures.lichtower;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -385,10 +388,10 @@ public class TowerWingComponent extends TFStructureComponentOld {
 	 */
 	protected void makeOpeningMarkers(WorldGenLevel world, RandomSource rand, int numMarkers, BoundingBox sbb) {
 		if (size > 4) {
-			final BlockState woolWhite = Blocks.WHITE_WOOL.defaultBlockState();
-			final BlockState woolOrange = Blocks.ORANGE_WOOL.defaultBlockState();
-			final BlockState woolMagenta = Blocks.MAGENTA_WOOL.defaultBlockState();
-			final BlockState woolLightBlue = Blocks.LIGHT_BLUE_WOOL.defaultBlockState();
+			final BlockState woolWhite = BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("white_wool")).get().value().defaultBlockState();
+			final BlockState woolOrange = BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("orange_wool")).get().value().defaultBlockState();
+			final BlockState woolMagenta = BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("magenta_wool")).get().value().defaultBlockState();
+			final BlockState woolLightBlue = BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace("light_blue_wool")).get().value().defaultBlockState();
 
 			for (int i = 0; i < numMarkers; i++) {
 				int[] spot = getValidOpening(rand, Rotation.NONE);
@@ -557,7 +560,7 @@ public class TowerWingComponent extends TFStructureComponentOld {
 	 */
 	protected void decorateSkeletonRoom(WorldGenLevel world, RandomSource rand, int bottom, int top, Rotation ladderUpDir, Rotation ladderDownDir, BoundingBox sbb) {
 		// skeleton spawner
-		setSpawner(world, size / 2, bottom + 2, size / 2, sbb, EntityType.SKELETON);
+		setSpawner(world, size / 2, bottom + 2, size / 2, sbb, EntityTypes.SKELETON);
 
 		// floor-to-ceiling chains
 		ArrayList<BlockPos> chainList = new ArrayList<>();
@@ -594,7 +597,7 @@ public class TowerWingComponent extends TFStructureComponentOld {
 	 */
 	protected void decorateZombieRoom(WorldGenLevel world, RandomSource rand, int bottom, Rotation ladderUpDir, Rotation ladderDownDir, BoundingBox sbb) {
 		// zombie spawner
-		setSpawner(world, size / 2, bottom + 2, size / 2, sbb, EntityType.ZOMBIE);
+		setSpawner(world, size / 2, bottom + 2, size / 2, sbb, EntityTypes.ZOMBIE);
 		final BlockState ironBars = Blocks.IRON_BARS.defaultBlockState();
 		final BlockState soulSand = Blocks.SOUL_SAND.defaultBlockState();
 		final BlockState brownMushroom = Blocks.BROWN_MUSHROOM.defaultBlockState();
@@ -711,10 +714,10 @@ public class TowerWingComponent extends TFStructureComponentOld {
 		// 20% chance of a spider spawner!
 		if (rand.nextInt(5) == 0) {
 			EntityType<?> spiderName = switch (rand.nextInt(4)) {
-				case 3 -> EntityType.CAVE_SPIDER;
+				case 3 -> EntityTypes.CAVE_SPIDER;
 				case 2 -> TFEntities.SWARM_SPIDER.get();
 				case 1 -> TFEntities.HEDGE_SPIDER.get();
-				default -> EntityType.SPIDER;
+				default -> EntityTypes.SPIDER;
 			};
 
 			setSpawner(world, size / 2, bottom + 2, size / 2, sbb, spiderName);
