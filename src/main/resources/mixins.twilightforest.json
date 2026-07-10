@@ -10,7 +10,8 @@
     "MixinLivingBlockContainerName"
   ],
   "client": [
-    "ClientLevelMixin"
+    "ClientLevelMixin",
+    "client.MixinLivingBlockRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
