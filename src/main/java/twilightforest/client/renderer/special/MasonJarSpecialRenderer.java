@@ -7,6 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -19,6 +22,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
 import tamaized.beanification.Autowired;
@@ -42,10 +46,15 @@ public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolv
 			stack.pushPose();
 			JarLid jarLid = map.get(TFDataComponents.JAR_LID.get());
 			Item testLid = jarLid == null ? this.defaultLid().orElse(null) : jarLid.lid();
-			Item lid = testLid == null || !JarRenderer.LIDS.containsKey(testLid) ? null : testLid;
+			Item lid = testLid == null || !JarRenderer.LID_KEYS.containsKey(testLid) ? null : testLid;
 			if (lid != null) {
-				// JarRenderer was removed in 26.1.2; jar lid model rendering requires NeoForge's new model system
-			//JarRenderer.renderModel(JarRenderer.LIDS.get(lid), TFBlocks.MASON_JAR.get().defaultBlockState(), Minecraft.getInstance().getBlockRenderer(), stack, source, light, overlay);
+				StandaloneModelKey<BlockModel> key = JarRenderer.LID_KEYS.get(lid);
+				BlockModel lidModel = Minecraft.getInstance().getModelManager().getStandaloneModel(key);
+				if (lidModel != null) {
+					BlockModelRenderState lidState = new BlockModelRenderState();
+					lidModel.update(lidState, TFBlocks.MASON_JAR.get().defaultBlockState(), BlockDisplayContext.create(), 42L);
+					lidState.submit(stack, collector, light, overlay, outlineColor);
+				}
 			}
 
 			ItemContainerContents contents = map.get(DataComponents.CONTAINER);
