@@ -103,7 +103,7 @@ tasks.named('compileTestJava') {
 }
 
 base {
-	archivesName = "${project.mod_id}-${project.minecraft_version}"
+	archivesName = "${project.mod_id}.re26-${project.minecraft_version}"
 }
 
 subprojects {
