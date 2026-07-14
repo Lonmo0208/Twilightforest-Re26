@@ -379,11 +379,11 @@ public class ItemModelGenerator extends ItemModelBuilders {
 		json.add("textures", textures);
 		JsonObject display = new JsonObject();
 		if (isBlocking) {
-			addDisplayEntry(display, "thirdperson_righthand", new float[]{45, 135, 0}, new float[]{3.51f, 11, -2}, new float[]{1, 1, 1});
-			addDisplayEntry(display, "thirdperson_lefthand", new float[]{45, 135, 0}, new float[]{13.51f, 3, 5}, new float[]{1, 1, 1});
-			addDisplayEntry(display, "firstperson_righthand", new float[]{0, 180, -5}, new float[]{-15, 3.25f, -11}, new float[]{1.25f, 1.25f, 1.25f});
+			addDisplayEntry(display, "thirdperson_righthand", new float[]{45, 155, 0}, new float[]{-3.49f, 11, -2}, new float[]{1, 1, 1});
+			addDisplayEntry(display, "thirdperson_lefthand", new float[]{45, 155, 0}, new float[]{11.51f, 7, 2.5f}, new float[]{1, 1, 1});
+			addDisplayEntry(display, "firstperson_righthand", new float[]{0, 180, -5}, new float[]{-15, 5, -11}, new float[]{1.25f, 1.25f, 1.25f});
 			addDisplayEntry(display, "firstperson_lefthand", new float[]{0, 180, -5}, new float[]{5, 5, -11}, new float[]{1.25f, 1.25f, 1.25f});
-			addDisplayEntry(display, "gui", new float[]{15, -25, -5}, new float[]{3, 2, 0}, new float[]{0.65f, 0.65f, 0.65f});
+			addDisplayEntry(display, "gui", new float[]{15, -25, -5}, new float[]{2, 3, 0}, new float[]{0.65f, 0.65f, 0.65f});
 		} else {
 			addDisplayEntry(display, "thirdperson_righthand", new float[]{0, 90, 0}, new float[]{10.51f, 6, -4}, new float[]{1, 1, 1});
 			addDisplayEntry(display, "thirdperson_lefthand", new float[]{0, 90, 0}, new float[]{10.51f, 6, 12}, new float[]{1, 1, 1});
