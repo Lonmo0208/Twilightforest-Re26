@@ -480,7 +480,6 @@ public class TFCreativeTabs {
 			output.accept(TFItems.CARMINITE);
 			output.accept(TFItems.COPPER_NUGGET);
 			output.accept(TFItems.TOWER_KEY);
-			output.accept(TFItems.CUBE_TALISMAN);
 			output.accept(TFItems.MAGIC_BEANS);
 			output.accept(TFItems.IRON_BERRY);
 			output.accept(TFItems.GOLD_BERRY);
@@ -658,6 +657,7 @@ public class TFCreativeTabs {
 			output.accept(TFBlocks.SLIDER);
 			output.accept(TFBlocks.BRAZIER);
 			output.accept(TFItems.FOUR_LEAF_CLOVER);
+			output.accept(TFItems.CUBE_TALISMAN);
 		}).build());
 
 	private static void generateGearWithEnchants(CreativeModeTab.Output output, ItemLike item, EnchantmentInstance... instances) {
