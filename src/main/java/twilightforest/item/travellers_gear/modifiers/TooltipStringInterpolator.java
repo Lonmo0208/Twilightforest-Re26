@@ -47,7 +47,21 @@ public abstract class TooltipStringInterpolator {
 	}
 
 	private static String resolveTFKeybind(String keyString) {
-		// Dedicated server: KeyMapping is client-only, skip resolution
+		if (!net.neoforged.fml.loading.FMLEnvironment.getDist().isDedicatedServer()) {
+			return ClientResolver.resolve(keyString);
+		}
 		return keyString;
+	}
+
+	@net.neoforged.api.distmarker.OnlyIn(net.neoforged.api.distmarker.Dist.CLIENT)
+	private static class ClientResolver {
+		static String resolve(String keyString) {
+			for (net.minecraft.client.KeyMapping mapping : twilightforest.init.TFKeyBinds.KEY_MAPPINGS) {
+				if (mapping.getName().equals(keyString)) {
+					return mapping.getTranslatedKeyMessage().getString();
+				}
+			}
+			return keyString;
+		}
 	}
 }

@@ -1,4 +1,4 @@
-// 26.2	2026-07-07T14:01:17.9547989	Model Definitions - twilightforest
+// 26.2	2026-07-14T11:46:31.0566205	Model Definitions - twilightforest
 bfc4b40d2c8daf9144a74758b5060ff35a20c7b8 assets/twilightforest/blockstates/acacia_banister.json
 a0fbbc14b1fcd6707dd2ffa827ab024c9f106422 assets/twilightforest/blockstates/acacia_drying_rack.json
 2ba5945264a026fc35aa113643919b494cf4406d assets/twilightforest/blockstates/alpha_yeti_boss_spawner.json
@@ -2398,7 +2398,7 @@ b1a659c70a45f376b72cacd0b79587e9e68804db assets/twilightforest/models/item/knigh
 d2c0d0336eb105811ec38717128c4f0f344d8523 assets/twilightforest/models/item/knightmetal_pickaxe.json
 221fbdcebc9e01c60279953e014254d16333f6ef assets/twilightforest/models/item/knightmetal_ring.json
 0e65b8bb4354246737e2eface5c8b2c16dc188a7 assets/twilightforest/models/item/knightmetal_shield.json
-74a5fe7d9efe4629616dcf844443c1510c5a6e8a assets/twilightforest/models/item/knightmetal_shield_blocking.json
+94e29ed1e8d406d0370ec4391ddd503e8c032016 assets/twilightforest/models/item/knightmetal_shield_blocking.json
 a7ec10a496b1b6935e8dc144efe701e3f5ec7f00 assets/twilightforest/models/item/knightmetal_sword.json
 0ca7dc7b4daec376dd0f85d57465830781584c7d assets/twilightforest/models/item/knight_phantom_banner_pattern.json
 56665c58917fec4cddd58a87d7b3d4ad44be57ac assets/twilightforest/models/item/lamp_of_cinders.json

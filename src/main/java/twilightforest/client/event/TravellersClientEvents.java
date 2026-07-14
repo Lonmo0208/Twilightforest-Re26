@@ -274,15 +274,18 @@ public class TravellersClientEvents {
 		return !key.matches(new net.minecraft.client.input.KeyEvent(event.getKey(), event.getScanCode(), event.getModifiers())) || Minecraft.getInstance().gui.screen() != null;
 	}
 
-	private void renderGlovesInFirstPerson(RenderArmEvent event) {
-		if (TFConfig.firstPersonGloveOverlay) {
-			AbstractClientPlayer player = event.getPlayer();
-			ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
-			if (chestStack.has(TFDataComponents.TRAVELLERS_HAS_GLOVES) && !chestStack.has(TFDataComponents.EMPERORS_CLOTH)) {
-				event.setCanceled(true);
-				boolean rightArm = event.getArm() == HumanoidArm.RIGHT;
-				SubmitNodeCollector collector = event.getSubmitNodeCollector();
-				PoseStack poseStack = event.getPoseStack();
+	private void renderGlovesInFirstPerson(RenderArmEvent<?> event) {
+		if (!TFConfig.firstPersonGloveOverlay) return;
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player == null) return;
+		ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
+		if (!chestStack.has(TFDataComponents.TRAVELLERS_HAS_GLOVES) || chestStack.has(TFDataComponents.EMPERORS_CLOTH))
+			return;
+
+		event.setCanceled(true);
+		boolean rightArm = event.getArm() == HumanoidArm.RIGHT;
+		SubmitNodeCollector collector = event.getSubmitNodeCollector();
+		PoseStack poseStack = event.getPoseStack();
 
 				// Get player model for arm pose setup (same as AvatarRenderer.renderHand)
 				AvatarRenderer<AbstractClientPlayer> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getPlayerRenderer(player);
@@ -303,7 +306,7 @@ public class TravellersClientEvents {
 					armPart,
 					poseStack,
 					RenderTypes.entityTranslucent(skinTexture),
-					event.getPackedLight(),
+					event.getLightCoords(),
 					OverlayTexture.NO_OVERLAY,
 					null
 				);
@@ -330,11 +333,9 @@ public class TravellersClientEvents {
 					gloveArmPart,
 					poseStack,
 					RenderTypes.armorCutoutNoCull(gloveLocation),
-					event.getPackedLight(),
+					event.getLightCoords(),
 					OverlayTexture.NO_OVERLAY,
 					null
 				);
-			}
-		}
 	}
 }
