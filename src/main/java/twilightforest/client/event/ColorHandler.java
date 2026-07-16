@@ -59,9 +59,32 @@ public class ColorHandler {
 			}
 		}), TFBlocks.AURORA_BLOCK.get());
 		event.register(List.of(new BlockTintSource() {
+			private int transformColor(int normalColor) {
+				int red = (normalColor >> 16) & 255;
+				int blue = normalColor & 255;
+				int green = (normalColor >> 8) & 255;
+
+				float[] hsb = ColorUtil.rgbToHSV(red, green, blue);
+
+				return 0xFF000000 | ColorUtil.hsvToRGB(hsb[0], hsb[1] * 0.5F, Math.min(hsb[2] + 0.4F, 0.9F));
+			}
+
 			@Override
 			public int color(BlockState state) {
-				int normalColor = blockColors.getTintSource(TFBlocks.AURORA_BLOCK.get().defaultBlockState(), 0).color(TFBlocks.AURORA_BLOCK.get().defaultBlockState());
+				return transformColor(0xFF000000 | ColorUtil.hsvToRGB(0.45F, 1.0F, 1.0F));
+			}
+
+			@Override
+			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+				float hue = SimplexNoiseHelper.rippleFractalNoise(2, 128.0f, new BlockPos(pos.getX(), 128 - pos.getY(), pos.getZ()), 0.37f, 0.67f, 1.5f);
+				return transformColor(0xFF000000 | ColorUtil.hsvToRGB(hue, 1.0F, 1.0F));
+			}
+		}), TFBlocks.AURORA_PILLAR.get(), TFBlocks.AURORA_SLAB.get());
+		event.register(List.of(new BlockTintSource() {
+			@Override
+			public int color(BlockState state) {
+				BlockTintSource source = blockColors.getTintSource(TFBlocks.AURORA_BLOCK.get().defaultBlockState(), 0);
+				int normalColor = source != null ? source.color(TFBlocks.AURORA_BLOCK.get().defaultBlockState()) : 0;
 
 				int red = (normalColor >> 16) & 255;
 				int blue = normalColor & 255;
@@ -71,7 +94,21 @@ public class ColorHandler {
 
 				return 0xFF000000 | ColorUtil.hsvToRGB(hsb[0], hsb[1] * 0.5F, Math.min(hsb[2] + 0.4F, 0.9F));
 			}
-		}), TFBlocks.AURORA_PILLAR.get(), TFBlocks.AURORA_SLAB.get(), TFBlocks.AURORALIZED_GLASS.get());
+
+			@Override
+			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+				BlockTintSource source = blockColors.getTintSource(TFBlocks.AURORA_BLOCK.get().defaultBlockState(), 0);
+				int normalColor = source != null ? source.colorInWorld(TFBlocks.AURORA_BLOCK.get().defaultBlockState(), level, pos) : 0;
+
+				int red = (normalColor >> 16) & 255;
+				int blue = normalColor & 255;
+				int green = (normalColor >> 8) & 255;
+
+				float[] hsb = ColorUtil.rgbToHSV(red, green, blue);
+
+				return 0xFF000000 | ColorUtil.hsvToRGB(hsb[0], hsb[1] * 0.5F, Math.min(hsb[2] + 0.4F, 0.9F));
+			}
+		}), TFBlocks.AURORALIZED_GLASS.get());
 		event.register(List.of(BlockTintSources.grass()), TFBlocks.SMOKER.get(), TFBlocks.FIRE_JET.get()); //TODO: This got the block tint from Grass, but this is about the same?
 		event.register(List.of(new BlockTintSource() {
 			@Override
