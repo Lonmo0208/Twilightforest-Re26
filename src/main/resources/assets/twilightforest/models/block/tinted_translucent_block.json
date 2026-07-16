@@ -1,0 +1,4 @@
+{
+  "parent": "twilightforest:block/tinted_block",
+  "render_type": "minecraft:translucent"
+}
