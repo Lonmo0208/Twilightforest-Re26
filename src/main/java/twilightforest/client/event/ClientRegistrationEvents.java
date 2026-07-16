@@ -72,6 +72,7 @@ import twilightforest.client.model.block.BrazierModel;
 import twilightforest.client.model.block.ReactorDebrisModel;
 import twilightforest.client.model.block.UnbakedReactorDebrisBlockStateModel;
 import twilightforest.client.model.block.aurorablock.UnbakedNoiseVaryingBlockStateModel;
+import twilightforest.client.model.block.connected.ConnectedTextureBlockStateModel;
 import twilightforest.client.model.block.connected.ConnectedTextureModelLoader;
 import twilightforest.client.model.block.forcefield.ForceFieldModelLoader;
 import twilightforest.client.model.block.forcefield.UnbakedForceFieldBlockStateModel;
@@ -159,6 +160,7 @@ public class ClientRegistrationEvents {
 		event.registerModel(TwilightForestMod.prefix("force_field"), UnbakedForceFieldBlockStateModel.MAP_CODEC);
 		event.registerModel(TwilightForestMod.prefix("reactor_debris"), UnbakedReactorDebrisBlockStateModel.MAP_CODEC);
 		event.registerModel(TwilightForestMod.prefix("royal_rags"), UnbakedRoyalRagsBlockStateModel.MAP_CODEC);
+		event.registerModel(TwilightForestMod.prefix("connected_texture_block"), ConnectedTextureBlockStateModel.MAP_CODEC);
 		event.registerModel(TwilightForestMod.prefix("patch"), UnbakedPatchBlockStateModel.MAP_CODEC);
 	}
 

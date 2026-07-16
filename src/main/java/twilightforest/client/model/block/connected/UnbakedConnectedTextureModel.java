@@ -239,26 +239,22 @@ public class UnbakedConnectedTextureModel extends AbstractUnbakedModel implement
 					connectedMaterial = connectedMaterial.withForceTranslucent(true);
 				}
 				Material.Baked overlayBaked = baker.materials().get(overlayMaterial, name);
-				Material.Baked connectedBaked = baker.materials().get(connectedMaterial, name);
 
 				for (Direction dir : Direction.values()) {
 					for (int quad = 0; quad < 4; quad++) {
-						for (int type = 0; type < 5; type++) {
-							Vector3f from = this.connectedFrom[dir.get3DDataValue()][quad][type];
-							Vector3f to = this.connectedTo[dir.get3DDataValue()][quad][type];
-							CuboidFace face = this.connectedFacesArray[dir.get3DDataValue()][quad][type];
-							Material.Baked material = type == 0 ? overlayBaked : connectedBaked;
+						Vector3f from = this.connectedFrom[dir.get3DDataValue()][quad][0];
+						Vector3f to = this.connectedTo[dir.get3DDataValue()][quad][0];
+						CuboidFace face = this.connectedFacesArray[dir.get3DDataValue()][quad][0];
 
-							BakedQuad bakedQuad = FaceBakery.bakeQuad(
-								baker, from, to, face, material, dir, state, null, true, 0
-							);
+						BakedQuad bakedQuad = FaceBakery.bakeQuad(
+							baker, from, to, face, overlayBaked, dir, state, null, true, 0
+						);
 
-							Direction cullDir = face.cullForDirection();
-							if (cullDir != null) {
-								builder.addCulledFace(cullDir, bakedQuad);
-							} else {
-								builder.addUnculledFace(bakedQuad);
-							}
+						Direction cullDir = face.cullForDirection();
+						if (cullDir != null) {
+							builder.addCulledFace(cullDir, bakedQuad);
+						} else {
+							builder.addUnculledFace(bakedQuad);
 						}
 					}
 				}

@@ -88,14 +88,12 @@ public class ConnectedTextureModel implements BlockStateModel, DynamicBlockState
 
 	private boolean shouldConnectSide(BlockAndTintGetter getter, BlockPos pos, Direction face, Direction side) {
 		BlockState neighborState = getter.getBlockState(pos.relative(side));
-		if (this.unculledFaces.contains(face)) return this.validConnectors.stream().anyMatch(neighborState::is);
-		return this.validConnectors.stream().anyMatch(neighborState::is) && Block.shouldRenderFace(getter, pos, getter.getBlockState(pos), neighborState, face);
+		return this.validConnectors.stream().anyMatch(neighborState::is);
 	}
 
 	private boolean isCornerBlockPresent(BlockAndTintGetter getter, BlockPos pos, Direction face, Direction side1, Direction side2) {
 		BlockState neighborState = getter.getBlockState(pos.relative(side1).relative(side2));
-		if (this.unculledFaces.contains(face)) return this.validConnectors.stream().anyMatch(neighborState::is);
-		return this.validConnectors.stream().anyMatch(neighborState::is) && Block.shouldRenderFace(getter, pos, getter.getBlockState(pos), neighborState, face);
+		return this.validConnectors.stream().anyMatch(neighborState::is);
 	}
 
 	@Override
