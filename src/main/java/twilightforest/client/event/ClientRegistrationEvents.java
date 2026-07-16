@@ -86,6 +86,8 @@ import twilightforest.client.model.block.forcefield.ForceFieldModelLoader;
 import twilightforest.client.model.block.forcefield.UnbakedForceFieldBlockStateModel;
 import twilightforest.client.model.block.patch.UnbakedPatchBlockStateModel;
 import twilightforest.client.model.block.giantblock.UnbakedGiantBlockStateModel;
+import twilightforest.client.model.block.carpet.RoyalRagsModelLoader;
+import twilightforest.client.model.block.carpet.UnbakedRoyalRagsBlockStateModel;
 import twilightforest.client.model.block.patch.PatchModelLoader;
 import twilightforest.client.model.entity.*;
 import twilightforest.client.model.item.TravellersGearItemModel;
@@ -166,6 +168,7 @@ public class ClientRegistrationEvents {
 		event.registerModel(TwilightForestMod.prefix("noise_varying"), UnbakedNoiseVaryingBlockStateModel.MAP_CODEC);
 		event.registerModel(TwilightForestMod.prefix("force_field"), UnbakedForceFieldBlockStateModel.MAP_CODEC);
 		event.registerModel(TwilightForestMod.prefix("reactor_debris"), UnbakedReactorDebrisBlockStateModel.MAP_CODEC);
+		event.registerModel(TwilightForestMod.prefix("royal_rags"), UnbakedRoyalRagsBlockStateModel.MAP_CODEC);
 		event.registerModel(TwilightForestMod.prefix("patch"), UnbakedPatchBlockStateModel.MAP_CODEC);
 	}
 
@@ -296,7 +299,7 @@ public class ClientRegistrationEvents {
 		event.register(Identifier.fromNamespaceAndPath("neoforge", "separate_transforms"), new FallbackLoader("perspectives", "base"));
 		
 		event.register(TwilightForestMod.prefix("giant_block"), new FallbackLoader("parent_block"));
-		event.register(TwilightForestMod.prefix("royal_rags"), new FallbackLoader());
+		event.register(TwilightForestMod.prefix("royal_rags"), RoyalRagsModelLoader.INSTANCE);
 		event.register(TwilightForestMod.prefix("travellers_gear"), new FallbackLoader("modifier_directory", "broken_modifier_directory"));
 	}
 

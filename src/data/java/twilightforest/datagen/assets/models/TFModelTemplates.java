@@ -5,6 +5,7 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.resources.Identifier;
 import twilightforest.TwilightForestMod;
+import twilightforest.client.model.block.carpet.RoyalRagsBuilder;
 import twilightforest.client.model.block.giantblock.GiantBlockBuilder;
 
 /**
@@ -35,6 +36,7 @@ public class TFModelTemplates extends ModelTemplates {
 
 	public static final ModelTemplate CTM_NO_BASE = create("twilightforest:ctm_no_base", TextureSlot.PARTICLE, TFTextureSlot.CTM_OVERLAY, TFTextureSlot.CTM_OVERLAY_CONNECTED).extend().parent(Identifier.withDefaultNamespace("block/block")).build();
 	public static final ModelTemplate CARPET = create("minecraft:carpet", TextureSlot.WOOL).extend().parent(Identifier.withDefaultNamespace("block/carpet")).build();
+	public static final ModelTemplate CORONATION_CARPET = create("twilightforest:coronation_carpet", TextureSlot.WOOL, TFTextureSlot.WOOL_CTM).extend().parent(Identifier.withDefaultNamespace("block/carpet")).customLoader(RoyalRagsBuilder::new, builder -> {}).build();
 	public static final ModelTemplate CTM = create("twilightforest:ctm", TextureSlot.PARTICLE, TFTextureSlot.CTM_BASE, TFTextureSlot.CTM_OVERLAY, TFTextureSlot.CTM_OVERLAY_CONNECTED).extend().parent(Identifier.withDefaultNamespace("block/block")).build();
 	public static final ModelTemplate GIANT_BLOCK = create("twilightforest:giant_block", TextureSlot.PARTICLE, TextureSlot.NORTH, TextureSlot.SOUTH, TextureSlot.EAST, TextureSlot.WEST, TextureSlot.UP, TextureSlot.DOWN).extend().parent(Identifier.withDefaultNamespace("block/cube")).customLoader(GiantBlockBuilder::new, builder -> {}).build();
 
