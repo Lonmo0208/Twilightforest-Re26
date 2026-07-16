@@ -1,6 +1,7 @@
 {
   "variants": {
     "": {
+      "type": "twilightforest:royal_rags",
       "model": "twilightforest:block/coronation_carpet"
     }
   }

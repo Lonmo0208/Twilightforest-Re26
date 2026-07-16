@@ -20,6 +20,7 @@ import twilightforest.TwilightForestMod;
 import twilightforest.block.*;
 import twilightforest.client.model.block.connected.ConnectedTextureBuilder;
 import twilightforest.client.model.block.patch.PatchBuilder;
+import twilightforest.client.model.block.carpet.UnbakedRoyalRagsBlockStateModel;
 import twilightforest.client.model.block.patch.UnbakedPatchBlockStateModel;
 import twilightforest.client.renderer.special.*;
 import twilightforest.datagen.helpers.models.BlockModelBuilders;
@@ -117,7 +118,11 @@ public class BlockModelGenerator extends BlockModelBuilders {
 			.put(TextureSlot.TOP, new Material(TwilightForestMod.prefix("block/stone_pillar_end")))
 			.put(TextureSlot.BOTTOM, new Material(TwilightForestMod.prefix("block/stone_pillar_end"))), TFModelTemplates.TINTED_CUBE_BOTTOM_TOP)
 			.create(block, this.modelOutput)))));
-		this.wrapBlockItem(TFBlocks.CORONATION_CARPET.get(), block -> this.blockStateOutput.accept(createSimpleBlock(block, plainVariant(TFModelTemplates.CARPET.create(block, new TextureMapping().put(TextureSlot.WOOL, new Material(TwilightForestMod.prefix("block/coronation_carpet"))), this.modelOutput)))));
+		this.wrapBlockItem(TFBlocks.CORONATION_CARPET.get(), block -> {
+			Identifier modelId = TFModelTemplates.CORONATION_CARPET.create(block, new TextureMapping().put(TextureSlot.WOOL, new Material(TwilightForestMod.prefix("block/coronation_carpet"))).put(TFTextureSlot.WOOL_CTM, new Material(TwilightForestMod.prefix("block/coronation_carpet_ctm"))), this.modelOutput);
+			CustomUnbakedBlockStateModel wrapper = new UnbakedRoyalRagsBlockStateModel(modelId);
+			this.blockStateOutput.accept(MultiVariantGenerator.dispatch(block, MultiVariant.of(new SimpleCustomBlockStateModelBuilder(wrapper))));
+		});
 		this.stonePillar();
 		this.wroughtIronFence();
 		this.terrorcotta();

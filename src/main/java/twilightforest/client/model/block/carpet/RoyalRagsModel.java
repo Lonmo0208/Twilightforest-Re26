@@ -42,7 +42,7 @@ public class RoyalRagsModel implements BlockStateModel, DynamicBlockStateModel {
 			boolean[] sideStates = new boolean[4];
 
 			for (int i = 0; i < directions.length; i++) {
-				sideStates[i] = this.shouldConnectSide(level, pos, face, directions[i]);
+				sideStates[i] = this.shouldConnectSide(level, pos, directions[i]);
 			}
 
 			int faceIndex = face.get3DDataValue();
@@ -51,7 +51,7 @@ public class RoyalRagsModel implements BlockStateModel, DynamicBlockStateModel {
 				int cornerOffset = (dir + 1) % directions.length;
 				boolean side1 = sideStates[dir];
 				boolean side2 = sideStates[cornerOffset];
-				boolean corner = side1 && side2 && this.isCornerBlockPresent(level, pos, face, directions[dir], directions[cornerOffset]);
+				boolean corner = side1 && side2 && this.isCornerBlockPresent(level, pos, directions[dir], directions[cornerOffset]);
 				logic[faceIndex][dir] = dir % 2 == 0 ? ConnectionLogic.of(side1, side2, corner) : ConnectionLogic.of(side2, side1, corner);
 			}
 		}
@@ -63,13 +63,15 @@ public class RoyalRagsModel implements BlockStateModel, DynamicBlockStateModel {
 			int faceIndex = face.get3DDataValue();
 			List<BakedQuad> faceQuads = new ArrayList<>(8);
 
-			if (face.getAxis().isHorizontal() && this.baseQuads != null) {
-				faceQuads.addAll(this.baseQuads[face.get2DDataValue()]);
-			}
-
-			for (int quad = 0; quad < 4; ++quad) {
-				ConnectionLogic connectionType = logic[faceIndex][quad];
-				faceQuads.add(this.quads[faceIndex][quad][connectionType.ordinal()]);
+			if (face.getAxis().isHorizontal()) {
+				if (this.baseQuads != null) {
+					faceQuads.addAll(this.baseQuads[face.get2DDataValue()]);
+				}
+			} else {
+				for (int quad = 0; quad < 4; ++quad) {
+					ConnectionLogic connectionType = logic[faceIndex][quad];
+					faceQuads.add(this.quads[faceIndex][quad][connectionType.ordinal()]);
+				}
 			}
 
 			quadsByDirection[faceIndex] = faceQuads;
@@ -78,14 +80,14 @@ public class RoyalRagsModel implements BlockStateModel, DynamicBlockStateModel {
 		parts.add(new RoyalRagsPart(quadsByDirection, this.particle));
 	}
 
-	private boolean shouldConnectSide(BlockAndTintGetter getter, BlockPos pos, Direction face, Direction side) {
+	private boolean shouldConnectSide(BlockAndTintGetter getter, BlockPos pos, Direction side) {
 		BlockState neighborState = getter.getBlockState(pos.relative(side));
-		return Arrays.stream(this.validConnectors).anyMatch(neighborState::is) && Block.shouldRenderFace(getter, pos, getter.getBlockState(pos), neighborState, face);
+		return Arrays.stream(this.validConnectors).anyMatch(neighborState::is);
 	}
 
-	private boolean isCornerBlockPresent(BlockAndTintGetter getter, BlockPos pos, Direction face, Direction side1, Direction side2) {
+	private boolean isCornerBlockPresent(BlockAndTintGetter getter, BlockPos pos, Direction side1, Direction side2) {
 		BlockState neighborState = getter.getBlockState(pos.relative(side1).relative(side2));
-		return Arrays.stream(this.validConnectors).anyMatch(neighborState::is) && Block.shouldRenderFace(getter, pos, getter.getBlockState(pos), neighborState, face);
+		return Arrays.stream(this.validConnectors).anyMatch(neighborState::is);
 	}
 
 	@Override
@@ -127,7 +129,12 @@ public class RoyalRagsModel implements BlockStateModel, DynamicBlockStateModel {
 
 		@Override
 		public List<BakedQuad> getQuads(@Nullable Direction direction) {
-			if (direction == null) return List.of();
+			if (direction == null) {
+				return this.quadsByDirection[Direction.UP.get3DDataValue()];
+			}
+			if (direction == Direction.UP) {
+				return List.of();
+			}
 			return this.quadsByDirection[direction.get3DDataValue()];
 		}
 

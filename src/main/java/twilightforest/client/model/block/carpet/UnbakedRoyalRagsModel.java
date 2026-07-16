@@ -173,9 +173,7 @@ public class UnbakedRoyalRagsModel extends AbstractUnbakedModel implements Custo
 			QuadCollection.Builder builder = new QuadCollection.Builder();
 
 			Material.Baked baseMaterial = baker.materials().get(textureSlots.getMaterial("wool"), name);
-			Material.Baked ctmMaterial = baker.materials().get(textureSlots.getMaterial("wool_ctm"), name);
 
-			// Bake base horizontal quads
 			for (Direction direction : Direction.Plane.HORIZONTAL) {
 				for (int quad = 0; quad < 4; quad++) {
 					Vector3f from = this.baseFrom[direction.get2DDataValue()][quad];
@@ -189,23 +187,23 @@ public class UnbakedRoyalRagsModel extends AbstractUnbakedModel implements Custo
 				}
 			}
 
-			// Bake face quads (up/down) with all connection variants
 			for (int dir = 0; dir < 2; dir++) {
-				Direction faceDir = Direction.values()[dir];
-				for (int quad = 0; quad < 4; quad++) {
-					for (int type = 0; type < 5; type++) {
-						Vector3f from = this.faceFrom[dir][quad][type];
-						Vector3f to = this.faceTo[dir][quad][type];
-						CuboidFace face = this.faceFaces[dir][quad][type];
-						Material.Baked material = type == 0 ? baseMaterial : ctmMaterial;
+			Direction faceDir = Direction.values()[dir];
+			for (int quad = 0; quad < 4; quad++) {
+				Vector3f from = this.faceFrom[dir][quad][0];
+				Vector3f to = this.faceTo[dir][quad][0];
+				CuboidFace face = this.faceFaces[dir][quad][0];
 
-						BakedQuad bakedQuad = FaceBakery.bakeQuad(
-							baker, from, to, face, material, faceDir, state, null, true, 0
-						);
-						builder.addCulledFace(faceDir, bakedQuad);
-					}
+				BakedQuad bakedQuad = FaceBakery.bakeQuad(
+					baker, from, to, face, baseMaterial, faceDir, state, null, true, 0
+				);
+				if (faceDir == Direction.UP) {
+					builder.addUnculledFace(bakedQuad);
+				} else {
+					builder.addCulledFace(faceDir, bakedQuad);
 				}
 			}
+		}
 
 			return builder.build();
 		};
