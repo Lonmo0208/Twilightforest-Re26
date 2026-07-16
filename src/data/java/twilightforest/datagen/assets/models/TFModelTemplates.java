@@ -4,8 +4,10 @@ import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.resources.Identifier;
+import twilightforest.init.TFBlocks;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.model.block.carpet.RoyalRagsBuilder;
+import twilightforest.client.model.block.connected.ConnectedTextureBuilder;
 import twilightforest.client.model.block.giantblock.GiantBlockBuilder;
 
 /**
@@ -75,6 +77,12 @@ public class TFModelTemplates extends ModelTemplates {
 	public static final ModelTemplate CASTLE_RUNE_TEMPLATE = create("twilightforest:castle_rune_template", TextureSlot.ALL, TFTextureSlot.RUNE);
 	public static final ModelTemplate TINTED_CUBE_BOTTOM_TOP = create("twilightforest:tinted_cube_bottom_top", TextureSlot.TOP, TextureSlot.SIDE, TextureSlot.BOTTOM);
 	public static final ModelTemplate TINTED_BLOCK = create("twilightforest:tinted_block", TextureSlot.ALL);
+	public static final ModelTemplate TINTED_TRANSLUCENT_BLOCK = create("twilightforest:tinted_translucent_block", TextureSlot.ALL);
+	public static final ModelTemplate AURORALIZED_GLASS = create("twilightforest:auroralized_glass", TFTextureSlot.CTM_OVERLAY, TFTextureSlot.CTM_OVERLAY_CONNECTED).extend().parent(Identifier.withDefaultNamespace("block/block")).customLoader(ConnectedTextureBuilder::new, builder -> {
+		builder.connectsTo(TFBlocks.AURORALIZED_GLASS.get());
+		builder.setOverlayTintIndex(0);
+		builder.setTranslucent();
+	}).build();
 	public static final ModelTemplate TINTED_SLAB_BOTTOM = create("twilightforest:tinted_slab_bottom", TextureSlot.PARTICLE, TextureSlot.TOP, TextureSlot.SIDE, TextureSlot.BOTTOM);
 	public static final ModelTemplate TINTED_SLAB_TOP = create("twilightforest:tinted_slab_top", "_top", TextureSlot.PARTICLE, TextureSlot.TOP, TextureSlot.SIDE, TextureSlot.BOTTOM);
 	public static final ModelTemplate TROPHY_PEDESTAL = create("twilightforest:template_trophy_pedestal", TextureSlot.NORTH, TextureSlot.SOUTH, TextureSlot.EAST, TextureSlot.WEST);

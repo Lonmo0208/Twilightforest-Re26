@@ -37,6 +37,7 @@ import twilightforest.client.model.block.giantblock.UnbakedGiantBlockStateModel;
 import org.jetbrains.annotations.NotNull;
 import twilightforest.TwilightForestMod;
 import twilightforest.block.*;
+import twilightforest.client.model.block.connected.ConnectedTextureBlockStateModel;
 import twilightforest.client.model.block.connected.ConnectedTextureBuilder;
 import twilightforest.client.model.block.forcefield.ForceFieldModel;
 import twilightforest.client.model.block.forcefield.ForceFieldModelBuilder;
@@ -1120,7 +1121,13 @@ public abstract class BlockModelBuilders extends WoodBlockBuilders {
 		Identifier top = TFModelTemplates.TINTED_SLAB_TOP.create(slab, slabMap, this.modelOutput);
 		this.wrapTintedBlockItem(slab, ItemModelUtils.constantTint(-9181501), block -> this.blockStateOutput.accept(createSlab(block, plainVariant(bottom), plainVariant(top), plainVariant(ModelLocationUtils.getModelLocation(pillar)))));
 
-		this.wrapTintedBlockItem(TFBlocks.AURORALIZED_GLASS.get(), ItemModelUtils.constantTint(-9181501), block -> this.blockStateOutput.accept(createSimpleBlock(block, plainVariant(TFModelTemplates.CTM_NO_BASE.extend().customLoader(ConnectedTextureBuilder::new, builder -> builder.setOverlayTintIndex(0).connectsTo(block)).build().create(block, TFTextureMapping.ctmBlock(block), this.modelOutput)))));
+		this.wrapTintedBlockItem(TFBlocks.AURORALIZED_GLASS.get(), ItemModelUtils.constantTint(-9181501), block -> {
+			Identifier modelId = TFModelTemplates.AURORALIZED_GLASS.create(block, new TextureMapping()
+				.put(TFTextureSlot.CTM_OVERLAY, new Material(TwilightForestMod.prefix("block/auroralized_glass")))
+				.put(TFTextureSlot.CTM_OVERLAY_CONNECTED, new Material(TwilightForestMod.prefix("block/auroralized_glass_ct"))), this.modelOutput);
+			CustomUnbakedBlockStateModel ctModel = new ConnectedTextureBlockStateModel(modelId);
+			this.blockStateOutput.accept(MultiVariantGenerator.dispatch(block, MultiVariant.of(new SimpleCustomBlockStateModelBuilder(ctModel))));
+		});
 	}
 
 	public void createTFChest(Block chestBlock, Material particle, Identifier texture) {

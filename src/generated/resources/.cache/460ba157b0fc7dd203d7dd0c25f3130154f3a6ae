@@ -1,4 +1,4 @@
-// 26.2	2026-07-16T03:07:11.7878805	Model Definitions - twilightforest
+// 26.2	2026-07-16T12:11:30.3313946	Model Definitions - twilightforest
 bfc4b40d2c8daf9144a74758b5060ff35a20c7b8 assets/twilightforest/blockstates/acacia_banister.json
 a0fbbc14b1fcd6707dd2ffa827ab024c9f106422 assets/twilightforest/blockstates/acacia_drying_rack.json
 2ba5945264a026fc35aa113643919b494cf4406d assets/twilightforest/blockstates/alpha_yeti_boss_spawner.json
@@ -7,7 +7,7 @@ a0fbbc14b1fcd6707dd2ffa827ab024c9f106422 assets/twilightforest/blockstates/acaci
 796cb2fedc6bde053e988892110dbd38578f4424 assets/twilightforest/blockstates/antibuilder.json
 a753d663958c27ad77bd65d8d9ee637ae7cd5a9d assets/twilightforest/blockstates/antibuilt_block.json
 ff6dd086fab0453865f6439c576c9120934ae968 assets/twilightforest/blockstates/arctic_fur_block.json
-feda195e2826ec1334fe59dc0d98cb9519743ff4 assets/twilightforest/blockstates/auroralized_glass.json
+d3a2bc9194645a4289b07664000ce464c67f171e assets/twilightforest/blockstates/auroralized_glass.json
 4045866797d0d34750f1f6b0a9779399afbe8652 assets/twilightforest/blockstates/aurora_block.json
 06b8d2c19720a41c08406f14c410780ca4f2f3ac assets/twilightforest/blockstates/aurora_pillar.json
 c4ad5da5c70d5d073f5487dabc65f6782358e0fe assets/twilightforest/blockstates/aurora_slab.json
@@ -1200,7 +1200,7 @@ c9d852ebe0ef4b5f0761c1bca4baa3fb379c689a assets/twilightforest/models/block/acac
 2b63b87c45d59942a99baa958bd85bee56fbe372 assets/twilightforest/models/block/antibuilder.json
 2cd7d9c16acab3797c18099995e5a5f4d0518e21 assets/twilightforest/models/block/antibuilt_block.json
 8565cb484dcd2657ed9127d186b7e11d10e71b69 assets/twilightforest/models/block/arctic_fur_block.json
-affdf51f0441075ae719c45f40358f79f1511c8a assets/twilightforest/models/block/auroralized_glass.json
+04270041bbe324da02233da2ea60f2345eb8e538 assets/twilightforest/models/block/auroralized_glass.json
 44af812c3ea5fed9a78ac919e301989326416a33 assets/twilightforest/models/block/aurora_block.json
 6a7576958338642b5c4e9ca6b6001e3cdb5991b8 assets/twilightforest/models/block/aurora_block_0.json
 56e03727fb6c108c796b2122997c9c2f4a6a318e assets/twilightforest/models/block/aurora_block_1.json
