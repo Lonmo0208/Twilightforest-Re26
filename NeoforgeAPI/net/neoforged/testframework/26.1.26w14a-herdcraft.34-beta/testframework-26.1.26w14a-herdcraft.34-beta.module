@@ -1,0 +1,80 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "net.neoforged",
+    "module": "testframework",
+    "version": "26.1.26w14a-herdcraft.34-beta",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.4.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 25,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "testframework-26.1.26w14a-herdcraft.34-beta.jar",
+          "url": "testframework-26.1.26w14a-herdcraft.34-beta.jar",
+          "size": 548815,
+          "sha512": "05ab976226a2223df02a55cfc8f93efa51fa054f57301e4b36e578e3dd1530188c8ff13a7b27f6423e29cd21f265c54206cbbf2bdcbaad5cabd8b195c2020fd3",
+          "sha256": "5276be0fe82c70ea5be45e5e9e95b128933c299d0ea8a25e2d7167ec601f92fb",
+          "sha1": "72ee50de2bc0adfb16e3b4f79cf29906e71e6337",
+          "md5": "c1f94377ce99d5fed3fee0a84d54b9cd"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 25,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "testframework-26.1.26w14a-herdcraft.34-beta.jar",
+          "url": "testframework-26.1.26w14a-herdcraft.34-beta.jar",
+          "size": 548815,
+          "sha512": "05ab976226a2223df02a55cfc8f93efa51fa054f57301e4b36e578e3dd1530188c8ff13a7b27f6423e29cd21f265c54206cbbf2bdcbaad5cabd8b195c2020fd3",
+          "sha256": "5276be0fe82c70ea5be45e5e9e95b128933c299d0ea8a25e2d7167ec601f92fb",
+          "sha1": "72ee50de2bc0adfb16e3b4f79cf29906e71e6337",
+          "md5": "c1f94377ce99d5fed3fee0a84d54b9cd"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "testframework-26.1.26w14a-herdcraft.34-beta-sources.jar",
+          "url": "testframework-26.1.26w14a-herdcraft.34-beta-sources.jar",
+          "size": 356556,
+          "sha512": "de68b28aa728099c66b8758cf3a3c7a8070b0e11358cc03ff928cf84c8d2b0ccfd79cb6fe4275a1778970520f00329f1a8f12fb249797e482b4acdcd37dfe6e2",
+          "sha256": "ee64970b171fb871ee5f9733c8d6f8c38641063bec794d31707b866472c4afeb",
+          "sha1": "47bcb9a1962aa1fbf833023cf8b253286686fcab",
+          "md5": "be73820ffc9c741c3dff026ebfd2561d"
+        }
+      ]
+    }
+  ]
+}
