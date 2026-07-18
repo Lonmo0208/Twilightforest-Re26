@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import tamaized.beanification.Autowired;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.overlay.ItemDisplayOverlay;
+import twilightforest.client.overlay.PortalOverlay;
 import twilightforest.components.entity.TFPortalAttachment;
 import twilightforest.components.item.OreScannerData;
 import twilightforest.config.TFConfig;
@@ -98,8 +99,11 @@ public class OverlayHandler {
 			if (player != null) {
 				TFPortalAttachment portal = player.getData(TFDataAttachments.TF_PORTAL_COOLDOWN);
 				if (portal.getPortalTimer() > 0) {
-					float alpha = (float) portal.getPortalTimer() / (float) TFPortalAttachment.MAX_TICKS;
-					int color = ((int)(alpha * 100.0F) << 24) | 0x000000;
+					// Render portal sprite overlay
+					PortalOverlay.render(graphics, minecraft, player);
+					// Render dark vignette overlay
+					float alpha = Math.min((float) portal.getPortalTimer() / (float) TFPortalAttachment.MAX_TICKS, 1.0F);
+					int color = ((int)(alpha * 180.0F) << 24) | 0x000000;
 					graphics.fill(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), color);
 				}
 			}
