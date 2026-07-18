@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -96,7 +97,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 			if (!blocksChecked.containsKey(positionCheck)) {
 				BlockState state = level.getBlockState(positionCheck);
 
-				if (state.is(poolBlock.getBlock()) && level.getBlockState(positionCheck.below()).isFaceSturdy(level, positionCheck.below(), Direction.UP)) {
+				if (state == poolBlock && level.getBlockState(positionCheck.below()).isFaceSturdy(level, positionCheck.below(), Direction.UP)) {
 					blocksChecked.put(positionCheck, true);
 					if (isPoolProbablyEnclosed) {
 						isPoolProbablyEnclosed = recursivelyValidatePortal(level, positionCheck, blocksChecked, portalSize, poolBlock);
@@ -188,7 +189,10 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 	}
 
 	public boolean canFormPortal(BlockState state) {
-		return state.is(TFBlockTags.PORTAL_POOL) || state.getBlock() == this && state.getValue(DISALLOW_RETURN);
+		if (state.is(TFBlockTags.PORTAL_POOL)) {
+			return state.getFluidState().isSource();
+		}
+		return state.getBlock() == this && state.getValue(DISALLOW_RETURN);
 	}
 
 	@Override
@@ -268,13 +272,23 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 		return false;
 	}
 
+	private static final String TAG_HAS_VISITED = "twilightforest_has_visited";
+
 	@Override
 	public int getPortalTransitionTime(ServerLevel level, Entity entity) {
 		if (!(entity instanceof Player player))
 			return 0;
-		return player.getAbilities().invulnerable
-			? level.getGameRules().get(TFGameRules.TF_PORTAL_CREATIVE_DELAY.get())
-			: level.getGameRules().get(TFGameRules.TF_PORTAL_DEFAULT_DELAY.get());
+
+		if (player.getAbilities().invulnerable)
+			return level.getGameRules().get(TFGameRules.TF_PORTAL_CREATIVE_DELAY.get());
+
+		// Subsequent visits: brief delay (0.5s / 10 ticks)
+		CompoundTag persistentData = player.getPersistentData();
+		if (persistentData.getBoolean(TAG_HAS_VISITED).orElse(false))
+			return 10;
+
+		persistentData.putBoolean(TAG_HAS_VISITED, true);
+		return level.getGameRules().get(TFGameRules.TF_PORTAL_DEFAULT_DELAY.get());
 	}
 
 	@Nullable
