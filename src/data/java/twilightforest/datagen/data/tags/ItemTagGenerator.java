@@ -547,6 +547,116 @@ public class ItemTagGenerator extends ModdedItemTagGenerator {
 			TFItems.MUSIC_DISC_HOME.getKey(), TFItems.MUSIC_DISC_WAYFARER.getKey(), TFItems.MUSIC_DISC_FINDINGS.getKey(),
 			TFItems.MUSIC_DISC_MAKER.getKey(), TFItems.MUSIC_DISC_THREAD.getKey(), TFItems.MUSIC_DISC_MOTION.getKey()
 		);
+
+		// Sulfur Cube archetype tags - only full blocks (not slabs, stairs, doors, fences, etc.)
+		// BOUNCY is already covered by ItemTags.PLANKS and ItemTags.LOGS (registered above)
+
+		// SLOW_BOUNCY - stone-like full blocks
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY)
+			// Nagastone full blocks (no stairs)
+			.add(TFBlocks.NAGASTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.NAGASTONE_HEAD.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.ETCHED_NAGASTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.NAGASTONE_PILLAR.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.MOSSY_ETCHED_NAGASTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.MOSSY_NAGASTONE_PILLAR.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.CRACKED_ETCHED_NAGASTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.CRACKED_NAGASTONE_PILLAR.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.SPIRAL_BRICKS.asItem().builtInRegistryHolder().key())
+			// Mazestone, Deadrock (via tag - all full blocks)
+			.add(TFBlocks.TWISTED_STONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.TWISTED_STONE_PILLAR.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.BOLD_STONE_PILLAR.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.TERRORCOTTA_ARCS.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.TERRORCOTTA_CURVES.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.TERRORCOTTA_LINES.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.TROLLSTEINN.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.TROPHY_PEDESTAL.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.STRONGHOLD_SHIELD.asItem().builtInRegistryHolder().key())
+			// Underbrick full blocks
+			.add(TFBlocks.UNDERBRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.MOSSY_UNDERBRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.CRACKED_UNDERBRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.UNDERBRICK_FLOOR.asItem().builtInRegistryHolder().key());
+
+		// SLOW_FLAT - metal storage blocks
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_FLAT)
+			.add(TFBlocks.KNIGHTMETAL_BLOCK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.FIERY_BLOCK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.STEELEAF_BLOCK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.CARMINITE_BLOCK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.IRONWOOD_BLOCK.asItem().builtInRegistryHolder().key());
+
+		// FAST_SLIDING - ice-like full blocks
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_FAST_SLIDING)
+			.add(TFBlocks.AURORA_BLOCK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.AURORA_PILLAR.asItem().builtInRegistryHolder().key());
+
+		// SLOW_SLIDING - mushroom/fungus full blocks
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_SLIDING)
+			.add(TFBlocks.HUGE_MUSHGLOOM.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.HUGE_MUSHGLOOM_STEM.asItem().builtInRegistryHolder().key());
+
+		// FAST_FLAT - organic/plant full blocks
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_FAST_FLAT)
+			.add(TFBlocks.ROOT_BLOCK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.LIVEROOT_BLOCK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.HUGE_STALK.asItem().builtInRegistryHolder().key());
+
+		// LIGHT - wool/fur-like full blocks
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_LIGHT)
+			.add(TFBlocks.ARCTIC_FUR_BLOCK.asItem().builtInRegistryHolder().key());
+
+		// REGULAR - dirt/soil full blocks
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_REGULAR)
+			.add(TFBlocks.UBEROUS_SOIL.asItem().builtInRegistryHolder().key());
+
+		// Copy from block tags that contain only full blocks
+		// Note: copy() may not work at datagen time because block tags aren't loaded yet,
+		// so mazestone and deadrock are added directly below.
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY)
+			// Mazestone
+			.add(TFBlocks.MAZESTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.MAZESTONE_BRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.CRACKED_MAZESTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.MOSSY_MAZESTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.CUT_MAZESTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.DECORATIVE_MAZESTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.MAZESTONE_MOSAIC.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.MAZESTONE_BORDER.asItem().builtInRegistryHolder().key())
+			// Deadrock
+			.add(TFBlocks.DEADROCK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.CRACKED_DEADROCK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.WEATHERED_DEADROCK.asItem().builtInRegistryHolder().key());
+		// Castle bricks added individually (CASTLE_BLOCKS tag includes doors which are not full blocks)
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY)
+			.add(TFBlocks.CASTLE_BRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.WORN_CASTLE_BRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.CRACKED_CASTLE_BRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.MOSSY_CASTLE_BRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.CASTLE_ROOF_TILE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.THICK_CASTLE_BRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.ENCASED_CASTLE_BRICK_PILLAR.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.ENCASED_CASTLE_BRICK_TILE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.BOLD_CASTLE_BRICK_PILLAR.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.BOLD_CASTLE_BRICK_TILE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.PINK_CASTLE_RUNE_BRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.BLUE_CASTLE_RUNE_BRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.YELLOW_CASTLE_RUNE_BRICK.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.VIOLET_CASTLE_RUNE_BRICK.asItem().builtInRegistryHolder().key());
+
+		// SULFUR_CUBE_GIANT_BLOCKS - giant blocks that make the cube bigger when swallowed
+		this.tag(TFItemTags.SULFUR_CUBE_GIANT_BLOCKS)
+			.add(TFBlocks.GIANT_COBBLESTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.GIANT_LOG.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.GIANT_OBSIDIAN.asItem().builtInRegistryHolder().key());
+
+		// Also add giant blocks to SLOW_BOUNCY so they can be swallowed by sulfur cubes
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY)
+			.add(TFBlocks.GIANT_COBBLESTONE.asItem().builtInRegistryHolder().key())
+			.add(TFBlocks.GIANT_OBSIDIAN.asItem().builtInRegistryHolder().key());
+		this.tag(ItemTags.SULFUR_CUBE_ARCHETYPE_BOUNCY)
+			.add(TFBlocks.GIANT_LOG.asItem().builtInRegistryHolder().key());
 	}
 
 	private void copy(HolderLookup.Provider provider, TagKey<Block> blockTag, TagKey<Item> itemTag) {

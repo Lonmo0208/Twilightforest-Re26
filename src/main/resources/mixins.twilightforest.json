@@ -6,7 +6,11 @@
   "client": [
     "ClientLevelMixin",
     "MixinClientModLoader",
-    "MixinWindow"
+    "MixinWindow",
+    "SulfurCubeRendererMixin"
+  ],
+  "mixins": [
+    "SulfurCubeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

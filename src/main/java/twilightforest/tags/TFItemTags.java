@@ -95,6 +95,8 @@ public class TFItemTags {
 	public static final TagKey<Item> TROPHIES = create("trophies");
 	public static final TagKey<Item> EMPERORS_CLOTH_APPLICABLE = create("emperors_cloth_applicable");
 
+	public static final TagKey<Item> SULFUR_CUBE_GIANT_BLOCKS = create("sulfur_cube_giant_blocks");
+
 	public static final TagKey<Item> AC_FERNS = create("alexscaves", "ferns");
 	public static final TagKey<Item> AC_FERROMAGNETIC_ITEMS = create("alexscaves", "ferromagnetic_items");
 	public static final TagKey<Item> AC_RAW_MEATS = create("alexscaves", "raw_meats");
