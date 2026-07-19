@@ -152,7 +152,7 @@ public class TFItems {
 	public static final DeferredItem<Item> KNIGHTMETAL_PICKAXE = register("knightmetal_pickaxe", KnightmetalToolItem::new, () -> new Item.Properties().pickaxe(TFToolMaterials.KNIGHTMETAL, 1.0F, -2.8F));
 	public static final DeferredItem<Item> KNIGHTMETAL_AXE = register("knightmetal_axe", properties -> new KnightmetalAxeItem(TFToolMaterials.KNIGHTMETAL, 6.0F, -3.2F, properties), Item.Properties::new);
 	public static final DeferredItem<Item> KNIGHTMETAL_RING = register("knightmetal_ring", Item::new, Item.Properties::new);
-	public static final DeferredItem<Item> KNIGHTMETAL_SHIELD = register("knightmetal_shield", Item::new, () -> new Item.Properties()
+	public static final DeferredItem<Item> KNIGHTMETAL_SHIELD = register("knightmetal_shield", ShieldItem::new, () -> new Item.Properties()
 		.durability(1024)
 		.equippableUnswappable(EquipmentSlot.OFFHAND)
 		.delayedComponent(

@@ -3,7 +3,6 @@ package twilightforest.block;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -13,11 +12,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.Consumable;
-import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -99,35 +95,37 @@ public class Experiment115Block extends Block {
 				return InteractionResult.SUCCESS;
 			}
 		}
-		return InteractionResult.PASS;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-		ItemStack experStack = new ItemStack(TFItems.EXPERIMENT_115.get());
-		FoodProperties props = experStack.get(DataComponents.FOOD);
-		Consumable consumable = experStack.getOrDefault(DataComponents.CONSUMABLE, Consumables.DEFAULT_FOOD);
-		if (props != null && consumable.canConsume(player, experStack.copy())) {
-			props.onConsume(level, player, experStack.copy(), consumable);
-			consumable.onConsume(level, player, experStack.copy());
-			int i = state.getValue(BITES_TAKEN);
-
-			if (i < 7) {
-				level.setBlock(pos, state.setValue(BITES_TAKEN, i + 1), Block.UPDATE_ALL);
-			} else {
-				level.removeBlock(pos, false);
+		if (level.isClientSide()) {
+			if (eat(level, pos, state, player).consumesAction()) {
+				return InteractionResult.SUCCESS;
 			}
-
-			if (player instanceof ServerPlayer) {
-				CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) player, experStack);
-				player.awardStat(Stats.ITEM_USED.get(experStack.getItem()));
-				player.awardStat(TFStats.E115_SLICES_EATEN.get());
-
+			if (player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
+				return InteractionResult.CONSUME;
 			}
-
-			return InteractionResult.SUCCESS;
 		}
-		return InteractionResult.PASS;
+		return eat(level, pos, state, player);
+	}
+
+	private static InteractionResult eat(Level level, BlockPos pos, BlockState state, Player player) {
+		if (!player.canEat(false)) {
+			return InteractionResult.PASS;
+		}
+		player.getFoodData().eat(4, 0.3F);
+		int i = state.getValue(BITES_TAKEN);
+		if (i < 7) {
+			level.setBlock(pos, state.setValue(BITES_TAKEN, i + 1), Block.UPDATE_ALL);
+		} else {
+			level.removeBlock(pos, false);
+		}
+		if (player instanceof ServerPlayer serverPlayer) {
+			serverPlayer.awardStat(TFStats.E115_SLICES_EATEN.get());
+		}
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
