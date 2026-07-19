@@ -12,7 +12,7 @@ public class TFFoods extends Foods {
 	public static final FoodProperties RAW_MEEF = new FoodProperties.Builder().nutrition(2).saturationModifier(0.3F).build();
 	public static final FoodProperties MEEF_STEAK = new FoodProperties.Builder().nutrition(6).saturationModifier(0.6F).build();
 	public static final FoodProperties MEEF_STROGANOFF = new FoodProperties.Builder().nutrition(8).saturationModifier(0.6F).alwaysEdible().build();
-	public static final FoodProperties EXPERIMENT_115 = new FoodProperties.Builder().nutrition(4).saturationModifier(0.3F).build();
+	public static final FoodProperties EXPERIMENT_115 = new FoodProperties.Builder().nutrition(4).saturationModifier(0.3F).alwaysEdible().build();
 	public static final FoodProperties BERRY = new FoodProperties.Builder().nutrition(1).saturationModifier(0.4F).build();
 	public static final FoodProperties BERRY_MEDLEY = new FoodProperties.Builder().nutrition(5).saturationModifier(0.6F).build();
 	public static final FoodProperties MOSS_SOUP = new FoodProperties.Builder().nutrition(5).saturationModifier(0.6F).build();
