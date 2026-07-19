@@ -1,4 +1,4 @@
-﻿{
+{
   "itemGroup.twilightforest": "Twilight Forest",
 
   "advancement.twilightforest.root.desc": "Entra en el misterioso bosque m谩gico: the Twilight Forest.",
@@ -135,7 +135,7 @@
   "biome.twilightforest.thornlands": "Tierras Espinosas",
   "biome.twilightforest.final_plateau": "Meseta Final",
 
-  "gamerule.tfEnforcedProgression": "Progresi贸n de Twilight Forest",
+  "gamerule.twilightforest.twilightforest_enforced_progression": "Progresi贸n de Twilight Forest",
 
   "enchantment.twilightforest.fire_react": "Reacci贸n al Fuego",
   "enchantment.twilightforest.chill_aura": "Aura fr铆a",
