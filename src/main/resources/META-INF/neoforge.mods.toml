@@ -23,7 +23,7 @@ config = "mixins.twilightforest.json"
 [[dependencies.twilightforest]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.2,)"
+versionRange = "[26.2.0.12-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
