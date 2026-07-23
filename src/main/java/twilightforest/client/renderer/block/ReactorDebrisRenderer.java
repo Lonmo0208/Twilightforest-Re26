@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -94,7 +95,7 @@ public class ReactorDebrisRenderer implements BlockEntityRenderer<ReactorDebrisB
 		return spriteCache.computeIfAbsent(location, new Function<>() {
 			@Override
 			public TextureAtlasSprite apply(Identifier loc) {
-				return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS).getSprite(loc);
+				return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(loc);
 			}
 		});
 	}
