@@ -16,7 +16,7 @@ import tamaized.beanification.BeanContext;
 import tamaized.beanification.Configurable;
 // TODO: Port compat modules
 //import twilightforest.compat.CosmeticArmorCompat;
-//import twilightforest.compat.curios.CuriosCompat;
+import twilightforest.compat.curios.CuriosCompat;
 import twilightforest.config.ConfigSetup;
 import twilightforest.init.*;
 import twilightforest.init.custom.*;
@@ -100,16 +100,16 @@ public final class TwilightForestMod {
 		}
 
 		//TODO: Port compat modules
-		//if (ModList.get().isLoaded("curios")) loadCuriosCompat(bus);
+		if (ModList.get().isLoaded("curios")) loadCuriosCompat(bus);
 		//if (ModList.get().isLoaded("cosmeticarmorreworked")) NeoForge.EVENT_BUS.addListener(CosmeticArmorCompat::keepCosmeticArmor);
 	}
 
-//	private static void loadCuriosCompat(IEventBus bus) {
-//		NeoForge.EVENT_BUS.addListener(CuriosCompat::keepCurios);
-//		bus.addListener(CuriosCompat::registerCuriosCapabilities);
-//		bus.addListener(CuriosCompat::registerCurioRenderers);
-//		bus.addListener(CuriosCompat::registerCurioLayers);
-//	}
+	private static void loadCuriosCompat(IEventBus bus) {
+		NeoForge.EVENT_BUS.addListener(CuriosCompat::keepCurios);
+		bus.addListener(CuriosCompat::registerCuriosCapabilities);
+		bus.addListener(CuriosCompat::registerCurioRenderers);
+		bus.addListener(CuriosCompat::registerCurioLayers);
+	}
 
 	public static Identifier prefix(String name) {
 		return Identifier.fromNamespaceAndPath(ID, name.toLowerCase(Locale.ROOT));

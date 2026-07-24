@@ -1,9 +1,0 @@
-@FieldsAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-package twilightforest.compat.emi.recipes;
-
-import com.mojang.logging.annotations.FieldsAreNonnullByDefault;
-import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
-
-import javax.annotation.ParametersAreNonnullByDefault;
