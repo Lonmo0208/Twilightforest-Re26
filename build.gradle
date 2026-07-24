@@ -270,7 +270,7 @@ dependencies {
 	//make sure to only pick one of these when testing (switch others to compileOnly)
 	implementation "mezz.jei:jei-${project.minecraft_version}-neoforge:${project.jei_version}"
 	compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-	compileOnly "curse.maven:emi-unofficial-port-unstable-1544558:8437989"
+	implementation "curse.maven:emi-unofficial-port-unstable-1544558:8437989"
 
 	// theillusivec4
 	implementation "top.theillusivec4.curios:curios-neoforge:${project.curios_version}+${project.base_minecraft_version}"
