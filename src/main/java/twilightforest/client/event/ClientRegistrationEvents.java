@@ -4,9 +4,11 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.BabyModelTransform;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.animal.sheep.SheepFurModel;
 import net.minecraft.client.model.animal.wolf.AdultWolfModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -118,6 +120,7 @@ import twilightforest.util.woods.TFWoodTypes;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Set;
 
 @Component(dist = Dist.CLIENT)
 public class ClientRegistrationEvents {
@@ -547,6 +550,8 @@ public class ClientRegistrationEvents {
 		event.registerLayerDefinition(TFModelLayers.ARMORED_GIANT, () -> LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 32));
 		event.registerLayerDefinition(TFModelLayers.BIGHORN_SHEEP, BighornModel::create);
 		event.registerLayerDefinition(TFModelLayers.BIGHORN_SHEEP_BABY, () -> BighornModel.create().apply(BighornModel.BABY_TRANSFORMER));
+		event.registerLayerDefinition(TFModelLayers.BIGHORN_SHEEP_WOOL, SheepFurModel::createFurLayer);
+		event.registerLayerDefinition(TFModelLayers.BIGHORN_SHEEP_BABY_WOOL, () -> SheepFurModel.createFurLayer().apply(new BabyModelTransform(false, 8.0F, 6.0F, Set.of("head"))));
 		event.registerLayerDefinition(TFModelLayers.BLOCKCHAIN_GOBLIN, BlockChainGoblinModel::create);
 		event.registerLayerDefinition(TFModelLayers.BOAR, BoarModel::create);
 		event.registerLayerDefinition(TFModelLayers.BOAR_BABY, () -> BoarModel.create().apply(BoarModel.BABY_TRANSFORMER));
