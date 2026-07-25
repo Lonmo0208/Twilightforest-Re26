@@ -36,6 +36,8 @@ public class TFModelLayers {
 	public static final ModelLayerLocation ARMORED_GIANT = register("armored_giant");
 	public static final ModelLayerLocation BIGHORN_SHEEP = register("bighorn_sheep");
 	public static final ModelLayerLocation BIGHORN_SHEEP_BABY = register("bighorn_sheep_baby");
+	public static final ModelLayerLocation BIGHORN_SHEEP_WOOL = register("bighorn_sheep_wool");
+	public static final ModelLayerLocation BIGHORN_SHEEP_BABY_WOOL = register("bighorn_sheep_baby_wool");
 	public static final ModelLayerLocation BLOCKCHAIN_GOBLIN = register("blockchain_goblin");
 	public static final ModelLayerLocation BOAR = register("boar");
 	public static final ModelLayerLocation BOAR_BABY = register("boar_baby");

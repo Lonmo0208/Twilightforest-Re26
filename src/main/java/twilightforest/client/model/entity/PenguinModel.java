@@ -17,7 +17,7 @@ import twilightforest.client.state.entity.BirdRenderState;
 import java.util.Set;
 
 public class PenguinModel extends EntityModel<BirdRenderState> {
-	public static final MeshTransformer BABY_TRANSFORMER = new BabyModelTransform(false, 8.0F, 4.0F, Set.of("head"));
+	public static final MeshTransformer BABY_TRANSFORMER = new BabyModelTransform(false, 5.0F, 0.0F, Set.of("head"));
 
 	public final ModelPart head;
 	public final ModelPart rightWing;

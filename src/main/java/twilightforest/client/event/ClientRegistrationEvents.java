@@ -4,6 +4,9 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.BabyModelTransform;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.animal.sheep.SheepFurModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.BlockStateModelWrapper;
@@ -11,6 +14,7 @@ import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.animal.sheep.SheepFurModel;
 import net.minecraft.client.model.animal.wolf.AdultWolfModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -104,6 +108,7 @@ import twilightforest.item.travellers_gear.TravellersGogglesItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.joml.Matrix4f;
 
@@ -192,7 +197,7 @@ public class ClientRegistrationEvents {
 		// NOTE: Using anonymous inner classes instead of lambdas to avoid beanification corruption
 		event.register(Identifier.fromNamespaceAndPath("neoforge", "item_layers"), new FallbackLoader("neoforge_data", "render_types"));
 		event.register(Identifier.fromNamespaceAndPath("neoforge", "separate_transforms"), new FallbackLoader("perspectives", "base"));
-		
+
 		event.register(TwilightForestMod.prefix("giant_block"), new FallbackLoader("parent_block"));
 		event.register(TwilightForestMod.prefix("royal_rags"), RoyalRagsModelLoader.INSTANCE);
 		event.register(TwilightForestMod.prefix("travellers_gear"), new FallbackLoader("modifier_directory", "broken_modifier_directory"));
@@ -442,6 +447,8 @@ public class ClientRegistrationEvents {
 		event.registerLayerDefinition(TFModelLayers.ARMORED_GIANT, () -> LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 32));
 		event.registerLayerDefinition(TFModelLayers.BIGHORN_SHEEP, BighornModel::create);
 		event.registerLayerDefinition(TFModelLayers.BIGHORN_SHEEP_BABY, () -> BighornModel.create().apply(BighornModel.BABY_TRANSFORMER));
+		event.registerLayerDefinition(TFModelLayers.BIGHORN_SHEEP_WOOL, SheepFurModel::createFurLayer);
+		event.registerLayerDefinition(TFModelLayers.BIGHORN_SHEEP_BABY_WOOL, () -> SheepFurModel.createFurLayer().apply(new BabyModelTransform(false, 8.0F, 6.0F, Set.of("head"))));
 		event.registerLayerDefinition(TFModelLayers.BLOCKCHAIN_GOBLIN, BlockChainGoblinModel::create);
 		event.registerLayerDefinition(TFModelLayers.BOAR, BoarModel::create);
 		event.registerLayerDefinition(TFModelLayers.BOAR_BABY, () -> BoarModel.create().apply(BoarModel.BABY_TRANSFORMER));
