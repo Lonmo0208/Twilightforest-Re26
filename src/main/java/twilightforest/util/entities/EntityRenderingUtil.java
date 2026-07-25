@@ -1,6 +1,7 @@
 package twilightforest.util.entities;
 
 import com.mojang.math.Axis;
+import me.shedaniel.rei.api.client.gui.compat.GuiGraphics;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -169,7 +170,7 @@ public class EntityRenderingUtil {
 		}
 	}
 
-	public static void renderItemEntity(GuiGraphicsExtractor graphics, ItemStack stack, @Nullable Level level, float bobOffset) {
+	public static void renderLivingBlock(GuiGraphicsExtractor graphics, ItemStack stack, @Nullable Level level, float bobOffset) {
 		LivingBlock item = (LivingBlock) fetchEntity(EntityType.LIVING_BLOCK, level);
 		Objects.requireNonNull(item).setItemStack(stack);
 
