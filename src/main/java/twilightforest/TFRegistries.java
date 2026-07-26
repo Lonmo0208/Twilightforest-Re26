@@ -2,8 +2,8 @@ package twilightforest;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import twilightforest.entity.MagicPaintingVariant;
 import twilightforest.entity.passive.DwarfRabbitVariant;
@@ -15,13 +15,13 @@ import twilightforest.util.Restriction;
 import twilightforest.util.woods.WoodPalette;
 import twilightforest.world.components.chunkblanketing.ChunkBlanketProcessor;
 import twilightforest.world.components.chunkblanketing.ChunkBlanketType;
+import twilightforest.world.components.layer.BiomeDensitySource;
 import twilightforest.world.components.layer.vanillalegacy.BiomeLayerFactory;
 import twilightforest.world.components.layer.vanillalegacy.BiomeLayerType;
-import twilightforest.world.components.layer.BiomeDensitySource;
 import twilightforest.world.components.structures.StructureSpeleothemConfig;
 import twilightforest.world.components.structures.markerhandler.TemplateMarkerHandler;
-import twilightforest.world.components.structures.util.TemplateMarkerHandlerList;
 import twilightforest.world.components.structures.markerhandler.TemplateMarkerHandlerType;
+import twilightforest.world.components.structures.util.TemplateMarkerHandlerList;
 
 import java.util.Locale;
 

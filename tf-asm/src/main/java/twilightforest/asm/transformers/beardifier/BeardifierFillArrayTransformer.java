@@ -3,7 +3,6 @@ package twilightforest.asm.transformers.beardifier;
 import net.neoforged.neoforgespi.transformation.SimpleTransformationContext;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
-import twilightforest.asm.ASMUtil;
 import twilightforest.asm.SimpleMethodTransformer;
 
 public class BeardifierFillArrayTransformer extends SimpleMethodTransformer {

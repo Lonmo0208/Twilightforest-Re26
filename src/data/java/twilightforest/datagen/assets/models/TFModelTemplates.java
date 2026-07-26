@@ -4,11 +4,11 @@ import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.resources.Identifier;
-import twilightforest.init.TFBlocks;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.model.block.carpet.RoyalRagsBuilder;
 import twilightforest.client.model.block.connected.ConnectedTextureBuilder;
 import twilightforest.client.model.block.giantblock.GiantBlockBuilder;
+import twilightforest.init.TFBlocks;
 
 /**
  * Class for using ModelTemplates to reference existing block models.

@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import twilightforest.TwilightForestMod;
 
-import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unchecked")

@@ -11,7 +11,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.block.BanisterBlock;
-import twilightforest.init.TFStructureProcessors;
 
 import java.util.Collections;
 import java.util.List;

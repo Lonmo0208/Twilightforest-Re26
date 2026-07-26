@@ -1,8 +1,8 @@
 package twilightforest.datagen.data.recipes;
 
-import net.minecraft.advancements.triggers.Criterion;
-import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.BuiltInRegistries;

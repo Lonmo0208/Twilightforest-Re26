@@ -1,6 +1,5 @@
 package twilightforest.test.util;
 
-import twilightforest.util.BlockCapabilityDirectionalCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -11,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import tamaized.beanification.junit.MockitoFixer;
+import twilightforest.util.BlockCapabilityDirectionalCache;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;

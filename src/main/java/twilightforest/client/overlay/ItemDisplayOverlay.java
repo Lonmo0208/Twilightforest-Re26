@@ -10,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import twilightforest.client.overlay.display.ItemDisplay;
 import twilightforest.components.item.ItemDisplayContents;
-import twilightforest.config.TFConfig;
 import twilightforest.init.TFDataComponents;
 import twilightforest.init.custom.ItemDisplays;
 import twilightforest.init.custom.TravellersModifiersManager;

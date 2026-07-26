@@ -9,16 +9,21 @@ import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.world.attribute.AmbientParticle;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.attribute.EnvironmentAttributes;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import tamaized.beanification.Autowired;
 import twilightforest.enums.extensions.TFGrassColorModifierEnumExtension;
-import twilightforest.init.*;
+import twilightforest.init.TFCaveCarvers;
+import twilightforest.init.TFEntities;
+import twilightforest.init.TFParticleType;
+import twilightforest.init.TFPlacedFeatures;
 
 import java.util.List;
 

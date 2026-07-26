@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Interaction;
 import net.minecraft.world.level.ChunkPos;
@@ -24,11 +23,9 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFStructurePieceTypes;
-import twilightforest.world.components.structures.TwilightJigsawPiece;
 import twilightforest.util.BoundingBoxUtils;
 import twilightforest.world.components.structures.TFStructureComponentOld;
-import twilightforest.world.components.structures.util.StructureTemplateDefinitions;
-
+import twilightforest.world.components.structures.TwilightJigsawPiece;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

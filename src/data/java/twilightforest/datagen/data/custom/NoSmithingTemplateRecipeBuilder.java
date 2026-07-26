@@ -14,7 +14,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import twilightforest.item.recipe.NoTemplateSmithingRecipe;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class NoSmithingTemplateRecipeBuilder {

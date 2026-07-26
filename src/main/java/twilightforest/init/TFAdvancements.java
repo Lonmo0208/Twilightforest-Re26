@@ -6,7 +6,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import twilightforest.TwilightForestMod;
 import twilightforest.advancements.*;
-import twilightforest.advancements.AddModifierTrigger;
 
 public class TFAdvancements {
 

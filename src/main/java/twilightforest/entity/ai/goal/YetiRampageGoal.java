@@ -2,12 +2,11 @@ package twilightforest.entity.ai.goal;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import twilightforest.entity.boss.AlphaYeti;
 import twilightforest.entity.projectile.IceBomb;
-import twilightforest.init.TFEntities;
 import twilightforest.init.TFSounds;
 
 import java.util.EnumSet;

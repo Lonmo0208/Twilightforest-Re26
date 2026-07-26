@@ -2,7 +2,6 @@ package twilightforest.entity.boss;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -33,11 +32,10 @@ import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
-import twilightforest.entity.TFPart;
 import twilightforest.init.*;
 import twilightforest.network.UpdateTFMultipartPacket;
-import twilightforest.util.entities.EntityUtil;
 import twilightforest.util.WorldUtil;
+import twilightforest.util.entities.EntityUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;

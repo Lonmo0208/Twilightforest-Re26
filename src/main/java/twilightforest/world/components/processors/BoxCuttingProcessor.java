@@ -13,7 +13,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
-import twilightforest.init.TFStructureProcessors;
 import twilightforest.util.BoundingBoxUtils;
 
 import java.util.ArrayList;

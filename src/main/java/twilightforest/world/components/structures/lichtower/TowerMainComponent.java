@@ -22,8 +22,8 @@ import net.minecraft.world.phys.AABB;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFEntities;
 import twilightforest.init.TFStructurePieceTypes;
-import twilightforest.util.entities.EntityUtil;
 import twilightforest.util.RotationUtil;
+import twilightforest.util.entities.EntityUtil;
 import twilightforest.world.components.structures.TFStructureComponentOld;
 
 public class TowerMainComponent extends TowerWingComponent {

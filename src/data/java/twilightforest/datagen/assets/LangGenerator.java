@@ -3,12 +3,11 @@ package twilightforest.datagen.assets;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import twilightforest.config.ConfigComments;
-import twilightforest.datagen.data.tags.ItemTagGenerator;
 import twilightforest.datagen.helpers.TFLangProvider;
+import twilightforest.init.*;
 import twilightforest.init.custom.MagicPaintingVariants;
 import twilightforest.init.custom.TravellersModifiersManager;
 import twilightforest.tags.TFItemTags;
-import twilightforest.init.*;
 
 import java.util.HashMap;
 import java.util.Map;

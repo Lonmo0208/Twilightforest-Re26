@@ -27,8 +27,8 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import twilightforest.TwilightForestMod;
 import twilightforest.block.TFTrappedChestBlock;
-import twilightforest.tags.TFItemTags;
 import twilightforest.init.TFBlocks;
+import twilightforest.tags.TFItemTags;
 
 public abstract class CraftingDataHelper extends RecipeProvider {
 	public CraftingDataHelper(RecipeOutput output, HolderLookup.Provider provider) {

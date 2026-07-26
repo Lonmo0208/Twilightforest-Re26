@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.neoforged.neoforge.client.gui.map.IMapDecorationRenderer;
-import org.joml.Matrix4f;
 
 public class MagicMapPlayerIconRenderer implements IMapDecorationRenderer {
 

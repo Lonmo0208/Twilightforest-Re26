@@ -1,20 +1,17 @@
 package twilightforest.test.util;
 
-import twilightforest.util.ArmorUtil;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import tamaized.beanification.junit.MockitoFixer;
 import twilightforest.init.TFDataComponents;
-import twilightforest.init.TFItems;
+import twilightforest.util.ArmorUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

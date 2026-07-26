@@ -15,8 +15,6 @@ import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFItems;
 import twilightforest.item.recipe.travellers.TravellersGearModifierRecipe;
 
-import net.minecraft.core.Holder;
-
 import java.util.ArrayList;
 import java.util.List;
 

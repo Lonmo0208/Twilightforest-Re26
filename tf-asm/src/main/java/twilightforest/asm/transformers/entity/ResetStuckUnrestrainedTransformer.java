@@ -2,7 +2,9 @@ package twilightforest.asm.transformers.entity;
 
 import net.neoforged.neoforgespi.transformation.SimpleTransformationContext;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 import twilightforest.asm.ASMUtil;
 import twilightforest.asm.SimpleMethodTransformer;
 

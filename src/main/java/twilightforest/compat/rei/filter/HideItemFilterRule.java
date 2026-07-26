@@ -3,8 +3,8 @@ package twilightforest.compat.rei.filter;
 import com.google.common.collect.Streams;
 import me.shedaniel.rei.api.client.entry.filtering.*;
 import me.shedaniel.rei.api.common.entry.EntryStack;
-import twilightforest.tags.TFItemTags;
 import twilightforest.init.TFItems;
+import twilightforest.tags.TFItemTags;
 
 import java.util.stream.Stream;
 

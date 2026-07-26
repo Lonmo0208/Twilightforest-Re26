@@ -10,7 +10,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
-import twilightforest.item.MazeMapItem;
 import twilightforest.item.mapdata.TFMazeMapData;
 
 // Rewraps vanilla ClientboundMapItemDataPacket to properly add our own data

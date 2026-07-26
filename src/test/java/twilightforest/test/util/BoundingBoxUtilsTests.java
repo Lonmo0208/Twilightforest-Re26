@@ -1,6 +1,5 @@
 package twilightforest.test.util;
 
-import twilightforest.util.BoundingBoxUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -8,6 +7,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
+import twilightforest.util.BoundingBoxUtils;
 
 import java.util.List;
 

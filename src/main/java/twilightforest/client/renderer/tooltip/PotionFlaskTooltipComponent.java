@@ -1,6 +1,5 @@
 package twilightforest.client.renderer.tooltip;
 
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -8,9 +7,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-
-import net.minecraft.world.level.material.Fluids;
-
+import net.minecraft.world.item.alchemy.PotionContents;
 import twilightforest.TwilightForestMod;
 import twilightforest.components.item.PotionFlaskComponent;
 import twilightforest.item.PotionFlaskItem;

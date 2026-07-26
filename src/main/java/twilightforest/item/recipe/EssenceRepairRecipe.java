@@ -5,9 +5,9 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import twilightforest.tags.TFItemTags;
 import twilightforest.init.TFItems;
 import twilightforest.init.TFRecipes;
+import twilightforest.tags.TFItemTags;
 
 public class EssenceRepairRecipe extends CustomRecipe {
 

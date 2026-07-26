@@ -22,7 +22,6 @@ import twilightforest.init.TFBlocks;
 import twilightforest.init.TFStructurePieceTypes;
 import twilightforest.util.BoundingBoxUtils;
 import twilightforest.world.components.structures.TwilightJigsawPiece;
-import twilightforest.world.components.structures.util.StructureTemplateDefinitions;
 
 public class CourtyardMain extends StructureMazeGenerator {
 	static final int ROW_OF_CELLS = 8;

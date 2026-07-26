@@ -1,6 +1,5 @@
 package twilightforest.mixin;
 
-import java.util.concurrent.ScheduledExecutorService;
 import net.neoforged.fml.earlydisplay.DisplayWindow;
 import net.neoforged.neoforge.client.loading.ClientModLoader;
 import org.lwjgl.glfw.GLFW;
@@ -8,6 +7,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import twilightforest.client.VulkanCompatHelper;
+
+import java.util.concurrent.ScheduledExecutorService;
 
 @Mixin(ClientModLoader.class)
 public class MixinClientModLoader {

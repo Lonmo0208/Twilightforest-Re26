@@ -1,10 +1,9 @@
 package twilightforest.test.util;
 
-import twilightforest.util.DirectionUtil;
-
 import net.minecraft.core.Direction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import twilightforest.util.DirectionUtil;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 

@@ -18,11 +18,11 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import twilightforest.components.item.PotionFlaskComponent;
-import twilightforest.inventory.InventoryUtil;
 import twilightforest.init.TFDamageTypes;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFSounds;
+import twilightforest.inventory.InventoryUtil;
 
 import java.util.Optional;
 import java.util.function.Consumer;

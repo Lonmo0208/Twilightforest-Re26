@@ -22,14 +22,17 @@ import twilightforest.TwilightForestMod;
 import twilightforest.client.UncraftingScreen;
 import twilightforest.compat.RecipeViewerConstants;
 import twilightforest.compat.rei.categories.*;
-import twilightforest.compat.rei.displays.*;
+import twilightforest.compat.rei.displays.REICrumbleHornDisplay;
+import twilightforest.compat.rei.displays.REIOminousFireDisplay;
+import twilightforest.compat.rei.displays.REITransformationPowderDisplay;
 import twilightforest.compat.rei.entries.BlockStateEntryDefinition;
 import twilightforest.compat.rei.entries.EntityEntryDefinition;
 import twilightforest.compat.rei.filter.HideItemFilterType;
 import twilightforest.config.TFConfig;
-import twilightforest.tags.TFItemTags;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFItems;
+import twilightforest.tags.TFItemTags;
+
 import java.util.Map;
 import java.util.WeakHashMap;
 

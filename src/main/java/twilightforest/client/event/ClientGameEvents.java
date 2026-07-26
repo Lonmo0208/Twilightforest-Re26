@@ -2,15 +2,15 @@ package twilightforest.client.event;
 
 import com.ibm.icu.text.RuleBasedNumberFormat;
 import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.model.HeadedModel;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.LocalPlayer;
-
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
@@ -20,16 +20,16 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.Musics;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.attribute.EnvironmentAttributes;
-import net.minecraft.world.item.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.WrittenBookItem;
 import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
@@ -45,9 +45,9 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import tamaized.beanification.Autowired;
 import tamaized.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
-import tamaized.beanification.Autowired;
 import twilightforest.block.GiantBlock;
 import twilightforest.block.MiniatureStructureBlock;
 import twilightforest.block.entity.GrowingBeanstalkBlockEntity;
@@ -58,11 +58,12 @@ import twilightforest.client.renderer.TFRenderTypes;
 import twilightforest.client.renderer.TFSkyRenderer;
 import twilightforest.client.renderer.entity.MagicPaintingRenderer;
 import twilightforest.config.TFConfig;
-import twilightforest.tags.TFItemTags;
 import twilightforest.entity.boss.bar.ClientTFBossBar;
 import twilightforest.events.HostileMountEvents;
-import twilightforest.init.*;
+import twilightforest.init.TFDataComponents;
+import twilightforest.init.TFDimension;
 import twilightforest.item.*;
+import twilightforest.tags.TFItemTags;
 import twilightforest.util.HolderMatcher;
 import twilightforest.util.entities.EntityRenderingUtil;
 
@@ -173,7 +174,7 @@ public class ClientGameEvents {
 
 		if (event instanceof RenderLevelStageEvent.AfterTranslucentParticles && (aurora > 0 || lastAurora > 0) && TFShaders.AURORA != null) {
 			BufferBuilder buffer = new BufferBuilder(new ByteBufferBuilder(DefaultVertexFormat.POSITION_COLOR.getVertexSize() * 256), PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_COLOR);
-			
+
 
 			final float scale = 2048F * (Minecraft.getInstance().options.getEffectiveRenderDistance() / 32F);
 			Vec3 pos = event.getLevelRenderState().cameraRenderState.pos;

@@ -1,8 +1,8 @@
 package twilightforest.test.util.iterators;
 
-import twilightforest.util.iterators.XZQuadrantIterator;
 import org.joml.Vector2i;
 import org.junit.jupiter.api.Test;
+import twilightforest.util.iterators.XZQuadrantIterator;
 
 import java.util.List;
 import java.util.stream.StreamSupport;

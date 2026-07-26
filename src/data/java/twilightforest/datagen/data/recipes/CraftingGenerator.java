@@ -7,11 +7,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
@@ -19,7 +19,6 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
@@ -30,12 +29,12 @@ import twilightforest.datagen.data.custom.NoSmithingTemplateRecipeBuilder;
 import twilightforest.datagen.data.custom.ScepterRecipeBuilder;
 import twilightforest.datagen.data.custom.UncraftingGenerator;
 import twilightforest.datagen.helpers.CraftingDataHelper;
-import twilightforest.tags.TFItemTags;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFItems;
 import twilightforest.item.recipe.*;
 import twilightforest.item.recipe.travellers.TravellersVestGlovesMergeRecipe;
+import twilightforest.tags.TFItemTags;
 
 public class CraftingGenerator extends CraftingDataHelper {
 

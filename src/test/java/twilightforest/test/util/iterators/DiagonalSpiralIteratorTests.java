@@ -1,8 +1,8 @@
 package twilightforest.test.util.iterators;
 
-import twilightforest.util.iterators.DiagonalSpiralIterator;
 import net.minecraft.core.BlockPos;
 import org.junit.jupiter.api.Test;
+import twilightforest.util.iterators.DiagonalSpiralIterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 

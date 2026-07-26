@@ -35,10 +35,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 import twilightforest.block.entity.DryingRackBlockEntity;
-import twilightforest.inventory.InventoryUtil;
 import twilightforest.init.TFBlockEntities;
 import twilightforest.init.TFParticleType;
 import twilightforest.init.TFSounds;
+import twilightforest.inventory.InventoryUtil;
 
 import java.util.Map;
 

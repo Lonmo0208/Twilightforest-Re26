@@ -48,10 +48,10 @@ import net.neoforged.neoforge.common.Tags;
 import org.jspecify.annotations.Nullable;
 import twilightforest.block.entity.CandelabraBlockEntity;
 import twilightforest.components.item.CandelabraData;
-import twilightforest.inventory.InventoryUtil;
 import twilightforest.init.TFItems;
 import twilightforest.init.TFParticleType;
 import twilightforest.init.TFSounds;
+import twilightforest.inventory.InventoryUtil;
 import twilightforest.tags.TFItemTags;
 
 import java.util.List;
