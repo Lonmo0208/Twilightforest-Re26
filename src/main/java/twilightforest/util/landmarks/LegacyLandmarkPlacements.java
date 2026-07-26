@@ -1,9 +1,9 @@
 package twilightforest.util.landmarks;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Util;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;

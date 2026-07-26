@@ -6,8 +6,6 @@ import java.util.Optional;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import java.util.List;
-import org.objectweb.asm.tree.InsnList;
 
 public class ASMUtil {
 

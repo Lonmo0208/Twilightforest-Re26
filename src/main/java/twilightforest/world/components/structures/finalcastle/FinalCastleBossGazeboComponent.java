@@ -23,11 +23,9 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFStructurePieceTypes;
-import twilightforest.world.components.structures.TwilightJigsawPiece;
 import twilightforest.util.BoundingBoxUtils;
 import twilightforest.world.components.structures.TFStructureComponentOld;
-import twilightforest.world.components.structures.util.StructureTemplateDefinitions;
-
+import twilightforest.world.components.structures.TwilightJigsawPiece;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

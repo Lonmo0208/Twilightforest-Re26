@@ -1,8 +1,6 @@
 package twilightforest.datagen.data.custom.stalactites;
 
-import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.JsonOps;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;

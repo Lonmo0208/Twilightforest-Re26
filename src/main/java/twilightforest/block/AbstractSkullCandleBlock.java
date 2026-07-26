@@ -34,8 +34,8 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import org.jspecify.annotations.Nullable;
 import twilightforest.block.entity.SkullCandleBlockEntity;
-import twilightforest.inventory.InventoryUtil;
 import twilightforest.init.TFBlockEntities;
+import twilightforest.inventory.InventoryUtil;
 
 import java.util.HashMap;
 import java.util.Locale;

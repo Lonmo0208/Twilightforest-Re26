@@ -20,8 +20,8 @@ import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import twilightforest.init.custom.ChunkBlanketProcessors;
-import twilightforest.util.landmarks.LegacyLandmarkPlacements;
 import twilightforest.util.WorldUtil;
+import twilightforest.util.landmarks.LegacyLandmarkPlacements;
 
 import java.util.Collection;
 import java.util.Collections;

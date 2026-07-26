@@ -1,8 +1,8 @@
 package twilightforest.test.util.iterators;
 
-import twilightforest.util.iterators.ZippedIterator;
 import net.neoforged.neoforge.common.util.ConcatenatedListView;
 import org.junit.jupiter.api.Test;
+import twilightforest.util.iterators.ZippedIterator;
 
 import java.util.ArrayList;
 import java.util.List;

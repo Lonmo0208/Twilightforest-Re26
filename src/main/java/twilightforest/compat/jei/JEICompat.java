@@ -30,7 +30,6 @@ import twilightforest.compat.jei.util.GrindstoneTravellersRecipesGetter;
 import twilightforest.compat.jei.util.OminousFireRecipe;
 import twilightforest.compat.jei.util.TransformationRecipe;
 import twilightforest.config.TFConfig;
-import twilightforest.tags.TFBlockTags;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFItems;
 import twilightforest.init.TFMenuTypes;
@@ -39,6 +38,7 @@ import twilightforest.inventory.UncraftingMenu;
 import twilightforest.item.recipe.*;
 import twilightforest.item.recipe.travellers.TravellersGearModifierRecipe;
 import twilightforest.item.recipe.travellers.TravellersVestGlovesMergeRecipe;
+import twilightforest.tags.TFBlockTags;
 
 import java.util.Collections;
 import java.util.List;

@@ -12,8 +12,6 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import twilightforest.init.TFRecipes;
 
-import java.util.Arrays;
-
 public class UncraftingRecipe extends ShapedRecipe {
 
 	private final int cost;

@@ -1,13 +1,13 @@
 package twilightforest.test.util.iterators;
 
-import twilightforest.util.iterators.VoxelBresenhamIterator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import org.junit.jupiter.api.Test;
+import twilightforest.util.iterators.VoxelBresenhamIterator;
 
 import java.util.stream.StreamSupport;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class VoxelBresenhamIteratorTest {
 

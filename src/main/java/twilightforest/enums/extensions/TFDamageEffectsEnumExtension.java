@@ -1,8 +1,8 @@
 package twilightforest.enums.extensions;
 
 import net.minecraft.world.damagesource.DamageEffects;
-import twilightforest.TFEnumExtensions;
 import tamaized.beanification.Component;
+import twilightforest.TFEnumExtensions;
 
 @Component
 public class TFDamageEffectsEnumExtension {

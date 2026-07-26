@@ -1,9 +1,7 @@
 package twilightforest.compat.emi.widget;
 
-import com.mojang.blaze3d.platform.Lighting;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.Widget;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;

@@ -1,12 +1,12 @@
 package twilightforest.test.util.multiparts;
 
-import twilightforest.util.multiparts.MultipartEntityIteratorWrapper;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.entity.PartEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import tamaized.beanification.junit.MockitoFixer;
 import twilightforest.entity.TFPart;
+import twilightforest.util.multiparts.MultipartEntityIteratorWrapper;
 
 import java.lang.reflect.Constructor;
 import java.util.Iterator;

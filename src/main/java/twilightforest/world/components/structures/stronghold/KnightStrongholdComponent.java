@@ -18,9 +18,9 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import tamaized.beanification.Autowired;
+import twilightforest.world.components.structures.TFStructureComponentOld;
 import twilightforest.world.components.structures.selectors.KnightStonesRandomBlockSelectorFactory;
 import twilightforest.world.components.structures.selectors.StrongholdStonesRandomBlockSelectorFactory;
-import twilightforest.world.components.structures.TFStructureComponentOld;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;

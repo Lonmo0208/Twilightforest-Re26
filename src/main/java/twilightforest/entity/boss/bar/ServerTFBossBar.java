@@ -1,10 +1,11 @@
 package twilightforest.entity.boss.bar;
 
-import java.util.UUID;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import twilightforest.network.TFBossBarPacket;
+
+import java.util.UUID;
 
 public class ServerTFBossBar extends ServerBossEvent {
 	private int color;

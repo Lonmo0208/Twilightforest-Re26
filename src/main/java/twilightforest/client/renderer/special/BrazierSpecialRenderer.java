@@ -10,7 +10,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Unit;
 import org.joml.Vector3fc;
-import twilightforest.TwilightForestMod;
 import twilightforest.client.model.TFModelLayers;
 import twilightforest.client.model.block.BrazierModel;
 import twilightforest.client.renderer.block.BrazierRenderer;

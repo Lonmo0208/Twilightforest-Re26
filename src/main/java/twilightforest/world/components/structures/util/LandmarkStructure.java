@@ -16,9 +16,9 @@ import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import twilightforest.TwilightForestMod;
 import twilightforest.world.components.biomesources.TFBiomeProvider;
 import twilightforest.world.components.structures.TFStructureComponentTemplate;
-import twilightforest.TwilightForestMod;
 
 import java.util.Comparator;
 import java.util.Optional;

@@ -12,11 +12,12 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-//import twilightforest.data.helpers.TFLangProvider; // TODO: package doesn't exist in 26.1.2
 import twilightforest.init.custom.TravellersModifiersManager;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifiable;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
@@ -24,6 +25,8 @@ import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.StreamSupport;
+
+//import twilightforest.data.helpers.TFLangProvider; // TODO: package doesn't exist in 26.1.2
 
 public abstract class TravellersGearModifierRecipe extends CustomRecipe {
 	protected final ResourceKey<TravellersModifier> travellersModifierKey;

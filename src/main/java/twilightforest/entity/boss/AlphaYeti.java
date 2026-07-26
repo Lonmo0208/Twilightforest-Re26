@@ -42,8 +42,8 @@ import twilightforest.entity.ai.goal.YetiTiredGoal;
 import twilightforest.entity.projectile.FallingIce;
 import twilightforest.entity.projectile.IceBomb;
 import twilightforest.init.*;
-import twilightforest.util.entities.EntityUtil;
 import twilightforest.util.WorldUtil;
+import twilightforest.util.entities.EntityUtil;
 
 public class AlphaYeti extends BaseTFBoss implements RangedAttackMob, IHostileMount {
 

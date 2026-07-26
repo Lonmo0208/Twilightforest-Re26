@@ -1,7 +1,5 @@
 package twilightforest.test.block;
 
-import twilightforest.block.ClimbableHollowLogBlock;
-import twilightforest.block.VerticalHollowLogBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
@@ -27,13 +25,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import tamaized.beanification.junit.MockitoFixer;
+import twilightforest.block.ClimbableHollowLogBlock;
+import twilightforest.block.VerticalHollowLogBlock;
 import twilightforest.enums.HollowLogVariants;
 import twilightforest.init.TFBlocks;
 import twilightforest.util.DirectionUtil;
 
 import java.lang.reflect.Method;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoFixer.class)

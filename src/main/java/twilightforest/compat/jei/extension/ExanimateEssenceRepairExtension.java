@@ -8,16 +8,11 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
-import twilightforest.compat.RecipeViewerConstants;
-import twilightforest.tags.TFItemTags;
-import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFItems;
-import twilightforest.item.recipe.CasketRepairRecipe;
 import twilightforest.item.recipe.EssenceRepairRecipe;
-import twilightforest.item.recipe.ScepterRepairRecipe;
+import twilightforest.tags.TFItemTags;
 
 import java.util.ArrayList;
 import java.util.List;

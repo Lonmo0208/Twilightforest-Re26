@@ -6,8 +6,8 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.Tags;
 import twilightforest.datagen.data.tags.compat.ModdedEntityTypeTagGenerator;
-import twilightforest.tags.TFEntityTypeTags;
 import twilightforest.init.TFEntities;
+import twilightforest.tags.TFEntityTypeTags;
 
 import java.util.concurrent.CompletableFuture;
 

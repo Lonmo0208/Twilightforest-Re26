@@ -1,6 +1,5 @@
 package twilightforest.client.model.armor;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -16,7 +15,6 @@ import twilightforest.components.entity.TravellersWingsAttachment;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.util.TFMathUtil;
 
-import java.util.Collections;
 import java.util.List;
 
 public class TravellersWingsModel extends HumanoidModel<HumanoidRenderState> {

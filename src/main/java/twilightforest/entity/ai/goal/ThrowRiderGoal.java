@@ -11,10 +11,10 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import twilightforest.components.entity.YetiThrowAttachment;
-import twilightforest.tags.TFEntityTypeTags;
 import twilightforest.events.HostileMountEvents;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.network.MovePlayerPacket;
+import twilightforest.tags.TFEntityTypeTags;
 
 public class ThrowRiderGoal extends MeleeAttackGoal {
 

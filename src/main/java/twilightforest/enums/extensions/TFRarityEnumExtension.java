@@ -1,8 +1,8 @@
 package twilightforest.enums.extensions;
 
 import net.minecraft.world.item.Rarity;
-import twilightforest.TFEnumExtensions;
 import tamaized.beanification.Component;
+import twilightforest.TFEnumExtensions;
 
 @Component
 public class TFRarityEnumExtension {

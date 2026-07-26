@@ -1,8 +1,8 @@
 package twilightforest.test.util;
 
-import twilightforest.util.AxisUtil;
 import net.minecraft.core.Direction;
 import org.junit.jupiter.api.Test;
+import twilightforest.util.AxisUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

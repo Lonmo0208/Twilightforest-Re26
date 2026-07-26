@@ -29,7 +29,6 @@ import twilightforest.item.recipe.*;
 import twilightforest.item.recipe.travellers.TravellersGearModifierRecipe;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 @EmiEntrypoint
