@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.client.resources.model.cuboid.CuboidModelElement;
 import net.minecraft.util.GsonHelper;
-import net.neoforged.neoforge.client.model.NeoForgeModelProperties;
 import net.neoforged.neoforge.client.model.StandardModelParameters;
 import net.neoforged.neoforge.client.model.UnbakedModelLoader;
 import org.jetbrains.annotations.Nullable;

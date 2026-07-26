@@ -1,13 +1,12 @@
 package twilightforest.compat;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import mezz.jei.library.plugins.vanilla.crafting.JeiShapedRecipe;
 import net.minecraft.ChatFormatting;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -15,11 +14,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import twilightforest.config.TFConfig;
-import twilightforest.tags.TFItemTags;
 import twilightforest.init.TFDataMaps;
 import twilightforest.init.TFItems;
 import twilightforest.init.TFRecipes;
 import twilightforest.inventory.UncraftingMenu;
+import twilightforest.tags.TFItemTags;
 import twilightforest.util.datamaps.EntityTransformation;
 
 import java.util.ArrayList;

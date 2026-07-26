@@ -10,8 +10,8 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import twilightforest.TwilightForestMod;
 import tamaized.beanification.Autowired;
+import twilightforest.TwilightForestMod;
 import twilightforest.entity.passive.quest.ram.QuestingRamContext;
 import twilightforest.entity.passive.quest.ram.QuestingRamCurrentContext;
 

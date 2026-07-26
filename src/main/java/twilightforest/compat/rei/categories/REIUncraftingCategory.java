@@ -20,12 +20,11 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import twilightforest.compat.RecipeViewerConstants;
 import twilightforest.compat.rei.TFREIServerPlugin;
 import twilightforest.compat.rei.displays.REIUncraftingDisplay;
-import twilightforest.tags.TFItemTags;
 import twilightforest.init.TFBlocks;
 import twilightforest.item.recipe.UncraftingRecipe;
+import twilightforest.tags.TFItemTags;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class REIUncraftingCategory implements DisplayCategory<REIUncraftingDisplay> {

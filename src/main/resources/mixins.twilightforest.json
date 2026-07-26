@@ -4,10 +4,10 @@
   "package": "twilightforest.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MixinLivingBlockTypeRegistry",
+    "MixinLivingBlockContainerName",
     "MixinLivingBlockContainerTypes",
     "MixinLivingBlockHealth",
-    "MixinLivingBlockContainerName"
+    "MixinLivingBlockTypeRegistry"
   ],
   "client": [
     "ClientLevelMixin",

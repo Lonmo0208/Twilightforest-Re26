@@ -1,6 +1,5 @@
 package twilightforest.test.util.multiparts;
 
-import twilightforest.util.multiparts.MultipartEntityUtil;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
@@ -11,6 +10,7 @@ import org.mockito.MockedStatic;
 import tamaized.beanification.junit.MockitoFixer;
 import twilightforest.client.BakedMultiPartRenderers;
 import twilightforest.entity.TFPart;
+import twilightforest.util.multiparts.MultipartEntityUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

@@ -1,8 +1,8 @@
 package twilightforest.init.custom;
 
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import twilightforest.TFRegistries;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.passive.TinyBirdVariant;

@@ -19,15 +19,14 @@ import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import org.jetbrains.annotations.Nullable;
-import twilightforest.TwilightForestMod;
-import twilightforest.tags.TFBlockTags;
 import twilightforest.init.TFEntities;
 import twilightforest.init.TFStructurePieceTypes;
 import twilightforest.loot.TFLootTables;
+import twilightforest.tags.TFBlockTags;
 import twilightforest.util.BoundingBoxUtils;
-import twilightforest.util.entities.EntityUtil;
 import twilightforest.util.RotationUtil;
 import twilightforest.util.TFStructureHelper;
+import twilightforest.util.entities.EntityUtil;
 import twilightforest.world.components.structures.TFStructureComponentOld;
 
 import java.nio.IntBuffer;

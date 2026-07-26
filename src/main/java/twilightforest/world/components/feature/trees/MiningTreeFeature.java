@@ -10,9 +10,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import twilightforest.init.TFBlocks;
+import twilightforest.util.RootPlacer;
 import twilightforest.util.features.FeaturePlacers;
 import twilightforest.util.features.FeatureUtil;
-import twilightforest.util.RootPlacer;
 import twilightforest.world.components.feature.config.TFTreeFeatureConfig;
 
 import java.util.function.BiConsumer;

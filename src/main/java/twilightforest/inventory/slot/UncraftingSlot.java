@@ -8,9 +8,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import twilightforest.config.TFConfig;
 import twilightforest.init.TFAdvancements;
+import twilightforest.inventory.InventoryUtil;
 import twilightforest.inventory.UncraftingContainer;
 import twilightforest.inventory.UncraftingMenu;
-import twilightforest.inventory.InventoryUtil;
 import twilightforest.item.recipe.UncraftingRecipe;
 
 public class UncraftingSlot extends Slot {

@@ -13,11 +13,10 @@ import net.minecraft.world.item.crafting.*;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.compat.RecipeViewerConstants;
 import twilightforest.compat.emi.TFEmiCategories;
-import twilightforest.tags.TFItemTags;
 import twilightforest.item.recipe.UncraftingRecipe;
+import twilightforest.tags.TFItemTags;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 

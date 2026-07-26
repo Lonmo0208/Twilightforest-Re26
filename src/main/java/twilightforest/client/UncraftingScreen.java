@@ -10,7 +10,6 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,12 +18,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import twilightforest.TwilightForestMod;
 import twilightforest.config.TFConfig;
-import twilightforest.tags.TFItemTags;
 import twilightforest.inventory.UncraftingMenu;
 import twilightforest.network.UncraftingGuiPacket;
+import twilightforest.tags.TFItemTags;
 
 public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> implements RecipeUpdateListener {
 	private static final Identifier TEXTURE = TwilightForestMod.getGuiTexture("guigoblintinkering.png");

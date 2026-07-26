@@ -3,7 +3,6 @@ package twilightforest.datagen.data.tags.compat;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
-import net.minecraft.world.level.block.Block;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFItems;

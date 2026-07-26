@@ -3,7 +3,6 @@ package twilightforest.events;
 import com.google.common.collect.Maps;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
-import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -55,7 +54,6 @@ import twilightforest.block.entity.DryingRackBlockEntity;
 import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.command.TFCommand;
 import twilightforest.config.ConfigSetup;
-//import twilightforest.data.custom.stalactites.entry.StalactiteReloadListener;
 import twilightforest.dispenser.TFDispenserBehaviors;
 import twilightforest.entity.MagicPaintingVariant;
 import twilightforest.entity.RovingCube;
@@ -80,6 +78,8 @@ import twilightforest.world.components.speleothem.StalactiteReloadListener;
 import twilightforest.world.components.structures.StructureSpeleothemConfig;
 import twilightforest.world.components.structures.util.StructureTemplateDefinitions;
 import twilightforest.world.components.structures.util.TemplateMarkerHandlerList;
+
+//import twilightforest.data.custom.stalactites.entry.StalactiteReloadListener;
 
 @Component
 public class RegistrationEvents {

@@ -8,12 +8,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +19,6 @@ import net.minecraft.world.level.GameType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-//import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import tamaized.beanification.Autowired;
 import twilightforest.TwilightForestMod;
@@ -34,7 +30,6 @@ import twilightforest.config.TFConfig;
 import twilightforest.entity.passive.QuestRam;
 import twilightforest.entity.passive.quest.ram.QuestingRamCurrentContext;
 import twilightforest.events.HostileMountEvents;
-import twilightforest.init.TFBlocks;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFItems;
@@ -43,6 +38,8 @@ import twilightforest.util.ComponentAlignment;
 
 import java.text.DecimalFormat;
 import java.util.*;
+
+//import org.apache.commons.lang3.tuple.Pair;
 
 public class OverlayHandler {
 	private static final Identifier QUESTING_RAM_CHECK_SPRITE = TwilightForestMod.prefix("questing_ram_check");

@@ -1,22 +1,16 @@
 package twilightforest.util.entities;
 
 import com.mojang.math.Axis;
-import me.shedaniel.rei.api.client.gui.compat.GuiGraphics;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.entity.state.LivingBlockRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;

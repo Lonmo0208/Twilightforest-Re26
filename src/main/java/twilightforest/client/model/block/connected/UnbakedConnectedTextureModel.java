@@ -1,6 +1,5 @@
 package twilightforest.client.model.block.connected;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Quadrant;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;

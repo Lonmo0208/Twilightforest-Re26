@@ -1,9 +1,10 @@
 package twilightforest.test.util;
 
-import twilightforest.util.ArrayUtil;
 import org.junit.jupiter.api.Test;
+import twilightforest.util.ArrayUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ArrayUtilTests {
 

@@ -1,14 +1,11 @@
 package twilightforest.inventory;
 
 import com.google.common.collect.Lists;
-import net.minecraft.recipebook.ServerPlaceRecipe;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;

@@ -1,6 +1,5 @@
 package twilightforest.test.util;
 
-import twilightforest.util.HolderMatcher;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
@@ -8,6 +7,7 @@ import net.minecraft.world.item.Items;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import twilightforest.init.TFItems;
+import twilightforest.util.HolderMatcher;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

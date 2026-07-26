@@ -1,9 +1,9 @@
 package twilightforest.events;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.core.HolderSet;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -27,8 +27,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
@@ -40,11 +40,11 @@ import tamaized.beanification.Component;
 import tamaized.beanification.PostConstruct;
 import twilightforest.block.GiantBlock;
 import twilightforest.components.entity.GiantPickaxeMiningAttachment;
-import twilightforest.tags.TFBlockTags;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFItems;
 import twilightforest.item.*;
 import twilightforest.loot.modifiers.GiantToolGroupingModifier;
+import twilightforest.tags.TFBlockTags;
 
 import java.util.List;
 

@@ -23,7 +23,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import twilightforest.TwilightForestMod;
 import twilightforest.block.AbstractTrophyBlock;
 import twilightforest.block.TrophyBlock;
 import twilightforest.block.TrophyWallBlock;

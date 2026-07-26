@@ -1,8 +1,8 @@
 package twilightforest.world.components.structures.util;
 
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.util.random.WeightedList;
 
 public interface ConfigurableSpawns extends ControlledSpawns {
 	ControlledSpawningConfig getConfig();

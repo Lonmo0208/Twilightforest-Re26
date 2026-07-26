@@ -3,12 +3,13 @@ package twilightforest.datagen.helpers.models;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import java.util.ArrayList;
-import java.util.List;
 import com.mojang.math.Quadrant;
 import net.minecraft.client.data.models.ItemModelOutput;
 import net.minecraft.client.data.models.MultiVariant;
-import net.minecraft.client.data.models.blockstates.*;
+import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator;
+import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.*;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.SingleVariant;
@@ -29,19 +30,17 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
-import net.neoforged.neoforge.client.model.block.CompositeBlockModel;
 import net.neoforged.neoforge.client.model.generators.blockstate.CompositeBlockStateModelBuilder;
-import twilightforest.client.model.block.aurorablock.NoiseVaryingModelBuilder;
-import twilightforest.client.model.block.aurorablock.UnbakedNoiseVaryingBlockStateModel;
-import twilightforest.client.model.block.giantblock.UnbakedGiantBlockStateModel;
 import org.jetbrains.annotations.NotNull;
 import twilightforest.TwilightForestMod;
 import twilightforest.block.*;
+import twilightforest.client.model.block.aurorablock.UnbakedNoiseVaryingBlockStateModel;
 import twilightforest.client.model.block.connected.ConnectedTextureBlockStateModel;
 import twilightforest.client.model.block.connected.ConnectedTextureBuilder;
 import twilightforest.client.model.block.forcefield.ForceFieldModel;
 import twilightforest.client.model.block.forcefield.ForceFieldModelBuilder;
 import twilightforest.client.model.block.forcefield.UnbakedForceFieldBlockStateModel;
+import twilightforest.client.model.block.giantblock.UnbakedGiantBlockStateModel;
 import twilightforest.client.renderer.block.JarRenderer;
 import twilightforest.client.renderer.special.MasonJarSpecialRenderer;
 import twilightforest.client.renderer.special.SkullCandleSpecialRenderer;
@@ -861,7 +860,7 @@ public abstract class BlockModelBuilders extends WoodBlockBuilders {
 				.ifElse().from(7, 7, 9).to(9, 9, 16).parents(ForceFieldModel.ExtraDirection.SOUTH).face(Direction.EAST).uvs(9, 7, 16, 9).texture("#pane").end()
 				.ifSame().from(9, 7, 7).to(16, 9, 9).parents(ForceFieldModel.ExtraDirection.EAST).face(Direction.SOUTH).uvs(0, 7, 7, 9).texture("#pane").end().end();
 		}).build().create(block, TFTextureMapping.forcefield(block), this.modelOutput);
-		
+
 		CustomUnbakedBlockStateModel forceFieldWrapper = new UnbakedForceFieldBlockStateModel(modelId);
 		MultiVariant variant = MultiVariant.of(new SimpleCustomBlockStateModelBuilder(forceFieldWrapper));
 		this.blockStateOutput.accept(MultiVariantGenerator.dispatch(block, variant));

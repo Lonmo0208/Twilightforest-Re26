@@ -1,22 +1,11 @@
 package twilightforest.mixin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.livingblock.CollisionInteraction;
 import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.livingblock.LivingBlockType;
 import net.minecraft.world.entity.livingblock.LivingBlockTypeRegistry;
-import net.minecraft.world.entity.livingblock.behavior.ActOnDesireBehavior;
-import net.minecraft.world.entity.livingblock.behavior.AttackEntityBehavior;
-import net.minecraft.world.entity.livingblock.behavior.AvoidBeingInTheWayOfCrafting;
-import net.minecraft.world.entity.livingblock.behavior.BeCraftingIngredient;
-import net.minecraft.world.entity.livingblock.behavior.EquipOnEntityBehavior;
-import net.minecraft.world.entity.livingblock.behavior.LivingBlockContainerBehavior;
-import net.minecraft.world.entity.livingblock.behavior.ProtectPositionBehavior;
-import net.minecraft.world.entity.livingblock.behavior.ShowCraftingGridBehavior;
-import net.minecraft.world.entity.livingblock.behavior.SmeltBehavior;
+import net.minecraft.world.entity.livingblock.behavior.*;
 import net.minecraft.world.entity.livingblock.cognition.Desires;
 import net.minecraft.world.entity.livingblock.interact.OpenContainerInteraction;
 import net.minecraft.world.entity.livingblock.movement.WaterFloatingMovement;
@@ -28,6 +17,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import twilightforest.block.livingblock.OpenUncraftingTableInteraction;
 import twilightforest.init.TFBlocks;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Mixin(LivingBlockTypeRegistry.class)
 public class MixinLivingBlockContainerTypes {

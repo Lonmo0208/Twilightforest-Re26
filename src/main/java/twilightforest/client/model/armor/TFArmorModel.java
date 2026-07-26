@@ -3,9 +3,6 @@ package twilightforest.client.model.armor;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class TFArmorModel extends HumanoidModel<HumanoidRenderState> {
 

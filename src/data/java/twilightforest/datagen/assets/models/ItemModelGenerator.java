@@ -1,5 +1,8 @@
 package twilightforest.datagen.assets.models;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.mojang.math.Transformation;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ItemModelOutput;
@@ -19,18 +22,18 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.Items;
+import org.joml.Vector3f;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.model.item.TravellersGearItemModel;
 import twilightforest.client.properties.*;
-import twilightforest.client.renderer.special.*;
+import twilightforest.client.renderer.special.KnightmetalShieldSpecialRenderer;
+import twilightforest.client.renderer.special.MysticCrownSpecialRenderer;
 import twilightforest.datagen.helpers.ItemModelBuilders;
-import twilightforest.init.*;
+import twilightforest.init.TFBlocks;
+import twilightforest.init.TFDataComponents;
+import twilightforest.init.TFItems;
 import twilightforest.item.ArcticArmorItem;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.mojang.math.Transformation;
-import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;

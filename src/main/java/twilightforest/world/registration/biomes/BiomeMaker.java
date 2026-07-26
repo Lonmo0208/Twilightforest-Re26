@@ -2,10 +2,10 @@ package twilightforest.world.registration.biomes;
 
 import it.unimi.dsi.fastutil.doubles.Double2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectSortedMap;
-import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Util;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;

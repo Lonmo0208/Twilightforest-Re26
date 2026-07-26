@@ -3,8 +3,8 @@ package twilightforest.world.components.structures.lichtowerrevamp;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.resources.Identifier;
-import twilightforest.TwilightForestMod;
 import tamaized.beanification.Component;
+import twilightforest.TwilightForestMod;
 
 import java.util.HashSet;
 import java.util.List;

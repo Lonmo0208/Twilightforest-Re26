@@ -9,9 +9,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
+import twilightforest.util.RootPlacer;
 import twilightforest.util.features.FeatureLogic;
 import twilightforest.util.features.FeaturePlacers;
-import twilightforest.util.RootPlacer;
 import twilightforest.util.iterators.VoxelBresenhamIterator;
 import twilightforest.world.components.feature.config.RootConfig;
 
