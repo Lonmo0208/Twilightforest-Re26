@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import twilightforest.util.TFEntityExtensions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -37,8 +38,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jspecify.annotations.Nullable;
 import twilightforest.config.TFConfig;
@@ -51,6 +50,7 @@ import twilightforest.world.TFTeleporter;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import twilightforest.network.PacketDistributor;
 
 // KelpBlock seems to use ILiquidContainer as it's a block that permanently has water, so I suppose in best practices we also use this interface as well?
 public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockContainer, Portal {
@@ -79,9 +79,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 			List<Entity> list = level.getEntitiesOfClass(Entity.class, new AABB(pos).inflate(range));
 
 			for (Entity victim : list) {
-				if (!EventHooks.onEntityStruckByLightning(victim, bolt)) {
-					victim.thunderHit((ServerLevel) level, bolt);
-				}
+				victim.thunderHit((ServerLevel) level, bolt);
 			}
 		}
 	}
@@ -177,7 +175,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 
 				for (Map.Entry<BlockPos, Boolean> checkedPos : blocksChecked.entrySet()) {
 					if (checkedPos.getValue()) {
-						level.setBlock(checkedPos.getKey(), TFBlocks.TWILIGHT_PORTAL.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+						level.setBlock(checkedPos.getKey(), TFBlocks.TWILIGHT_PORTAL.defaultBlockState(), Block.UPDATE_CLIENTS);
 					}
 				}
 
@@ -225,7 +223,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 					if (!TFPortalBlock.isPlayerNotifiedOfRequirement(player)) {
 						// .doesPlayerHaveRequiredAdvancement null-checks already, so we can skip null-checking the `requirement`
 						DisplayInfo info = requirement.value().display().orElse(null);
-						PacketDistributor.sendToPlayer(player, info == null ? new MissingAdvancementToastPacket(Component.translatable("twilightforest.ui.advancement.no_title"), new ItemStack(TFBlocks.TWILIGHT_PORTAL_MINIATURE_STRUCTURE.get())) : new MissingAdvancementToastPacket(info.getTitle(), info.getIcon().create()));
+						PacketDistributor.sendToPlayer(player, info == null ? new MissingAdvancementToastPacket(Component.translatable("twilightforest.ui.advancement.no_title"), new ItemStack(TFBlocks.TWILIGHT_PORTAL_MINIATURE_STRUCTURE)) : new MissingAdvancementToastPacket(info.getTitle(), info.getIcon().create()));
 						TFPortalBlock.playerNotifiedOfRequirement(player);
 					}
 
@@ -235,7 +233,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 
 			if (entity.canUsePortal(false)) {
 				entity.setAsInsidePortal(this, entity.blockPosition());
-				entity.getData(TFDataAttachments.TF_PORTAL_COOLDOWN).setInPortal(true);
+				((TFEntityExtensions) entity).getData(() -> TFDataAttachments.TF_PORTAL_COOLDOWN).setInPortal(true);
 			}
 		}
 	}
@@ -247,7 +245,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 		if (state.getValue(DISALLOW_RETURN) && random < 80) return;
 
 		if (random == 0) {
-			level.playLocalSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, TFSounds.PORTAL_WHOOSH.get(), SoundSource.BLOCKS, 0.5F, rand.nextFloat() * 0.4F + 0.8F, false);
+			level.playLocalSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, TFSounds.PORTAL_WHOOSH, SoundSource.BLOCKS, 0.5F, rand.nextFloat() * 0.4F + 0.8F, false);
 		}
 
 		for (int i = 0; i < 4; ++i) {
@@ -280,15 +278,15 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 			return 0;
 
 		if (player.getAbilities().invulnerable)
-			return level.getGameRules().get(TFGameRules.TF_PORTAL_CREATIVE_DELAY.get());
+			return level.getGameRules().get(TFGameRules.TF_PORTAL_CREATIVE_DELAY);
 
 		// Subsequent visits: brief delay (0.5s / 10 ticks)
-		CompoundTag persistentData = player.getPersistentData();
+		CompoundTag persistentData = /* TODO: Port - getPersistentData() */ new net.minecraft.nbt.CompoundTag();
 		if (persistentData.getBoolean(TAG_HAS_VISITED).orElse(false))
 			return 10;
 
 		persistentData.putBoolean(TAG_HAS_VISITED, true);
-		return level.getGameRules().get(TFGameRules.TF_PORTAL_DEFAULT_DELAY.get());
+		return level.getGameRules().get(TFGameRules.TF_PORTAL_DEFAULT_DELAY);
 	}
 
 	@Nullable

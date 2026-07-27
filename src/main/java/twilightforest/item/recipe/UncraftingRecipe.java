@@ -50,13 +50,13 @@ public class UncraftingRecipe extends ShapedRecipe {
 	@Override
 	@SuppressWarnings("unchecked")
 	public RecipeSerializer<ShapedRecipe> getSerializer() {
-		return (RecipeSerializer<ShapedRecipe>) (RecipeSerializer<?>) TFRecipes.UNCRAFTING_SERIALIZER.get();
+		return (RecipeSerializer<ShapedRecipe>) (RecipeSerializer<?>) TFRecipes.UNCRAFTING_SERIALIZER;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public RecipeType<CraftingRecipe> getType() {
-		return (RecipeType<CraftingRecipe>) (RecipeType<?>) TFRecipes.UNCRAFTING_RECIPE.get();
+		return (RecipeType<CraftingRecipe>) (RecipeType<?>) TFRecipes.UNCRAFTING_RECIPE;
 	}
 
 	public Ingredient getInput() {

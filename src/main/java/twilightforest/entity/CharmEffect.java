@@ -17,7 +17,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class CharmEffect extends Entity implements ItemSupplier {
 	@Override
@@ -120,7 +120,7 @@ public class CharmEffect extends Entity implements ItemSupplier {
 	protected void addAdditionalSaveData(ValueOutput cmp) {
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack getItem() {
 		return this.displayItem;

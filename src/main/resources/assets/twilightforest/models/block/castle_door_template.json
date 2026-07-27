@@ -1,12 +1,35 @@
 {
-  "loader": "neoforge:composite",
-  "parent": "block/block",
-  "children": {
-    "main": {
-      "parent": "twilightforest:block/castle_door"
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "all": "twilightforest:block/castle_door",
+    "rune": "twilightforest:block/castle_door_rune_corners",
+    "particle": "twilightforest:block/castle_door"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down":  {"texture": "#all", "cullface": "down"},
+        "up":    {"texture": "#all", "cullface": "up"},
+        "north": {"texture": "#all", "cullface": "north"},
+        "south": {"texture": "#all", "cullface": "south"},
+        "west":  {"texture": "#all", "cullface": "west"},
+        "east":  {"texture": "#all", "cullface": "east"}
+      }
     },
-    "overlay": {
-      "parent": "twilightforest:block/castle_door_overlay"
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "shade": false,
+      "faces": {
+        "down":  {"texture": "#rune", "cullface": "down", "tintindex": 0, "emissive_light": 15},
+        "up":    {"texture": "#rune", "cullface": "up", "tintindex": 0, "emissive_light": 15},
+        "north": {"texture": "#rune", "cullface": "north", "tintindex": 0, "emissive_light": 15},
+        "south": {"texture": "#rune", "cullface": "south", "tintindex": 0, "emissive_light": 15},
+        "west":  {"texture": "#rune", "cullface": "west", "tintindex": 0, "emissive_light": 15},
+        "east":  {"texture": "#rune", "cullface": "east", "tintindex": 0, "emissive_light": 15}
+      }
     }
-  }
+  ]
 }

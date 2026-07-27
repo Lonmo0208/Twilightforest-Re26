@@ -1,15 +1,12 @@
 package twilightforest.network;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
-import twilightforest.client.MissingAdvancementToast;
 
 public record MissingAdvancementToastPacket(Component title, ItemStack icon) implements CustomPacketPayload {
 
@@ -24,16 +21,5 @@ public record MissingAdvancementToastPacket(Component title, ItemStack icon) imp
 		return TYPE;
 	}
 
-	@SuppressWarnings("Convert2Lambda")
-	public static void handle(MissingAdvancementToastPacket packet, IPayloadContext ctx) {
-		//ensure this is only done on clients as this uses client only code
-		if (ctx.flow().isClientbound()) {
-			ctx.enqueueWork(new Runnable() {
-				@Override
-				public void run() {
-					Minecraft.getInstance().getToastManager().addToast(new MissingAdvancementToast(packet.title(), packet.icon()));
-				}
-			});
-		}
-	}
+	// Client-side handler moved to MissingAdvancementToastPacketClientHandler
 }

@@ -10,23 +10,34 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
-import net.neoforged.neoforge.common.loot.LootModifier;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FieryToolSmeltingModifier extends LootModifier {
-	public static final MapCodec<FieryToolSmeltingModifier> CODEC = RecordCodecBuilder.mapCodec(inst -> LootModifier.codecStart(inst).apply(inst, FieryToolSmeltingModifier::new));
+public class FieryToolSmeltingModifier implements LootItemCondition {
 
-	public FieryToolSmeltingModifier(LootItemCondition[] conditions, int priority) {
-		super(conditions, priority);
+	public static final MapCodec<FieryToolSmeltingModifier> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+		LootItemCondition.DIRECT_CODEC.listOf().optionalFieldOf("conditions", List.of()).forGetter(c -> List.of(c.conditions))
+	).apply(inst, FieryToolSmeltingModifier::new));
+
+	private final LootItemCondition[] conditions;
+
+	public FieryToolSmeltingModifier(List<LootItemCondition> conditions) {
+		this.conditions = conditions.toArray(new LootItemCondition[0]);
 	}
 
 	@Override
-	protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+	public boolean test(LootContext context) {
+		for (LootItemCondition condition : this.conditions) {
+			if (!condition.test(context)) return false;
+		}
+		return true;
+	}
+
+	public @NotNull ObjectArrayList<ItemStack> apply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+		if (!test(context)) return generatedLoot;
 		List<Pair<ItemStack, Float>> list = generatedLoot.stream().map(stack ->
 			context.getLevel().recipeAccess().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), context.getLevel())
 				.map(holder -> {
@@ -46,7 +57,7 @@ public class FieryToolSmeltingModifier extends LootModifier {
 	}
 
 	@Override
-	public MapCodec<? extends IGlobalLootModifier> codec() {
-		return FieryToolSmeltingModifier.CODEC;
+	public MapCodec<? extends LootItemCondition> codec() {
+		return CODEC;
 	}
 }

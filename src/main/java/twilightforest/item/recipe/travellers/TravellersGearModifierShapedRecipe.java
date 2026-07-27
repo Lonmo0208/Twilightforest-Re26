@@ -60,7 +60,7 @@ public class TravellersGearModifierShapedRecipe extends TravellersGearModifierRe
 
 	@Override
 	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
-		return TFRecipes.MODIFIER_SHAPED_RECIPE_SERIALIZER.get();
+		return TFRecipes.MODIFIER_SHAPED_RECIPE_SERIALIZER;
 	}
 
 	public static class Serializer extends AbstractModifierRecipeSerializer<TravellersGearModifierShapedRecipe> {

@@ -1,10 +1,6 @@
 {
   "model": {
-    "type": "neoforge:trimmed_armor",
-    "base_model": {
-      "type": "minecraft:model",
-      "model": "twilightforest:item/ironwood_boots"
-    },
-    "base_trim_texture": "minecraft:trims/items/boots_trim"
+    "type": "minecraft:model",
+    "model": "twilightforest:item/ironwood_boots"
   }
 }

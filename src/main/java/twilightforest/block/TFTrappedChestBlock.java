@@ -17,7 +17,7 @@ public class TFTrappedChestBlock extends TrappedChestBlock {
 
 	@Override
 	public BlockEntityType<? extends ChestBlockEntity> blockEntityType() {
-		return TFBlockEntities.TF_TRAPPED_CHEST.get();
+		return TFBlockEntities.TF_TRAPPED_CHEST;
 	}
 
 	@Override

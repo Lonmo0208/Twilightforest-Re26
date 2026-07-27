@@ -6,7 +6,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.neoforged.neoforge.event.EventHooks;
+import net.minecraft.world.level.gamerules.GameRules;
 import twilightforest.entity.monster.Redcap;
 
 public class RedcapPlantTNTGoal extends RedcapBaseGoal {
@@ -22,7 +22,7 @@ public class RedcapPlantTNTGoal extends RedcapBaseGoal {
 			&& !this.redcap.heldTNT.isEmpty()
 			&& this.redcap.distanceToSqr(attackTarget) < 25
 			&& !this.isTargetLookingAtMe(attackTarget)
-			&& this.redcap.level() instanceof ServerLevel serverLevel && EventHooks.canEntityGrief(serverLevel, this.redcap)
+			&& this.redcap.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.MOB_GRIEFING)
 			&& !this.isLitTNTNearby(8)
 			&& this.findBlockTNTNearby(5) == null;
 	}

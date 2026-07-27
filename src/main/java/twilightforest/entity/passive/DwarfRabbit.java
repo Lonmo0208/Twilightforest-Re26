@@ -39,7 +39,7 @@ import twilightforest.tags.TFItemTags;
 
 public class DwarfRabbit extends Animal {
 
-	private static final EntityDataAccessor<Holder<DwarfRabbitVariant>> VARIANT = SynchedEntityData.defineId(DwarfRabbit.class, TFDataSerializers.DWARF_RABBIT_VARIANT.get());
+	private static final EntityDataAccessor<Holder<DwarfRabbitVariant>> VARIANT = SynchedEntityData.defineId(DwarfRabbit.class, TFDataSerializers.DWARF_RABBIT_VARIANT);
 
 	public DwarfRabbit(EntityType<? extends DwarfRabbit> type, Level world) {
 		super(type, world);
@@ -148,18 +148,18 @@ public class DwarfRabbit extends Animal {
 	@Nullable
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.DWARF_RABBIT_DEATH.get();
+		return TFSounds.DWARF_RABBIT_DEATH;
 	}
 
 	@Nullable
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.DWARF_RABBIT_HURT.get();
+		return TFSounds.DWARF_RABBIT_HURT;
 	}
 
 	@Nullable
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.DWARF_RABBIT_AMBIENT.get();
+		return TFSounds.DWARF_RABBIT_AMBIENT;
 	}
 }

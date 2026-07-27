@@ -109,7 +109,7 @@ public class ScepterRepairRecipe extends CustomRecipe {
 
 	@Override
 	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
-		return TFRecipes.SCEPTER_REPAIR_RECIPE.get();
+		return TFRecipes.SCEPTER_REPAIR_RECIPE;
 	}
 
 	public static final MapCodec<ScepterRepairRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

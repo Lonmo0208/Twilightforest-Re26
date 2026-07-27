@@ -19,7 +19,7 @@ import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFStructurePieceTypes;
@@ -27,21 +27,19 @@ import twilightforest.util.BoundingBoxUtils;
 import twilightforest.world.components.structures.TFStructureComponentOld;
 import twilightforest.world.components.structures.TwilightJigsawPiece;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
 public class FinalCastleBossGazeboComponent extends TFStructureComponentOld {
 
 	public static final Identifier GAZEBO_TEMP_POOL = TwilightForestMod.prefix("final_castle/temp/gazebo");
 
 	@SuppressWarnings("unused")
 	public FinalCastleBossGazeboComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		super(TFStructurePieceTypes.TFFCBoGaz.get(), nbt);
+		super(TFStructurePieceTypes.TFFCBoGaz, nbt);
 	}
 
 	@SuppressWarnings("this-escape")
 	public FinalCastleBossGazeboComponent(int i, TFStructureComponentOld keep, int x, int y, int z) {
-		super(TFStructurePieceTypes.TFFCBoGaz.get(), i, x, y, z);
+		super(TFStructurePieceTypes.TFFCBoGaz, i, x, y, z);
 		this.spawnListIndex = -1; // no monsters
 
 		this.setOrientation(keep.getOrientation());
@@ -52,11 +50,11 @@ public class FinalCastleBossGazeboComponent extends TFStructureComponentOld {
 	@Override
 	public void addChildren(StructurePiece parent, StructurePieceAccessor list, RandomSource rand) {
 		this.deco = new StructureTFDecoratorCastle();
-		this.deco.blockState = TFBlocks.VIOLET_CASTLE_RUNE_BRICK.get().defaultBlockState();
+		this.deco.blockState = TFBlocks.VIOLET_CASTLE_RUNE_BRICK.defaultBlockState();
 
-		this.deco.fenceState = TFBlocks.VIOLET_FORCE_FIELD.get().defaultBlockState();
+		this.deco.fenceState = TFBlocks.VIOLET_FORCE_FIELD.defaultBlockState();
 
-		TwilightJigsawPiece templatePiece = TwilightJigsawPiece.initializeTemplateFromPool(GAZEBO_TEMP_POOL, this.getWorldPos(10, -1, 10), this.rotation.rotation().rotate(FrontAndTop.UP_SOUTH), "twilightforest:final_castle/final_boss", rand, this.genDepth + 1, ServerLifecycleHooks.getCurrentServer().getStructureManager());
+		TwilightJigsawPiece templatePiece = TwilightJigsawPiece.initializeTemplateFromPool(GAZEBO_TEMP_POOL, this.getWorldPos(10, -1, 10), this.rotation.rotation().rotate(FrontAndTop.UP_SOUTH), "twilightforest:final_castle/final_boss", rand, this.genDepth + 1, /* TODO: Port - getStructureManager */ null);
 		if (templatePiece != null) {
 			list.addPiece(templatePiece);
 		}
@@ -65,7 +63,7 @@ public class FinalCastleBossGazeboComponent extends TFStructureComponentOld {
 	@Override
 	public void postProcess(WorldGenLevel world, StructureManager manager, ChunkGenerator generator, RandomSource randomIn, BoundingBox sbb, ChunkPos chunkPosIn, BlockPos blockPos) {
 		/* Placed by Template
-		BlockState state = TFBlocks.VIOLET_FORCE_FIELD.get().defaultBlockState();
+		BlockState state = TFBlocks.VIOLET_FORCE_FIELD.defaultBlockState();
 
 		// walls
 		for (Rotation rotation : RotationUtil.ROTATIONS) {
@@ -79,7 +77,7 @@ public class FinalCastleBossGazeboComponent extends TFStructureComponentOld {
 
 		this.willBeAddingFinalBossSoon(world, sbb);
 
-		// placeBlock(world, TFBlocks.boss_spawner_final_boss.get().defaultBlockState(), 10, 1, 10, sbb);
+		// placeBlock(world, TFBlocks.boss_spawner_final_boss.defaultBlockState(), 10, 1, 10, sbb);
 		*/
 	}
 
@@ -111,7 +109,7 @@ public class FinalCastleBossGazeboComponent extends TFStructureComponentOld {
 			Interaction interaction = new Interaction(EntityType.INTERACTION, world.getLevel());
 
 			// IMPORTANT: Punching this box has to produce behavior of discarding the text
-			// Executed via EntityEvents#onAttackEvent using AttackEntityEvent
+			// Executed via EntityEvents#onAttackEvent using FabricEvents.AttackEntityEvent
 			interaction.addTag(INTERACTION_TAG);
 
 			interaction.setHeight((float) height);

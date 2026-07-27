@@ -1,7 +1,9 @@
 package twilightforest.init;
 
-import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -10,12 +12,14 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.entity.vehicle.boat.ChestBoat;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.world.item.component.TypedEntityData;
+import twilightforest.neoforge.reg.DeferredHolder;
+import twilightforest.neoforge.reg.DeferredRegister;
+
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.*;
 import twilightforest.entity.boss.*;
@@ -33,8 +37,8 @@ public final class TFEntities {
 
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, TwilightForestMod.ID);
 	public static final List<Supplier<Item>> SPAWN_EGGS = new ArrayList<>();
-	public static final Map<Holder<EntityType<?>>, Supplier<AttributeSupplier.Builder>> ATTRIBUTES = new HashMap<>();
-	public static final Map<Holder<EntityType<?>>, SpawnPlacements.SpawnPredicate<?>> SPAWN_PREDICATES = new HashMap<>();
+	public static final Map<DeferredHolder<EntityType<?>, ?>, Supplier<AttributeSupplier.Builder>> ATTRIBUTES = new HashMap<>();
+	public static final Map<DeferredHolder<EntityType<?>, ?>, SpawnPlacements.SpawnPredicate<?>> SPAWN_PREDICATES = new HashMap<>();
 
 	public static final DeferredHolder<EntityType<?>, EntityType<Adherent>> ADHERENT = registerWithAttributes("adherent", EntityType.Builder.of(Adherent::new, MobCategory.MONSTER).sized(0.8F, 2.2F).clientTrackingRange(8), Adherent::registerAttributes);
 	public static final DeferredHolder<EntityType<?>, EntityType<AlphaYeti>> ALPHA_YETI = registerWithEgg("alpha_yeti", EntityType.Builder.of(AlphaYeti::new, MobCategory.MONSTER).sized(3.8F, 5.0F).clientTrackingRange(16), AlphaYeti::registerAttributes, Monster::checkAnyLightMonsterSpawnRules);
@@ -47,9 +51,9 @@ public final class TFEntities {
 	public static final DeferredHolder<EntityType<?>, EntityType<CarminiteGhastguard>> CARMINITE_GHASTGUARD = registerWithEgg("carminite_ghastguard", EntityType.Builder.of(CarminiteGhastguard::new, MobCategory.MONSTER).sized(4.0F, 6.0F).clientTrackingRange(20).fireImmune(), CarminiteGhastguard::registerAttributes, CarminiteGhastguard::ghastSpawnHandler);
 	public static final DeferredHolder<EntityType<?>, EntityType<CarminiteGhastling>> CARMINITE_GHASTLING = registerWithEgg("carminite_ghastling", EntityType.Builder.of(CarminiteGhastling::new, MobCategory.MONSTER).sized(1.1F, 1.5F).eyeHeight(0.5F).clientTrackingRange(10).fireImmune(), CarminiteGhastling::registerAttributes, CarminiteGhastling::ghastSpawnHandler);
 	public static final DeferredHolder<EntityType<?>, EntityType<CarminiteGolem>> CARMINITE_GOLEM = registerWithEgg("carminite_golem", EntityType.Builder.of(CarminiteGolem::new, MobCategory.MONSTER).sized(1.4F, 2.9F).clientTrackingRange(8), CarminiteGolem::registerAttributes, Monster::checkMonsterSpawnRules);
-	public static final DeferredHolder<EntityType<?>, EntityType<ChainBlock>> CHAIN_BLOCK = registerMisc("chain_block", EntityType.Builder.<ChainBlock>of(ChainBlock::new, MobCategory.MISC).sized(0.6F, 0.6F).noSummon().clientTrackingRange(8).setUpdateInterval(1).fireImmune());
+	public static final DeferredHolder<EntityType<?>, EntityType<ChainBlock>> CHAIN_BLOCK = registerMisc("chain_block", EntityType.Builder.<ChainBlock>of(ChainBlock::new, MobCategory.MISC).sized(0.6F, 0.6F).noSummon().clientTrackingRange(8).updateInterval(1).fireImmune());
 	public static final DeferredHolder<EntityType<?>, EntityType<CharmEffect>> CHARM_EFFECT = registerMisc("charm_effect", EntityType.Builder.<CharmEffect>of(CharmEffect::new, MobCategory.MISC).sized(0.0F, 0.0F).clientTrackingRange(16).updateInterval(Integer.MAX_VALUE).noSave().noSummon().fireImmune());
-	public static final DeferredHolder<EntityType<?>, EntityType<CubeOfAnnihilation>> CUBE_OF_ANNIHILATION = registerMisc("cube_of_annihilation", EntityType.Builder.<CubeOfAnnihilation>of(CubeOfAnnihilation::new, MobCategory.MISC).sized(1.0F, 1.0F).noSummon().clientTrackingRange(4).setUpdateInterval(20).fireImmune());
+	public static final DeferredHolder<EntityType<?>, EntityType<CubeOfAnnihilation>> CUBE_OF_ANNIHILATION = registerMisc("cube_of_annihilation", EntityType.Builder.<CubeOfAnnihilation>of(CubeOfAnnihilation::new, MobCategory.MISC).sized(1.0F, 1.0F).noSummon().clientTrackingRange(4).updateInterval(20).fireImmune());
 	public static final DeferredHolder<EntityType<?>, EntityType<DeathTome>> DEATH_TOME = registerWithEgg("death_tome", EntityType.Builder.of(DeathTome::new, MobCategory.MONSTER).sized(0.75F, 1.5F).clientTrackingRange(8), DeathTome::registerAttributes, Monster::checkMonsterSpawnRules);
 	public static final DeferredHolder<EntityType<?>, EntityType<Deer>> DEER = registerWithEgg("deer", EntityType.Builder.of(Deer::new, MobCategory.CREATURE).sized(0.7F, 1.8F).clientTrackingRange(8), Deer::registerAttributes, Animal::checkAnimalSpawnRules);
 	public static final DeferredHolder<EntityType<?>, EntityType<DwarfRabbit>> DWARF_RABBIT = registerWithEgg("dwarf_rabbit", EntityType.Builder.of(DwarfRabbit::new, MobCategory.CREATURE).sized(0.4F, 0.4F).clientTrackingRange(8), DwarfRabbit::registerAttributes, Animal::checkAnimalSpawnRules);
@@ -118,22 +122,42 @@ public final class TFEntities {
 	public static final DeferredHolder<EntityType<?>, EntityType<Wraith>> WRAITH = registerWithEgg("wraith", EntityType.Builder.of(Wraith::new, MobCategory.MONSTER).sized(0.6F, 2.1F).clientTrackingRange(8).fireImmune(), Wraith::registerAttributes, Wraith::checkMonsterSpawnRules);
 	public static final DeferredHolder<EntityType<?>, EntityType<Yeti>> YETI = registerWithEgg("yeti", EntityType.Builder.of(Yeti::new, MobCategory.MONSTER).sized(1.4F, 2.4F).clientTrackingRange(8), Yeti::registerAttributes, Yeti::normalYetiSpawnHandler);
 
-	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> TWILIGHT_OAK_BOAT = registerMisc("twilight_oak_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, TFItems.TWILIGHT_OAK_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> TWILIGHT_OAK_CHEST_BOAT = registerMisc("twilight_oak_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, TFItems.TWILIGHT_OAK_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> CANOPY_BOAT = registerMisc("canopy_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, TFItems.CANOPY_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> CANOPY_CHEST_BOAT = registerMisc("canopy_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, TFItems.CANOPY_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> MANGROVE_BOAT = registerMisc("mangrove_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, TFItems.MANGROVE_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> MANGROVE_CHEST_BOAT = registerMisc("mangrove_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, TFItems.MANGROVE_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> DARK_BOAT = registerMisc("dark_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, TFItems.DARK_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> DARK_CHEST_BOAT = registerMisc("dark_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, TFItems.DARK_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> TIME_BOAT = registerMisc("time_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, TFItems.TIME_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> TIME_CHEST_BOAT = registerMisc("time_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, TFItems.TIME_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> TRANSFORMATION_BOAT = registerMisc("transformation_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, TFItems.TRANSFORMATION_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> TRANSFORMATION_CHEST_BOAT = registerMisc("transformation_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, TFItems.TRANSFORMATION_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> MINING_BOAT = registerMisc("mining_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, TFItems.MINING_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> MINING_CHEST_BOAT = registerMisc("mining_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, TFItems.MINING_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> SORTING_BOAT = registerMisc("sorting_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, TFItems.SORTING_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
-	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> SORTING_CHEST_BOAT = registerMisc("sorting_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, TFItems.SORTING_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	// Part entity types
+	public static final DeferredHolder<EntityType<?>, EntityType<Entity>> TF_PART = registerMisc("tf_part", EntityType.Builder.<Entity>of((type, level) -> {
+		throw new UnsupportedOperationException("TFPart should not be constructed directly via EntityType");
+	}, MobCategory.MISC).sized(0, 0).noSummon().noSave().fireImmune());
+	public static final DeferredHolder<EntityType<?>, EntityType<Entity>> HYDRA_HEAD = registerMisc("hydra_head", EntityType.Builder.<Entity>of((type, level) -> {
+		throw new UnsupportedOperationException();
+	}, MobCategory.MISC).sized(4, 4).noSummon().noSave().fireImmune());
+	public static final DeferredHolder<EntityType<?>, EntityType<Entity>> HYDRA_NECK = registerMisc("hydra_neck", EntityType.Builder.<Entity>of((type, level) -> {
+		throw new UnsupportedOperationException();
+	}, MobCategory.MISC).sized(2, 2).noSummon().noSave().fireImmune());
+	public static final DeferredHolder<EntityType<?>, EntityType<Entity>> HYDRA_SMALL_PART = registerMisc("hydra_small_part", EntityType.Builder.<Entity>of((type, level) -> {
+		throw new UnsupportedOperationException();
+	}, MobCategory.MISC).sized(2, 2).noSummon().noSave().fireImmune());
+	public static final DeferredHolder<EntityType<?>, EntityType<Entity>> NAGA_SEGMENT = registerMisc("naga_segment", EntityType.Builder.<Entity>of((type, level) -> {
+		throw new UnsupportedOperationException();
+	}, MobCategory.MISC).sized(2, 2).noSummon().noSave().fireImmune());
+	public static final DeferredHolder<EntityType<?>, EntityType<Entity>> SNOW_QUEEN_ICE_SHIELD = registerMisc("snow_queen_ice_shield", EntityType.Builder.<Entity>of((type, level) -> {
+		throw new UnsupportedOperationException();
+	}, MobCategory.MISC).sized(0.75F, 0.75F).noSummon().noSave().fireImmune());
+
+	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> TWILIGHT_OAK_BOAT = registerMisc("twilight_oak_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, () -> TFItems.TWILIGHT_OAK_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> TWILIGHT_OAK_CHEST_BOAT = registerMisc("twilight_oak_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, () -> TFItems.TWILIGHT_OAK_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> CANOPY_BOAT = registerMisc("canopy_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, () -> TFItems.CANOPY_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> CANOPY_CHEST_BOAT = registerMisc("canopy_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, () -> TFItems.CANOPY_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> MANGROVE_BOAT = registerMisc("mangrove_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, () -> TFItems.MANGROVE_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> MANGROVE_CHEST_BOAT = registerMisc("mangrove_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, () -> TFItems.MANGROVE_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> DARK_BOAT = registerMisc("dark_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, () -> TFItems.DARK_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> DARK_CHEST_BOAT = registerMisc("dark_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, () -> TFItems.DARK_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> TIME_BOAT = registerMisc("time_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, () -> TFItems.TIME_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> TIME_CHEST_BOAT = registerMisc("time_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, () -> TFItems.TIME_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> TRANSFORMATION_BOAT = registerMisc("transformation_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, () -> TFItems.TRANSFORMATION_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> TRANSFORMATION_CHEST_BOAT = registerMisc("transformation_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, () -> TFItems.TRANSFORMATION_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> MINING_BOAT = registerMisc("mining_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, () -> TFItems.MINING_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> MINING_CHEST_BOAT = registerMisc("mining_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, () -> TFItems.MINING_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<Boat>> SORTING_BOAT = registerMisc("sorting_boat", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, () -> TFItems.SORTING_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+	public static final DeferredHolder<EntityType<?>, EntityType<ChestBoat>> SORTING_CHEST_BOAT = registerMisc("sorting_chest_boat", EntityType.Builder.<ChestBoat>of((type, level) -> new ChestBoat(type, level, () -> TFItems.SORTING_CHEST_BOAT), MobCategory.MISC).sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
 
 	public static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerMisc(String name, EntityType.Builder<E> builder) {
 		return ENTITY_TYPES.register(name, () -> builder.noLootTable().build(createIDFor(name)));
@@ -145,7 +169,7 @@ public final class TFEntities {
 		return ret;
 	}
 
-	public static <E extends LivingEntity> DeferredHolder<EntityType<?>, EntityType<E>> registerWithPlacement(String name, EntityType.Builder<E> builder, Supplier<AttributeSupplier.Builder> attributes, SpawnPlacements.@Nullable SpawnPredicate<E> predicate) {
+	public static <E extends LivingEntity> DeferredHolder<EntityType<?>, EntityType<E>> registerWithPlacement(String name, EntityType.Builder<E> builder, Supplier<AttributeSupplier.Builder> attributes, SpawnPlacements.SpawnPredicate<E> predicate) {
 		DeferredHolder<EntityType<?>, EntityType<E>> ret = ENTITY_TYPES.register(name, () -> builder.build(createIDFor(name)));
 		ATTRIBUTES.put(ret, attributes);
 		if (predicate != null) {
@@ -154,20 +178,24 @@ public final class TFEntities {
 		return ret;
 	}
 
-	public static <E extends Mob> DeferredHolder<EntityType<?>, EntityType<E>> registerWithEgg(String name, EntityType.Builder<E> builder, Supplier<AttributeSupplier.Builder> attributes, SpawnPlacements.@Nullable SpawnPredicate<E> predicate) {
+	public static <E extends Mob> DeferredHolder<EntityType<?>, EntityType<E>> registerWithEgg(String name, EntityType.Builder<E> builder, Supplier<AttributeSupplier.Builder> attributes, SpawnPlacements.SpawnPredicate<E> predicate) {
 		DeferredHolder<EntityType<?>, EntityType<E>> ret = ENTITY_TYPES.register(name, () -> builder.build(createIDFor(name)));
-		DeferredItem<?> egg = TFItems.register(name + "_spawn_egg", SpawnEggItem::new, () -> new Item.Properties().spawnEgg(ret.get()));
-		SPAWN_EGGS.add(new Supplier<>() {
-			@Override
-			public Item get() {
-				return (Item) egg.get();
-			}
-		});
+		Identifier eggId = TwilightForestMod.prefix(name + "_spawn_egg");
+		Item egg = Registry.register(BuiltInRegistries.ITEM, eggId, new SpawnEggItem(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, eggId)).component(DataComponents.ENTITY_DATA, TypedEntityData.of(ret.get(), new CompoundTag()))));
+		SPAWN_EGGS.add(() -> egg);
 		ATTRIBUTES.put(ret, attributes);
 		if (predicate != null) {
 			SPAWN_PREDICATES.put(ret, predicate);
 		}
 		return ret;
+	}
+
+	public static void init() {
+		// Entity types are registered via DeferredRegister/DeferredHolder system
+		// which is backed by Fabric's Registry.register() calls
+		for (var entry : ENTITY_TYPES.getEntries()) {
+			entry.get(); // Trigger supplier to ensure entity type is built and registered
+		}
 	}
 
 	private static ResourceKey<EntityType<?>> createIDFor(String name) {

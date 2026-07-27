@@ -1,0 +1,9 @@
+{
+  "values": [
+    "minecraft:raw_iron",
+    "minecraft:raw_gold",
+    "minecraft:raw_copper",
+    "#c:raw_materials/ironwood",
+    "#c:raw_materials/knightmetal"
+  ]
+}

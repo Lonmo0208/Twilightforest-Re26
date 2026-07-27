@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
@@ -13,7 +14,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+
 import twilightforest.TwilightForestMod;
 
 import java.util.ArrayList;
@@ -21,9 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class CodecResourceReloadListener<T> extends SimpleJsonResourceReloadListener<JsonElement> {
+public abstract class CodecResourceReloadListener<T> extends SimpleJsonResourceReloadListener<JsonElement> implements IdentifiableResourceReloadListener {
 	protected final Gson gson;
 	private final Codec<T> codec;
+	private final Identifier fabricId;
 
 	public CodecResourceReloadListener(String directory, Codec<T> codec) {
 		this(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), directory, codec);
@@ -34,16 +36,15 @@ public abstract class CodecResourceReloadListener<T> extends SimpleJsonResourceR
 
 		this.gson = gson;
 		this.codec = codec;
+		this.fabricId = Identifier.fromNamespaceAndPath(TwilightForestMod.ID, directory.replace('/', '_'));
+	}
+
+	@Override
+	public Identifier getFabricId() {
+		return this.fabricId;
 	}
 
 	protected DynamicOps<JsonElement> initDynamicOps() {
-		try {
-			if (ServerLifecycleHooks.getCurrentServer() != null) {
-				return RegistryOps.create(JsonOps.INSTANCE, ServerLifecycleHooks.getCurrentServer().registryAccess());
-			}
-		} catch (Exception e) {
-			TwilightForestMod.LOGGER.warn("Failed to get registry access for reload listener {}, falling back to JsonOps", this.getName(), e);
-		}
 		return JsonOps.INSTANCE;
 	}
 

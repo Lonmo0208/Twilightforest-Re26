@@ -27,10 +27,9 @@ import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.neoforged.neoforge.common.world.PieceBeardifierModifier;
+
 import org.jetbrains.annotations.Nullable;
 import org.joml.SimplexNoise;
-import tamaized.beanification.Autowired;
 import twilightforest.init.TFConfiguredFeatures;
 import twilightforest.init.TFStructurePieceTypes;
 import twilightforest.util.BoundingBoxUtils;
@@ -44,9 +43,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LichYardBox extends StructurePiece implements PieceBeardifierModifier, SortablePiece, SpawnIndexProvider {
-	@Autowired
-	private static LichTowerUtil lichTowerUtil;
+public class LichYardBox extends StructurePiece implements SortablePiece, SpawnIndexProvider {
+	private static final LichTowerUtil lichTowerUtil = new LichTowerUtil();
 
 	private final float edgeFeatheringRange;
 	private final Direction direction;
@@ -57,7 +55,7 @@ public class LichYardBox extends StructurePiece implements PieceBeardifierModifi
 	private Set<BoundingBox> pathBoxes;
 
 	public LichYardBox(BoundingBox boundingBox, float edgeFeatheringRange, Direction direction, boolean doDirtMotley, float scale, float offset) {
-		super(TFStructurePieceTypes.LICH_YARD_PATH.value(), 0, boundingBox);
+		super(TFStructurePieceTypes.LICH_YARD_PATH, 0, boundingBox);
 
 		this.edgeFeatheringRange = edgeFeatheringRange;
 		this.direction = direction;
@@ -67,7 +65,7 @@ public class LichYardBox extends StructurePiece implements PieceBeardifierModifi
 	}
 
 	public LichYardBox(StructurePieceSerializationContext ctx, CompoundTag tag) {
-		super(TFStructurePieceTypes.LICH_YARD_PATH.value(), tag);
+		super(TFStructurePieceTypes.LICH_YARD_PATH, tag);
 
 		this.edgeFeatheringRange = tag.getFloatOr("feather", 0.0F);
 		this.direction = tag.contains("direction") ? Direction.values()[tag.getIntOr("direction", 0)] : Direction.UP;
@@ -174,25 +172,10 @@ public class LichYardBox extends StructurePiece implements PieceBeardifierModifi
 		return !this.doDirtMotley;
 	}
 
-	@Override
-	public BoundingBox getBeardifierBox() {
-		return this.boundingBox;
-	}
-
-	@Override
-	public TerrainAdjustment getTerrainAdjustment() {
-		return this.doDirtMotley ? TerrainAdjustment.BEARD_BOX : TerrainAdjustment.NONE;
-	}
-
-	@Override
-	public int getGroundLevelDelta() {
-		return 0;
-	}
-
 	public static void beginYard(LichTowerFoyer foyerPiece, Structure.GenerationContext context, StructurePiecesBuilder pieces) {
 		WorldgenRandom random = context.random();
 		StructureTemplateManager structureManager = context.structureTemplateManager();
-		int ySurface = foyerPiece.getBoundingBox().minY() + foyerPiece.getGroundLevelDelta();
+		int ySurface = foyerPiece.getBoundingBox().minY();
 
 		List<JigsawRecord> pathRecords = foyerPiece.matchSpareJigsaws(r -> "twilightforest:lich_tower/path".equals(r.target()));
 		if (pathRecords.isEmpty()) return;
@@ -224,7 +207,7 @@ public class LichYardBox extends StructurePiece implements PieceBeardifierModifi
 	}
 
 	private static void generateYard(LichTowerFoyer foyerPiece, StructurePiecesBuilder pieces, BlockPos nearVestibule, BlockPos nearFence, WorldgenRandom random, Direction dirFromVestibule, Structure.GenerationContext context, Set<BoundingBox> pathBoxes) {
-		int ySurface = foyerPiece.getBoundingBox().minY() + foyerPiece.getGroundLevelDelta();
+		int ySurface = foyerPiece.getBoundingBox().minY();
 		List<LichYardBox> paths = new ArrayList<>(); // Add all pieces to a list instead of immediately adding children, so that paths can generate before graves check for overlap
 
 		// First path, from the vestibule

@@ -6,9 +6,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
-import twilightforest.client.renderer.TFWeatherRenderer;
 import twilightforest.init.TFDimension;
 import twilightforest.util.Codecs;
 
@@ -31,11 +29,5 @@ public record StructureProtectionPacket(Optional<List<Pair<BoundingBox, Boolean>
 		return TYPE;
 	}
 
-	public static void handle(StructureProtectionPacket message, IPayloadContext ctx) {
-		ctx.enqueueWork(() -> {
-			if (TFDimension.DIMENSION_KEY.equals(ctx.player().level().dimension())) {
-				TFWeatherRenderer.setProtectedBoxes(message.boxes().orElse(null));
-			}
-		});
-	}
+	// Client-side handler moved to StructureProtectionPacketClientHandler
 }

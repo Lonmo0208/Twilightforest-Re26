@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "twilightforest:block/time_planks_0"
+      },
+      {
+        "model": "twilightforest:block/time_planks_1"
+      },
+      {
+        "model": "twilightforest:block/time_planks_2"
+      },
+      {
+        "model": "twilightforest:block/time_planks_3"
+      }
+    ]
+  }
+}

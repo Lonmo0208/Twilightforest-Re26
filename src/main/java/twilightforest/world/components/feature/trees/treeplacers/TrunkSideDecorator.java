@@ -31,7 +31,7 @@ public class TrunkSideDecorator extends TreeDecorator {
 
 	@Override
 	protected TreeDecoratorType<TrunkSideDecorator> type() {
-		return TFFeatureModifiers.TRUNKSIDE_DECORATOR.get();
+		return TFFeatureModifiers.TRUNKSIDE_DECORATOR;
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class TrunkSideDecorator extends TreeDecorator {
 		int blockCount = context.logs().size();
 
 		if (blockCount == 0) {
-			TwilightForestMod.LOGGER.error("[TrunkSideDecorator] Trunk Blocks were empty! Why?");
+			TwilightForestMod.LOGGER.warn("[TrunkSideDecorator] Trunk Blocks were empty! Why?");
 			return;
 		}
 

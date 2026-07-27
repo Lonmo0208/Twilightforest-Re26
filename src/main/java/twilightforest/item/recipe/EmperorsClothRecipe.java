@@ -25,7 +25,7 @@ public class EmperorsClothRecipe extends CustomRecipe {
 		for (int i = 0; i < input.size(); i++) {
 			ItemStack stack = input.getItem(i);
 			if (!stack.isEmpty()) {
-				if (stack.is(TFItems.EMPERORS_CLOTH.get()) && !foundCloth) {
+				if (stack.is(TFItems.EMPERORS_CLOTH) && !foundCloth) {
 					foundCloth = true;
 				} else if (!foundItem) {
 					if (stack.is(TFItemTags.EMPERORS_CLOTH_APPLICABLE) && stack.getCraftingRemainder() == null && stack.get(TFDataComponents.EMPERORS_CLOTH) == null) {
@@ -60,6 +60,6 @@ public class EmperorsClothRecipe extends CustomRecipe {
 
 	@Override
 	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
-		return TFRecipes.EMPERORS_CLOTH_RECIPE.get();
+		return TFRecipes.EMPERORS_CLOTH_RECIPE;
 	}
 }

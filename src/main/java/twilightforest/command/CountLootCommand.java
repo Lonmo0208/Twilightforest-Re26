@@ -33,7 +33,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-@tamaized.beanification.Component
+@twilightforest.beanification.Component
 public class CountLootCommand {
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
 		return Commands.literal("count_loot").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
@@ -89,7 +89,7 @@ public class CountLootCommand {
 
 			Item lootItem = countedItem.getKey();
 
-			var rarityColor = new ItemStack(lootItem).getRarity().getStyleModifier();
+			ChatFormatting rarityColor = new ItemStack(lootItem).getRarity().color();
 
 			Component message = Component.translatable(lootItem.getDescriptionId()).withStyle(rarityColor).append(suffixCount);
 

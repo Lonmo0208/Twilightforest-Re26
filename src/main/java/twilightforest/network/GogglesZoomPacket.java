@@ -1,11 +1,10 @@
 package twilightforest.network;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFSounds;
@@ -26,20 +25,20 @@ public record GogglesZoomPacket(boolean isUsingZoom, UUID playerUUID) implements
 		registryFriendlyByteBuf.writeUUID(playerUUID);
 	}
 
-	public static void handle(GogglesZoomPacket packet, IPayloadContext ctx) {
-		ctx.enqueueWork(() -> {
-			Player player = ctx.player().level().getPlayerByUUID(packet.playerUUID);
+	public static void handle(GogglesZoomPacket packet, ServerPlayNetworking.Context context) {
+		context.server().execute(() -> {
+			Player player = context.player().level().getPlayerByUUID(packet.playerUUID);
 			if (player == null)
 				return;
 			if (player.level().isClientSide()) {
-				player.setData(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER, packet.isUsingZoom);
+				player.setAttached(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER, packet.isUsingZoom);
 				return;
 			}
 
 			boolean canChangeZoomState = TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.ZOOM_ABILITY);
 			if (canChangeZoomState) {
-				player.setData(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER, packet.isUsingZoom);
-				player.playSound(packet.isUsingZoom ? TFSounds.GOGGLES_ZOOM_IN.get() : TFSounds.GOGGLES_ZOOM_OUT.get());
+				player.setAttached(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER, packet.isUsingZoom);
+				player.playSound(packet.isUsingZoom ? TFSounds.GOGGLES_ZOOM_IN : TFSounds.GOGGLES_ZOOM_OUT);
 				PacketDistributor.sendToPlayersTrackingEntity(player, new GogglesZoomPacket(packet.isUsingZoom, player.getUUID()));
 			}
 		});

@@ -13,7 +13,9 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.entity.IBreathAttacker;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
 
 public class BreathAttackGoal<T extends Mob & IBreathAttacker> extends Goal {
 
@@ -114,9 +116,6 @@ public class BreathAttackGoal<T extends Mob & IBreathAttacker> extends Goal {
 		float var9 = 0.5F;
 		List<Entity> possibleList = this.entityHost.level().getEntities(this.entityHost, this.entityHost.getBoundingBox().move(lookVec.x() * offset, lookVec.y() * offset, lookVec.z() * offset).inflate(var9, var9, var9));
 		double hitDist = 0;
-
-		if (this.entityHost.isMultipartEntity())
-			possibleList.removeAll(Arrays.asList(Objects.requireNonNull(this.entityHost.getParts())));
 
 		for (Entity possibleEntity : possibleList) {
 			if (possibleEntity.isPickable() && possibleEntity != this.entityHost && EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(EntitySelector.LIVING_ENTITY_STILL_ALIVE).test(possibleEntity)) {

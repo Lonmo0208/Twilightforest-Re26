@@ -1,7 +1,7 @@
 package twilightforest.enums.extensions;
 
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
-import tamaized.beanification.Component;
+import twilightforest.beanification.Component;
 import twilightforest.TFEnumExtensions;
 
 @Component
@@ -10,26 +10,26 @@ public class TFGrassColorModifierEnumExtension {
 	/**
 	 * {@link TFEnumExtensions#GrassColorModifier_ENCHANTED_FOREST(int, Class)}
 	 */
-	public final BiomeSpecialEffects.GrassColorModifier ENCHANTED_FOREST = BiomeSpecialEffects.GrassColorModifier.valueOf("TWILIGHTFOREST_ENCHANTED_FOREST");
+	public final BiomeSpecialEffects.GrassColorModifier ENCHANTED_FOREST = BiomeSpecialEffects.GrassColorModifier.NONE; // Fabric: use vanilla NONE (has grassColorOverride)
 
 	/**
 	 * {@link TFEnumExtensions#GrassColorModifier_SWAMP(int, Class)}
 	 */
-	public final BiomeSpecialEffects.GrassColorModifier SWAMP = BiomeSpecialEffects.GrassColorModifier.valueOf("TWILIGHTFOREST_SWAMP");
+	public final BiomeSpecialEffects.GrassColorModifier SWAMP = BiomeSpecialEffects.GrassColorModifier.SWAMP; // Fabric: use vanilla SWAMP
 
 	/**
 	 * {@link TFEnumExtensions#GrassColorModifier_DARK_FOREST(int, Class)}
 	 */
-	public final BiomeSpecialEffects.GrassColorModifier DARK_FOREST = BiomeSpecialEffects.GrassColorModifier.valueOf("TWILIGHTFOREST_DARK_FOREST");
+	public final BiomeSpecialEffects.GrassColorModifier DARK_FOREST = BiomeSpecialEffects.GrassColorModifier.DARK_FOREST; // Fabric: use vanilla DARK_FOREST
 
 	/**
 	 * {@link TFEnumExtensions#GrassColorModifier_DARK_FOREST_CENTER(int, Class)}
 	 */
-	public final BiomeSpecialEffects.GrassColorModifier DARK_FOREST_CENTER = BiomeSpecialEffects.GrassColorModifier.valueOf("TWILIGHTFOREST_DARK_FOREST_CENTER");
+	public final BiomeSpecialEffects.GrassColorModifier DARK_FOREST_CENTER = BiomeSpecialEffects.GrassColorModifier.DARK_FOREST; // Fabric: closest vanilla equivalent
 
 	/**
 	 * {@link TFEnumExtensions#GrassColorModifier_SPOOKY_FOREST(int, Class)}
 	 */
-	public final BiomeSpecialEffects.GrassColorModifier SPOOKY_FOREST = BiomeSpecialEffects.GrassColorModifier.valueOf("TWILIGHTFOREST_SPOOKY_FOREST");
+	public final BiomeSpecialEffects.GrassColorModifier SPOOKY_FOREST = BiomeSpecialEffects.GrassColorModifier.NONE; // Fabric: use vanilla NONE (has grassColorOverride)
 
 }

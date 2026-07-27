@@ -47,12 +47,6 @@ public class OreBerryBushBlock extends TFBushBlock {
 		return shape;
 	}
 
-	@Nullable
-	@Override
-	public PathType getBlockPathType(BlockState state, BlockGetter level, BlockPos pos, @Nullable Mob mob) {
-		return PathType.DAMAGING;
-	}
-
 	@Override
 	public boolean canBePlacedAt(BlockState state) {
 		return state.is(TFBlockTags.OREBERRY_BUSHES_SURVIVE);

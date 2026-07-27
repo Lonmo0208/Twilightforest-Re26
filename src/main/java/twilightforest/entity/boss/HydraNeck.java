@@ -6,6 +6,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import twilightforest.TwilightForestMod;
+import twilightforest.init.TFEntities;
 
 public class HydraNeck extends HydraPart {
 
@@ -14,7 +15,7 @@ public class HydraNeck extends HydraPart {
 	public final HydraHead head;
 
 	public HydraNeck(HydraHead head) {
-		super(head.getParent(), 2F, 2F);
+		super(head.getParent(), TFEntities.HYDRA_NECK.get(), head.level(), 2F, 2F);
 		this.head = head;
 	}
 

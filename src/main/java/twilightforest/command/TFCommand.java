@@ -10,9 +10,9 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import tamaized.beanification.Autowired;
+import twilightforest.beanification.Autowired;
 
-@tamaized.beanification.Component
+@twilightforest.beanification.Component
 public class TFCommand {
 
 	@Autowired
@@ -26,9 +26,6 @@ public class TFCommand {
 
 	@Autowired
 	private InfoCommand infoCommand;
-
-	@Autowired
-	private MapBiomesCommand mapBiomesCommand;
 
 	@Autowired
 	private MapLocatorCommand mapLocatorCommand;
@@ -76,7 +73,6 @@ public class TFCommand {
 			.then(conquerCommand.register())
 			.then(generateBookCommand.register())
 			.then(infoCommand.register())
-			.then(mapBiomesCommand.register())
 			.then(shieldCommand.register())
 			.then(spawnerCommand.register(buildContext))
 			.then(travellersGearCommand.register())

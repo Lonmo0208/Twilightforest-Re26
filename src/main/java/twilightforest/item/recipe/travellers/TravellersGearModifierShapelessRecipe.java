@@ -1,5 +1,6 @@
 package twilightforest.item.recipe.travellers;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
@@ -36,7 +37,24 @@ public class TravellersGearModifierShapelessRecipe extends TravellersGearModifie
 			if (!item.isEmpty())
 				nonEmptyItems.add(item);
 		}
-		return net.neoforged.neoforge.common.util.RecipeMatcher.findMatches(nonEmptyItems, this.ingredients) != null;
+		return findMatches(nonEmptyItems, this.ingredients) != null;
+	}
+
+	// Simple replacement for NeoForge's RecipeMatcher.findMatches
+	private static int[] findMatches(List<ItemStack> inputs, NonNullList<Ingredient> ingredients) {
+		// TODO: Port to Fabric - Use a proper recipe matching algorithm
+		// Simple implementation: check if all ingredients match
+		List<ItemStack> remaining = new ArrayList<>(inputs);
+		outer: for (Ingredient ingredient : ingredients) {
+			for (ItemStack stack : remaining) {
+				if (ingredient.test(stack)) {
+					remaining.remove(stack);
+					continue outer;
+				}
+			}
+			return null; // No match found for this ingredient
+		}
+		return new int[0]; // All matched
 	}
 
 	@Override
@@ -61,13 +79,20 @@ public class TravellersGearModifierShapelessRecipe extends TravellersGearModifie
 
 	@Override
 	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
-		return TFRecipes.MODIFIER_SHAPELESS_RECIPE_SERIALIZER.get();
+		return TFRecipes.MODIFIER_SHAPELESS_RECIPE_SERIALIZER;
 	}
 
 	public static class Serializer extends AbstractModifierRecipeSerializer<TravellersGearModifierShapelessRecipe> {
 		public Serializer() {
 			super(RecordCodecBuilder.mapCodec(instance -> instance.group(
-				NonNullList.codecOf(Ingredient.CODEC)
+				Codec.list(Ingredient.CODEC).xmap(
+					list -> {
+						NonNullList<Ingredient> result = NonNullList.create();
+						result.addAll(list);
+						return result;
+					},
+					list -> list
+				)
 					.fieldOf("ingredients")
 					.forGetter(recipe -> recipe.ingredients),
 				ResourceKey.codec(TFRegistries.Keys.TRAVELLERS_MODIFIERS)

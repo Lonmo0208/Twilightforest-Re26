@@ -8,7 +8,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
 
 import java.util.ArrayList;
@@ -62,15 +61,13 @@ public class ParticlePacket implements CustomPacketPayload {
 		this.queuedParticles.add(new QueuedParticle(particleOptions, xyz.x, xyz.y, xyz.z, xyz2.x, xyz2.y, xyz2.z));
 	}
 
-	private record QueuedParticle(ParticleOptions particleOptions, double x, double y, double z, double x2,
-								  double y2, double z2) {
+	public record QueuedParticle(ParticleOptions particleOptions, double x, double y, double z, double x2,
+								 double y2, double z2) {
 	}
 
-	public static void handle(ParticlePacket message, IPayloadContext ctx) {
-		ctx.enqueueWork(() -> {
-			for (QueuedParticle queuedParticle : message.queuedParticles) {
-				ctx.player().level().addParticle(queuedParticle.particleOptions, queuedParticle.x, queuedParticle.y, queuedParticle.z, queuedParticle.x2, queuedParticle.y2, queuedParticle.z2);
-			}
-		});
+	public List<QueuedParticle> queuedParticles() {
+		return this.queuedParticles;
 	}
+
+	// Client-side handler moved to ParticlePacketClientHandler
 }

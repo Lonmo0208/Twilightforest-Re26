@@ -16,7 +16,7 @@ import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.neoforged.neoforge.common.world.PieceBeardifierModifier;
+
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFStructurePieceTypes;
@@ -31,12 +31,12 @@ import twilightforest.world.components.structures.TwilightJigsawPiece;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class LichTowerFoyer extends TwilightJigsawPiece implements PieceBeardifierModifier, SpawnIndexProvider {
+public final class LichTowerFoyer extends TwilightJigsawPiece implements SpawnIndexProvider {
 	private final boolean putChest;
 	private final boolean chestSide;
 
 	public LichTowerFoyer(StructurePieceSerializationContext ctx, CompoundTag compoundTag) {
-		super(TFStructurePieceTypes.LICH_TOWER_FOYER.get(), compoundTag, ctx, readSettings(compoundTag));
+		super(TFStructurePieceTypes.LICH_TOWER_FOYER, compoundTag, ctx, readSettings(compoundTag));
 
 		LichTowerUtil.addDefaultProcessors(this.placeSettings);
 
@@ -45,7 +45,7 @@ public final class LichTowerFoyer extends TwilightJigsawPiece implements PieceBe
 	}
 
 	public LichTowerFoyer(StructureTemplateManager structureManager, JigsawPlaceContext placeContext, boolean putChest, boolean chestSide) {
-		super(TFStructurePieceTypes.LICH_TOWER_FOYER.get(), 0, structureManager, TwilightForestMod.prefix("lich_tower/tower_foyer"), placeContext);
+		super(TFStructurePieceTypes.LICH_TOWER_FOYER, 0, structureManager, TwilightForestMod.prefix("lich_tower/tower_foyer"), placeContext);
 
 		LichTowerUtil.addDefaultProcessors(this.placeSettings);
 
@@ -119,24 +119,9 @@ public final class LichTowerFoyer extends TwilightJigsawPiece implements PieceBe
 					lootBlock.setLootTable(TFLootTables.TOWER_ROOM, random.nextLong());
 				}
 
-				level.setBlock(pos.below(), TFBlocks.CANOPY_PLANKS.value().defaultBlockState(), Block.UPDATE_CLIENTS);
+				level.setBlock(pos.below(), TFBlocks.CANOPY_PLANKS.defaultBlockState(), Block.UPDATE_CLIENTS);
 			}
 		}
-	}
-
-	@Override
-	public BoundingBox getBeardifierBox() {
-		return this.boundingBox;
-	}
-
-	@Override
-	public TerrainAdjustment getTerrainAdjustment() {
-		return TerrainAdjustment.BEARD_BOX;
-	}
-
-	@Override
-	public int getGroundLevelDelta() {
-		return 1;
 	}
 
 	@Override

@@ -1,103 +1,35 @@
 {
-  "parent": "minecraft:block/block",
-  "children": {
-    "brick": {
-      "parent": "minecraft:block/cube_all",
-      "textures": {
-        "all": "#all"
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "all": "#all",
+    "rune": "#rune",
+    "particle": "#all"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down":  {"texture": "#all", "cullface": "down"},
+        "up":    {"texture": "#all", "cullface": "up"},
+        "north": {"texture": "#all", "cullface": "north"},
+        "south": {"texture": "#all", "cullface": "south"},
+        "west":  {"texture": "#all", "cullface": "west"},
+        "east":  {"texture": "#all", "cullface": "east"}
       }
     },
-    "runes": {
-      "parent": "minecraft:block/block",
-      "elements": [
-        {
-          "faces": {
-            "down": {
-              "cullface": "down",
-              "neoforge_data": {
-                "block_light": 15,
-                "sky_light": 15
-              },
-              "texture": "#down",
-              "tintindex": 0
-            },
-            "east": {
-              "cullface": "east",
-              "neoforge_data": {
-                "block_light": 15,
-                "sky_light": 15
-              },
-              "texture": "#east",
-              "tintindex": 0
-            },
-            "north": {
-              "cullface": "north",
-              "neoforge_data": {
-                "block_light": 15,
-                "sky_light": 15
-              },
-              "texture": "#north",
-              "tintindex": 0
-            },
-            "south": {
-              "cullface": "south",
-              "neoforge_data": {
-                "block_light": 15,
-                "sky_light": 15
-              },
-              "texture": "#south",
-              "tintindex": 0
-            },
-            "up": {
-              "cullface": "up",
-              "neoforge_data": {
-                "block_light": 15,
-                "sky_light": 15
-              },
-              "texture": "#up",
-              "tintindex": 0
-            },
-            "west": {
-              "cullface": "west",
-              "neoforge_data": {
-                "block_light": 15,
-                "sky_light": 15
-              },
-              "texture": "#west",
-              "tintindex": 0
-            }
-          },
-          "from": [
-            0,
-            0,
-            0
-          ],
-          "to": [
-            16,
-            16,
-            16
-          ]
-        }
-      ],
-      "render_type": "minecraft:cutout",
-      "textures": {
-        "all": "#rune",
-        "down": "#all",
-        "east": "#all",
-        "north": "#all",
-        "particle": "#north",
-        "south": "#all",
-        "up": "#all",
-        "west": "#all"
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "shade": false,
+      "faces": {
+        "down":  {"texture": "#rune", "cullface": "down", "tintindex": 0, "emissive_light": 15},
+        "up":    {"texture": "#rune", "cullface": "up", "tintindex": 0, "emissive_light": 15},
+        "north": {"texture": "#rune", "cullface": "north", "tintindex": 0, "emissive_light": 15},
+        "south": {"texture": "#rune", "cullface": "south", "tintindex": 0, "emissive_light": 15},
+        "west":  {"texture": "#rune", "cullface": "west", "tintindex": 0, "emissive_light": 15},
+        "east":  {"texture": "#rune", "cullface": "east", "tintindex": 0, "emissive_light": 15}
       }
     }
-  },
-  "item_render_order": [
-    "brick",
-    "runes"
-  ],
-  "loader": "neoforge:composite",
-  "textures": {
-    "particle": "#all"
-  }
+  ]
 }

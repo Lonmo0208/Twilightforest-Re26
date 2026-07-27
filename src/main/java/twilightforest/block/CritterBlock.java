@@ -1,6 +1,5 @@
 package twilightforest.block;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -46,7 +45,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
-import twilightforest.init.*;
+import twilightforest.init.TFBlocks;
+import twilightforest.init.TFDataComponents;
+import twilightforest.init.TFItems;
+import twilightforest.init.TFSounds;
+import twilightforest.init.TFStats;
+import twilightforest.init.TFAdvancements;
 import twilightforest.tags.TFEntityTypeTags;
 
 public abstract class CritterBlock extends BaseEntityBlock {
@@ -127,18 +131,16 @@ public abstract class CritterBlock extends BaseEntityBlock {
 		if (stack.is(TFItems.MASON_JAR.asItem())) {
 			ItemContainerContents contents = stack.getComponents().get(DataComponents.CONTAINER);
 			if (contents == null || contents.copyOne().isEmpty()) {
-				if (this == TFBlocks.FIREFLY.get()) {
-					ItemStack newStack = Util.make(new ItemStack(TFBlocks.FIREFLY_JAR.get()), jar -> jar.set(TFDataComponents.JAR_LID.get(), stack.get(TFDataComponents.JAR_LID.get())));
+				if (this == TFBlocks.FIREFLY) {
+					ItemStack newStack = Util.make(new ItemStack(TFBlocks.FIREFLY_JAR), jar -> jar.set(TFDataComponents.JAR_LID, stack.get(TFDataComponents.JAR_LID)));
 					stack.consume(1, player);
 					player.getInventory().add(newStack);
 					level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 					return InteractionResult.SUCCESS;
-				} else if (this == TFBlocks.CICADA.get()) {
-					ItemStack newStack = Util.make(new ItemStack(TFBlocks.CICADA_JAR.get()), jar -> jar.set(TFDataComponents.JAR_LID.get(), stack.get(TFDataComponents.JAR_LID.get())));
+				} else if (this == TFBlocks.CICADA) {
+					ItemStack newStack = Util.make(new ItemStack(TFBlocks.CICADA_JAR), jar -> jar.set(TFDataComponents.JAR_LID, stack.get(TFDataComponents.JAR_LID)));
 					stack.consume(1, player);
 					player.getInventory().add(newStack);
-					if (level.isClientSide())
-						Minecraft.getInstance().getSoundManager().stop(TFSounds.CICADA.get().location(), SoundSource.NEUTRAL);
 					level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 					return InteractionResult.SUCCESS;
 				}
@@ -151,10 +153,8 @@ public abstract class CritterBlock extends BaseEntityBlock {
 	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
 		if ((entity instanceof Projectile && !entity.is(TFEntityTypeTags.DONT_KILL_BUGS)) || entity instanceof FallingBlockEntity) {
 			level.setBlockAndUpdate(pos, state.hasProperty(WATERLOGGED) && state.getValue(WATERLOGGED) ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState());
-			if (level.isClientSide())
-				Minecraft.getInstance().getSoundManager().stop(TFSounds.CICADA.get().location(), SoundSource.NEUTRAL);
 
-			level.playSound(null, pos, TFSounds.BUG_SQUISH.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+			level.playSound(null, pos, TFSounds.BUG_SQUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
 
 			if (level instanceof ServerLevel serverLevel && this.getSquishLootTable() != null) {
 				LootParams ctx = new LootParams.Builder(serverLevel).withParameter(LootContextParams.BLOCK_STATE, state).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos)).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).create(LootContextParamSets.BLOCK);
@@ -170,8 +170,8 @@ public abstract class CritterBlock extends BaseEntityBlock {
 					0.0D, 0.0D, 0.0D);
 			}
 			if (entity instanceof Projectile projectile && projectile.getOwner() instanceof ServerPlayer player) {
-				player.awardStat(TFStats.BUGS_SQUISHED.get());
-				TFAdvancements.KILL_BUG.get().trigger(player, state);
+				player.awardStat(TFStats.BUGS_SQUISHED);
+				TFAdvancements.KILL_BUG.trigger(player, state);
 			}
 		}
 	}

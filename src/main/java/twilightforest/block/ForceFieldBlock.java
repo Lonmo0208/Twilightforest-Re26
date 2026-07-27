@@ -74,11 +74,6 @@ public class ForceFieldBlock extends Block implements SimpleWaterloggedBlock {
 	}
 
 	@Override
-	public boolean canEntityDestroy(BlockState state, BlockGetter getter, BlockPos pos, Entity entity) {
-		return false;
-	}
-
-	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
 		VoxelShape shape = BASE_SHAPE;
 

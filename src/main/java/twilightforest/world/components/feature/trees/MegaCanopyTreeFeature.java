@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.DirectionalBlock;
@@ -41,7 +42,7 @@ public class MegaCanopyTreeFeature extends CanopyTreeFeature {
 		}
 
 		// check if we're on dirt or grass
-		if (world.getBlockState(pos.below()).canSustainPlant(world, pos.below(), Direction.UP, TFBlocks.CANOPY_SAPLING.get().defaultBlockState()).isFalse()) {
+		if (!world.getBlockState(pos.below()).is(BlockTags.DIRT)) {
 			return false;
 		}
 
@@ -118,7 +119,7 @@ public class MegaCanopyTreeFeature extends CanopyTreeFeature {
 					bugPos.set(pos.offset(direction == Direction.EAST ? 1 : 0, rand.nextInt(treeHeight), direction == Direction.SOUTH ? 1 : 0));
 					bugPos.move(direction).move(axis == Direction.Axis.Z ? rand.nextInt(2) : 0, 0, axis == Direction.Axis.X ? rand.nextInt(2) : 0);
 					if (!world.getBlockState(bugPos).isSolidRender()) {
-						BlockState bugState = TFBlocks.FIREFLY.get().defaultBlockState().setValue(DirectionalBlock.FACING, direction);
+						BlockState bugState = TFBlocks.FIREFLY.defaultBlockState().setValue(DirectionalBlock.FACING, direction);
 						this.setBlock(world, bugPos, bugState);
 					}
 				}

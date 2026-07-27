@@ -1,10 +1,10 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "#texture",
-    "bottom": "#texture",
-    "top": "#texture",
-    "side": "#texture"
+    "particle": "#side",
+    "bottom": "#bottom",
+    "top": "#top",
+    "side": "#side"
   },
   "elements": [
     {

@@ -1,31 +1,30 @@
 package twilightforest.datagen.data.tags.compat;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.world.level.block.Block;
-import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
 import twilightforest.tags.TFBlockTags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModdedBlockTagGenerator extends IntrinsicHolderTagsProvider<Block> {
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 
-	public ModdedBlockTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> future) {
-		super(output, Registries.BLOCK, future, block -> block.builtInRegistryHolder().key(), TwilightForestMod.ID);
+public class ModdedBlockTagGenerator extends FabricTagsProvider.BlockTagsProvider {
+
+	public ModdedBlockTagGenerator(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> future) {
+		super(output, future);
 	}
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(TFBlockTags.AC_FERROMAGNETIC_BLOCKS).addTag(TFBlockTags.STORAGE_BLOCKS_IRONWOOD).addTag(TFBlockTags.STORAGE_BLOCKS_STEELEAF).addTag(TFBlockTags.STORAGE_BLOCKS_KNIGHTMETAL).add(TFBlocks.CANDELABRA.get()).add(TFBlocks.WROUGHT_IRON_FENCE.get());
-		this.tag(TFBlockTags.AC_GLOOMOTH_LIGHT_SOURCES).add(TFBlocks.FIREFLY_SPAWNER.get(), TFBlocks.FIREFLY_JAR.get());
-		this.tag(TFBlockTags.AC_UNDERZEALOT_LIGHT_SOURCES).add(TFBlocks.FIREFLY.get(), TFBlocks.MOONWORM.get());
+		this.valueLookupBuilder(TFBlockTags.AC_FERROMAGNETIC_BLOCKS).addTag(TFBlockTags.STORAGE_BLOCKS_IRONWOOD).addTag(TFBlockTags.STORAGE_BLOCKS_STEELEAF).addTag(TFBlockTags.STORAGE_BLOCKS_KNIGHTMETAL).add(TFBlocks.CANDELABRA).add(TFBlocks.WROUGHT_IRON_FENCE);
+		this.valueLookupBuilder(TFBlockTags.AC_GLOOMOTH_LIGHT_SOURCES).add(TFBlocks.FIREFLY_SPAWNER, TFBlocks.FIREFLY_JAR);
+		this.valueLookupBuilder(TFBlockTags.AC_UNDERZEALOT_LIGHT_SOURCES).add(TFBlocks.FIREFLY, TFBlocks.MOONWORM);
 
-		this.tag(TFBlockTags.ARTIFACTS_CAMPSITE_CHESTS).addTag(TFBlockTags.TF_CHESTS);
+		this.valueLookupBuilder(TFBlockTags.ARTIFACTS_CAMPSITE_CHESTS).addTag(TFBlockTags.TF_CHESTS);
 
-		this.tag(TFBlockTags.FD_COMPOST_ACTIVATORS).add(TFBlocks.UBEROUS_SOIL.get(), TFBlocks.MUSHGLOOM.get());
-		this.tag(TFBlockTags.FD_HEAT_SOURCES).addTag(TFBlockTags.STORAGE_BLOCKS_FIERY);
+		this.valueLookupBuilder(TFBlockTags.FD_COMPOST_ACTIVATORS).add(TFBlocks.UBEROUS_SOIL, TFBlocks.MUSHGLOOM);
+		this.valueLookupBuilder(TFBlockTags.FD_HEAT_SOURCES).addTag(TFBlockTags.STORAGE_BLOCKS_FIERY);
 	}
 }

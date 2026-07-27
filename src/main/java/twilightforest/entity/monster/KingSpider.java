@@ -32,22 +32,22 @@ public class KingSpider extends Spider {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.KING_SPIDER_AMBIENT.get();
+		return TFSounds.KING_SPIDER_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.KING_SPIDER_HURT.get();
+		return TFSounds.KING_SPIDER_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.KING_SPIDER_DEATH.get();
+		return TFSounds.KING_SPIDER_DEATH;
 	}
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(TFSounds.KING_SPIDER_STEP.get(), 0.15F, 1.0F);
+		this.playSound(TFSounds.KING_SPIDER_STEP, 0.15F, 1.0F);
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +27,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import twilightforest.init.TFBiomes;
 import twilightforest.init.TFDataMaps;
 import twilightforest.init.TFItems;
@@ -37,8 +38,8 @@ import twilightforest.util.landmarks.LandmarkUtil;
 import twilightforest.util.landmarks.LegacyLandmarkPlacements;
 import twilightforest.world.components.structures.util.LandmarkStructure;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 // [VanillaCopy] super everything, but with appropriate redirections to our own datastructures. finer details noted
@@ -51,7 +52,7 @@ public class MagicMapItem extends MapItem {
 	}
 
 	public static ItemStack setupNewMap(ServerLevel level, int worldX, int worldZ, byte scale, boolean trackingPosition, boolean unlimitedTracking) {
-		ItemStack itemstack = new ItemStack(TFItems.FILLED_MAGIC_MAP.get());
+		ItemStack itemstack = new ItemStack(TFItems.FILLED_MAGIC_MAP);
 		itemstack.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.MAP_ID, true));
 		createMapData(itemstack, level, worldX, worldZ, scale, trackingPosition, unlimitedTracking, level.dimension());
 		return itemstack;
@@ -70,7 +71,6 @@ public class MagicMapItem extends MapItem {
 	}
 
 	@Nullable
-	@Override
 	protected TFMagicMapData getCustomMapData(ItemStack stack, Level level) {
 		TFMagicMapData mapdata = getData(stack, level);
 		if (mapdata == null && level instanceof ServerLevel serverLevel) {
@@ -98,6 +98,7 @@ public class MagicMapItem extends MapItem {
 		TFMagicMapData mapdata = new TFMagicMapData(pos.x(), pos.z(), (byte) scale, trackingPosition, unlimitedTracking, false, dimension);
 		TFMagicMapData.registerMagicMapData(level, mapdata, freeMapId);
 		stack.set(DataComponents.MAP_ID, freeMapId);
+
 		return mapdata;
 	}
 
@@ -105,7 +106,24 @@ public class MagicMapItem extends MapItem {
 		return STR_ID + "_" + id;
 	}
 
-	private static final Map<ChunkPos, Holder<Biome>[]> CACHE = new ConcurrentHashMap<>();
+	private static final Map<ChunkPos, Holder<Biome>[]> CACHE = new HashMap<>();
+
+	// [VanillaCopy] super but uses getCustomMapData instead of level.getMapData()
+	// because TFMagicMapData is stored with a custom key (twilightforest:magicmap_<id> instead of map_<id>)
+	@Override
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
+		if (!level.isClientSide()) {
+			TFMagicMapData mapdata = this.getCustomMapData(stack, level);
+			if (mapdata != null) {
+				if (owner instanceof Player player) {
+					mapdata.tickCarriedBy(player, stack, null);
+				}
+				if (!mapdata.locked && slot != null && slot.getType() == EquipmentSlot.Type.HAND) {
+					this.update(level, owner, mapdata);
+				}
+			}
+		}
+	}
 
 	@Override
 	public void update(Level level, Entity viewer, MapItemSavedData data) {
@@ -116,6 +134,7 @@ public class MagicMapItem extends MapItem {
 			int centerZ = data.centerZ;
 			int viewerX = Mth.floor(viewer.getX() - centerX) / blocksPerPixel + 64;
 			int viewerZ = Mth.floor(viewer.getZ() - centerZ) / blocksPerPixel + 64;
+			// [VanillaCopy] vanilla map reveal radius: 512 / blocksPerPixel
 			int viewRadiusPixels = 512 / blocksPerPixel;
 
 			int startX = (centerX / blocksPerPixel - 64) * biomesPerPixel;
@@ -123,9 +142,9 @@ public class MagicMapItem extends MapItem {
 			Holder<Biome>[] biomes = CACHE.computeIfAbsent(new ChunkPos(startX, startZ), pos -> {
 				@SuppressWarnings({"unchecked", "rawtypes"})
 				Holder<Biome>[] array = new Holder[128 * biomesPerPixel * 128 * biomesPerPixel];
-				for (int l = 0; l < 128 * biomesPerPixel; ++l) {
-					for (int i1 = 0; i1 < 128 * biomesPerPixel; ++i1) {
-						array[l * 128 * biomesPerPixel + i1] = level.getBiome(new BlockPos(startX * biomesPerPixel + i1 * biomesPerPixel, 0, startZ * biomesPerPixel + l * biomesPerPixel));
+				for (int z = 0; z < 128 * biomesPerPixel; ++z) {
+					for (int x = 0; x < 128 * biomesPerPixel; ++x) {
+						array[z * 128 * biomesPerPixel + x] = level.getBiome(new BlockPos(startX * biomesPerPixel + x * biomesPerPixel, 0, startZ * biomesPerPixel + z * biomesPerPixel));
 					}
 				}
 				return array;
@@ -140,11 +159,12 @@ public class MagicMapItem extends MapItem {
 						int zPixelDist = zPixel - viewerZ;
 						boolean shouldFuzz = xPixelDist * xPixelDist + zPixelDist * zPixelDist > (viewRadiusPixels - 2) * (viewRadiusPixels - 2);
 
-						Holder<Biome> biome = biomes[xPixel * biomesPerPixel + zPixel * biomesPerPixel * 128 * biomesPerPixel];
+						int biomeIndex = xPixel * biomesPerPixel + zPixel * biomesPerPixel * 128 * biomesPerPixel;
+						Holder<Biome> biome = biomes[biomeIndex];
 
 						// make streams more visible
-						Holder<Biome> overBiome = biomes[xPixel * biomesPerPixel + zPixel * biomesPerPixel * 128 * biomesPerPixel + 1];
-						Holder<Biome> downBiome = biomes[xPixel * biomesPerPixel + (zPixel * biomesPerPixel + 1) * 128 * biomesPerPixel];
+						Holder<Biome> overBiome = biomes[Math.min(biomes.length - 1, biomeIndex + 1)];
+						Holder<Biome> downBiome = biomes[Math.min(biomes.length - 1, biomeIndex + 128 * biomesPerPixel)];
 						biome = overBiome != null && overBiome.is(TFBiomes.STREAM) ? overBiome : downBiome != null && downBiome.is(TFBiomes.STREAM) ? downBiome : biome;
 
 						MagicMapBiomeColor colorBrightness = this.getMapColorPerBiome(biome);
@@ -153,11 +173,11 @@ public class MagicMapItem extends MapItem {
 						int brightness = colorBrightness.brightness();
 
 						if (xPixelDist * xPixelDist + zPixelDist * zPixelDist < viewRadiusPixels * viewRadiusPixels && (!shouldFuzz || (xPixel + zPixel & 1) != 0)) {
-							byte orgPixel = data.colors[xPixel + zPixel * 128];
-							byte ourPixel = (byte) (mapcolor.id * 4 + brightness);
+							byte oldPixel = data.colors[xPixel + zPixel * 128];
+							byte newPixel = (byte) (mapcolor.id * 4 + brightness);
 
-							if (orgPixel != ourPixel) {
-								data.setColor(xPixel, zPixel, ourPixel);
+							if (oldPixel != newPixel) {
+								data.setColor(xPixel, zPixel, newPixel);
 								data.setDirty();
 							}
 
@@ -166,14 +186,11 @@ public class MagicMapItem extends MapItem {
 							int worldZ = (centerZ / blocksPerPixel + zPixel - 64) * blocksPerPixel;
 							if (LegacyLandmarkPlacements.blockIsInLandmarkCenter(worldX, worldZ)) {
 								ResourceKey<Structure> structureKey = LegacyLandmarkPlacements.pickLandmarkAtBlock(worldX, worldZ, level);
-								// Filters by structures we want to give icons for
-								if (structureRegistry.get(structureKey).map(structureRef -> structureRef.is(TFStructureTags.LANDMARK)).orElse(false)) {
-									TFMagicMapData tfData = (TFMagicMapData) data;
-									if (structureRegistry.getOrThrow(structureKey).value() instanceof LandmarkStructure landmark) {
-										landmark.getMapIcon().ifPresent(icon -> tfData.addTFDecoration(icon, level, makeName(icon, worldX, worldZ), worldX, worldZ, 180.0F, LandmarkUtil.isConquered(level, worldX, worldZ)));
-										//TwilightForestMod.LOGGER.info("Found feature at {}, {}. Placing it on the map at {}, {}", worldX, worldZ, mapX, mapZ);
+								structureRegistry.get(structureKey).ifPresent(structureRef -> {
+									if (structureRef.is(TFStructureTags.LANDMARK) && structureRef.value() instanceof LandmarkStructure landmark) {
+										landmark.getMapIcon().ifPresent(icon -> ((TFMagicMapData) data).addTFDecoration(icon, level, makeName(icon, worldX, worldZ), worldX, worldZ, 0.0F, LandmarkUtil.isConquered(level, worldX, worldZ)));
 									}
-								}
+								});
 							}
 						}
 					}
@@ -187,7 +204,7 @@ public class MagicMapItem extends MapItem {
 	}
 
 	private MagicMapBiomeColor getMapColorPerBiome(Holder<Biome> biome) {
-		MagicMapBiomeColor color = biome.getData(TFDataMaps.MAGIC_MAP_BIOME_COLOR);
+		MagicMapBiomeColor color = TFDataMaps.getMagicMapBiomeColor(biome);
 		return color != null ? color : new MagicMapBiomeColor(MapColor.COLOR_MAGENTA);
 	}
 

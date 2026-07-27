@@ -1,0 +1,14 @@
+{
+  "parent": "twilightforest:block/miniature/template_transforms",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "#snow",
+    "snow": "block/snow",
+    "ice": "block/packed_ice",
+    "stone": "block/stone"
+  },
+  "elements": [
+    {"from": [2, 0, 2], "to": [14, 6, 14], "faces": {"north": {"uv": [2, 10, 14, 16], "texture": "#stone"}, "east": {"uv": [2, 10, 14, 16], "texture": "#stone"}, "south": {"uv": [2, 10, 14, 16], "texture": "#stone"}, "west": {"uv": [2, 10, 14, 16], "texture": "#stone"}, "up": {"uv": [2, 2, 14, 14], "texture": "#snow"}, "down": {"uv": [2, 2, 14, 14], "texture": "#stone"}}},
+    {"from": [3, 6, 3], "to": [13, 8, 13], "faces": {"north": {"uv": [3, 8, 13, 10], "texture": "#ice"}, "east": {"uv": [3, 8, 13, 10], "texture": "#ice"}, "south": {"uv": [3, 8, 13, 10], "texture": "#ice"}, "west": {"uv": [3, 8, 13, 10], "texture": "#ice"}, "up": {"uv": [3, 3, 13, 13], "texture": "#snow"}, "down": {"uv": [3, 3, 13, 13], "texture": "#ice"}}}
+  ]
+}

@@ -42,9 +42,9 @@ public class HugeLilypadFeature extends Feature<NoneFeatureConfiguration> {
 				random.nextInt(8) - random.nextInt(8)
 			);
 
-			if (shouldPlacePadAt(world, dPos) && world.isAreaLoaded(dPos, 1)) {
+			if (shouldPlacePadAt(world, dPos)) {
 				final Direction horizontal = Direction.from2DDataValue(random.nextInt(4));
-				final BlockState lilypad = TFBlocks.HUGE_LILY_PAD.get().defaultBlockState().setValue(FACING, horizontal);
+				final BlockState lilypad = TFBlocks.HUGE_LILY_PAD.defaultBlockState().setValue(FACING, horizontal);
 
 				world.setBlock(dPos, lilypad.setValue(PIECE, NW), Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_CLIENTS);
 				world.setBlock(dPos.east(), lilypad.setValue(PIECE, NE), Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_CLIENTS);

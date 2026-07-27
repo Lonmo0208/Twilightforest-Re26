@@ -26,10 +26,10 @@ public class MoonwormQueenRepairRecipe extends CustomRecipe {
 		for (int i = 0; i < input.size(); ++i) {
 			ItemStack stackInQuestion = input.getItem(i);
 			if (!stackInQuestion.isEmpty()) {
-				if (stackInQuestion.is(TFItems.MOONWORM_QUEEN.get()) && stackInQuestion.isDamaged()) {
+				if (stackInQuestion.is(TFItems.MOONWORM_QUEEN) && stackInQuestion.isDamaged()) {
 					if (queen != null) return false;
 					queen = stackInQuestion;
-				} else if (stackInQuestion.is(TFItems.TORCHBERRIES.get())) {
+				} else if (stackInQuestion.is(TFItems.TORCHBERRIES)) {
 					berries.add(stackInQuestion);
 				} else {
 					return false;
@@ -46,7 +46,7 @@ public class MoonwormQueenRepairRecipe extends CustomRecipe {
 		for (int i = 0; i < input.size(); ++i) {
 			ItemStack itemstack = input.getItem(i);
 			if (!itemstack.isEmpty()) {
-				if (itemstack.is(TFItems.MOONWORM_QUEEN.get())) {
+				if (itemstack.is(TFItems.MOONWORM_QUEEN)) {
 					if (queen == null) {
 						queen = itemstack;
 					} else {
@@ -55,7 +55,7 @@ public class MoonwormQueenRepairRecipe extends CustomRecipe {
 					}
 				}
 
-				if (itemstack.is(TFItems.TORCHBERRIES.get())) {
+				if (itemstack.is(TFItems.TORCHBERRIES)) {
 					//add all berries in the grid to a list to determine the amount to repair
 					berries.add(itemstack.getItem());
 				}
@@ -63,7 +63,7 @@ public class MoonwormQueenRepairRecipe extends CustomRecipe {
 		}
 
 		if (!berries.isEmpty() && queen != null && queen.isDamaged()) {
-			ItemStack newQueen = TFItems.MOONWORM_QUEEN.get().getDefaultInstance();
+			ItemStack newQueen = TFItems.MOONWORM_QUEEN.getDefaultInstance();
 			//each berry repairs 64 durability
 			newQueen.setDamageValue(queen.getDamageValue() - (berries.size() * 64));
 			return newQueen;
@@ -74,6 +74,6 @@ public class MoonwormQueenRepairRecipe extends CustomRecipe {
 
 	@Override
 	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
-		return TFRecipes.MOONWORM_QUEEN_REPAIR_RECIPE.get();
+		return TFRecipes.MOONWORM_QUEEN_REPAIR_RECIPE;
 	}
 }

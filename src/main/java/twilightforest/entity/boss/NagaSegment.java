@@ -14,6 +14,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.TFPart;
+import twilightforest.init.TFEntities;
 import twilightforest.init.TFSounds;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class NagaSegment extends TFPart<Naga> {
 
 	@SuppressWarnings("this-escape")
 	public NagaSegment(Naga naga) {
-		super(naga);
+		super(naga, TFEntities.NAGA_SEGMENT.get(), naga.level());
 		this.setPos(naga.getX(), naga.getY(), naga.getZ());
 		this.setOldPosAndRot();
 		this.deactivate();
@@ -76,7 +77,7 @@ public class NagaSegment extends TFPart<Naga> {
 			if (this.deathCounter <= 0) {
 				Naga naga = this.getParent();
 				naga.makePoofAt(this.position());
-				naga.playSound(TFSounds.NAGA_HURT.get(), 0.25F, (naga.getVoicePitch() * 0.75F) + (0.5F * naga.getRandom().nextFloat()));
+				naga.playSound(TFSounds.NAGA_HURT, 0.25F, (naga.getVoicePitch() * 0.75F) + (0.5F * naga.getRandom().nextFloat()));
 				naga.deathTime = 0;
 				this.deactivate();
 			}

@@ -81,7 +81,7 @@ public class NoTemplateSmithingRecipe implements SmithingRecipe {
 
 	@Override
 	public RecipeSerializer<? extends SmithingRecipe> getSerializer() {
-		return TFRecipes.NO_TEMPLATE_SMITHING_SERIALIZER.get();
+		return TFRecipes.NO_TEMPLATE_SMITHING_SERIALIZER;
 	}
 
 	public Ingredient getBase() {

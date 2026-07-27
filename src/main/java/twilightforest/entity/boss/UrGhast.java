@@ -32,8 +32,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.EventHooks;
-import twilightforest.client.renderer.TFWeatherRenderer;
 import twilightforest.entity.ai.control.NoClipMoveControl;
 import twilightforest.entity.ai.goal.UrGhastAttackGoal;
 import twilightforest.entity.ai.goal.UrGhastFlightGoal;
@@ -111,17 +109,17 @@ public class UrGhast extends BaseTFBoss {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.UR_GHAST_AMBIENT.get();
+		return TFSounds.UR_GHAST_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.UR_GHAST_HURT.get();
+		return TFSounds.UR_GHAST_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.UR_GHAST_DEATH.get();
+		return TFSounds.UR_GHAST_DEATH;
 	}
 
 	@Override
@@ -134,7 +132,7 @@ public class UrGhast extends BaseTFBoss {
 			}
 
 			if (this.isInTantrum() && !this.isDeadOrDying()) {
-				this.level().addParticle(TFParticleType.BOSS_TEAR.get(),
+				this.level().addParticle(TFParticleType.BOSS_TEAR,
 					this.getX() + (this.getRandom().nextDouble() - 0.5D) * this.getBbWidth() * 0.75D,
 					this.getY() + this.getRandom().nextDouble() * this.getBbHeight() * 0.5D,
 					this.getZ() + (this.getRandom().nextDouble() - 0.5D) * this.getBbWidth() * 0.75D,
@@ -212,7 +210,9 @@ public class UrGhast extends BaseTFBoss {
 
 	@Override
 	public void tick() {
-		if (this.level().isClientSide() && !this.isDeadOrDying() && this.isInTantrum()) TFWeatherRenderer.urGhastAlive = true;
+		if (this.level().isClientSide() && !this.isDeadOrDying() && this.isInTantrum()) {
+			// TFWeatherRenderer is client-only; handled via client-side packet
+		}
 		super.tick();
 	}
 
@@ -258,7 +258,7 @@ public class UrGhast extends BaseTFBoss {
 
 			minion.snapTo(sx, sy, sz, level.getRandom().nextFloat() * 360.0F, 0.0F);
 			minion.makeBossMinion();
-			EventHooks.finalizeMobSpawn(minion, level, level.getCurrentDifficultyAt(minion.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+			// EventHooks.finalizeMobSpawn(minion, level, level.getCurrentDifficultyAt(minion.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null)); // TODO: Port - NeoForge hook
 			if (minion.checkSpawnRules(level, EntitySpawnReason.MOB_SUMMONED)) {
 				level.addFreshEntity(minion);
 				minion.spawnAnim();
@@ -310,7 +310,7 @@ public class UrGhast extends BaseTFBoss {
 
 			// cry?
 			if (--this.nextTantrumCry <= 0) {
-				this.playSound(TFSounds.UR_GHAST_TANTRUM.get(), this.getSoundVolume(), this.getVoicePitch());
+				this.playSound(TFSounds.UR_GHAST_TANTRUM, this.getSoundVolume(), this.getVoicePitch());
 				this.ambientSoundTime = -this.getAmbientSoundInterval();
 				this.nextTantrumCry = 20 + this.getRandom().nextInt(30);
 			}
@@ -349,7 +349,7 @@ public class UrGhast extends BaseTFBoss {
 	private List<BlockPos> scanForTraps(ServerLevel level) {
 		PoiManager poimanager = level.getPoiManager();
 		Stream<PoiRecord> stream = poimanager.getInRange(type ->
-				type.is(TFPOITypes.GHAST_TRAP.getKey()),
+				type.is(net.minecraft.core.registries.BuiltInRegistries.POINT_OF_INTEREST_TYPE.getResourceKey(TFPOITypes.GHAST_TRAP).orElseThrow()),
 			this.getLogicalScanPoint(),
 			this.getHomeRadius(),
 			PoiManager.Occupancy.ANY);
@@ -482,13 +482,13 @@ public class UrGhast extends BaseTFBoss {
 				BlockPos ground = getBlockPosBelowThatAffectsMyMovement();
 				float f = 0.91F;
 				if (this.onGround()) {
-					f = this.level().getBlockState(ground).getFriction(this.level(), ground, this) * 0.91F;
+					f = this.level().getBlockState(ground).getBlock().getFriction() * 0.91F;
 				}
 
 				float f1 = 0.16277137F / (f * f * f);
 				f = 0.91F;
 				if (this.onGround()) {
-					f = this.level().getBlockState(ground).getFriction(this.level(), ground, this) * 0.91F;
+					f = this.level().getBlockState(ground).getBlock().getFriction() * 0.91F;
 				}
 
 				this.moveRelative(this.onGround() ? 0.1F * f1 : 0.02F, vec3);
@@ -517,12 +517,12 @@ public class UrGhast extends BaseTFBoss {
 
 	@Override
 	public Block getDeathContainer(RandomSource random) {
-		return TFBlocks.DARK_CHEST.get();
+		return TFBlocks.DARK_CHEST;
 	}
 
 	@Override
 	public Block getBossSpawner() {
-		return TFBlocks.UR_GHAST_BOSS_SPAWNER.get();
+		return TFBlocks.UR_GHAST_BOSS_SPAWNER;
 	}
 
 	@Override

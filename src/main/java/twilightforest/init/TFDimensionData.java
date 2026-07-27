@@ -65,7 +65,7 @@ public class TFDimensionData {
 			DimensionType.Skybox.OVERWORLD, //skybox
 			CardinalLighting.Type.DEFAULT, //cardinal lighting
 			EnvironmentAttributeMap.builder() //attributes
-				.set(EnvironmentAttributes.BACKGROUND_MUSIC, new BackgroundMusic(new Music(TFSounds.MUSIC, 1200, 12000, true)))
+				.set(EnvironmentAttributes.BACKGROUND_MUSIC, new BackgroundMusic(new Music(Holder.direct(TFSounds.MUSIC), 1200, 12000, true)))
 				.set(EnvironmentAttributes.AMBIENT_SOUNDS, AmbientSounds.LEGACY_CAVE_SETTINGS)
 				.set(EnvironmentAttributes.CAN_PILLAGER_PATROL_SPAWN, false)
 				.set(EnvironmentAttributes.BED_RULE, new BedRule(BedRule.Rule.NEVER, BedRule.Rule.ALWAYS, false, Optional.empty()))

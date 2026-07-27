@@ -22,7 +22,6 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
-import net.neoforged.neoforge.event.EventHooks;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
@@ -177,7 +176,7 @@ public class GraveyardFeature extends Feature<NoneFeatureConfiguration> {
 						}
 						Wraith wraith = new Wraith(TFEntities.WRAITH.get(), world.getLevel());
 						wraith.setPos(placement.getX(), placement.getY(), placement.getZ());
-						EventHooks.finalizeMobSpawn(wraith, world, world.getCurrentDifficultyAt(placement), EntitySpawnReason.STRUCTURE, null);
+						// EventHooks.finalizeMobSpawn(wraith, world, world.getCurrentDifficultyAt(placement), EntitySpawnReason.STRUCTURE, null)); // TODO: Port - NeoForge hook
 						world.addFreshEntity(wraith);
 					}
 				}
@@ -232,12 +231,12 @@ public class GraveyardFeature extends Feature<NoneFeatureConfiguration> {
 
 		@Override
 		protected StructureProcessorType<?> getType() {
-			return TFStructureProcessors.WEB.get();
+			return TFStructureProcessors.WEB;
 		}
 
 		@Nullable
 		@Override
-		public StructureTemplate.StructureBlockInfo process(LevelReader worldIn, BlockPos pos, BlockPos piecepos, StructureTemplate.StructureBlockInfo p_process_3_, StructureTemplate.StructureBlockInfo blockInfo, StructurePlaceSettings settings, @Nullable StructureTemplate template) {
+		public StructureTemplate.StructureBlockInfo processBlock(LevelReader worldIn, BlockPos pos, BlockPos piecepos, StructureTemplate.StructureBlockInfo p_process_3_, StructureTemplate.StructureBlockInfo blockInfo, StructurePlaceSettings settings) {
 			return blockInfo.state().getBlock() == Blocks.GRASS_BLOCK ? blockInfo : settings.getRandom(pos).nextInt(5) == 0 ? new StructureTemplate.StructureBlockInfo(pos, Blocks.COBWEB.defaultBlockState(), null) : blockInfo;
 		}
 	}

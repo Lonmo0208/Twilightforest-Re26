@@ -1,12 +1,9 @@
 package twilightforest.block;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -16,7 +13,6 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.jspecify.annotations.Nullable;
 import twilightforest.block.entity.CicadaBlockEntity;
 import twilightforest.init.TFBlockEntities;
-import twilightforest.init.TFSounds;
 import twilightforest.loot.TFLootTables;
 
 public class CicadaBlock extends CritterBlock {
@@ -40,18 +36,11 @@ public class CicadaBlock extends CritterBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TFBlockEntities.CICADA.get(), CicadaBlockEntity::tick);
+		return createTickerHelper(type, TFBlockEntities.CICADA, CicadaBlockEntity::tick);
 	}
 
 	@Override
 	public ResourceKey<LootTable> getSquishLootTable() {
 		return TFLootTables.CICADA_SQUISH_DROPS;
-	}
-
-	@Override
-	public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
-		super.destroy(accessor, pos, state);
-		if (accessor.isClientSide())
-			Minecraft.getInstance().getSoundManager().stop(TFSounds.CICADA.get().location(), SoundSource.NEUTRAL);
 	}
 }

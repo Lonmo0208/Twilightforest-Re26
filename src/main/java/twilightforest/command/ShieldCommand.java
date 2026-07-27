@@ -9,8 +9,9 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import tamaized.beanification.Component;
+import twilightforest.beanification.Component;
 import twilightforest.init.TFDataAttachments;
+import twilightforest.util.TFEntityExtensions;
 
 @Component
 public class ShieldCommand {
@@ -33,14 +34,14 @@ public class ShieldCommand {
 
 	private int add(Entity e, int num, boolean temporary) {
 		if (e instanceof LivingEntity living) {
-			living.getData(TFDataAttachments.FORTIFICATION_SHIELDS).addShields(living, num, temporary);
+			((TFEntityExtensions) living).getData(() -> TFDataAttachments.FORTIFICATION_SHIELDS).addShields(living, num, temporary);
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private int set(Entity e, int num, boolean temporary) {
 		if (e instanceof LivingEntity living) {
-			living.getData(TFDataAttachments.FORTIFICATION_SHIELDS).setShields(living, num, temporary);
+			((TFEntityExtensions) living).getData(() -> TFDataAttachments.FORTIFICATION_SHIELDS).setShields(living, num, temporary);
 		}
 		return Command.SINGLE_SUCCESS;
 	}

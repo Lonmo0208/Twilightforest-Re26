@@ -23,7 +23,6 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.event.EventHooks;
 import org.jspecify.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
@@ -41,10 +40,11 @@ public abstract class SinisterSpawnerLogic extends BaseSpawner {
 
 	private final Set<ParticleOptions> particleOptions = new HashSet<>();
 
+	private com.mojang.datafixers.util.@Nullable Either<BlockEntity, Entity> owner = null;
+
 	public void setChanged() {
-		Either<BlockEntity, Entity> owner = this.getOwner();
 		if (owner != null) {
-			owner.ifLeft(blockEntity -> {
+			owner.left().ifPresent(blockEntity -> {
 				blockEntity.setChanged();
 				if (blockEntity instanceof SinisterSpawnerBlockEntity sinisterSpawnerBlockEntity) {
 					sinisterSpawnerBlockEntity.sendChanges();
@@ -173,11 +173,8 @@ public abstract class SinisterSpawnerLogic extends BaseSpawner {
 
 							entity.snapTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
 							if (entity instanceof Mob mob) {
-								if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, EntitySpawnReason.SPAWNER, spawndata, this)) {
-									continue;
-								}
 								boolean hasNoConfiguration = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().getString("id").isPresent();
-								EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.SPAWNER, null, this, hasNoConfiguration);
+								// EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.SPAWNER, null, this, hasNoConfiguration)); // TODO: Port - NeoForge hook
 								spawndata.getEquipment().ifPresent(mob::equip);
 								this.checkPos = blockEntityPos.mutable();
 							}
@@ -232,7 +229,7 @@ public abstract class SinisterSpawnerLogic extends BaseSpawner {
 		if (blockBelow.isAir()) {
 			this.checkPos.move(Direction.DOWN);
 		} else {
-			if ((blockBelow.isSolid() || blockBelow.is(TFBlocks.CORONATION_CARPET.get())) && random.nextBoolean() && !this.spawnBuffer.contains(this.checkPos) && serverLevel.getBlockState(this.checkPos).isAir()) {
+			if ((blockBelow.isSolid() || blockBelow.is(TFBlocks.CORONATION_CARPET)) && random.nextBoolean() && !this.spawnBuffer.contains(this.checkPos) && serverLevel.getBlockState(this.checkPos).isAir()) {
 				// If below is solid, then maybe record this position for being clear to spawn
 				this.spawnBuffer.add(this.checkPos.immutable());
 			}
@@ -271,7 +268,7 @@ public abstract class SinisterSpawnerLogic extends BaseSpawner {
 
 	@Override
 	public void broadcastEvent(Level level, BlockPos pos, int eventId) {
-		level.blockEvent(pos, TFBlocks.SINISTER_SPAWNER.value(), eventId, 0);
+		level.blockEvent(pos, TFBlocks.SINISTER_SPAWNER, eventId, 0);
 	}
 
 	@Override

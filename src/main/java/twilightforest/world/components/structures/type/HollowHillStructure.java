@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.Mth;
@@ -41,7 +42,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class HollowHillStructure extends LandmarkStructure implements ConfigurableSpawns, CustomDensitySource, ValidatedSpawnLocations {	public static final MapCodec<HollowHillStructure> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+public class HollowHillStructure extends LandmarkStructure implements ConfigurableSpawns, ValidatedSpawnLocations, CustomDensitySource {
+	public static final MapCodec<HollowHillStructure> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
 		.group(
 			// TODO Clean up findGenerationPoint() first before even thinking about increasing upper limit
 			Codec.intRange(1, 3).fieldOf("hill_size").forGetter(s -> s.size),
@@ -76,15 +78,15 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 	@Override
 	protected StructurePiece getFirstPiece(GenerationContext context, RandomSource random, ChunkPos chunkPos, int x, int y, int z) {
 		return switch (this.size) { // TODO Clean up once TFLandmark params are no longer necessary
-			case 1 -> new HollowHillComponent(TFStructurePieceTypes.TFHill.get(), 0, this.size, x - 3, y - 2, z - 3, this.speleothemConfig);
-			case 2 -> new HollowHillComponent(TFStructurePieceTypes.TFHill.get(), 0, this.size, x - 7, y - 5, z - 7, this.speleothemConfig);
-			default -> new HollowHillComponent(TFStructurePieceTypes.TFHill.get(), 0, this.size, x - 11, y - 5, z - 11, this.speleothemConfig);
+			case 1 -> new HollowHillComponent(TFStructurePieceTypes.TFHill, 0, this.size, x - 3, y - 2, z - 3, this.speleothemConfig);
+			case 2 -> new HollowHillComponent(TFStructurePieceTypes.TFHill, 0, this.size, x - 7, y - 5, z - 7, this.speleothemConfig);
+			default -> new HollowHillComponent(TFStructurePieceTypes.TFHill, 0, this.size, x - 11, y - 5, z - 11, this.speleothemConfig);
 		};
 	}
 
 	@Override
 	public StructureType<?> type() {
-		return TFStructureTypes.HOLLOW_HILL.get();
+		return TFStructureTypes.HOLLOW_HILL;
 	}
 
 	@Override
@@ -105,7 +107,7 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 			), WeightedList.of(), WeightedList.of()),
 			context.lookup(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS).getOrThrow(StructureSpeleothemConfigs.SMALL_HILL),
 			Optional.of(new DecorationConfig(1, true, false, false)),
-			true, Optional.of(TFMapDecorations.SMALL_HOLLOW_HILL),
+			true, Optional.of(BuiltInRegistries.MAP_DECORATION_TYPE.wrapAsHolder(TFMapDecorations.SMALL_HOLLOW_HILL)),
 			new StructureSettings(
 				context.lookup(Registries.BIOME).getOrThrow(TFBiomeTags.VALID_HOLLOW_HILL_BIOMES),
 				Arrays.stream(MobCategory.values()).collect(Collectors.<MobCategory, MobCategory, StructureSpawnOverride>toMap(category -> category, category -> new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, WeightedList.<MobSpawnSettings.SpawnerData>builder().build()))), // Landmarks have Controlled Mob spawning
@@ -133,7 +135,7 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 			), WeightedList.of(), WeightedList.of()),
 			context.lookup(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS).getOrThrow(StructureSpeleothemConfigs.MEDIUM_HILL),
 			Optional.of(new DecorationConfig(2, true, false, false)),
-			true, Optional.of(TFMapDecorations.MEDIUM_HOLLOW_HILL),
+			true, Optional.of(BuiltInRegistries.MAP_DECORATION_TYPE.wrapAsHolder(TFMapDecorations.MEDIUM_HOLLOW_HILL)),
 			new StructureSettings(
 				context.lookup(Registries.BIOME).getOrThrow(TFBiomeTags.VALID_HOLLOW_HILL_BIOMES),
 				Arrays.stream(MobCategory.values()).collect(Collectors.<MobCategory, MobCategory, StructureSpawnOverride>toMap(category -> category, category -> new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, WeightedList.<MobSpawnSettings.SpawnerData>builder().build()))), // Landmarks have Controlled Mob spawning
@@ -162,7 +164,7 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 			),
 			context.lookup(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS).getOrThrow(StructureSpeleothemConfigs.LARGE_HILL),
 			Optional.of(new DecorationConfig(3, true, false, false)),
-			true, Optional.of(TFMapDecorations.LARGE_HOLLOW_HILL),
+			true, Optional.of(BuiltInRegistries.MAP_DECORATION_TYPE.wrapAsHolder(TFMapDecorations.LARGE_HOLLOW_HILL)),
 			new StructureSettings(
 				context.lookup(Registries.BIOME).getOrThrow(TFBiomeTags.VALID_HOLLOW_HILL_BIOMES),
 				Arrays.stream(MobCategory.values()).collect(Collectors.<MobCategory, MobCategory, StructureSpawnOverride>toMap(category -> category, category -> new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, WeightedList.<MobSpawnSettings.SpawnerData>builder().build()))), // Landmarks have Controlled Mob spawning

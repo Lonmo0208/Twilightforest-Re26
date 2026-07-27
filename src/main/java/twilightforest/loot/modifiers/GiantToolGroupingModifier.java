@@ -11,34 +11,48 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
-import net.neoforged.neoforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
 import twilightforest.init.TFDataAttachments;
+import twilightforest.util.TFEntityExtensions;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GiantToolGroupingModifier extends LootModifier {
+public class GiantToolGroupingModifier implements LootItemCondition {
 	public static final Map<Block, Item> CONVERSIONS = new ConcurrentHashMap<>();
 
-	public static final MapCodec<GiantToolGroupingModifier> CODEC = RecordCodecBuilder.mapCodec(inst -> LootModifier.codecStart(inst).apply(inst, GiantToolGroupingModifier::new));
+	public static final MapCodec<GiantToolGroupingModifier> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+		LootItemCondition.DIRECT_CODEC.listOf().optionalFieldOf("conditions", List.of()).forGetter(c -> List.of(c.conditions))
+	).apply(inst, GiantToolGroupingModifier::new));
 
-	public GiantToolGroupingModifier(LootItemCondition[] conditions, int priority) {
-		super(conditions, priority);
+	private final LootItemCondition[] conditions;
+
+	public GiantToolGroupingModifier(List<LootItemCondition> conditions) {
+		this.conditions = conditions.toArray(new LootItemCondition[0]);
 	}
 
 	@Override
-	protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+	public boolean test(LootContext context) {
+		for (LootItemCondition condition : this.conditions) {
+			if (!condition.test(context)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public @NotNull ObjectArrayList<ItemStack> apply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+		if (!test(context)) return generatedLoot;
 		if (context.getParameter(LootContextParams.THIS_ENTITY) instanceof Player player) {
 			if (!generatedLoot.isEmpty() && generatedLoot.getFirst().getItem() instanceof BlockItem block) {
-				if (CONVERSIONS.containsKey(block.getBlock())) { // Should be true but let's double-check
-					var attachment = player.getData(TFDataAttachments.GIANT_PICKAXE_MINING);
-					int blockConversion = attachment.getGiantBlockConversion(); // Get how many conversions are left
+				if (CONVERSIONS.containsKey(block.getBlock())) {
+					var attachment = ((TFEntityExtensions) player).getData(() -> TFDataAttachments.GIANT_PICKAXE_MINING);
+					int blockConversion = attachment.getGiantBlockConversion();
 					attachment.setGiantBlockConversion(blockConversion - 1);
 					if (blockConversion == 64)
-						return ObjectArrayList.of(new ItemStack(CONVERSIONS.get(block.getBlock()))); // If it's the first conversion, drop our giant block
-					else return new ObjectArrayList<>(); // Drop nothing, all gets converted into giant block
+						return ObjectArrayList.of(new ItemStack(CONVERSIONS.get(block.getBlock())));
+					else return new ObjectArrayList<>();
 				}
 			}
 		}
@@ -46,7 +60,7 @@ public class GiantToolGroupingModifier extends LootModifier {
 	}
 
 	@Override
-	public MapCodec<? extends IGlobalLootModifier> codec() {
-		return GiantToolGroupingModifier.CODEC;
+	public MapCodec<? extends LootItemCondition> codec() {
+		return CODEC;
 	}
 }

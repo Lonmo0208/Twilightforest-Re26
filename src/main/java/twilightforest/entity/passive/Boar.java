@@ -52,22 +52,22 @@ public class Boar extends Animal {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.BOAR_AMBIENT.get();
+		return TFSounds.BOAR_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.BOAR_HURT.get();
+		return TFSounds.BOAR_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.BOAR_DEATH.get();
+		return TFSounds.BOAR_DEATH;
 	}
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState state) {
-		this.playSound(TFSounds.BOAR_STEP.get(), 0.15F, 1.0F);
+		this.playSound(TFSounds.BOAR_STEP, 0.15F, 1.0F);
 	}
 
 	@Override

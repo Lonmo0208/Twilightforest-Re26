@@ -1,9 +1,9 @@
 package twilightforest.network;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
 import twilightforest.item.travellers_gear.TravellersGearLogic;
 
@@ -23,10 +23,10 @@ public record PerformSidestepPacket(boolean isLeftStepSide) implements CustomPac
 		return TYPE;
 	}
 
-	public static void handle(twilightforest.network.PerformSidestepPacket message, IPayloadContext ctx) {
-		ctx.enqueueWork(() -> {
-			if (!TravellersGearLogic.tryPerformSidestep(ctx.player(), message.isLeftStepSide))
-				TravellersGearLogic.handleSidestepAbuse(ctx.player());
+	public static void handle(twilightforest.network.PerformSidestepPacket message, ServerPlayNetworking.Context context) {
+		context.server().execute(() -> {
+			if (!TravellersGearLogic.tryPerformSidestep(context.player(), message.isLeftStepSide))
+				TravellersGearLogic.handleSidestepAbuse(context.player());
 		});
 	}
 }

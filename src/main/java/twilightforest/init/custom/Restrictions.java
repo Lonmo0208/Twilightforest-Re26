@@ -3,12 +3,15 @@ package twilightforest.init.custom;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.PatchedDataComponentMap;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import twilightforest.TFRegistries;
@@ -39,22 +42,25 @@ public class Restrictions {
 	}
 
 	public static void bootstrap(BootstrapContext<Restriction> context) {
-		context.register(DARK_FOREST, new Restriction(TFStructures.KNIGHT_STRONGHOLD, Enforcements.DARKNESS.getKey(), 0.0F, asStack(TFBlocks.LICH_TOWER_MINIATURE_STRUCTURE), List.of(TwilightForestMod.prefix("progress_lich"))));
-		context.register(DARK_FOREST_CENTER, new Restriction(TFStructures.DARK_TOWER, Enforcements.DARKNESS.getKey(), 0.0F, asStack(TFBlocks.KNIGHT_PHANTOM_TROPHY), List.of(TwilightForestMod.prefix("progress_knights"))));
-		context.register(FINAL_PLATEAU, new Restriction(TFStructures.FINAL_CASTLE, Enforcements.ACID_RAIN.getKey(), 1.5F, asStack(TFItems.LAMP_OF_CINDERS), List.of(TwilightForestMod.prefix("progress_troll"))));
-		context.register(FIRE_SWAMP, new Restriction(TFStructures.HYDRA_LAIR, Enforcements.FIRE.getKey(), 8.0F, asStack(TFItems.MEEF_STROGANOFF), List.of(TwilightForestMod.prefix("progress_labyrinth"))));
-		context.register(GLACIER, new Restriction(TFStructures.AURORA_PALACE, Enforcements.FROST.getKey(), 1.0F, asStack(TFItems.ALPHA_YETI_FUR), List.of(TwilightForestMod.prefix("progress_yeti"))));
-		context.register(HIGHLANDS, new Restriction(TFStructures.TROLL_CAVE, Enforcements.ACID_RAIN.getKey(), 0.5F, asStack(TFBlocks.UBEROUS_SOIL), List.of(TwilightForestMod.prefix("progress_merge"))));
-		context.register(SNOWY_FOREST, new Restriction(TFStructures.YETI_CAVE, Enforcements.FROST.getKey(), 0.0F, asStack(TFBlocks.LICH_TOWER_MINIATURE_STRUCTURE), List.of(TwilightForestMod.prefix("progress_lich"))));
-		context.register(SWAMP, new Restriction(TFStructures.LABYRINTH, Enforcements.HUNGER.getKey(), 1.0F, asStack(TFBlocks.LICH_TOWER_MINIATURE_STRUCTURE), List.of(TwilightForestMod.prefix("progress_lich"))));
-		context.register(THORNLANDS, new Restriction(TFStructures.FINAL_CASTLE, Enforcements.ACID_RAIN.getKey(), 1.0F, asStack(TFItems.LAMP_OF_CINDERS), List.of(TwilightForestMod.prefix("progress_troll"))));
+		context.register(DARK_FOREST, new Restriction(TFStructures.KNIGHT_STRONGHOLD, ResourceKey.create(TFRegistries.Keys.ENFORCEMENT, TwilightForestMod.prefix("darkness")), 0.0F, asStack(TFBlocks.LICH_TOWER_MINIATURE_STRUCTURE), List.of(TwilightForestMod.prefix("progress_lich"))));
+		context.register(DARK_FOREST_CENTER, new Restriction(TFStructures.DARK_TOWER, ResourceKey.create(TFRegistries.Keys.ENFORCEMENT, TwilightForestMod.prefix("darkness")), 0.0F, asStack(TFBlocks.KNIGHT_PHANTOM_TROPHY), List.of(TwilightForestMod.prefix("progress_knights"))));
+		context.register(FINAL_PLATEAU, new Restriction(TFStructures.FINAL_CASTLE, ResourceKey.create(TFRegistries.Keys.ENFORCEMENT, TwilightForestMod.prefix("acid_rain")), 1.5F, asStack(TFItems.LAMP_OF_CINDERS), List.of(TwilightForestMod.prefix("progress_troll"))));
+		context.register(FIRE_SWAMP, new Restriction(TFStructures.HYDRA_LAIR, ResourceKey.create(TFRegistries.Keys.ENFORCEMENT, TwilightForestMod.prefix("fire")), 8.0F, asStack(TFItems.MEEF_STROGANOFF), List.of(TwilightForestMod.prefix("progress_labyrinth"))));
+		context.register(GLACIER, new Restriction(TFStructures.AURORA_PALACE, ResourceKey.create(TFRegistries.Keys.ENFORCEMENT, TwilightForestMod.prefix("frost")), 1.0F, asStack(TFItems.ALPHA_YETI_FUR), List.of(TwilightForestMod.prefix("progress_yeti"))));
+		context.register(HIGHLANDS, new Restriction(TFStructures.TROLL_CAVE, ResourceKey.create(TFRegistries.Keys.ENFORCEMENT, TwilightForestMod.prefix("acid_rain")), 0.5F, asStack(TFBlocks.UBEROUS_SOIL), List.of(TwilightForestMod.prefix("progress_merge"))));
+		context.register(SNOWY_FOREST, new Restriction(TFStructures.YETI_CAVE, ResourceKey.create(TFRegistries.Keys.ENFORCEMENT, TwilightForestMod.prefix("frost")), 0.0F, asStack(TFBlocks.LICH_TOWER_MINIATURE_STRUCTURE), List.of(TwilightForestMod.prefix("progress_lich"))));
+		context.register(SWAMP, new Restriction(TFStructures.LABYRINTH, ResourceKey.create(TFRegistries.Keys.ENFORCEMENT, TwilightForestMod.prefix("hunger")), 1.0F, asStack(TFBlocks.LICH_TOWER_MINIATURE_STRUCTURE), List.of(TwilightForestMod.prefix("progress_lich"))));
+		context.register(THORNLANDS, new Restriction(TFStructures.FINAL_CASTLE, ResourceKey.create(TFRegistries.Keys.ENFORCEMENT, TwilightForestMod.prefix("acid_rain")), 1.0F, asStack(TFItems.LAMP_OF_CINDERS), List.of(TwilightForestMod.prefix("progress_troll"))));
 	}
 
+	// Use reflection to create ItemStack without components validation
+	// because during bootstrap, components are not yet bound
+	@SuppressWarnings("deprecation")
 	public static ItemStack asStack(ItemLike itemLike) {
 		try {
 			java.lang.reflect.Constructor<ItemStack> constructor = ItemStack.class.getDeclaredConstructor(Holder.class, int.class, PatchedDataComponentMap.class);
 			constructor.setAccessible(true);
-			return constructor.newInstance(BuiltInRegistries.ITEM.wrapAsHolder(itemLike.asItem()), 1, new PatchedDataComponentMap(DataComponentMap.EMPTY));
+			return constructor.newInstance(itemLike.asItem().builtInRegistryHolder(), 1, PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, net.minecraft.core.component.DataComponentPatch.EMPTY));
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to create ItemStack without components validation", e);
 		}

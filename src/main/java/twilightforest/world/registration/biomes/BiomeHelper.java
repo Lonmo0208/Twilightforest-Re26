@@ -18,7 +18,6 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import tamaized.beanification.Autowired;
 import twilightforest.enums.extensions.TFGrassColorModifierEnumExtension;
 import twilightforest.init.TFCaveCarvers;
 import twilightforest.init.TFEntities;
@@ -29,8 +28,7 @@ import java.util.List;
 
 public abstract class BiomeHelper {
 
-	@Autowired
-	private static TFGrassColorModifierEnumExtension grassColorModifierEnumExtension;
+	private static TFGrassColorModifierEnumExtension grassColorModifierEnumExtension = new TFGrassColorModifierEnumExtension();
 
 	public static Biome.BiomeBuilder twilightForest(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 		BiomeGenerationSettings.Builder biome = defaultGenSettingBuilder(featureGetter, carverGetter);
@@ -84,7 +82,7 @@ public abstract class BiomeHelper {
 			.downfall(0.8F)
 			.putAttributes(defaultEnvironmentBuilder()
 				.set(EnvironmentAttributes.WATER_FOG_COLOR, 0x005522)
-				.set(EnvironmentAttributes.AMBIENT_PARTICLES, List.of(new AmbientParticle(TFParticleType.WANDERING_FIREFLY.get(), 0.001F))))
+				.set(EnvironmentAttributes.AMBIENT_PARTICLES, List.of(new AmbientParticle(TFParticleType.WANDERING_FIREFLY, 0.001F))))
 			.specialEffects(new BiomeSpecialEffects.Builder().waterColor(0x005522).build())
 			.mobSpawnSettings(defaultMobSpawning().build())
 			.generationSettings(biome.build());
@@ -742,7 +740,7 @@ public abstract class BiomeHelper {
 
 	public static EnvironmentAttributeMap.Builder defaultEnvironmentBuilder() {
 		return defaultEnvironmentBuilderNoParticles()
-			.set(EnvironmentAttributes.AMBIENT_PARTICLES, List.of(new AmbientParticle(TFParticleType.WANDERING_FIREFLY.get(), 0.00025f)));
+			.set(EnvironmentAttributes.AMBIENT_PARTICLES, List.of(new AmbientParticle(TFParticleType.WANDERING_FIREFLY, 0.00025f)));
 	}
 
 	public static EnvironmentAttributeMap.Builder defaultEnvironmentBuilderNoParticles() {

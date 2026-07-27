@@ -29,9 +29,9 @@ gource.sh
 .profileconfig.json
 profile.jfr
 /.vscode
-AGENTS.md
 
 # test mod jars - users must supply these manually
 libs/iris*.jar
 libs/sodium*.jar
 /.workbuddy
+/twilightforest-template-26.1.2

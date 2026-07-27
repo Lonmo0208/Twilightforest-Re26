@@ -31,13 +31,13 @@ public final class TargetedRotProcessor extends BlockRotProcessor {
 
 	@Nullable
 	@Override
-	public StructureTemplate.StructureBlockInfo process(LevelReader level, BlockPos origin, BlockPos centerBottom, StructureTemplate.StructureBlockInfo originalBlockInfo, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings, @Nullable StructureTemplate template) {
+	public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos origin, BlockPos centerBottom, StructureTemplate.StructureBlockInfo originalBlockInfo, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
 		if (!this.blocksToRot.contains(modifiedBlockInfo.state())) return modifiedBlockInfo;
-		return super.process(level, origin, centerBottom, originalBlockInfo, modifiedBlockInfo, settings, template);
+		return super.processBlock(level, origin, centerBottom, originalBlockInfo, modifiedBlockInfo, settings);
 	}
 
 	@Override
 	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.TARGETED_ROT.get();
+		return TFStructureProcessors.TARGETED_ROT;
 	}
 }

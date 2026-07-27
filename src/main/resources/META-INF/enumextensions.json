@@ -3,7 +3,7 @@
     {
       "enum": "net/minecraft/world/damagesource/DamageEffects",
       "name": "TWILIGHTFOREST_PINCH",
-      "constructor": "(Ljava/lang/String;Ljava/util/function/Supplier;)V",
+      "constructor": "(Ljava/lang/String;Lnet/minecraft/sounds/SoundEvent;)V",
       "parameters": {
         "class": "twilightforest/TFEnumExtensions",
         "method": "DamageEffects_PINCH"
@@ -12,7 +12,7 @@
     {
       "enum": "net/minecraft/world/item/Rarity",
       "name": "TWILIGHTFOREST_TWILIGHT",
-      "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
+      "constructor": "(ILjava/lang/String;Lnet/minecraft/ChatFormatting;)V",
       "parameters": {
         "class": "twilightforest/TFEnumExtensions",
         "method": "Rarity_TWILIGHT"
@@ -21,7 +21,7 @@
     {
       "enum": "net/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier",
       "name": "TWILIGHTFOREST_ENCHANTED_FOREST",
-      "constructor": "(Ljava/lang/String;Lnet/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier$ColorModifier;)V",
+      "constructor": "(Ljava/lang/String;)V",
       "parameters": {
         "class": "twilightforest/TFEnumExtensions",
         "method": "GrassColorModifier_ENCHANTED_FOREST"
@@ -30,7 +30,7 @@
     {
       "enum": "net/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier",
       "name": "TWILIGHTFOREST_SWAMP",
-      "constructor": "(Ljava/lang/String;Lnet/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier$ColorModifier;)V",
+      "constructor": "(Ljava/lang/String;)V",
       "parameters": {
         "class": "twilightforest/TFEnumExtensions",
         "method": "GrassColorModifier_SWAMP"
@@ -39,7 +39,7 @@
     {
       "enum": "net/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier",
       "name": "TWILIGHTFOREST_DARK_FOREST",
-      "constructor": "(Ljava/lang/String;Lnet/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier$ColorModifier;)V",
+      "constructor": "(Ljava/lang/String;)V",
       "parameters": {
         "class": "twilightforest/TFEnumExtensions",
         "method": "GrassColorModifier_DARK_FOREST"
@@ -48,7 +48,7 @@
     {
       "enum": "net/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier",
       "name": "TWILIGHTFOREST_DARK_FOREST_CENTER",
-      "constructor": "(Ljava/lang/String;Lnet/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier$ColorModifier;)V",
+      "constructor": "(Ljava/lang/String;)V",
       "parameters": {
         "class": "twilightforest/TFEnumExtensions",
         "method": "GrassColorModifier_DARK_FOREST_CENTER"
@@ -57,7 +57,7 @@
     {
       "enum": "net/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier",
       "name": "TWILIGHTFOREST_SPOOKY_FOREST",
-      "constructor": "(Ljava/lang/String;Lnet/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier$ColorModifier;)V",
+      "constructor": "(Ljava/lang/String;)V",
       "parameters": {
         "class": "twilightforest/TFEnumExtensions",
         "method": "GrassColorModifier_SPOOKY_FOREST"
@@ -66,7 +66,7 @@
     {
       "enum": "net/minecraft/world/item/ItemDisplayContext",
       "name": "TWILIGHTFOREST_JARRED",
-      "constructor": "(ILjava/lang/String;Ljava/lang/String;)V",
+      "constructor": "(ILjava/lang/String;)V",
       "parameters": {
         "class": "twilightforest/TFEnumExtensions",
         "method": "ItemDisplayContext_JARRED"

@@ -9,11 +9,13 @@ import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -103,7 +105,7 @@ public class OreScannerComponent {
 		ImmutableMap.Builder<String, Integer> builder = ImmutableMap.builder();
 
 		for (Object2IntMap.Entry<Block> entry : this.blockCounter.object2IntEntrySet()) {
-			if (entry.getIntValue() > 0 && entry.getKey().builtInRegistryHolder().is(Tags.Blocks.ORES)) {
+			if (entry.getIntValue() > 0 && entry.getKey().builtInRegistryHolder().is(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores")))) {
 				builder.put(entry.getKey().getDescriptionId(), entry.getIntValue());
 			}
 		}

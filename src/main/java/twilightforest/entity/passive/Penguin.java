@@ -53,17 +53,17 @@ public class Penguin extends Bird {
 	@Nullable
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.PENGUIN_AMBIENT.get();
+		return TFSounds.PENGUIN_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.PENGUIN_HURT.get();
+		return TFSounds.PENGUIN_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.PENGUIN_DEATH.get();
+		return TFSounds.PENGUIN_DEATH;
 	}
 
 	public static AttributeSupplier.Builder registerAttributes() {

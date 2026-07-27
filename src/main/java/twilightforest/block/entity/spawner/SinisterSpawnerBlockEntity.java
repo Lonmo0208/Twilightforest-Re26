@@ -1,6 +1,5 @@
 package twilightforest.block.entity.spawner;
 
-import com.mojang.datafixers.util.Either;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleOptions;
@@ -11,7 +10,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Spawner;
@@ -27,15 +25,11 @@ import java.util.List;
 
 public class SinisterSpawnerBlockEntity extends BlockEntity implements Spawner {
 	private final SinisterSpawnerLogic spawner = new SinisterSpawnerLogic() {
-		@Override
-		public Either<BlockEntity, Entity> getOwner() {
-			return Either.left(SinisterSpawnerBlockEntity.this);
-		}
 	};
 	@Nullable private ResourceKey<LootTable> lootTable = null;
 
 	public SinisterSpawnerBlockEntity(BlockPos pos, BlockState blockState) {
-		super(TFBlockEntities.SINISTER_SPAWNER.value(), pos, blockState);
+		super(TFBlockEntities.SINISTER_SPAWNER, pos, blockState);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package twilightforest.entity.passive.quest.ram;
 
-import tamaized.beanification.Component;
+import twilightforest.beanification.Component;
 
 @Component
 public class QuestingRamCurrentContext {

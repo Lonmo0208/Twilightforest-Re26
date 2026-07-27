@@ -1,6 +1,6 @@
 package twilightforest.util;
 
-import tamaized.beanification.Component;
+import twilightforest.beanification.Component;
 
 import java.time.Month;
 import java.time.MonthDay;

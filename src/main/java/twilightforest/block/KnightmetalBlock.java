@@ -71,12 +71,6 @@ public class KnightmetalBlock extends Block implements SimpleWaterloggedBlock {
 		builder.add(WATERLOGGED);
 	}
 
-	@Nullable
-	@Override
-	public PathType getBlockPathType(BlockState state, BlockGetter getter, BlockPos pos, @Nullable Mob entity) {
-		return PathType.DAMAGING;
-	}
-
 	@Override
 	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
 		if (level instanceof ServerLevel sl) {

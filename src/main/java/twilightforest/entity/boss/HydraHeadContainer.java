@@ -13,12 +13,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.init.TFDamageTypes;
 import twilightforest.init.TFEntities;
@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import twilightforest.network.PacketDistributor;
 
 /**
  * This class holds the state data for a single hydra head
@@ -140,11 +141,6 @@ public class HydraHeadContainer {
 	private int damageTaken;
 	private int respawnCounter;
 	private int deathTime;
-	private State lastSyncedState;
-	private State clientPrevState;
-	private State clientCurrentState;
-	private int clientTicksProgress;
-	private int clientTicksNeeded;
 
 	private final Hydra hydra;
 
@@ -396,11 +392,10 @@ public class HydraHeadContainer {
 		// we need to use the head state as that one is actually synced to the client
 		if (this.headEntity.getState() == State.DYING) {
 			this.deathTime++;
-
 			// mark parts as dead so they explode and die off
 			if (this.deathTime == 1) {
 				this.headEntity.markedDead = true;
-				//clear name. The head died, so the name shouldn't persist
+				// clear name. The head died, so the name shouldn't persist
 				this.hydra.setHeadNameFor(this.headNum, "");
 				this.headEntity.setCustomName(Component.literal(""));
 			} else if (this.deathTime == 10) {
@@ -414,7 +409,6 @@ public class HydraHeadContainer {
 			} else if (this.deathTime == 50) {
 				this.getNeckArray()[4].markedDead = true;
 			}
-
 			// turn necks red
 			this.headEntity.hurtTime = 20;
 			this.performOnAllNecks(neck -> neck.hurtTime = 20);
@@ -501,13 +495,13 @@ public class HydraHeadContainer {
 			this.faceVec(this.targetX, this.targetY, this.targetZ, 5.0F, this.hydra.getMaxHeadXRot());
 
 		} else {
-			if (!this.isDead()) {
+			if (this.isActive()) {
 				if (this.targetEntity != null) {
 					// watch the target entity
 					this.faceEntity(this.targetEntity, 5.0F, this.hydra.getMaxHeadXRot());
 				} else {
 					// while idle, look where the body is looking?
-					this.faceIdle(1.5F, this.hydra.getMaxHeadXRot());
+					this.faceIdle(this.hydra.getMaxHeadXRot());
 				}
 			}
 		}
@@ -556,7 +550,7 @@ public class HydraHeadContainer {
 				dy *= velocity;
 				dz *= velocity;
 
-				this.headEntity.level().addAlwaysVisibleParticle(TFParticleType.LARGE_FLAME.get(), px, py, pz, dx, dy, dz);
+				this.headEntity.level().addAlwaysVisibleParticle(TFParticleType.LARGE_FLAME, px, py, pz, dx, dy, dz);
 			}
 		}
 
@@ -572,15 +566,15 @@ public class HydraHeadContainer {
 	private void playSounds() {
 		if (this.headEntity.getState() == State.FLAMING && this.headEntity.tickCount % 5 == 0) {
 			// fire breathing!
-			this.headEntity.playSound(TFSounds.HYDRA_SHOOT_FIRE.get(), 0.5F + this.headEntity.level().getRandom().nextFloat(), this.headEntity.level().getRandom().nextFloat() * 0.7F + 0.3F);
+			this.headEntity.playSound(TFSounds.HYDRA_SHOOT_FIRE, 0.5F + this.headEntity.level().getRandom().nextFloat(), this.headEntity.level().getRandom().nextFloat() * 0.7F + 0.3F);
 			this.headEntity.gameEvent(GameEvent.PROJECTILE_SHOOT);
 		}
 		if (this.headEntity.getState() == State.ROAR_RAWR) {
-			this.headEntity.playSound(TFSounds.HYDRA_ROAR.get(), 1.25F, this.headEntity.level().getRandom().nextFloat() * 0.3F + 0.7F);
+			this.headEntity.playSound(TFSounds.HYDRA_ROAR, 1.25F, this.headEntity.level().getRandom().nextFloat() * 0.3F + 0.7F);
 			this.headEntity.gameEvent(GameEvent.ENTITY_ACTION);
 		}
 		if (this.headEntity.getState() == State.BITE_READY && this.ticksProgress == 60) {
-			this.headEntity.playSound(TFSounds.HYDRA_WARN.get(), 2.0F, this.headEntity.level().getRandom().nextFloat() * 0.3F + 0.7F);
+			this.headEntity.playSound(TFSounds.HYDRA_WARN, 2.0F, this.headEntity.level().getRandom().nextFloat() * 0.3F + 0.7F);
 		}
 	}
 
@@ -632,8 +626,8 @@ public class HydraHeadContainer {
 		// head2 is to the right
 		// head3 is to the left
 
-		float[] idleXRot = {60.0F, 10.0F, 10.0F, 50.0F, 50.0F, -10.0F, -10.0F};
 		float[] idleYRot = {0.0F, 60.0F, -60.0F, 90.0F, -90.0F, 90.0F, -90.0F};
+		float[] idleXRot = {60.0F, 10.0F, 10.0F, 50.0F, 50.0F, -10.0F, -10.0F};
 		float[] idleNeck = {7.0F, 9.0F, 9.0F, 8.0F, 8.0F, 9.0F, 9.0F};
 		int idx = Math.min(this.headNum, idleNeck.length - 1);
 
@@ -677,7 +671,7 @@ public class HydraHeadContainer {
 				mortar.setToBlasting();
 			}
 
-			this.headEntity.playSound(TFSounds.HYDRA_SHOOT.get(), 10.0F, (this.headEntity.level().getRandom().nextFloat() - this.headEntity.level().getRandom().nextFloat()) * 0.2F + 1.0F);
+			this.headEntity.playSound(TFSounds.HYDRA_SHOOT, 10.0F, (this.headEntity.level().getRandom().nextFloat() - this.headEntity.level().getRandom().nextFloat()) * 0.2F + 1.0F);
 			this.headEntity.level().addFreshEntity(mortar);
 
 		}
@@ -688,10 +682,10 @@ public class HydraHeadContainer {
 			for (Entity nearby : nearbyList) {
 				if (nearby instanceof LivingEntity living && nearby != this.hydra) {
 					//is a player holding a shield? Let's do some extra stuff!
-					if (nearby instanceof Player player && player.isBlocking()) {
+					if (nearby instanceof Player player && player.isUsingItem() && player.getUseItem().getItem() instanceof ShieldItem) {
 						if (!player.getCooldowns().isOnCooldown(player.getUseItem())) {
 							//cause severe damage and play a shatter sound
-							this.headEntity.level().playSound(null, player.blockPosition(), player.getUseItem().is(Items.SHIELD) ? TFSounds.WOOD_SHIELD_SHATTERS.get() : TFSounds.METAL_SHIELD_SHATTERS.get(), SoundSource.PLAYERS, 1.0F, player.getVoicePitch());
+							this.headEntity.level().playSound(null, player.blockPosition(), player.getUseItem().is(Items.SHIELD) ? TFSounds.WOOD_SHIELD_SHATTERS : TFSounds.METAL_SHIELD_SHATTERS, SoundSource.PLAYERS, 1.0F, player.getVoicePitch());
 							player.getUseItem().hurtAndBreak(112, player, player.getUsedItemHand());
 						}
 						//add cooldown and knockback
@@ -829,7 +823,7 @@ public class HydraHeadContainer {
 	protected void setNeckPosition(double startX, double startY, double startZ, float startYaw) {
 
 		double endX = this.headEntity.getX();
-		double endY = this.headEntity.getY() - 0.5F;
+		double endY = this.headEntity.getY();
 		double endZ = this.headEntity.getZ();
 		float endYaw = this.headEntity.getYRot();
 		float endPitch = this.headEntity.getXRot();
@@ -846,7 +840,7 @@ public class HydraHeadContainer {
 		// translate the end position back 1 unit
 		if (endPitch > 0) {
 			// if we are looking down, don't raise the first neck position, it looks weird
-			Vec3 vector = new Vec3(0.0D, 0.0D, -1.8D).yRot((-endYaw * 3.141593F) / 180.0F);
+			Vec3 vector = new Vec3(0.0D, 0.0D, -1.0D).yRot((-endYaw * 3.141593F) / 180.0F);
 			endX += vector.x();
 			endY += vector.y();
 			endZ += vector.z();
@@ -889,7 +883,7 @@ public class HydraHeadContainer {
 		this.necke.setXRot(endPitch + ((float) 0 - endPitch) * factor);
 	}
 
-	private void faceIdle(float yawConstraint, float pitchConstraint) {
+	private void faceIdle(float pitchConstraint) {
 		float angle = (((this.hydra.getYRot()) * 3.141593F) / 180F);
 		float distance = 30.0F;
 
@@ -897,7 +891,7 @@ public class HydraHeadContainer {
 		double dy = this.hydra.getY() + 3.0;
 		double dz = this.hydra.getZ() + Mth.cos(angle) * distance;
 
-		faceVec(dx, dy, dz, yawConstraint, pitchConstraint);
+		faceVec(dx, dy, dz, (float) 1.5, pitchConstraint);
 	}
 
 	public void faceEntity(@Nullable Entity entity, float yawConstraint, float pitchConstraint) {
@@ -947,9 +941,7 @@ public class HydraHeadContainer {
 	}
 
 	public void setHurtTime(int hurtTime) {
-		if (this.headEntity != null) {
-			this.headEntity.hurtTime = hurtTime;
-		}
+		this.headEntity.hurtTime = hurtTime;
 		this.performOnAllNecks(neck -> neck.hurtTime = hurtTime);
 	}
 

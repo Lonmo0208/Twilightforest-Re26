@@ -61,7 +61,7 @@ public class ReactorDebrisBlock extends BaseEntityBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TFBlockEntities.REACTOR_DEBRIS.get(), ReactorDebrisBlockEntity::tick);
+		return createTickerHelper(type, TFBlockEntities.REACTOR_DEBRIS, ReactorDebrisBlockEntity::tick);
 	}
 
 	@Nullable
@@ -70,8 +70,4 @@ public class ReactorDebrisBlock extends BaseEntityBlock {
 		return new ReactorDebrisBlockEntity(blockPos, blockState);
 	}
 
-	@Override
-	public boolean addLandingEffects(BlockState state1, ServerLevel level, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
-		return true;  // Actually disables landing particle effects after fall.
-	}
 }

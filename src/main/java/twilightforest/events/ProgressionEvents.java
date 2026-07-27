@@ -11,7 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.PermissionLevel;
-import net.minecraft.util.TriState;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -24,17 +24,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.BlockSnapshot;
-import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
-import tamaized.beanification.Component;
-import tamaized.beanification.PostConstruct;
+import net.fabricmc.fabric.api.entity.FakePlayer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import twilightforest.beanification.Component;
+import twilightforest.beanification.PostConstruct;
 import twilightforest.block.TFPortalBlock;
 import twilightforest.config.TFConfig;
 import twilightforest.entity.monster.Kobold;
@@ -52,6 +47,7 @@ import twilightforest.util.landmarks.LandmarkUtil;
 import twilightforest.world.components.structures.util.AdvancementLockedStructure;
 import twilightforest.world.components.structures.util.ProgressionPiece;
 import twilightforest.world.components.structures.util.ProgressionStructure;
+import twilightforest.network.PacketDistributor;
 
 import java.util.*;
 
@@ -63,18 +59,31 @@ public class ProgressionEvents {
 
 	@PostConstruct
 	private void setup() {
-		NeoForge.EVENT_BUS.addListener(this::preventLockedAreaBlockBreaking);
-		NeoForge.EVENT_BUS.addListener(this::preventLockedAreaBlockPlacing);
-		NeoForge.EVENT_BUS.addListener(this::preventLockedAreaBlockInteracting);
-		NeoForge.EVENT_BUS.addListener(this::preventLockedAreaMultiblocks);
-		NeoForge.EVENT_BUS.addListener(this::preventLockedAreaEntityDamage);
-		NeoForge.EVENT_BUS.addListener(this::performProtectionAndPortalChecks);
+		// Ported to Fabric event system
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+				performProtectionAndPortalChecks(new FabricEvents.PlayerTickEvent.Post(player));
+			}
+		});
+
+		PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
+			FabricEvents.BreakBlockEvent event = new FabricEvents.BreakBlockEvent(world, pos, state, player);
+			preventLockedAreaBlockBreaking(event);
+			return !event.isCanceled();
+		});
+
+		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+			FabricEvents.PlayerInteractEvent.RightClickBlock event = new FabricEvents.PlayerInteractEvent.RightClickBlock(player, hand, hitResult.getBlockPos(), hitResult);
+			preventLockedAreaBlockPlacing(event);
+			preventLockedAreaBlockInteracting(event);
+			return event.isCanceled() ? InteractionResult.FAIL : InteractionResult.PASS;
+		});
 	}
 
 	/**
 	 * Check if the player is trying to break a block in a structure that's considered unbreakable for progression reasons
 	 */
-	private void preventLockedAreaBlockBreaking(BreakBlockEvent event) {
+	private void preventLockedAreaBlockBreaking(FabricEvents.BreakBlockEvent event) {
 		if (!(event.getLevel() instanceof ServerLevel level) || event.isCanceled()) return;
 
 		BlockPos pos = event.getPos();
@@ -86,7 +95,7 @@ public class ProgressionEvents {
 	/**
 	 * Check if the player is trying to place a block in a structure that's considered inaccessible for progression reasons
 	 */
-	private void preventLockedAreaBlockPlacing(PlayerInteractEvent.RightClickBlock event) {
+	private void preventLockedAreaBlockPlacing(FabricEvents.PlayerInteractEvent.RightClickBlock event) {
 		if (!(event.getLevel() instanceof ServerLevel level) || event.isCanceled()) return;
 
 		BlockPos pos = event.getPos();
@@ -99,13 +108,12 @@ public class ProgressionEvents {
 	/**
 	 * Check if the player is trying to break a multi-block that intersects a structure that's considered inaccessible for progression reasons
 	 */
-	private void preventLockedAreaMultiblocks(BlockEvent.EntityMultiPlaceEvent event) {
+	private void preventLockedAreaMultiblocks(FabricEvents.BlockEvent.EntityMultiPlaceEvent event) {
 		Entity entity = event.getEntity();
 
 		if (!(event.getLevel() instanceof ServerLevel level) || !(entity instanceof Player player) || event.isCanceled()) return;
 
-		for (BlockSnapshot snapshot : event.getReplacedBlockSnapshots()) {
-			BlockPos pos = snapshot.getPos();
+		for (BlockPos pos : event.getReplacedBlockPositions()) {
 
 			if (isBlockProtectedFromBreaking(level, pos) && isAreaProtected(level, player, pos)) {
 				event.setCanceled(true);
@@ -118,12 +126,12 @@ public class ProgressionEvents {
 	/**
 	 * Stop the player from interacting with blocks that could produce treasure or open doors in a protected area
 	 */
-	private void preventLockedAreaBlockInteracting(PlayerInteractEvent.RightClickBlock event) {
+	private void preventLockedAreaBlockInteracting(FabricEvents.PlayerInteractEvent.RightClickBlock event) {
 		Player player = event.getEntity();
 		Level level = player.level();
 
 		if (!level.isClientSide() && level instanceof ServerLevel serverLevel && isBlockProtectedFromInteraction(level, event.getPos()) && isAreaProtected(serverLevel, player, event.getPos())) {
-			event.setUseBlock(TriState.FALSE);
+			event.setCancellationResult(net.minecraft.world.InteractionResult.FAIL);
 		}
 	}
 
@@ -162,7 +170,7 @@ public class ProgressionEvents {
 	}
 
 	//TODO make ignored entities into a tag
-	private void preventLockedAreaEntityDamage(LivingIncomingDamageEvent event) {
+	private void preventLockedAreaEntityDamage(FabricEvents.LivingIncomingDamageEvent event) {
 		LivingEntity living = event.getEntity();
 		// cancel attacks in protected areas
 		if (living.level() instanceof ServerLevel serverLevel && living instanceof Enemy && event.getSource().getEntity() instanceof Player && !(living instanceof Kobold)
@@ -172,7 +180,7 @@ public class ProgressionEvents {
 		}
 	}
 
-	private void performProtectionAndPortalChecks(PlayerTickEvent.Post event) {
+	private void performProtectionAndPortalChecks(FabricEvents.PlayerTickEvent.Post event) {
 		Player eventPlayer = event.getEntity();
 
 		if (!(eventPlayer instanceof ServerPlayer player)) return;
@@ -230,7 +238,7 @@ public class ProgressionEvents {
 
 			for (ItemEntity entityItem : itemList) {
 				if (entityItem.getItem().is(TFItemTags.PORTAL_ACTIVATOR) &&
-				TFBlocks.TWILIGHT_PORTAL.get().canFormPortal(level.getBlockState(entityItem.blockPosition())) &&
+				TFBlocks.TWILIGHT_PORTAL.canFormPortal(level.getBlockState(entityItem.blockPosition())) &&
 				Objects.equals(entityItem.getOwner(), player)) {
 
 					qualified = entityItem;
@@ -248,7 +256,7 @@ public class ProgressionEvents {
 					if (!TFPortalBlock.isPlayerNotifiedOfRequirement(player)) {
 						// .doesPlayerHaveRequiredAdvancement null-checks already, so we can skip null-checking the `requirement`
 						DisplayInfo info = requirement.value().display().orElse(null);
-						PacketDistributor.sendToPlayer(player, info == null ? new MissingAdvancementToastPacket(net.minecraft.network.chat.Component.translatable("twilightforest.ui.advancement.no_title"), new ItemStack(TFBlocks.TWILIGHT_PORTAL_MINIATURE_STRUCTURE.get())) : new MissingAdvancementToastPacket(info.getTitle(), new ItemStack(info.getIcon().item(), info.getIcon().count())));
+						PacketDistributor.sendToPlayer(player, info == null ? new MissingAdvancementToastPacket(net.minecraft.network.chat.Component.translatable("twilightforest.ui.advancement.no_title"), new ItemStack(TFBlocks.TWILIGHT_PORTAL_MINIATURE_STRUCTURE)) : new MissingAdvancementToastPacket(info.getTitle(), new ItemStack(info.getIcon().item(), info.getIcon().count())));
 
 						TFPortalBlock.playerNotifiedOfRequirement(player);
 					}
@@ -266,8 +274,8 @@ public class ProgressionEvents {
 				level.addParticle(SpellParticleOption.create(ParticleTypes.EFFECT, -1, 1.0F), qualified.getX(), qualified.getY() + 0.2, qualified.getZ(), vx, vy, vz);
 			}
 
-			if (TFBlocks.TWILIGHT_PORTAL.get().tryToCreatePortal(level, qualified.blockPosition(), qualified, player))
-				TFAdvancements.MADE_TF_PORTAL.get().trigger(player);
+			if (TFBlocks.TWILIGHT_PORTAL.tryToCreatePortal(level, qualified.blockPosition(), qualified, player))
+				TFAdvancements.MADE_TF_PORTAL.trigger(player);
 
 		}
 	}

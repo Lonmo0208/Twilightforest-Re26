@@ -28,12 +28,12 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.network.PacketDistributor;
+
 import org.jetbrains.annotations.Nullable;
 import twilightforest.config.TFConfig;
 import twilightforest.entity.EnforcedHomePoint;
 import twilightforest.entity.boss.bar.ServerTFBossBar;
+import twilightforest.util.TFEntityExtensions;
 import twilightforest.loot.TFLootTables;
 import twilightforest.network.UpdateDeathTimePacket;
 import twilightforest.util.entities.EntityUtil;
@@ -41,6 +41,7 @@ import twilightforest.util.landmarks.LandmarkUtil;
 
 import java.util.Objects;
 import java.util.Optional;
+import twilightforest.network.PacketDistributor;
 
 public abstract class BaseTFBoss extends Monster implements IBossLootBuffer, EnforcedHomePoint {
 	private static final EntityDataAccessor<Optional<GlobalPos>> HOME_POINT = SynchedEntityData.defineId(BaseTFBoss.class, EntityDataSerializers.OPTIONAL_GLOBAL_POS);
@@ -172,7 +173,7 @@ public abstract class BaseTFBoss extends Monster implements IBossLootBuffer, Enf
 	}
 
 	@Override
-	public boolean isPushedByFluid(FluidType type) {
+	public boolean isPushedByFluid() {
 		return false;
 	}
 

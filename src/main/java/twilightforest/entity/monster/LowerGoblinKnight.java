@@ -24,7 +24,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.ai.goal.RiderSpearAttackGoal;
@@ -114,7 +113,7 @@ public class LowerGoblinKnight extends Monster {
 
 		UpperGoblinKnight upper = new UpperGoblinKnight(TFEntities.UPPER_GOBLIN_KNIGHT.get(), this.level());
 		upper.snapTo(this.getX(), this.getY() + 1, this.getZ(), this.getYRot(), 0.0F);
-		EventHooks.finalizeMobSpawn(upper, accessor, difficulty, EntitySpawnReason.NATURAL, data);
+		// EventHooks.finalizeMobSpawn(upper, accessor, difficulty, EntitySpawnReason.NATURAL, data)); // TODO: Port - NeoForge hook
 		upper.startRiding(this);
 
 		return data;
@@ -138,17 +137,17 @@ public class LowerGoblinKnight extends Monster {
 	@Nullable
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return this.hasArmor() ? TFSounds.GOBLIN_KNIGHT_MUFFLED_AMBIENT.get() : TFSounds.GOBLIN_KNIGHT_AMBIENT.get();
+		return this.hasArmor() ? TFSounds.GOBLIN_KNIGHT_MUFFLED_AMBIENT : TFSounds.GOBLIN_KNIGHT_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return this.hasArmor() ? TFSounds.GOBLIN_KNIGHT_MUFFLED_DEATH.get() : TFSounds.GOBLIN_KNIGHT_DEATH.get();
+		return this.hasArmor() ? TFSounds.GOBLIN_KNIGHT_MUFFLED_DEATH : TFSounds.GOBLIN_KNIGHT_DEATH;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return this.hasArmor() ? TFSounds.GOBLIN_KNIGHT_MUFFLED_HURT.get() : TFSounds.GOBLIN_KNIGHT_HURT.get();
+		return this.hasArmor() ? TFSounds.GOBLIN_KNIGHT_MUFFLED_HURT : TFSounds.GOBLIN_KNIGHT_HURT;
 	}
 
 	@Override

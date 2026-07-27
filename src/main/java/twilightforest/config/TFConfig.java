@@ -14,9 +14,6 @@ import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.common.TranslatableEnum;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 import twilightforest.network.SyncUncraftingTableConfigPacket;
@@ -193,14 +190,11 @@ public class TFConfig {
 		shieldParryTicks = config.SHIELD_INTERACTIONS.shieldParryTicks.get();
 
 		//resends uncrafting settings to all players when the config is reloaded. This ensures all players have matching configs so things don't desync.
-		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		MinecraftServer server = null; // Will be set when config is loaded from server context
 		if (server != null && server.isDedicatedServer()) {
-			PacketDistributor.sendToAllPlayers(new SyncUncraftingTableConfigPacket(
-				uncraftingXpCostMultiplier, repairingXpCostMultiplier,
-				allowShapelessUncrafting, disableIngredientSwitching,
-				disableUncraftingOnly, disableEntireTable,
-				disableUncraftingRecipes, reverseRecipeBlacklist,
-				blacklistedUncraftingModIds, flipUncraftingModIdList));
+			for (var player : server.getPlayerList().getPlayers()) {
+				ConfigSetup.syncUncraftingConfig(player);
+			}
 		}
 		//sets cached portal locking advancement to null just in case it changed
 		portalLockingAdvancement = null;
@@ -254,7 +248,7 @@ public class TFConfig {
 		}
 	}
 
-	public enum MultiplayerFightAdjuster implements TranslatableEnum {
+	public enum MultiplayerFightAdjuster {
 		NONE(false, false),
 		MORE_LOOT(true, false),
 		MORE_HEALTH(false, true),
@@ -276,7 +270,6 @@ public class TFConfig {
 			return this.moreHealth;
 		}
 
-		@Override
 		public Component getTranslatedName() {
 			return Component.translatable(CONFIG_ID + "multiplayer_fight_adjuster." + this.name().toLowerCase(Locale.ROOT));
 		}

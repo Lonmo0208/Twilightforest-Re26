@@ -1,7 +1,7 @@
 package twilightforest.world.components.structures.selectors;
 
 import com.mojang.datafixers.util.Pair;
-import tamaized.beanification.Component;
+import twilightforest.beanification.Component;
 import twilightforest.init.TFBlocks;
 import twilightforest.world.components.structures.util.SimpleRandomBlockSelector;
 
@@ -12,10 +12,10 @@ public class TowerwoodRandomBlockSelectorFactory {
 	public SimpleRandomBlockSelector make() {
 		return new SimpleRandomBlockSelector(
 			List.of(
-				Pair.of(TFBlocks.CRACKED_TOWERWOOD.get().defaultBlockState(), 0.1F),
-				Pair.of(TFBlocks.MOSSY_TOWERWOOD.get().defaultBlockState(), 0.1F),
-				Pair.of(TFBlocks.INFESTED_TOWERWOOD.get().defaultBlockState(), 0.025F),
-				Pair.of(TFBlocks.TOWERWOOD.get().defaultBlockState(), 0.775F)
+				Pair.of(TFBlocks.CRACKED_TOWERWOOD.defaultBlockState(), 0.1F),
+				Pair.of(TFBlocks.MOSSY_TOWERWOOD.defaultBlockState(), 0.1F),
+				Pair.of(TFBlocks.INFESTED_TOWERWOOD.defaultBlockState(), 0.025F),
+				Pair.of(TFBlocks.TOWERWOOD.defaultBlockState(), 0.775F)
 			)
 		);
 	}

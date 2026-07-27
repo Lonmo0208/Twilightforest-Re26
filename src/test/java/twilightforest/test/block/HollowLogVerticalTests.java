@@ -19,12 +19,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import tamaized.beanification.junit.MockitoFixer;
 import twilightforest.block.ClimbableHollowLogBlock;
 import twilightforest.block.VerticalHollowLogBlock;
 import twilightforest.enums.HollowLogVariants;
@@ -36,7 +34,6 @@ import java.lang.reflect.Method;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoFixer.class)
 public class HollowLogVerticalTests {
 
 	@Mock
@@ -47,7 +44,7 @@ public class HollowLogVerticalTests {
 
 	@BeforeEach
 	public void setup() {
-		instance = TFBlocks.HOLLOW_ACACIA_LOG_VERTICAL.value();
+		instance = TFBlocks.HOLLOW_ACACIA_LOG_VERTICAL;
 		MockitoAnnotations.openMocks(this);
 	}
 

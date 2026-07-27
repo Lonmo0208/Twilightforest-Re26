@@ -17,7 +17,6 @@ import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
-import tamaized.beanification.Autowired;
 import twilightforest.world.components.structures.TFStructureComponentOld;
 import twilightforest.world.components.structures.selectors.KnightStonesRandomBlockSelectorFactory;
 import twilightforest.world.components.structures.selectors.StrongholdStonesRandomBlockSelectorFactory;
@@ -28,10 +27,8 @@ import java.util.List;
 
 
 public abstract class KnightStrongholdComponent extends TFStructureComponentOld {
-	@Autowired
-	private static StrongholdStonesRandomBlockSelectorFactory strongholdStones;
-	@Autowired
-	private static KnightStonesRandomBlockSelectorFactory knightStones;
+	private static final StrongholdStonesRandomBlockSelectorFactory strongholdStones = new StrongholdStonesRandomBlockSelectorFactory();
+	private static final KnightStonesRandomBlockSelectorFactory knightStones = new KnightStonesRandomBlockSelectorFactory();
 
 	public final List<BlockPos> doors = new ArrayList<>();
 
@@ -515,12 +512,13 @@ public abstract class KnightStrongholdComponent extends TFStructureComponentOld 
 		}
 	}
 
-	public interface Factory<T extends KnightStrongholdComponent> {
-		T newInstance(int i, Direction facing, int x, int y, int z);
-	}
-
 	@Override
 	public TerrainAdjustment getTerrainAdjustment() {
 		return this.isComponentProtected() ? TerrainAdjustment.BURY : TerrainAdjustment.NONE;
 	}
+
+	public interface Factory<T extends KnightStrongholdComponent> {
+		T newInstance(int i, Direction facing, int x, int y, int z);
+	}
+
 }

@@ -4,7 +4,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import tamaized.beanification.Component;
+import twilightforest.beanification.Component;
 import twilightforest.init.TFDataComponents;
 
 @Component

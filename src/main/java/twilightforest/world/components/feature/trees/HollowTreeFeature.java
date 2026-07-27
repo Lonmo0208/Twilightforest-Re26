@@ -66,7 +66,7 @@ public abstract class HollowTreeFeature extends TFTreeFeature<TFTreeFeatureConfi
 		for (int i = 0; i <= numFireflies; i++) {
 			int fHeight = (int) (height * random.nextDouble() * 0.9) + (height / 10);
 			double fAngle = random.nextDouble();
-			addBug(world, TFBlocks.FIREFLY.get(), pos, radius, fHeight, fAngle);
+			addBug(world, TFBlocks.FIREFLY, pos, radius, fHeight, fAngle);
 		}
 
 		// cicadas
@@ -74,7 +74,7 @@ public abstract class HollowTreeFeature extends TFTreeFeature<TFTreeFeatureConfi
 		for (int i = 0; i <= numCicadas; i++) {
 			int fHeight = (int) (height * random.nextDouble() * 0.9) + (height / 10);
 			double fAngle = random.nextDouble();
-			addBug(world, TFBlocks.CICADA.get(), pos, radius, fHeight, fAngle);
+			addBug(world, TFBlocks.CICADA, pos, radius, fHeight, fAngle);
 		}
 
 		// build the crown

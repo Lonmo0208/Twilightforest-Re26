@@ -50,7 +50,7 @@ public class IceTowerWingComponent extends TowerWingComponent {
 	protected int treasureFloor = -1;
 
 	public IceTowerWingComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		this(TFStructurePieceTypes.TFITWin.get(), nbt);
+		this(TFStructurePieceTypes.TFITWin, nbt);
 	}
 
 	public IceTowerWingComponent(StructurePieceType piece, CompoundTag nbt) {
@@ -169,7 +169,7 @@ public class IceTowerWingComponent extends TowerWingComponent {
 		if (!(list instanceof StructurePiecesBuilder start) || !start.pieces.isEmpty() && isOutOfRange(start.pieces.get(0), dx[0], dx[2], RANGE))
 			return false;
 
-		IceTowerWingComponent wing = new IceTowerWingComponent(TFStructurePieceTypes.TFITWin.get(), index, dx[0], dx[1], dx[2], wingSize, wingHeight, direction);
+		IceTowerWingComponent wing = new IceTowerWingComponent(TFStructurePieceTypes.TFITWin, index, dx[0], dx[1], dx[2], wingSize, wingHeight, direction);
 		// check to see if it intersects something already there
 		BoundingBox sbb = wing.getBoundingBox();
 		StructurePiece intersect = start.findCollisionPiece(new BoundingBox(
@@ -312,7 +312,7 @@ public class IceTowerWingComponent extends TowerWingComponent {
 			if (tries > FLOOR_PLAN_MAX_TRIES) {
 				topBlockedParts.clear();
 				bottomBlockedParts.clear();
-				TwilightForestMod.LOGGER.error("Unable to generate floor plan for aurora palace at {}. Please report mod version, coords, and seed to Twilight Forest devs", sbb.getCenter());
+				TwilightForestMod.LOGGER.warn("Unable to generate floor plan for aurora palace at {}.", sbb.getCenter());
 			}
 			Set<FloorParts> finalTopBlockedParts = topBlockedParts;
 			Set<FloorParts> finalBottomBlockedParts = bottomBlockedParts;

@@ -18,16 +18,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
+import twilightforest.TwilightForestMod;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
+
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
 
-@tamaized.beanification.Component
+@twilightforest.beanification.Component
 public class CountTemplateCommand {
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
 		return Commands.literal("count_template").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
@@ -35,27 +36,26 @@ public class CountTemplateCommand {
 	}
 
 	private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
-	private static final Method TemplateStructurePiece_makeTemplateLocation = ObfuscationReflectionHelper.findMethod(TemplateStructurePiece.class, "makeTemplateLocation");
-	private static final MethodHandle handle_TemplateStructurePiece_makeTemplateLocation;
+	private static final MethodHandle handle_TemplateStructurePiece_templateName;
 
 	static {
-		MethodHandle tmp_handle_TemplateStructurePiece_makeTemplateLocation = null;
-
+		MethodHandle tmp = null;
 		try {
-			tmp_handle_TemplateStructurePiece_makeTemplateLocation =
-				LOOKUP.unreflect(TemplateStructurePiece_makeTemplateLocation);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			// In vanilla 26.1.2, TemplateStructurePiece has a protected field "templateName" of type String
+			Field templateNameField = TemplateStructurePiece.class.getDeclaredField("templateName");
+			templateNameField.setAccessible(true);
+			tmp = LOOKUP.unreflectGetter(templateNameField);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			TwilightForestMod.LOGGER.error("Failed to get TemplateStructurePiece.templateName field", e);
 		}
-
-		handle_TemplateStructurePiece_makeTemplateLocation = tmp_handle_TemplateStructurePiece_makeTemplateLocation;
+		handle_TemplateStructurePiece_templateName = tmp;
 	}
 
 	public static Identifier makeTemplateLocation(TemplateStructurePiece piece) {
 		try {
-			return (Identifier) handle_TemplateStructurePiece_makeTemplateLocation.invokeExact(piece);
+			return Identifier.parse((String) handle_TemplateStructurePiece_templateName.invoke(piece));
 		} catch (Throwable t) {
-			throw new RuntimeException("Failed to invoke makeTemplateLocation", t);
+			throw new RuntimeException("Failed to get templateName from TemplateStructurePiece", t);
 		}
 	}
 

@@ -15,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -30,8 +29,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.ItemAbilities;
-import net.neoforged.neoforge.common.ItemAbility;
 import org.jspecify.annotations.Nullable;
 import twilightforest.block.entity.SkullCandleBlockEntity;
 import twilightforest.init.TFBlockEntities;
@@ -40,6 +37,7 @@ import twilightforest.inventory.InventoryUtil;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 
 public abstract class AbstractSkullCandleBlock extends BaseEntityBlock implements LightableBlock {
 	public static final IntegerProperty CANDLES = BlockStateProperties.CANDLES;
@@ -54,26 +52,6 @@ public abstract class AbstractSkullCandleBlock extends BaseEntityBlock implement
 
 	public SkullBlock.Type getType() {
 		return this.type;
-	}
-
-	@Override
-	public int getLightEmission(BlockState state, BlockGetter getter, BlockPos pos) {
-		return switch (state.getValue(LIGHTING)) {
-			case NORMAL -> 3 * state.getValue(CANDLES);
-			case OMINOUS -> 2 * state.getValue(CANDLES);
-			case DIM -> state.getValue(CANDLES);
-			default -> 0;
-		};
-	}
-
-	@Override
-	public BlockState getToolModifiedState(BlockState state, UseOnContext context, ItemAbility itemAbility, boolean simulate) {
-		if (ItemAbilities.FIRESTARTER_LIGHT == itemAbility) {
-			if (this.canBeLit(state)) {
-				return state.setValue(LIGHTING, Lighting.NORMAL);
-			}
-		}
-		return super.getToolModifiedState(state, context, itemAbility, simulate);
 	}
 
 	@Override
@@ -237,7 +215,7 @@ public abstract class AbstractSkullCandleBlock extends BaseEntityBlock implement
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TFBlockEntities.SKULL_CANDLE.get(), SkullCandleBlockEntity::animation);
+		return createTickerHelper(type, TFBlockEntities.SKULL_CANDLE, SkullCandleBlockEntity::animation);
 	}
 
 	public enum CandleColors implements StringRepresentable {

@@ -25,7 +25,7 @@ import twilightforest.init.TFBlocks;
 import twilightforest.init.TFDamageTypes;
 import twilightforest.init.TFSounds;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class SlideBlock extends Entity {
@@ -39,7 +39,7 @@ public class SlideBlock extends Entity {
 	public SlideBlock(EntityType<? extends SlideBlock> type, Level world) {
 		super(type, world);
 		this.blocksBuilding = true;
-		this.myState = TFBlocks.SLIDER.get().defaultBlockState();
+		this.myState = TFBlocks.SLIDER.defaultBlockState();
 	}
 
 	@SuppressWarnings("this-escape")
@@ -125,7 +125,7 @@ public class SlideBlock extends Entity {
 
 			if (!this.level().isClientSide()) {
 				if (this.slideTime % 5 == 0) {
-					this.playSound(TFSounds.SLIDER.get(), 1.0F, 0.9F + (this.random.nextFloat() * 0.4F));
+					this.playSound(TFSounds.SLIDER, 1.0F, 0.9F + (this.random.nextFloat() * 0.4F));
 				}
 
 				BlockPos pos = new BlockPos(this.blockPosition());
@@ -189,14 +189,14 @@ public class SlideBlock extends Entity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(@Nonnull ValueInput compound) {
+	protected void readAdditionalSaveData(@NotNull ValueInput compound) {
 		this.slideTime = compound.getIntOr("Time", 0);
 		this.getEntityData().set(MOVE_DIRECTION, Direction.from3DDataValue(compound.getByteOr("Direction", (byte) 0)));
 		this.myState = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compound.read("BlockState", CompoundTag.CODEC).orElseThrow());
 	}
 
 	@Override
-	protected void addAdditionalSaveData(@Nonnull ValueOutput compound) {
+	protected void addAdditionalSaveData(@NotNull ValueOutput compound) {
 		compound.putInt("Time", this.slideTime);
 		compound.putByte("Direction", (byte) this.getEntityData().get(MOVE_DIRECTION).get3DDataValue());
 		compound.store("BlockState", BlockState.CODEC, this.myState);

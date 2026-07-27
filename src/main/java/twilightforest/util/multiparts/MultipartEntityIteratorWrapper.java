@@ -1,9 +1,9 @@
 package twilightforest.util.multiparts;
 
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.entity.TFPart;
+import twilightforest.util.TFEntityExtensions;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,13 +34,13 @@ public class MultipartEntityIteratorWrapper implements Iterator<Entity> {
 			return next;
 		}
 		Entity next = delegate.next();
-		if (next.isMultipartEntity()) {
-			PartEntity<?>[] arr = next.getParts();
+		if (((TFEntityExtensions) next).isMultipartEntity()) {
+			Entity[] arr = ((TFEntityExtensions) next).getParts();
 			// getParts is nullable, the annotation is used incorrectly
 			//noinspection ConstantValue
 			if (arr != null) {
 				List<TFPart<?>> tfParts = new ArrayList<>();
-				for (PartEntity<?> partEntity : arr) {
+				for (Entity partEntity : arr) {
 					// Only add TFPart entities that have a custom renderer (not the default noop renderer).
 					// Parts using the default renderer (like SpikeBlock from BlockChainGoblin)
 					// are rendered by their parent entity's renderer and should not be added

@@ -1,0 +1,19 @@
+{
+	"required": true,
+	"package": "twilightforest.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"ClientLevelMixin",
+		"EntityRenderDispatcherMixin",
+		"MapRendererMixin",
+		"MapRenderStateMixin",
+		"ModelBlockRendererMixin",
+		"ModelBlockRendererAccessor"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

@@ -16,7 +16,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFStructurePieceTypes;
@@ -32,12 +32,12 @@ public class FinalCastleBellTower21Component extends FinalCastleMazeTower13Compo
 	private static final int FLOORS = 8;
 
 	public FinalCastleBellTower21Component(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		super(TFStructurePieceTypes.TFFCBelTo.get(), nbt);
+		super(TFStructurePieceTypes.TFFCBelTo, nbt);
 	}
 
 	@SuppressWarnings("this-escape")
 	public FinalCastleBellTower21Component(int i, int x, int y, int z, Direction direction) {
-		super(TFStructurePieceTypes.TFFCBelTo.get(), i, x, y, z, FLOORS, 1, TFBlocks.BLUE_CASTLE_RUNE_BRICK.get().defaultBlockState(), direction);
+		super(TFStructurePieceTypes.TFFCBelTo, i, x, y, z, FLOORS, 1, TFBlocks.BLUE_CASTLE_RUNE_BRICK.defaultBlockState(), direction);
 		this.size = 21;
 		this.height = FLOORS * 8 + 1;
 		this.boundingBox = TFStructureComponentOld.getComponentToAddBoundingBox2(x, y, z, -6, -8, -this.size / 2, this.size - 1, this.height, this.size - 1, direction);
@@ -61,7 +61,7 @@ public class FinalCastleBellTower21Component extends FinalCastleMazeTower13Compo
 		list.addPiece(roof);
 		roof.addChildren(this, list, rand);
 
-		TwilightJigsawPiece templatePiece = TwilightJigsawPiece.initializeTemplateFromPool(BELL_TOWER_TEMP_POOL, this.getWorldPos(0, 9, 10), this.rotation.rotation().rotate(FrontAndTop.WEST_UP), "twilightforest:final_castle/room", rand, this.genDepth + 1, ServerLifecycleHooks.getCurrentServer().getStructureManager());
+		TwilightJigsawPiece templatePiece = TwilightJigsawPiece.initializeTemplateFromPool(BELL_TOWER_TEMP_POOL, this.getWorldPos(0, 9, 10), this.rotation.rotation().rotate(FrontAndTop.WEST_UP), "twilightforest:final_castle/room", rand, this.genDepth + 1, /* TODO: Port - getStructureManager */ null);
 		if (templatePiece != null) {
 			list.addPiece(templatePiece);
 		}
@@ -72,7 +72,7 @@ public class FinalCastleBellTower21Component extends FinalCastleMazeTower13Compo
 		super.postProcess(world, manager, generator, rand, sbb, chunkPosIn, blockPos);
 
 		// openings!
-		BlockState fieldBlock = TFBlocks.BLUE_FORCE_FIELD.get().defaultBlockState();
+		BlockState fieldBlock = TFBlocks.BLUE_FORCE_FIELD.defaultBlockState();
 		for (Rotation rotation : RotationUtil.ROTATIONS) {
 			int y = 48;
 			for (int x = 5; x < this.size - 4; x += 2) {

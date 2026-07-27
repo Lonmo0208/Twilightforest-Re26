@@ -4,8 +4,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import tamaized.beanification.Autowired;
+import twilightforest.beanification.Autowired;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.passive.quest.ram.QuestingRamContext;
 import twilightforest.entity.passive.quest.ram.QuestingRamCurrentContext;
@@ -26,7 +25,5 @@ public record SyncQuestsPacket(QuestingRamContext ram) implements CustomPacketPa
 		return TYPE;
 	}
 
-	public static void handle(SyncQuestsPacket packet, IPayloadContext context) {
-		context.enqueueWork(() -> questingRamCurrentContext.setContext(packet.ram()));
-	}
+	// Client-side handler moved to SyncQuestsPacketClientHandler
 }

@@ -28,13 +28,13 @@ import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.neoforged.neoforge.common.world.PieceBeardifierModifier;
+
 import org.jetbrains.annotations.Nullable;
-import tamaized.beanification.Autowired;
 import twilightforest.TwilightForestMod;
 import twilightforest.loot.TFLootTables;
 import twilightforest.util.BoundingBoxUtils;
 import twilightforest.world.components.structures.selectors.StrongholdStonesRandomBlockSelectorFactory;
+import twilightforest.world.components.structures.util.PieceBeardifierModifier;
 
 import java.util.Iterator;
 import java.util.List;
@@ -45,8 +45,7 @@ import java.util.function.Predicate;
 public abstract class TFStructureComponentOld extends TFStructureComponent implements PieceBeardifierModifier {
 
 	protected static final BlockState AIR = Blocks.AIR.defaultBlockState();
-	@Autowired
-	private static StrongholdStonesRandomBlockSelectorFactory strongholdStones;
+	private static final StrongholdStonesRandomBlockSelectorFactory strongholdStones = new StrongholdStonesRandomBlockSelectorFactory();
 
 	public TFStructureComponentOld(StructurePieceType piece, CompoundTag nbt) {
 		super(piece, nbt);
@@ -191,7 +190,7 @@ public abstract class TFStructureComponentOld extends TFStructureComponent imple
 	 */
 	protected void placeTreasureRotated(WorldGenLevel world, int x, int y, int z, Direction facing, Rotation rotation, ResourceKey<LootTable> treasureType, boolean trapped, BoundingBox sbb) {
 		if (facing == null) {
-			TwilightForestMod.LOGGER.error("Loot Chest at {}, {}, {} has null direction, setting it to north", x, y, z);
+			TwilightForestMod.LOGGER.warn("Loot Chest at {}, {}, {} has null direction, setting it to north", x, y, z);
 			facing = Direction.NORTH;
 		}
 
@@ -220,7 +219,7 @@ public abstract class TFStructureComponentOld extends TFStructureComponent imple
 
 	protected void setDoubleLootChest(WorldGenLevel world, int x, int y, int z, int otherx, int othery, int otherz, @Nullable Direction facing, ResourceKey<LootTable> treasureType, ResourceKey<LootTable> secondaryLootType, BoundingBox sbb, boolean trapped) {
 		if (facing == null) {
-			TwilightForestMod.LOGGER.error("Loot Chest at {}, {}, {} has null direction, setting it to north", x, y, z);
+			TwilightForestMod.LOGGER.warn("Loot Chest at {}, {}, {} has null direction, setting it to north", x, y, z);
 			facing = Direction.NORTH;
 		}
 
@@ -581,6 +580,7 @@ public abstract class TFStructureComponentOld extends TFStructureComponent imple
 			.setValue(SlabBlock.TYPE, half);
 	}
 
+	// PieceBeardifierModifier implementation - default to NONE, subclasses can override
 	@Override
 	public BoundingBox getBeardifierBox() {
 		return this.boundingBox;
@@ -595,4 +595,5 @@ public abstract class TFStructureComponentOld extends TFStructureComponent imple
 	public int getGroundLevelDelta() {
 		return 0;
 	}
+
 }

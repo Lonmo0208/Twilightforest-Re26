@@ -13,13 +13,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.random.Weighted;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.neoforged.fml.loading.FMLEnvironment;
+
 import twilightforest.events.EntityEvents;
 import twilightforest.util.landmarks.LandmarkUtil;
 import twilightforest.world.components.structures.start.TFStructureStart;
@@ -30,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
 
-@tamaized.beanification.Component
+@twilightforest.beanification.Component
 public class InfoCommand {
 
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
@@ -51,7 +50,7 @@ public class InfoCommand {
 
 		Identifier key = possibleStructureRegistry.orElseThrow().getKey(landmarkStructure);
 
-		if (FMLEnvironment.isProduction()) {
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			source.sendSuccess(() -> Component.translatable("commands.tffeature.info.wip").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), false);
 		}
 
@@ -78,13 +77,13 @@ public class InfoCommand {
 			}
 
 			// what is the spawn list
-			List<Weighted<MobSpawnSettings.SpawnerData>> spawnList = new ArrayList<>();
+			List<MobSpawnSettings.SpawnerData> spawnList = new ArrayList<>();
 
 			EntityEvents.gatherPotentialSpawns(level.structureManager(), MobCategory.MONSTER, pos, spawnList::add);
 
 			if (!spawnList.isEmpty()) {
 				source.sendSuccess(() -> Component.translatable("commands.tffeature.structure.spawn_list").withStyle(ChatFormatting.UNDERLINE), false);
-				spawnList.forEach(entry -> source.sendSuccess(() -> Component.translatable("commands.tffeature.structure.spawn_info", entry.value().type().getDescription().getString(), entry.weight()), false));
+				spawnList.forEach(entry -> source.sendSuccess(() -> Component.translatable("commands.tffeature.structure.spawn_info", entry.type().getDescription().getString(), entry.minCount()), false));
 			}} else {
 			source.sendSuccess(() -> Component.translatable("commands.tffeature.structure.outside").withStyle(ChatFormatting.BOLD, ChatFormatting.RED), false);
 		}

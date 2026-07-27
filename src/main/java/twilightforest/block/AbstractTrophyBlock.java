@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 import twilightforest.block.entity.TrophyBlockEntity;
 import twilightforest.enums.BossVariant;
@@ -30,6 +29,7 @@ import twilightforest.init.TFBlockEntities;
 import twilightforest.init.TFItems;
 import twilightforest.init.TFParticleType;
 import twilightforest.init.TFSounds;
+import twilightforest.network.PacketDistributor;
 import twilightforest.network.ParticlePacket;
 
 //[VanillaCopy] of AbstractSkullBlock except uses Variants instead of ISkullType and adds Sounds when clicked or powered
@@ -78,7 +78,7 @@ public abstract class AbstractTrophyBlock extends BaseEntityBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TFBlockEntities.TROPHY.get(), TrophyBlockEntity::tick);
+		return createTickerHelper(type, TFBlockEntities.TROPHY, TrophyBlockEntity::tick);
 	}
 
 	public BossVariant getVariant() {
@@ -103,40 +103,40 @@ public abstract class AbstractTrophyBlock extends BaseEntityBlock {
 			float pitch = 0.9F;
 			switch (this.variant) {
 				case NAGA -> {
-					sound = TFSounds.NAGA_RATTLE.get();
+					sound = TFSounds.NAGA_RATTLE;
 					volume = 1.25F;
 					pitch = 1.2F;
 				}
 				case LICH -> {
-					sound = TFSounds.LICH_AMBIENT.get();
+					sound = TFSounds.LICH_AMBIENT;
 					volume = 0.35F;
 					pitch = 1.1F;
 				}
 				case HYDRA -> {
-					sound = TFSounds.HYDRA_GROWL.get();
+					sound = TFSounds.HYDRA_GROWL;
 					pitch = 1.2F;
 				}
 				case UR_GHAST -> {
-					sound = TFSounds.UR_GHAST_AMBIENT.get();
+					sound = TFSounds.UR_GHAST_AMBIENT;
 					pitch = 0.6F;
 				}
-				case SNOW_QUEEN -> sound = TFSounds.SNOW_QUEEN_AMBIENT.get();
+				case SNOW_QUEEN -> sound = TFSounds.SNOW_QUEEN_AMBIENT;
 				case KNIGHT_PHANTOM -> {
-					sound = TFSounds.KNIGHT_PHANTOM_AMBIENT.get();
+					sound = TFSounds.KNIGHT_PHANTOM_AMBIENT;
 					pitch = 1.1F;
 				}
 				case MINOSHROOM -> {
-					sound = TFSounds.MINOSHROOM_AMBIENT.get();
+					sound = TFSounds.MINOSHROOM_AMBIENT;
 					volume = 0.75F;
 					pitch = 0.7F;
 				}
 				case ALPHA_YETI -> {
-					sound = level.getRandom().nextInt(50) == 0 ? TFSounds.ALPHA_YETI_ROAR.get() : TFSounds.ALPHA_YETI_GROWL.get();
+					sound = level.getRandom().nextInt(50) == 0 ? TFSounds.ALPHA_YETI_ROAR : TFSounds.ALPHA_YETI_GROWL;
 					volume = 0.75F;
 					pitch = 0.75F;
 				}
 				case QUEST_RAM -> {
-					sound = TFSounds.QUEST_RAM_AMBIENT.get();
+					sound = TFSounds.QUEST_RAM_AMBIENT;
 					pitch = 0.7F;
 				}
 				default -> {
@@ -164,7 +164,7 @@ public abstract class AbstractTrophyBlock extends BaseEntityBlock {
 					break;
 				case LICH:
 					for (int a = 0; a < 5; a++) {
-						particlePacket.queueParticle(TFParticleType.ANGRY_LICH.get(),
+						particlePacket.queueParticle(TFParticleType.ANGRY_LICH,
 							(double) pos.getX() + rand.nextFloat() * 0.5D * 2.0F + rand.nextGaussian() * 0.02D,
 							(double) pos.getY() + 0.5D + rand.nextFloat() * 0.25 + rand.nextGaussian() * 0.02D,
 							(double) pos.getZ() + rand.nextFloat() * 0.5D * 2.0F + rand.nextGaussian() * 0.02D,
@@ -182,7 +182,7 @@ public abstract class AbstractTrophyBlock extends BaseEntityBlock {
 					}
 					break;
 				case KNIGHT_PHANTOM:
-					ParticleOptions knightPhantomParticle = new ItemParticleOption(ParticleTypes.ITEM, TFItems.KNIGHTMETAL_SWORD.get());
+					ParticleOptions knightPhantomParticle = new ItemParticleOption(ParticleTypes.ITEM, TFItems.KNIGHTMETAL_SWORD);
 					for (int brek = 0; brek < 10; brek++) {
 						particlePacket.queueParticle(knightPhantomParticle,
 							pos.getX() + 0.5D + (rand.nextFloat() - 0.5D),
@@ -211,7 +211,7 @@ public abstract class AbstractTrophyBlock extends BaseEntityBlock {
 					break;
 				case SNOW_QUEEN:
 					for (int b = 0; b < 20; b++) {
-						particlePacket.queueParticle(TFParticleType.SNOW_WARNING.get(),
+						particlePacket.queueParticle(TFParticleType.SNOW_WARNING,
 							(double) pos.getX() - 1 + (rand.nextDouble() * 3.25D),
 							(double) pos.getY() + 5 + rand.nextGaussian(),
 							(double) pos.getZ() - 1 + (rand.nextDouble() * 3.25D),
@@ -220,7 +220,7 @@ public abstract class AbstractTrophyBlock extends BaseEntityBlock {
 					break;
 				case QUEST_RAM:
 					for (int p = 0; p < 10; p++) {
-						particlePacket.queueParticle(ColorParticleOption.create(TFParticleType.MAGIC_EFFECT.get(), rand.nextFloat(), rand.nextFloat(), rand.nextFloat()),
+						particlePacket.queueParticle(ColorParticleOption.create(TFParticleType.MAGIC_EFFECT, rand.nextFloat(), rand.nextFloat(), rand.nextFloat()),
 							(double) pos.getX() + 0.5 + (rand.nextDouble() - 0.5),
 							(double) pos.getY() + (rand.nextDouble() - 0.5),
 							(double) pos.getZ() + 0.5 + (rand.nextDouble() - 0.5),

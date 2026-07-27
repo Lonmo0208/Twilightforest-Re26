@@ -9,8 +9,6 @@ import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import twilightforest.init.TFStructurePlacementTypes;
 import twilightforest.util.landmarks.LegacyLandmarkPlacements;
 
@@ -21,7 +19,6 @@ import java.util.Optional;
  * Does not filter for biome. That's for the structure's config to handle.
  */
 public class LandmarkGridPlacement extends StructurePlacement {
-	private static final Logger LOGGER = LoggerFactory.getLogger(LandmarkGridPlacement.class);
 
 	public static final MapCodec<LandmarkGridPlacement> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 		ResourceKey.codec(Registries.STRUCTURE).optionalFieldOf("structure_grid_lock").forGetter(p -> p.landmark)
@@ -38,26 +35,18 @@ public class LandmarkGridPlacement extends StructurePlacement {
 		super(Vec3i.ZERO, FrequencyReductionMethod.DEFAULT, 1f, 0, Optional.empty()); // None of these params matter except for possibly flat-world or whatever
 
 		this.landmark = landmark;
-		LOGGER.info("[TF-PLACEMENT] LandmarkGridPlacement created with landmark: {}", landmark.map(k -> k.identifier().toString()).orElse("empty (forced centers)"));
 	}
 
 	@Override
 	protected boolean isPlacementChunk(ChunkGeneratorStructureState state, int chunkX, int chunkZ) {
-		boolean hasCenter = LegacyLandmarkPlacements.chunkHasLandmarkCenter(chunkX, chunkZ);
-		if (!hasCenter)
+		if (!LegacyLandmarkPlacements.chunkHasLandmarkCenter(chunkX, chunkZ))
 			return false;
 
-		boolean result = this.landmark.isEmpty() || LegacyLandmarkPlacements.pickVarietyLandmark(chunkX, chunkZ).equals(this.landmark.get());
-		if (result && this.landmark.isPresent()) {
-			LOGGER.debug("[TF-PLACEMENT] Chunk [{}, {}] matched for landmark {}", chunkX, chunkZ, this.landmark.get().identifier().toString());
-		} else if (result) {
-			LOGGER.debug("[TF-PLACEMENT] Chunk [{}, {}] matched for forced center", chunkX, chunkZ);
-		}
-		return result;
+		return this.landmark.isEmpty() || LegacyLandmarkPlacements.pickVarietyLandmark(chunkX, chunkZ).equals(this.landmark.get());
 	}
 
 	@Override
 	public StructurePlacementType<?> type() {
-		return TFStructurePlacementTypes.GRID_LANDMARK_PLACEMENT_TYPE.get();
+		return TFStructurePlacementTypes.GRID_LANDMARK_PLACEMENT_TYPE;
 	}
 }

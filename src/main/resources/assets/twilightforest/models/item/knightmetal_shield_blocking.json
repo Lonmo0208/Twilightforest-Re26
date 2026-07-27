@@ -1,8 +1,9 @@
 {
-  "parent": "builtin/entity",
   "gui_light": "front",
   "textures": {
-    "particle": "twilightforest:block/towerwood"
+    "shield": "twilightforest:entity/shield/knightmetal_shield",
+    "edge": "twilightforest:block/knightmetal_block",
+    "particle": "#edge"
   },
   "display": {
     "thirdperson_righthand": {

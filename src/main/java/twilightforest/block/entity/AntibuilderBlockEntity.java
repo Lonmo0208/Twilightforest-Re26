@@ -28,7 +28,7 @@ public class AntibuilderBlockEntity extends BlockEntity {
 	private BlockState @Nullable [] blockData;
 
 	public AntibuilderBlockEntity(BlockPos pos, BlockState state) {
-		super(TFBlockEntities.ANTIBUILDER.get(), pos, state);
+		super(TFBlockEntities.ANTIBUILDER, pos, state);
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, AntibuilderBlockEntity te) {
@@ -50,7 +50,7 @@ public class AntibuilderBlockEntity extends BlockEntity {
 			} else {
 
 				// new plan, take a snapshot of the world when we are first activated, and then rapidly revert changes
-				if (te.blockData == null && level.isAreaLoaded(pos, AntibuilderBlockEntity.RADIUS)) {
+				if (te.blockData == null && level.hasChunksAt(pos.offset(-RADIUS, -RADIUS, -RADIUS), pos.offset(RADIUS, RADIUS, RADIUS))) {
 					te.captureBlockData(level, pos);
 					te.slowScan = true;
 				}
@@ -217,7 +217,7 @@ public class AntibuilderBlockEntity extends BlockEntity {
 		} else if (this.rand.nextInt(REVERT_CHANCE) == 0) {
 			// don't revert everything instantly
 			if (!replaceWith.isAir()) {
-				replaceWith = TFBlocks.ANTIBUILT_BLOCK.get().defaultBlockState();
+				replaceWith = TFBlocks.ANTIBUILT_BLOCK.defaultBlockState();
 			}
 
 			if (stateThere.isAir()) {

@@ -1,9 +1,5 @@
 package twilightforest.components.entity;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.DeathScreen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import twilightforest.block.TFPortalBlock;
@@ -37,15 +33,6 @@ public class TFPortalAttachment {
 			}
 		} else if (this.getPortalTimer() > 0) this.portalTimer -= 2;
 
-		if (player.level().isClientSide() && player instanceof LocalPlayer local) {
-			Minecraft minecraft = Minecraft.getInstance();
-			if (this.isInsidePortal()) {
-				if (minecraft.screen != null && !minecraft.screen.isPauseScreen() && !(minecraft.screen instanceof DeathScreen)) {
-					if (minecraft.screen instanceof AbstractContainerScreen) local.closeContainer();
-					minecraft.setScreen(null);
-				}
-				this.isInsidePortal = false;
-			}
-		}
+		// Client-side portal screen handling is done in the client source set
 	}
 }

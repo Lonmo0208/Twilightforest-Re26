@@ -20,15 +20,13 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.*;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import twilightforest.init.TFItems;
 import twilightforest.init.TFParticleType;
 import twilightforest.init.TFSounds;
 import twilightforest.network.ParticlePacket;
 import twilightforest.tags.TFBlockTags;
 import twilightforest.util.WorldUtil;
+import twilightforest.network.PacketDistributor;
 
 public class CubeOfAnnihilation extends ThrowableProjectile {
 
@@ -102,15 +100,12 @@ public class CubeOfAnnihilation extends ThrowableProjectile {
 			BlockState state = this.level().getBlockState(pos);
 			if (!state.isAir()) {
 				if (this.getOwner() instanceof ServerPlayer player) {
-					if (!NeoForge.EVENT_BUS.post(new BreakBlockEvent(this.level(), pos, state, player)).isCanceled()) {
-						if (this.canAnnihilate(pos, state, player.gameMode.getGameModeForPlayer().isBlockPlacingRestricted())) {
-							this.level().removeBlock(pos, false);
-							this.playSound(TFSounds.BLOCK_ANNIHILATED.get(), 0.125f, this.random.nextFloat() * 0.25F + 0.75F);
-							this.annihilateParticles(this.level(), pos);
-							this.gameEvent(GameEvent.BLOCK_DESTROY);
-						} else {
-							this.hasHitObstacle = true;
-						}
+					// TODO: Port to Fabric - Block break event handling
+					if (this.canAnnihilate(pos, state, player.gameMode.getGameModeForPlayer().isBlockPlacingRestricted())) {
+						this.level().removeBlock(pos, false);
+						this.playSound(TFSounds.BLOCK_ANNIHILATED, 0.125f, this.random.nextFloat() * 0.25F + 0.75F);
+						this.annihilateParticles(this.level(), pos);
+						this.gameEvent(GameEvent.BLOCK_DESTROY);
 					} else {
 						this.hasHitObstacle = true;
 					}
@@ -133,7 +128,7 @@ public class CubeOfAnnihilation extends ThrowableProjectile {
 			for (int dx = 0; dx < 3; dx++) {
 				for (int dy = 0; dy < 3; dy++) {
 					for (int dz = 0; dz < 3; dz++) {
-						particlePacket.queueParticle(TFParticleType.ANNIHILATE.get(),
+						particlePacket.queueParticle(TFParticleType.ANNIHILATE,
 							pos.getX() + (dx + 0.5D) / 4,
 							pos.getY() + (dy + 0.5D) / 4,
 							pos.getZ() + (dz + 0.5D) / 4,
@@ -198,7 +193,7 @@ public class CubeOfAnnihilation extends ThrowableProjectile {
 	public void remove(RemovalReason reason) {
 		super.remove(reason);
 		LivingEntity thrower = (LivingEntity) this.getOwner();
-		if (thrower != null && thrower.getUseItem().is(TFItems.CUBE_OF_ANNIHILATION.get())) {
+		if (thrower != null && thrower.getUseItem().is(TFItems.CUBE_OF_ANNIHILATION)) {
 			thrower.stopUsingItem();
 		}
 	}

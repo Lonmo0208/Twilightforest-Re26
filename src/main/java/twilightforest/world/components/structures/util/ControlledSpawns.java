@@ -50,11 +50,11 @@ public interface ControlledSpawns {
 
 		public static ControlledSpawningConfig create(Map<String, WeightedList<MobSpawnSettings.SpawnerData>> spawnableMonsterLists, WeightedList<MobSpawnSettings.SpawnerData> ambientCreatureList, WeightedList<MobSpawnSettings.SpawnerData> waterCreatureList) {
 			WeightedList.Builder<MobSpawnSettings.SpawnerData> combinedMonsters = WeightedList.builder();
-			spawnableMonsterLists.values().forEach(combinedMonsters::addAll);
+			spawnableMonsterLists.values().forEach(list -> list.unwrap().forEach(entry -> combinedMonsters.add(entry.value(), entry.weight())));
 
 			WeightedList.Builder<MobSpawnSettings.SpawnerData> combinedCreatures = WeightedList.builder();
-			combinedCreatures.addAll(ambientCreatureList);
-			combinedCreatures.addAll(waterCreatureList);
+			ambientCreatureList.unwrap().forEach(entry -> combinedCreatures.add(entry.value(), entry.weight()));
+			waterCreatureList.unwrap().forEach(entry -> combinedCreatures.add(entry.value(), entry.weight()));
 
 			return new ControlledSpawningConfig(
 				spawnableMonsterLists,

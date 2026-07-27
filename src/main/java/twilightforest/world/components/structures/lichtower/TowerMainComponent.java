@@ -24,16 +24,17 @@ import twilightforest.init.TFStructurePieceTypes;
 import twilightforest.util.RotationUtil;
 import twilightforest.util.entities.EntityUtil;
 import twilightforest.world.components.structures.TFStructureComponentOld;
+import twilightforest.world.components.structures.util.PieceBeardifierModifier;
 
-public class TowerMainComponent extends TowerWingComponent {
+public class TowerMainComponent extends TowerWingComponent implements PieceBeardifierModifier {
 
 	public TowerMainComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		super(TFStructurePieceTypes.TFLTMai.get(), nbt);
+		super(TFStructurePieceTypes.TFLTMai, nbt);
 	}
 
 	public TowerMainComponent(RandomSource rand, int index, int x, int y, int z) {
 		// some of these are subject to change if the ground level is > 30.
-		super(TFStructurePieceTypes.TFLTMai.get(), index, x, y + 1, z, 15, 55 + rand.nextInt(32), Direction.SOUTH);
+		super(TFStructurePieceTypes.TFLTMai, index, x, y + 1, z, 15, 55 + rand.nextInt(32), Direction.SOUTH);
 	}
 
 	@Override
@@ -285,7 +286,7 @@ public class TowerMainComponent extends TowerWingComponent {
 		decorateTorches(world, rand, floorLevel, sbb);
 
 		// seems like we should have a spawner
-		placeBlock(world, TFBlocks.LICH_BOSS_SPAWNER.get().defaultBlockState(), size / 2, floorLevel + 2, size / 2, sbb);
+		placeBlock(world, TFBlocks.LICH_BOSS_SPAWNER.defaultBlockState(), size / 2, floorLevel + 2, size / 2, sbb);
 	}
 
 	protected void makeTowerPaintings(WorldGenLevel world, RandomSource rand, BoundingBox sbb) {
@@ -468,4 +469,26 @@ public class TowerMainComponent extends TowerWingComponent {
 	public TerrainAdjustment getTerrainAdjustment() {
 		return TerrainAdjustment.BEARD_BOX;
 	}
+
+	@Override
+	public BoundingBox getBeardifierBox() {
+		// Extend the box downward to cover terrain below the floating tower.
+		// The vanilla bounding box starts at the tower's bottom (above ground),
+		// so BEARD_BOX only carves terrain inside the tower volume, not below it.
+		// By extending to Y=-64 we ensure all terrain underneath is carved out.
+		return new BoundingBox(
+			this.boundingBox.minX(),
+			this.boundingBox.minY() - 64,
+			this.boundingBox.minZ(),
+			this.boundingBox.maxX(),
+			this.boundingBox.maxY(),
+			this.boundingBox.maxZ()
+		);
+	}
+
+	@Override
+	public int getGroundLevelDelta() {
+		return 0;
+	}
+
 }

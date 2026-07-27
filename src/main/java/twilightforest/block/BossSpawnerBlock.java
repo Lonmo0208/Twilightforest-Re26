@@ -52,8 +52,4 @@ public class BossSpawnerBlock extends BaseEntityBlock {
 		return createTickerHelper(type, this.boss.getType(), BossSpawnerBlockEntity::tick);
 	}
 
-	@Override
-	public boolean canEntityDestroy(BlockState state, BlockGetter getter, BlockPos pos, Entity entity) {
-		return false;
-	}
 }

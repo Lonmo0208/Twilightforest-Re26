@@ -26,6 +26,6 @@ public record BlockPlaceMarkerHandler(BlockStateProvider provider) implements Te
 
 	@Override
 	public TemplateMarkerHandlerType getType() {
-		return TemplateMarkerHandlers.BLOCK_PLACEMENT.value();
+		return TemplateMarkerHandlers.BLOCK_PLACEMENT;
 	}
 }

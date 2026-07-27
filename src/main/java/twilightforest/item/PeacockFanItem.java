@@ -21,14 +21,14 @@ import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
 import twilightforest.block.LightableBlock;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFSounds;
 import twilightforest.network.MovePlayerPacket;
 import twilightforest.network.ParticlePacket;
+import twilightforest.util.TFEntityExtensions;
 import twilightforest.util.WorldUtil;
+import twilightforest.network.PacketDistributor;
 
 public class PeacockFanItem extends Item {
 
@@ -40,13 +40,13 @@ public class PeacockFanItem extends Item {
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 
-		boolean flag = !player.onGround() && !player.isSwimming() && !player.getData(TFDataAttachments.FEATHER_FAN);
+		boolean flag = !player.onGround() && !player.isSwimming() && !((TFEntityExtensions) player).getData(() -> TFDataAttachments.FEATHER_FAN);
 
 		if (!level.isClientSide()) {
 			int fanned = this.doFan(level, player);
 			stack.hurtAndBreak(fanned + 1, player, hand);
 			if (flag) {
-				player.setData(TFDataAttachments.FEATHER_FAN, true);
+				((TFEntityExtensions) player).setData(() -> TFDataAttachments.FEATHER_FAN, true);
 			} else {
 				AABB fanBox = this.getEffectAABB(player);
 				Vec3 lookVec = player.getLookAngle();
@@ -65,7 +65,7 @@ public class PeacockFanItem extends Item {
 					}
 				}
 			}
-			level.playSound(null, player.blockPosition(), TFSounds.FAN_WHOOSH.get(), SoundSource.PLAYERS, 1.0F + level.getRandom().nextFloat(), level.getRandom().nextFloat() * 0.7F + 0.3F);
+			level.playSound(null, player.blockPosition(), TFSounds.FAN_WHOOSH, SoundSource.PLAYERS, 1.0F + level.getRandom().nextFloat(), level.getRandom().nextFloat() * 0.7F + 0.3F);
 		} else {
 			if (player.isFallFlying()) {
 				Vec3 look = player.getLookAngle();
@@ -150,10 +150,9 @@ public class PeacockFanItem extends Item {
 		BlockState state = level.getBlockState(pos);
 		if (state.getBlock() instanceof FlowerBlock) {
 			if (level.getRandom().nextInt(3) == 0) {
-				if (!NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.event.level.block.BreakBlockEvent(level, pos, state, player)).isCanceled()) {
-					level.destroyBlock(pos, true);
-					cost++;
-				}
+				// TODO: Port to Fabric - Block break event handling
+				level.destroyBlock(pos, true);
+				cost++;
 			}
 		} else if (state.getBlock() instanceof AbstractCandleBlock && state.getValue(AbstractCandleBlock.LIT)) {
 			AbstractCandleBlock.extinguish(null, state, level, pos);

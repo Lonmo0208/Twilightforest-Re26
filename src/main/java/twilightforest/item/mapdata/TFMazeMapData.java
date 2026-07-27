@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +25,7 @@ import twilightforest.TwilightForestMod;
 import twilightforest.init.TFStructures;
 import twilightforest.item.MazeMapItem;
 import twilightforest.network.MazeMapPacket;
+import twilightforest.network.PacketDistributor;
 import twilightforest.util.landmarks.LegacyLandmarkPlacements;
 
 import java.nio.ByteBuffer;
@@ -141,6 +143,15 @@ public class TFMazeMapData extends MapItemSavedData {
 	@Override
 	public Packet<?> getUpdatePacket(MapId mapId, Player player) {
 		Packet<?> packet = super.getUpdatePacket(mapId, player);
-		return packet instanceof ClientboundMapItemDataPacket mapItemDataPacket ? new MazeMapPacket(mapItemDataPacket, this.ore, this.yCenter).toVanillaClientbound() : packet;
+		if (packet instanceof ClientboundMapItemDataPacket mapItemDataPacket) {
+			MazeMapPacket mazePacket = new MazeMapPacket(mapItemDataPacket, this.ore, this.yCenter);
+			// Send the custom payload through Fabric networking so the client-side
+			// MazeMapPacketClientHandler can sync ore and yCenter data.
+			if (player instanceof ServerPlayer serverPlayer) {
+				PacketDistributor.sendToPlayer(serverPlayer, mazePacket);
+			}
+			return mazePacket.toVanillaClientbound();
+		}
+		return packet;
 	}
 }

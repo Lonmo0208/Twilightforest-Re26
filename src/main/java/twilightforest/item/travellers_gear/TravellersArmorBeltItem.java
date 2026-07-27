@@ -40,12 +40,10 @@ public class TravellersArmorBeltItem extends TravellersArmorItem {
 			: Optional.empty();
 	}
 
-	@Override
 	public boolean canFitInsideContainerItems() {
 		return false;
 	}
 
-	@Override
 	public boolean canFitInsideContainerItems(ItemStack stack) {
 		return !stack.has(DataComponents.CONTAINER);
 	}
@@ -57,13 +55,15 @@ public class TravellersArmorBeltItem extends TravellersArmorItem {
 			return;
 
 		NonNullList<ItemStack> hotbarStacks = NonNullList.withSize(9, ItemStack.EMPTY);
+		NonNullList<ItemStack> beltItems = NonNullList.withSize(9, ItemStack.EMPTY);
+		containerContents.copyInto(beltItems);
 		Inventory inventory = player.getInventory();
 		boolean isSwapHotbarActive = isSwapHotbarActive(player, legArmor);
 		boolean hasChanged = false;
 		for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
 			ItemStack inventoryStack = inventory.getItem(slotIndex);
-			ItemStack beltStack = containerContents.getSlots() <= slotIndex ? ItemStack.EMPTY : containerContents.getStackInSlot(slotIndex);
-			if (inventoryStack.canFitInsideContainerItems() && !inventoryStack.is(TFItemTags.TRAVELLERS_BELT_BLACKLISTED) && (isSwapHotbarActive || inventoryStack.isEmpty())) {
+			ItemStack beltStack = beltItems.get(slotIndex);
+			if (true /* TODO: Port - canFitInsideContainerItems */ && !inventoryStack.is(TFItemTags.TRAVELLERS_BELT_BLACKLISTED) && (isSwapHotbarActive || inventoryStack.isEmpty())) {
 				hotbarStacks.set(slotIndex, inventoryStack);
 				inventory.setItem(slotIndex, beltStack);
 				if (!beltStack.equals(inventoryStack))
@@ -76,7 +76,7 @@ public class TravellersArmorBeltItem extends TravellersArmorItem {
 		modifiedBelt.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(hotbarStacks));
 		player.getInventory().setItem(EquipmentSlot.LEGS.getIndex(Inventory.INVENTORY_SIZE), modifiedBelt);
 		if (hasChanged)
-			player.level().playSound(null, player, TFSounds.SWAP_HOTBAR.get(), SoundSource.PLAYERS, 1F, 1F);
+			player.level().playSound(null, player, TFSounds.SWAP_HOTBAR, SoundSource.PLAYERS, 1F, 1F);
 	}
 
 	public static boolean isSwapHotbarActive(Player player, ItemStack stack) {

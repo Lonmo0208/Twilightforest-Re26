@@ -34,7 +34,7 @@ public final class BoxCuttingProcessor extends StructureProcessor {
 
 	@Nullable
 	@Override
-	public StructureTemplate.StructureBlockInfo process(LevelReader level, BlockPos origin, BlockPos centerBottom, StructureTemplate.StructureBlockInfo originalBlockInfo, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings, @Nullable StructureTemplate template) {
+	public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos origin, BlockPos centerBottom, StructureTemplate.StructureBlockInfo originalBlockInfo, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
 		for (BoundingBox cutout : this.cutouts)
 			if (cutout.isInside(modifiedBlockInfo.pos()))
 				return null;
@@ -44,7 +44,7 @@ public final class BoxCuttingProcessor extends StructureProcessor {
 
 	@Override
 	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.BOX_CUTTING_PROCESSOR.get();
+		return TFStructureProcessors.BOX_CUTTING_PROCESSOR;
 	}
 
 	public static BoxCuttingProcessor fromNBT(ListTag tag) {

@@ -20,7 +20,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
@@ -75,7 +74,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 	}
 
 	public UncraftingMenu(int id, Inventory inventory, Level level, ContainerLevelAccess positionData) {
-		super(TFMenuTypes.UNCRAFTING.get(), id);
+		super(TFMenuTypes.UNCRAFTING, id);
 
 		this.positionData = positionData;
 		this.level = level;
@@ -246,7 +245,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 						Objects.requireNonNull(result.get(DataComponents.ENCHANTMENTS)).entrySet().forEach(enchantment -> enchants.set(enchantment.getKey(), enchantment.getIntValue()));
 					}
 					//remove any incompatible enchants
-					enchants.removeIf(holder -> !result.supportsEnchantment(holder));
+					enchants.removeIf(holder -> !holder.value().isSupportedItem(result));
 
 					//remove enchantments and replace with filtered list
 					result.remove(DataComponents.ENCHANTMENTS);
@@ -303,7 +302,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 					}
 				}
 				for (RecipeHolder<?> recipe : recipeManager.getRecipes()) {
-					if (recipe.value() instanceof UncraftingRecipe uncraftingRecipe && recipe.value().getType() == TFRecipes.UNCRAFTING_RECIPE.get()) {
+					if (recipe.value() instanceof UncraftingRecipe uncraftingRecipe && recipe.value().getType() == TFRecipes.UNCRAFTING_RECIPE) {
 						if (uncraftingRecipe.isItemStackAnIngredient(inputStack)) {
 							recipes.add(uncraftingRecipe);
 						}
@@ -373,13 +372,16 @@ public class UncraftingMenu extends RecipeBookMenu {
 		if (inputStack.is(ItemTags.SWORDS) && resultStack.is(ItemTags.SWORDS)) {
 			return true;
 		}
-		if (inputStack.is(Tags.Items.TOOLS_BOW) && resultStack.is(Tags.Items.TOOLS_BOW)) {
+		// TODO: Port - find equivalent tag for TOOLS_BOW (was Tags.Items.TOOLS_BOW)
+		if (inputStack.is(Items.BOW) && resultStack.is(Items.BOW)) {
 			return true;
 		}
-		if (inputStack.is(Tags.Items.TOOLS_CROSSBOW) && resultStack.is(Tags.Items.TOOLS_CROSSBOW)) {
+		// TODO: Port - find equivalent tag for TOOLS_CROSSBOW (was Tags.Items.TOOLS_CROSSBOW)
+		if (inputStack.is(Items.CROSSBOW) && resultStack.is(Items.CROSSBOW)) {
 			return true;
 		}
-		if (inputStack.is(Tags.Items.TOOLS_FISHING_ROD) && resultStack.is(Tags.Items.TOOLS_FISHING_ROD)) {
+		// TODO: Port - find equivalent tag for TOOLS_FISHING_ROD (was Tags.Items.TOOLS_FISHING_ROD)
+		if (inputStack.is(Items.FISHING_ROD) && resultStack.is(Items.FISHING_ROD)) {
 			return true;
 		}
 
@@ -628,7 +630,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 
 	@Override
 	public boolean stillValid(Player player) {
-		return !TFConfig.disableEntireTable && stillValid(this.positionData, player, TFBlocks.UNCRAFTING_TABLE.get());
+		return !TFConfig.disableEntireTable && stillValid(this.positionData, player, TFBlocks.UNCRAFTING_TABLE);
 	}
 
 	@Override

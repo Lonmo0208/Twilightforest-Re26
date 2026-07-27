@@ -1,0 +1,15 @@
+{
+  "parent": "twilightforest:block/miniature/template_transforms",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "#ice",
+    "ice": "block/ice",
+    "prismarine": "block/prismarine_bricks",
+    "quartz": "block/quartz_block_top"
+  },
+  "elements": [
+    {"from": [2, 0, 2], "to": [14, 8, 14], "faces": {"north": {"uv": [2, 8, 14, 16], "texture": "#ice"}, "east": {"uv": [2, 8, 14, 16], "texture": "#ice"}, "south": {"uv": [2, 8, 14, 16], "texture": "#ice"}, "west": {"uv": [2, 8, 14, 16], "texture": "#ice"}, "up": {"uv": [2, 2, 14, 14], "texture": "#prismarine"}, "down": {"uv": [2, 2, 14, 14], "texture": "#ice"}}},
+    {"from": [3, 8, 3], "to": [13, 11, 13], "faces": {"north": {"uv": [3, 5, 13, 8], "texture": "#prismarine"}, "east": {"uv": [3, 5, 13, 8], "texture": "#prismarine"}, "south": {"uv": [3, 5, 13, 8], "texture": "#prismarine"}, "west": {"uv": [3, 5, 13, 8], "texture": "#prismarine"}, "up": {"uv": [3, 3, 13, 13], "texture": "#quartz"}, "down": {"uv": [3, 3, 13, 13], "texture": "#prismarine"}}},
+    {"from": [4, 11, 4], "to": [12, 13, 12], "faces": {"north": {"uv": [4, 3, 12, 5], "texture": "#ice"}, "east": {"uv": [4, 3, 12, 5], "texture": "#ice"}, "south": {"uv": [4, 3, 12, 5], "texture": "#ice"}, "west": {"uv": [4, 3, 12, 5], "texture": "#ice"}, "up": {"uv": [4, 4, 12, 12], "texture": "#prismarine"}, "down": {"uv": [4, 4, 12, 12], "texture": "#ice"}}}
+  ]
+}

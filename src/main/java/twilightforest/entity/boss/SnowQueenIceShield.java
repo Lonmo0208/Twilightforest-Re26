@@ -10,6 +10,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.TFPart;
+import twilightforest.init.TFEntities;
 import twilightforest.init.TFSounds;
 
 public class SnowQueenIceShield extends TFPart<SnowQueen> {
@@ -17,7 +18,7 @@ public class SnowQueenIceShield extends TFPart<SnowQueen> {
 	public static final Identifier RENDERER = TwilightForestMod.prefix("snowqueen_iceshield");
 
 	public SnowQueenIceShield(SnowQueen parent) {
-		super(parent);
+		super(parent, TFEntities.SNOW_QUEEN_ICE_SHIELD.get(), parent.level());
 		this.dimensions = EntityDimensions.scalable(0.75F, 0.75F);
 	}
 
@@ -32,7 +33,7 @@ public class SnowQueenIceShield extends TFPart<SnowQueen> {
 			return true;
 		}
 
-		this.playSound(TFSounds.SNOW_QUEEN_BREAK.get(), 1.0F, ((this.random.nextFloat() - this.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+		this.playSound(TFSounds.SNOW_QUEEN_BREAK, 1.0F, ((this.random.nextFloat() - this.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 		return false;
 	}
 

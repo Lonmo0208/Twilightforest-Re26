@@ -43,12 +43,6 @@ public class HedgeBlock extends Block {
 		return HEDGE_BB;
 	}
 
-	@Nullable
-	@Override
-	public PathType getBlockPathType(BlockState state, BlockGetter getter, BlockPos pos, @Nullable Mob mob) {
-		return mob != null && this.shouldDamage(mob) ? PathType.DAMAGING : null;
-	}
-
 	@Override
 	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
 		if (this.shouldDamage(entity) && level instanceof ServerLevel sl) {

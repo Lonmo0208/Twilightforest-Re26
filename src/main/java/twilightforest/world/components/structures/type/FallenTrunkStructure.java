@@ -3,8 +3,6 @@ package twilightforest.world.components.structures.type;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -18,8 +16,6 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.Beardifier;
-import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
@@ -29,9 +25,7 @@ import twilightforest.init.TFBlocks;
 import twilightforest.init.TFStructureTypes;
 import twilightforest.loot.TFLootTables;
 import twilightforest.util.WorldUtil;
-import twilightforest.world.components.structures.CustomDensitySource;
 import twilightforest.world.components.structures.fallentrunk.FallenTrunkPiece;
-import twilightforest.world.components.structures.fallentrunk.TrunkUnderDensityFunction;
 import twilightforest.world.components.structures.util.DecorationClearance;
 
 import java.util.Arrays;
@@ -39,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class FallenTrunkStructure extends Structure implements CustomDensitySource, DecorationClearance {
+public class FallenTrunkStructure extends Structure implements DecorationClearance {
 	public static final MapCodec<FallenTrunkStructure> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 		Structure.settingsCodec(instance),
 		IntProviders.codec(16, 32).fieldOf("length").forGetter(s -> s.length),
@@ -104,7 +98,7 @@ public class FallenTrunkStructure extends Structure implements CustomDensitySour
 	private boolean isValidNoiseBiome(GenerationContext context, int x, int worldY, int z) {
 		Holder<Biome> noiseBiome = context.chunkGenerator().getBiomeSource()
 			.getNoiseBiome(x >> 2, worldY >> 2, z >> 2, context.randomState().sampler());
-		return this.getModifiedStructureSettings().biomes().contains(noiseBiome);
+		return this.biomes().contains(noiseBiome);
 	}
 
 	private boolean hasInvalidNearbyBiome(GenerationContext context, int x, int worldY, int z, RandomSource random) {
@@ -126,7 +120,7 @@ public class FallenTrunkStructure extends Structure implements CustomDensitySour
 
 	@Override
 	public StructureType<?> type() {
-		return TFStructureTypes.FALLEN_TRUNK.get();
+		return TFStructureTypes.FALLEN_TRUNK;
 	}
 
 	public static FallenTrunkStructure buildStructureConfig(HolderSet<Biome> biomes) {
@@ -137,18 +131,8 @@ public class FallenTrunkStructure extends Structure implements CustomDensitySour
 				GenerationStep.Decoration.SURFACE_STRUCTURES,
 				TerrainAdjustment.NONE
 			),
-			UniformInt.of(17, 24), UniformInt.of(22, 28), BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LOG.get()), TFLootTables.FALLEN_TRUNK_LOOT
+			UniformInt.of(17, 24), UniformInt.of(22, 28), BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LOG), TFLootTables.FALLEN_TRUNK_LOOT
 		);
-	}
-
-	@Override
-	public DensityFunction getStructureTerraformer(ChunkPos chunkPosAt, StructureStart structurePieceSource) {
-		FallenTrunkPiece piece = ((FallenTrunkPiece) structurePieceSource.getPieces().getFirst());
-		ObjectList<Beardifier.Rigid> objectlist = ObjectArrayList.of(new Beardifier.Rigid(piece.getBoundingBox(), TerrainAdjustment.BEARD_THIN , 0));
-		boolean isBigTree = piece.radius == radiuses.get(2);
-		int minMounds = 1;
-		int maxMounds = 2;
-		return new TrunkUnderDensityFunction(objectlist, piece, isBigTree, minMounds, maxMounds);  // big trees are a special case
 	}
 
 	@Override

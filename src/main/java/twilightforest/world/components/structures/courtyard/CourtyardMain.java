@@ -41,14 +41,14 @@ public class CourtyardMain extends StructureMazeGenerator {
 	private final boolean placeSpawner;
 
 	public CourtyardMain(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		super(ctx.structureTemplateManager(), TFStructurePieceTypes.TFNCMn.get(), nbt);
+		super(ctx.structureTemplateManager(), TFStructurePieceTypes.TFNCMn, nbt);
 
 		this.placeSpawner = nbt.getBooleanOr("placeSpawner", true); // For old versions of the courtyard that didn't place the naga spawner template
 	}
 
 	@SuppressWarnings("this-escape")
 	public CourtyardMain(RandomSource rand, int i, int x, int y, int z, StructureTemplateManager structureManager) {
-		super(TFStructurePieceTypes.TFNCMn.get(), rand, i, ROW_OF_CELLS, ROW_OF_CELLS, x, y, z, structureManager);
+		super(TFStructurePieceTypes.TFNCMn, rand, i, ROW_OF_CELLS, ROW_OF_CELLS, x, y, z, structureManager);
 
 		this.setOrientation(Direction.NORTH);
 
@@ -84,7 +84,7 @@ public class CourtyardMain extends StructureMazeGenerator {
 	public void postProcess(WorldGenLevel world, StructureManager manager, ChunkGenerator generator, RandomSource rand, BoundingBox sbb, ChunkPos chunkPosIn, BlockPos blockPos) {
 		if (this.placeSpawner) {
 			// TODO remove in 1.22
-			placeBlock(world, TFBlocks.NAGA_BOSS_SPAWNER.get().defaultBlockState(), RADIUS / 2, 3, RADIUS / 2, sbb);
+			placeBlock(world, TFBlocks.NAGA_BOSS_SPAWNER.defaultBlockState(), RADIUS / 2, 3, RADIUS / 2, sbb);
 		}
 	}
 }

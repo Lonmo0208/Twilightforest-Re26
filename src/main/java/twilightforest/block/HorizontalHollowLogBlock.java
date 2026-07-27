@@ -11,6 +11,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -34,10 +35,10 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.ItemAbilities;
 import twilightforest.enums.HollowLogVariants;
 import twilightforest.init.TFBlocks;
 import twilightforest.util.AxisUtil;
+
 
 public class HorizontalHollowLogBlock extends Block implements WaterloggedBlock {
 	public static final EnumProperty<Direction.Axis> HORIZONTAL_AXIS = BlockStateProperties.HORIZONTAL_AXIS;
@@ -144,7 +145,7 @@ public class HorizontalHollowLogBlock extends Block implements WaterloggedBlock 
 		if (stack.is(TFBlocks.MOSS_PATCH.asItem())) {
 			if (canChangeVariant(variant, level, pos, stateAxis)) {
 				level.setBlock(pos, state.setValue(VARIANT, HollowLogVariants.Horizontal.MOSS), Block.UPDATE_ALL);
-				playPlaceSound(TFBlocks.MOSS_PATCH.get().defaultBlockState(), level, pos, player);
+				playPlaceSound(TFBlocks.MOSS_PATCH.defaultBlockState(), level, pos, player);
 				stack.consume(1, player);
 
 				return InteractionResult.SUCCESS;
@@ -165,7 +166,7 @@ public class HorizontalHollowLogBlock extends Block implements WaterloggedBlock 
 
 				return InteractionResult.SUCCESS;
 			}
-		} else if (stack.canPerformAction(ItemAbilities.SHOVEL_FLATTEN)) {
+		} else if (stack.is(ItemTags.SHOVELS)) {
 			if (variant == HollowLogVariants.Horizontal.SNOW) {
 				level.setBlock(pos, state.setValue(VARIANT, HollowLogVariants.Horizontal.EMPTY), Block.UPDATE_ALL);
 				playBreakSound(Blocks.SNOW.defaultBlockState(), level, pos, player);
@@ -176,14 +177,14 @@ public class HorizontalHollowLogBlock extends Block implements WaterloggedBlock 
 
 				return InteractionResult.SUCCESS;
 			}
-		} else if (stack.canPerformAction(ItemAbilities.SHEARS_HARVEST)) {
+		} else if (stack.is(Items.SHEARS)) {
 			if (variant == HollowLogVariants.Horizontal.MOSS || variant == HollowLogVariants.Horizontal.MOSS_AND_GRASS) {
 				level.setBlock(pos, state.setValue(VARIANT, HollowLogVariants.Horizontal.EMPTY), Block.UPDATE_ALL);
 				level.playSound(null, pos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
 
 				if (!player.isCreative()) {
 					stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
-					level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(TFBlocks.MOSS_PATCH.get())));
+					level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(TFBlocks.MOSS_PATCH)));
 					if (variant == HollowLogVariants.Horizontal.MOSS_AND_GRASS)
 						level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(Blocks.SHORT_GRASS)));
 				}
@@ -196,12 +197,12 @@ public class HorizontalHollowLogBlock extends Block implements WaterloggedBlock 
 	}
 
 	public static void playPlaceSound(BlockState state, Level level, BlockPos pos, Player player) {
-		SoundType soundtype = state.getSoundType(level, pos, player);
+		SoundType soundtype = state.getSoundType();
 		level.playSound(null, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 	}
 
 	public static void playBreakSound(BlockState state, Level level, BlockPos pos, Player player) {
-		SoundType soundtype = state.getSoundType(level, pos, player);
+		SoundType soundtype = state.getSoundType();
 		level.playSound(null, pos, soundtype.getBreakSound(), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 	}
 

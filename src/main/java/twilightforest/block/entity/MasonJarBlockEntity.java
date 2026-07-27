@@ -21,17 +21,13 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
 import twilightforest.init.TFBlockEntities;
 import twilightforest.network.SetMasonJarItemPacket;
 
 import java.util.List;
 import java.util.Optional;
+import twilightforest.network.PacketDistributor;
 
 import static net.minecraft.world.level.block.entity.DecoratedPotBlockEntity.WobbleStyle;
 
@@ -42,7 +38,7 @@ public class MasonJarBlockEntity extends JarBlockEntity {
 	protected int itemRotation = 0;
 
 	public MasonJarBlockEntity(BlockPos pos, BlockState state) {
-		super(TFBlockEntities.MASON_JAR.get(), pos, state);
+		super(TFBlockEntities.MASON_JAR, pos, state);
 		this.item = new MasonJarItemStackHandler(this);
 	}
 
@@ -65,7 +61,7 @@ public class MasonJarBlockEntity extends JarBlockEntity {
 	}
 
 	public boolean fillFromLootTable(ResourceKey<LootTable> lootTableKey, long seed, ServerLevel level) {
-		MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
+		MinecraftServer currentServer = null;
 		return this.fillFromLootTable(lootTableKey, seed, level, currentServer.reloadableRegistries());
 	}
 
@@ -111,7 +107,7 @@ public class MasonJarBlockEntity extends JarBlockEntity {
 	@Override
 	public void removeComponentsFromTag(ValueOutput output) {
 		super.removeComponentsFromTag(output);
-		output.discard(ItemStacksResourceHandler.VALUE_IO_KEY);
+		output.discard(/* TODO: Port - VALUE_IO_KEY */ null);
 	}
 
 	@Override
@@ -120,10 +116,6 @@ public class MasonJarBlockEntity extends JarBlockEntity {
 		super.setChanged();
 		if (this.level != null) {
 			BlockPos pos = this.getBlockPos();
-			AuxiliaryLightManager lightManager = this.level.getAuxLightManager(pos);
-			if (lightManager != null) {
-				lightManager.setLightAt(pos, this.item.getItem().getItem() instanceof BlockItem blockItem ? blockItem.getBlock().defaultBlockState().getLightEmission() : 0);
-			}
 			this.level.getLightEngine().checkBlock(pos);
 		}
 		if (this.level instanceof ServerLevel serverLevel) {
@@ -139,56 +131,39 @@ public class MasonJarBlockEntity extends JarBlockEntity {
 		this.itemRotation = itemRotation;
 	}
 
-	public static class MasonJarItemStackHandler extends ItemStacksResourceHandler {
+	public static class MasonJarItemStackHandler {
+		private ItemStack stack = ItemStack.EMPTY;
 		protected final MasonJarBlockEntity jarEntity;
 
 		public MasonJarItemStackHandler(MasonJarBlockEntity jarEntity) {
-			super(1);
 			this.jarEntity = jarEntity;
 		}
 
 		// Used for simple checks of what the one item is, without going through all the hoops. Used by the renderer and when saving contents to item
 		public ItemStack getItem() {
-			return this.stacks.getFirst().copy();
+			return this.stack.copy();
 		}
 
 		// Peeks at the stored item, without cloning it
 		private ItemStack peekItem() {
-			return this.stacks.getFirst();
+			return this.stack;
 		}
 
 		// Used when syncing to client and when placing a jar that already has stored items
 		public void setItem(ItemStack itemStack) {
-			this.stacks.set(0, itemStack);
-		}
-
-		@Override
-		public boolean isValid(int index, ItemResource resource) {
-			return resource.toStack().canFitInsideContainerItems();
-		}
-
-		@Override
-		public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
-			int extracted = super.extract(index, resource, amount, transaction);
-			if (extracted > 0) {
-				this.jarEntity.wobble(WobbleStyle.NEGATIVE);
-				this.jarEntity.setChanged();
-			}
-			return extracted;
-		}
-
-		@Override
-		public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
-			int inserted = super.insert(index, resource, amount, transaction);
-			if (inserted > 0) {
-				this.jarEntity.wobble(WobbleStyle.POSITIVE);
-				this.jarEntity.setChanged();
-			}
-			return inserted;
+			this.stack = itemStack;
 		}
 
 		public boolean isEmpty() {
-			return this.stacks.getFirst().isEmpty();
+			return this.stack.isEmpty();
+		}
+
+		public void serialize(ValueOutput output) {
+			output.storeNullable("item", ItemStack.CODEC, this.stack);
+		}
+
+		public void deserialize(ValueInput input) {
+			this.stack = input.read("item", ItemStack.CODEC).orElse(ItemStack.EMPTY);
 		}
 	}
 }

@@ -1,12 +1,10 @@
 package twilightforest.network;
 
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
 import twilightforest.block.entity.MasonJarBlockEntity;
 
@@ -37,19 +35,5 @@ public record SetMasonJarItemPacket(BlockPos pos, boolean empty, ItemStack stack
 		return TYPE;
 	}
 
-	@SuppressWarnings("Convert2Lambda")
-	public static void handle(SetMasonJarItemPacket packet, IPayloadContext ctx) {
-		if (ctx.flow().isClientbound()) {
-			ctx.enqueueWork(new Runnable() {
-				@Override
-				public void run() {
-					if (ctx.player().level() instanceof ClientLevel level && level.getBlockEntity(packet.pos()) instanceof MasonJarBlockEntity blockEntity) {
-						blockEntity.getItemHandler().setItem(packet.stack());
-						blockEntity.setItemRotation(packet.rotation());
-						blockEntity.setChanged();
-					}
-				}
-			});
-		}
-	}
+	// Client-side handler moved to SetMasonJarItemPacketClientHandler
 }

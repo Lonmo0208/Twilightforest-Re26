@@ -1,18 +1,22 @@
 package twilightforest.init.custom;
 
 import com.mojang.serialization.MapCodec;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.core.Registry;
 import twilightforest.TFRegistries;
 import twilightforest.TwilightForestMod;
 import twilightforest.item.travellers_gear.modifiers.*;
 
 public class TravellersModifierTypes {
 
-	public static final DeferredRegister<MapCodec<? extends TravellersModifier>> TYPES = DeferredRegister.create(TFRegistries.Keys.TRAVELLERS_MODIFIER_TYPE, TwilightForestMod.ID);
+	public static final MapCodec<TravellersEntryModifier> ATTRIBUTE_ENTRY = TravellersEntryModifier.CODEC;
+	public static final MapCodec<BuiltinTravellersComponentModifier> BUILTIN = BuiltinTravellersComponentModifier.CODEC;
+	public static final MapCodec<TravellersComponentModifier> COMPONENT = TravellersComponentModifier.CODEC;
+	public static final MapCodec<TransferableComponentModifier> TRANSFERABLE_COMPONENT = TransferableComponentModifier.CODEC;
 
-	public static final DeferredHolder<MapCodec<? extends TravellersModifier>, MapCodec<TravellersEntryModifier>> ATTRIBUTE_ENTRY = TYPES.register("attribute", () -> TravellersEntryModifier.CODEC);
-	public static final DeferredHolder<MapCodec<? extends TravellersModifier>, MapCodec<BuiltinTravellersComponentModifier>> BUILTIN = TYPES.register("builtin", () -> BuiltinTravellersComponentModifier.CODEC);
-	public static final DeferredHolder<MapCodec<? extends TravellersModifier>, MapCodec<TravellersComponentModifier>> COMPONENT = TYPES.register("component", () -> TravellersComponentModifier.CODEC);
-	public static final DeferredHolder<MapCodec<? extends TravellersModifier>, MapCodec<TransferableComponentModifier>> TRANSFERABLE_COMPONENT = TYPES.register("transferable_component", () -> TransferableComponentModifier.CODEC);
+	public static void init() {
+		Registry.register(TFRegistries.TRAVELLERS_MODIFIER_TYPE, TwilightForestMod.prefix("attribute"), ATTRIBUTE_ENTRY);
+		Registry.register(TFRegistries.TRAVELLERS_MODIFIER_TYPE, TwilightForestMod.prefix("builtin"), BUILTIN);
+		Registry.register(TFRegistries.TRAVELLERS_MODIFIER_TYPE, TwilightForestMod.prefix("component"), COMPONENT);
+		Registry.register(TFRegistries.TRAVELLERS_MODIFIER_TYPE, TwilightForestMod.prefix("transferable_component"), TRANSFERABLE_COMPONENT);
+	}
 }

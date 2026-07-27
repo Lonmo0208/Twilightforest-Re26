@@ -1,6 +1,9 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "twilightforest:block/trollsteinn_inventory"
+    "type": "twilightforest:trollsteinn",
+    "model": {
+      "type": "minecraft:model",
+      "model": "twilightforest:block/trollsteinn_inventory"
+    }
   }
 }

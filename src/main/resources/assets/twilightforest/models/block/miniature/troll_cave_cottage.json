@@ -1,0 +1,14 @@
+{
+  "parent": "twilightforest:block/miniature/template_transforms",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "#stone",
+    "stone": "block/stone",
+    "cobble": "block/cobblestone",
+    "wood": "block/oak_planks"
+  },
+  "elements": [
+    {"from": [3, 0, 3], "to": [13, 7, 13], "faces": {"north": {"uv": [3, 9, 13, 16], "texture": "#stone"}, "east": {"uv": [3, 9, 13, 16], "texture": "#stone"}, "south": {"uv": [3, 9, 13, 16], "texture": "#stone"}, "west": {"uv": [3, 9, 13, 16], "texture": "#stone"}, "up": {"uv": [3, 3, 13, 13], "texture": "#cobble"}, "down": {"uv": [3, 3, 13, 13], "texture": "#stone"}}},
+    {"from": [4, 7, 4], "to": [12, 10, 12], "faces": {"north": {"uv": [4, 6, 12, 9], "texture": "#wood"}, "east": {"uv": [4, 6, 12, 9], "texture": "#wood"}, "south": {"uv": [4, 6, 12, 9], "texture": "#wood"}, "west": {"uv": [4, 6, 12, 9], "texture": "#wood"}, "up": {"uv": [4, 4, 12, 12], "texture": "#cobble"}, "down": {"uv": [4, 4, 12, 12], "texture": "#wood"}}}
+  ]
+}

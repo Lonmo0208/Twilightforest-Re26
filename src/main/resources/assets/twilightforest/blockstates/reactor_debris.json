@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "type": "twilightforest:reactor_debris",
+      "fabric:type": "twilightforest:reactor_debris",
       "model": "minecraft:block/netherrack"
     }
   }

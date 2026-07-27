@@ -17,10 +17,9 @@ import twilightforest.world.components.speleothem.SpeleothemVarietyConfig;
 import twilightforest.world.components.speleothem.Stalactite;
 import twilightforest.world.components.speleothem.StalactiteReloadListener;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -60,11 +59,9 @@ private static Function<RandomSource, Stalactite> compileStalagmites(Supplier<Sp
 SpeleothemVarietyConfig varietyConfig = varietyConfigSupplier.get();
 
 if (varietyConfig == null) {
-TwilightForestMod.LOGGER.error("SpeleothemVarietyConfig not found for stalagmites, using fallback");
-return compileSpeleothemsSimple(List.of());
+	TwilightForestMod.LOGGER.warn("SpeleothemVarietyConfig not found for stalagmites, using fallback");
+	return compileSpeleothemsSimple(List.of());
 }
-
-TwilightForestMod.LOGGER.debug("Compiling Stalagmite configs for " + varietyConfig.type() + " type");
 
 List<Stalactite> stalactites = StalactiteReloadListener.STALAGMITES_PER_HILL.get(varietyConfig.type());
 
@@ -76,11 +73,9 @@ private static Function<RandomSource, Stalactite> compileStalactites(Supplier<Sp
 SpeleothemVarietyConfig varietyConfig = varietyConfigSupplier.get();
 
 if (varietyConfig == null) {
-TwilightForestMod.LOGGER.error("SpeleothemVarietyConfig not found for stalactites, using fallback");
-return BlockSpikeFeature::defaultRandom;
+	TwilightForestMod.LOGGER.warn("SpeleothemVarietyConfig not found for stalactites, using fallback");
+	return BlockSpikeFeature::defaultRandom;
 }
-
-TwilightForestMod.LOGGER.debug("Compiling Stalactite configs for " + varietyConfig.type() + " type");
 
 // Ore Chance represents an interpolation between two weighted lists of A (stones) and B (ores)
 float weightedListInterpolation = Mth.clamp(varietyConfig.oreChance(), 0, 1);
@@ -125,22 +120,6 @@ ArrayList<Weighted<Stalactite>> unbakedRandomList = stalactites.stream().map(s -
 // Add oreStalactites to the unbaked list
 oreStalactites.stream().map(s -> new Weighted<>(s, Mth.ceil(s.weight() * oreCounterweight))).forEachOrdered(unbakedRandomList::add);
 
-{
-StringJoiner joiner = new StringJoiner("\n");
-
-joiner.add("")
-.add("Ore interpolation factor: " + weightedListInterpolation)
-.add("Stone Counterweight: " + stoneCounterweight)
-.add("Ore Counterweight: " + oreCounterweight);
-
-for (Weighted<Stalactite> e : unbakedRandomList)
-joiner.add(e.value() + " - After counterweight: " + e.weight());
-
-joiner.add("Total weight after counterweights: " + unbakedRandomList.stream().mapToInt(Weighted::weight).sum());
-
-TwilightForestMod.LOGGER.debug(String.valueOf(joiner));
-}
-
 return compileSpeleothems(unbakedRandomList);
 }
 
@@ -169,7 +148,7 @@ return random -> randomList.getRandom(random).orElse(BlockSpikeFeature.STONE_STA
 public SpeleothemVarietyConfig getVarietyConfig() {
 SpeleothemVarietyConfig config = this.speleothemVarietyConfig.get();
 if (config == null) {
-TwilightForestMod.LOGGER.error("SpeleothemVarietyConfig is null for type '" + this.speleothemVarietyType + "'. Stalactite data may not have loaded properly.");
+TwilightForestMod.LOGGER.warn("SpeleothemVarietyConfig is null for type '" + this.speleothemVarietyType + "'. Stalactite data may not have loaded properly.");
 }
 return config;
 }

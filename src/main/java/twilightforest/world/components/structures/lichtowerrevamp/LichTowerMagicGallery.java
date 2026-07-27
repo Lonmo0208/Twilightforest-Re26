@@ -21,9 +21,8 @@ import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.neoforged.neoforge.common.world.PieceBeardifierModifier;
+
 import org.jetbrains.annotations.Nullable;
-import tamaized.beanification.Autowired;
 import twilightforest.TFRegistries;
 import twilightforest.entity.MagicPainting;
 import twilightforest.entity.MagicPaintingVariant;
@@ -40,35 +39,19 @@ import twilightforest.world.components.structures.TwilightJigsawPiece;
 
 import java.util.Optional;
 
-public class LichTowerMagicGallery extends TwilightJigsawPiece implements PieceBeardifierModifier, SpawnIndexProvider {
-	@Autowired
-	private static LichTowerUtil lichTowerUtil;
+public class LichTowerMagicGallery extends TwilightJigsawPiece implements SpawnIndexProvider {
+	private static final LichTowerUtil lichTowerUtil = new LichTowerUtil();
 
 	public LichTowerMagicGallery(StructurePieceSerializationContext ctx, CompoundTag compoundTag) {
-		super(TFStructurePieceTypes.LICH_MAGIC_GALLERY.value(), compoundTag, ctx, readSettings(compoundTag));
+		super(TFStructurePieceTypes.LICH_MAGIC_GALLERY, compoundTag, ctx, readSettings(compoundTag));
 
 		LichTowerUtil.addDefaultProcessors(this.placeSettings.addProcessor(lichTowerUtil.getRoomSpawnerProcessor()));
 	}
 
 	public LichTowerMagicGallery(int genDepth, StructureTemplateManager structureManager, Identifier templateLocation, JigsawPlaceContext jigsawContext) {
-		super(TFStructurePieceTypes.LICH_MAGIC_GALLERY.value(), genDepth, structureManager, templateLocation, jigsawContext);
+		super(TFStructurePieceTypes.LICH_MAGIC_GALLERY, genDepth, structureManager, templateLocation, jigsawContext);
 
 		LichTowerUtil.addDefaultProcessors(this.placeSettings.addProcessor(lichTowerUtil.getRoomSpawnerProcessor()));
-	}
-
-	@Override
-	public BoundingBox getBeardifierBox() {
-		return this.boundingBox;
-	}
-
-	@Override
-	public TerrainAdjustment getTerrainAdjustment() {
-		return TerrainAdjustment.NONE;
-	}
-
-	@Override
-	public int getGroundLevelDelta() {
-		return 0;
 	}
 
 	@Override
@@ -124,7 +107,7 @@ public class LichTowerMagicGallery extends TwilightJigsawPiece implements PieceB
 			Direction direction = this.placeSettings.getRotation().rotate(Direction.SOUTH);
 
 			Optional<Holder.Reference<MagicPaintingVariant>> variantHolderOpt = variantForGallery(level, this.templateName);
-			MagicPainting galleryPainting = TFEntities.MAGIC_PAINTING.value().create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+			MagicPainting galleryPainting = TFEntities.MAGIC_PAINTING.get().create(level.getLevel(), EntitySpawnReason.STRUCTURE);
 			if (variantHolderOpt.isPresent() && galleryPainting != null) {
 				galleryPainting.setDirection(direction);
 				galleryPainting.setVariant(variantHolderOpt.get());

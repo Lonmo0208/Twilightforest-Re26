@@ -1,32 +1,33 @@
 package twilightforest.datagen.data.tags;
 
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.common.Tags;
 import twilightforest.datagen.data.tags.compat.ModdedEntityTypeTagGenerator;
 import twilightforest.init.TFEntities;
 import twilightforest.tags.TFEntityTypeTags;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+
 public class EntityTypeTagGenerator extends ModdedEntityTypeTagGenerator {
 
-	public EntityTypeTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+	public EntityTypeTagGenerator(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
 		super(output, provider);
 	}
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
 		super.addTags(provider);
-		this.tag(EntityTypeTags.SKELETONS).add(TFEntities.SKELETON_DRUID.get(), TFEntities.LICH.get(), TFEntities.KNIGHT_PHANTOM.get());
-		this.tag(EntityTypeTags.ZOMBIES).add(TFEntities.LICH_MINION.get(), TFEntities.LOYAL_ZOMBIE.get(), TFEntities.RISING_ZOMBIE.get());
-		this.tag(EntityTypeTags.ARROWS).add(TFEntities.ICE_ARROW.get(), TFEntities.SEEKER_ARROW.get());
-		this.tag(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES).add(TFEntities.FIRE_BEETLE.get());
-		this.tag(EntityTypeTags.FROG_FOOD).add(TFEntities.MAZE_SLIME.get());
+		this.valueLookupBuilder(EntityTypeTags.SKELETONS).add(TFEntities.SKELETON_DRUID.get(), TFEntities.LICH.get(), TFEntities.KNIGHT_PHANTOM.get());
+		this.valueLookupBuilder(EntityTypeTags.ZOMBIES).add(TFEntities.LICH_MINION.get(), TFEntities.LOYAL_ZOMBIE.get(), TFEntities.RISING_ZOMBIE.get());
+		this.valueLookupBuilder(EntityTypeTags.ARROWS).add(TFEntities.ICE_ARROW.get(), TFEntities.SEEKER_ARROW.get());
+		this.valueLookupBuilder(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES).add(TFEntities.FIRE_BEETLE.get());
+		this.valueLookupBuilder(EntityTypeTags.FROG_FOOD).add(TFEntities.MAZE_SLIME.get());
 
-		this.tag(TFEntityTypeTags.BOSSES).add(
+		this.valueLookupBuilder(TFEntityTypeTags.BOSSES).add(
 			TFEntities.NAGA.get(),
 			TFEntities.LICH.get(),
 			TFEntities.MINOSHROOM.get(),
@@ -38,7 +39,7 @@ public class EntityTypeTagGenerator extends ModdedEntityTypeTagGenerator {
 			TFEntities.PLATEAU_BOSS.get()
 		);
 
-		this.tag(EntityTypeTags.IMPACT_PROJECTILES).add(
+		this.valueLookupBuilder(EntityTypeTags.IMPACT_PROJECTILES).add(
 			TFEntities.NATURE_BOLT.get(),
 			TFEntities.LICH_BOLT.get(),
 			TFEntities.WAND_BOLT.get(),
@@ -52,7 +53,7 @@ public class EntityTypeTagGenerator extends ModdedEntityTypeTagGenerator {
 			TFEntities.CHAIN_BLOCK.get()
 		);
 
-		this.tag(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS).add(
+		this.valueLookupBuilder(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS).add(
 			TFEntities.PENGUIN.get(),
 			TFEntities.STABLE_ICE_CORE.get(),
 			TFEntities.UNSTABLE_ICE_CORE.get(),
@@ -69,7 +70,7 @@ public class EntityTypeTagGenerator extends ModdedEntityTypeTagGenerator {
 			TFEntities.TOWERWOOD_BORER.get()
 		);
 
-		this.tag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES).add(
+		this.valueLookupBuilder(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES).add(
 			TFEntities.PENGUIN.get(),
 			TFEntities.STABLE_ICE_CORE.get(),
 			TFEntities.UNSTABLE_ICE_CORE.get(),
@@ -82,7 +83,7 @@ public class EntityTypeTagGenerator extends ModdedEntityTypeTagGenerator {
 			TFEntities.YETI.get()
 		).addTag(TFEntityTypeTags.BOSSES);
 
-		this.tag(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(
+		this.valueLookupBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(
 			TFEntities.NAGA.get(),
 			TFEntities.SQUIRREL.get(),
 			TFEntities.WRAITH.get(),
@@ -102,12 +103,11 @@ public class EntityTypeTagGenerator extends ModdedEntityTypeTagGenerator {
 			TFEntities.CARMINITE_GHASTGUARD.get(),
 			TFEntities.TINY_BIRD.get());
 
-		this.tag(TFEntityTypeTags.LICH_POPPABLES)
+		this.valueLookupBuilder(TFEntityTypeTags.LICH_POPPABLES)
 			.addTag(EntityTypeTags.SKELETONS)
-			.add(EntityType.ZOMBIE, EntityType.ENDERMAN, EntityType.SPIDER, EntityType.CREEPER, TFEntities.SWARM_SPIDER.get())
-			.remove(Tags.EntityTypes.BOSSES);
+			.add(EntityType.ZOMBIE, EntityType.ENDERMAN, EntityType.SPIDER, EntityType.CREEPER, TFEntities.SWARM_SPIDER.get());
 
-		this.tag(TFEntityTypeTags.LIFEDRAIN_DROPS_NO_FLESH).addTag(EntityTypeTags.SKELETONS).addTag(EntityTypeTags.FROG_FOOD).add(
+		this.valueLookupBuilder(TFEntityTypeTags.LIFEDRAIN_DROPS_NO_FLESH).addTag(EntityTypeTags.SKELETONS).addTag(EntityTypeTags.FROG_FOOD).add(
 			EntityType.BLAZE,
 			EntityType.BREEZE,
 			EntityType.IRON_GOLEM,
@@ -129,11 +129,11 @@ public class EntityTypeTagGenerator extends ModdedEntityTypeTagGenerator {
 			TFEntities.WRAITH.get());
 
 		// These entities forcefully take players from the entity they're riding
-		this.tag(TFEntityTypeTags.RIDES_OBSTRUCT_SNATCHING).add(TFEntities.PINCH_BEETLE.get(), TFEntities.YETI.get(), TFEntities.ALPHA_YETI.get());
+		this.valueLookupBuilder(TFEntityTypeTags.RIDES_OBSTRUCT_SNATCHING).add(TFEntities.PINCH_BEETLE.get(), TFEntities.YETI.get(), TFEntities.ALPHA_YETI.get());
 
-		this.tag(TFEntityTypeTags.DONT_KILL_BUGS).add(TFEntities.MOONWORM_SHOT.get());
+		this.valueLookupBuilder(TFEntityTypeTags.DONT_KILL_BUGS).add(TFEntities.MOONWORM_SHOT.get());
 
-		this.tag(TFEntityTypeTags.SORTABLE_ENTITIES).add(
+		this.valueLookupBuilder(TFEntityTypeTags.SORTABLE_ENTITIES).add(
 			EntityType.CHEST_MINECART,
 			EntityType.HOPPER_MINECART,
 			EntityType.LLAMA,
@@ -141,7 +141,7 @@ public class EntityTypeTagGenerator extends ModdedEntityTypeTagGenerator {
 			EntityType.DONKEY,
 			EntityType.MULE);
 
-		this.tag(TFEntityTypeTags.MULTIPLAYER_INCLUSIVE_ENTITIES).add(
+		this.valueLookupBuilder(TFEntityTypeTags.MULTIPLAYER_INCLUSIVE_ENTITIES).add(
 			TFEntities.NAGA.get(),
 			TFEntities.LICH.get(),
 			TFEntities.MINOSHROOM.get(),
@@ -152,8 +152,8 @@ public class EntityTypeTagGenerator extends ModdedEntityTypeTagGenerator {
 			TFEntities.PLATEAU_BOSS.get()
 		);
 
-		this.tag(Tags.EntityTypes.BOSSES).addTag(TFEntityTypeTags.BOSSES);
-		this.tag(EntityTypeTags.ARTHROPOD).add(
+		this.valueLookupBuilder(ConventionalEntityTypeTags.BOSSES).addTag(TFEntityTypeTags.BOSSES);
+		this.valueLookupBuilder(EntityTypeTags.ARTHROPOD).add(
 			TFEntities.CARMINITE_BROODLING.get(),
 			TFEntities.FIRE_BEETLE.get(),
 			TFEntities.HEDGE_SPIDER.get(),
@@ -163,11 +163,11 @@ public class EntityTypeTagGenerator extends ModdedEntityTypeTagGenerator {
 			TFEntities.SLIME_BEETLE.get(),
 			TFEntities.SWARM_SPIDER.get(),
 			TFEntities.TOWERWOOD_BORER.get());
-		this.tag(EntityTypeTags.UNDEAD).add(TFEntities.WRAITH.get());
-		this.tag(EntityTypeTags.IMMUNE_TO_OOZING).add(TFEntities.MAZE_SLIME.get());
-		this.tag(EntityTypeTags.IMMUNE_TO_INFESTED).add(TFEntities.TOWERWOOD_BORER.get());
-		this.tag(EntityTypeTags.REDIRECTABLE_PROJECTILE).add(TFEntities.HYDRA_MORTAR.get(), TFEntities.LICH_BOLT.get());
-		this.tag(TFEntityTypeTags.LICH_DEFLECTS_PHASE_2).add(TFEntities.WAND_BOLT.get(), TFEntities.LICH_BOLT.get(), TFEntities.LICH_BOMB.get());
+		this.valueLookupBuilder(EntityTypeTags.UNDEAD).add(TFEntities.WRAITH.get());
+		this.valueLookupBuilder(EntityTypeTags.IMMUNE_TO_OOZING).add(TFEntities.MAZE_SLIME.get());
+		this.valueLookupBuilder(EntityTypeTags.IMMUNE_TO_INFESTED).add(TFEntities.TOWERWOOD_BORER.get());
+		this.valueLookupBuilder(EntityTypeTags.REDIRECTABLE_PROJECTILE).add(TFEntities.HYDRA_MORTAR.get(), TFEntities.LICH_BOLT.get());
+		this.valueLookupBuilder(TFEntityTypeTags.LICH_DEFLECTS_PHASE_2).add(TFEntities.WAND_BOLT.get(), TFEntities.LICH_BOLT.get(), TFEntities.LICH_BOMB.get());
 	}
 
 

@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "twilightforest:block/transformation_planks_0"
+      },
+      {
+        "model": "twilightforest:block/transformation_planks_1"
+      },
+      {
+        "model": "twilightforest:block/transformation_planks_2"
+      },
+      {
+        "model": "twilightforest:block/transformation_planks_3"
+      }
+    ]
+  }
+}

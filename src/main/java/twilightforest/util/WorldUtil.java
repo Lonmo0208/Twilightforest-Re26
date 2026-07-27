@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -26,8 +27,12 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureCheckResult;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.Nullable;
+import twilightforest.init.TFDataMaps;
 import twilightforest.init.TFDimensionData;
 import twilightforest.util.landmarks.LegacyLandmarkPlacements;
 import twilightforest.world.components.structures.placements.LandmarkGridPlacement;
@@ -38,16 +43,39 @@ public final class WorldUtil {
 	private WorldUtil() {
 	}
 
+	@Nullable
+	private static MinecraftServer currentServer;
+
+	/**
+	 * Called from TwilightForestMod.onInitialize() to register the server lifecycle listener
+	 * before the server starts, ensuring currentServer is always set.
+	 */
+	public static void registerServerLifecycle() {
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> currentServer = server);
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> currentServer = null);
+	}
+
+	/**
+	 * Get the MinecraftServer instance, works for both dedicated server and integrated client.
+	 */
+	private static MinecraftServer getServer() {
+		Object game = FabricLoader.getInstance().getGameInstance();
+		if (game instanceof MinecraftServer server) {
+			return server;
+		}
+		return Objects.requireNonNull(currentServer, "Server not yet started or not running");
+	}
+
 	public static long getOverworldSeed() {
-		return Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer()).overworld().getSeed();
+		return getServer().overworld().getSeed();
 	}
 
 	public static RegistryAccess getRegistryAccess() {
-		return Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer()).registryAccess();
+		return getServer().registryAccess();
 	}
 
 	public static Difficulty getDifficulty() {
-		return Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer()).getWorldData().getDifficulty();
+		return getServer().getWorldData().getDifficulty();
 	}
 
 	/**
@@ -125,7 +153,14 @@ public final class WorldUtil {
 					if (landmarkPlacement.getValue().contains(targetStructure)) {
 						Holder<Biome> biome = level.getBiome(landmarkCenterPosition);
 
-						if (targetStructure.value().biomes().contains(biome)) {
+						// After TerrainColumn fix, all biomes from TFBiomeProvider are Holder.Reference
+						// with valid ResourceKeys. Use the level's biome registry to resolve and compare.
+						boolean biomeMatches = TFDataMaps.getBiomeKey(biome)
+							.flatMap(key -> level.registryAccess().lookupOrThrow(Registries.BIOME).get(key))
+							.map(targetStructure.value().biomes()::contains)
+							.orElse(false);
+
+						if (biomeMatches) {
 							if (skipKnownStructures && structureManager.checkStructurePresence(ChunkPos.containing(landmarkCenterPosition), targetStructure.value(), landmarkPlacement.getKey(), true) == StructureCheckResult.START_PRESENT)
 								break;
 

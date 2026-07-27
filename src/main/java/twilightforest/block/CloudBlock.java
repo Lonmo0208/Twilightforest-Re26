@@ -19,12 +19,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jspecify.annotations.Nullable;
 import twilightforest.config.TFConfig;
 import twilightforest.init.TFParticleType;
 import twilightforest.network.ParticlePacket;
+import twilightforest.network.PacketDistributor;
 
 public class CloudBlock extends Block {
 
@@ -56,7 +56,7 @@ public class CloudBlock extends Block {
 		if (blockpos1.getX() != pos.getX()) x = Mth.clamp(x, pos.getX(), (double) pos.getX() + 1.0D);
 		if (blockpos1.getZ() != pos.getZ()) z = Mth.clamp(z, pos.getZ(), (double) pos.getZ() + 1.0D);
 
-		level.addParticle(TFParticleType.CLOUD_PUFF.get(), x, y, z, deltaMovement.x * -0.5D, 0.015D * jumpMultiplier, deltaMovement.z * -0.5D);
+		level.addParticle(TFParticleType.CLOUD_PUFF, x, y, z, deltaMovement.x * -0.5D, 0.015D * jumpMultiplier, deltaMovement.z * -0.5D);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class CloudBlock extends Block {
 	 */
 	@Override
 	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-		if (!level.isAreaLoaded(pos, 1) || TFConfig.commonCloudBlockPrecipitationDistance == 0) return;
+		if (!level.isLoaded(pos) || TFConfig.commonCloudBlockPrecipitationDistance == 0) return;
 
 		Pair<Biome.Precipitation, Float> pair = this.getCurrentPrecipitation(pos, level, level.getRainLevel(1.0F));
 		if (pair.getRight() > 0.0F) {
@@ -129,34 +129,6 @@ public class CloudBlock extends Block {
 	}
 
 	@Override
-	public boolean addLandingEffects(BlockState state1, ServerLevel level, BlockPos pos, BlockState state2, LivingEntity living, int numberOfParticles) { // ServerSide
-		ParticlePacket particlePacket = new ParticlePacket();
-		int maxI = Mth.clamp((int) living.fallDistance * 2, 8, 40);
-
-		double bbWidth = living.getBbWidth();
-
-		double y = living.getY() + 0.1D;
-		double ySpeed = 0.0005D * maxI;
-
-		for (int i = 0; i < maxI; i++) {
-			double xSpd = (living.getRandom().nextDouble() - 0.5D) * bbWidth * 2.5D;
-			double zSpd = (living.getRandom().nextDouble() - 0.5D) * bbWidth * 2.5D;
-
-			double x = living.getX() + xSpd;
-			double z = living.getZ() + zSpd;
-
-			double xSpeed = xSpd * 0.0035D * maxI;
-			double zSpeed = zSpd * 0.0035D * maxI;
-
-			particlePacket.queueParticle(TFParticleType.CLOUD_PUFF.get(), x, y, z, xSpeed, ySpeed, zSpeed);
-		}
-
-		PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), particlePacket);
-
-		return true;
-	}
-
-	@Override
 	public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
 		if (this.canSpawnCloudParticles(entity, level.getRandom())) {
 			addEntityMovementParticles(level, pos, entity, false);
@@ -169,11 +141,4 @@ public class CloudBlock extends Block {
 		return entity.tickCount % 2 == 0 && !entity.isSpectator();
 	}
 
-	@Override
-	public boolean addRunningEffects(BlockState state, Level level, BlockPos pos, Entity entity) { // Client & Server Side
-		if (level.isClientSide() && state.getRenderShape() != RenderShape.INVISIBLE) {
-			addEntityMovementParticles(level, pos, entity, false);
-		}
-		return true;
-	}
 }

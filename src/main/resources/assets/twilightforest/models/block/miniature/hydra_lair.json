@@ -1,0 +1,14 @@
+{
+  "parent": "twilightforest:block/miniature/template_transforms",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "#stone",
+    "stone": "block/stone",
+    "obsidian": "block/obsidian",
+    "moss": "block/mossy_stone_bricks"
+  },
+  "elements": [
+    {"from": [2, 0, 2], "to": [14, 6, 14], "faces": {"north": {"uv": [2, 10, 14, 16], "texture": "#stone"}, "east": {"uv": [2, 10, 14, 16], "texture": "#stone"}, "south": {"uv": [2, 10, 14, 16], "texture": "#stone"}, "west": {"uv": [2, 10, 14, 16], "texture": "#stone"}, "up": {"uv": [2, 2, 14, 14], "texture": "#moss"}, "down": {"uv": [2, 2, 14, 14], "texture": "#stone"}}},
+    {"from": [3, 6, 3], "to": [13, 8, 13], "faces": {"north": {"uv": [3, 8, 13, 10], "texture": "#obsidian"}, "east": {"uv": [3, 8, 13, 10], "texture": "#obsidian"}, "south": {"uv": [3, 8, 13, 10], "texture": "#obsidian"}, "west": {"uv": [3, 8, 13, 10], "texture": "#obsidian"}, "up": {"uv": [3, 3, 13, 13], "texture": "#moss"}, "down": {"uv": [3, 3, 13, 13], "texture": "#obsidian"}}}
+  ]
+}

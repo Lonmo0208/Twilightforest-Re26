@@ -9,7 +9,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.EventHooks;
+import net.minecraft.world.level.gamerules.GameRules;
 import twilightforest.entity.ITFCharger;
 import twilightforest.entity.boss.Minoshroom;
 import twilightforest.util.entities.EntityUtil;
@@ -98,7 +98,7 @@ public class ChargeAttackGoal extends Goal {
 				}
 			}
 		} else if (this.canBreak) {
-			if (this.charger.level() instanceof ServerLevel server && EventHooks.canEntityGrief(server, this.charger)) {
+			if (this.charger.level() instanceof ServerLevel server && server.getGameRules().get(GameRules.MOB_GRIEFING)) {
 
 				AABB bb = this.charger.getBoundingBox();
 				int minx = Mth.floor(bb.minX - 0.75D);

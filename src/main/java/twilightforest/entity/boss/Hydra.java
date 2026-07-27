@@ -28,10 +28,9 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.entity.PartEntity;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.gamerules.GameRules;
+import twilightforest.entity.TFPart;
 import twilightforest.init.*;
 import twilightforest.network.UpdateTFMultipartPacket;
 import twilightforest.util.WorldUtil;
@@ -41,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import twilightforest.network.PacketDistributor;
 
 @SuppressWarnings("this-escape")
 public class Hydra extends BaseTFBoss {
@@ -56,7 +56,7 @@ public class Hydra extends BaseTFBoss {
 	private static final int SECONDARY_FLAME_CHANCE = 10;
 	private static final int SECONDARY_MORTAR_CHANCE = 16;
 
-	private static final EntityDataAccessor<List<String>> HEAD_NAMES = SynchedEntityData.defineId(Hydra.class, TFDataSerializers.STRING_LIST.get());
+	private static final EntityDataAccessor<List<String>> HEAD_NAMES = SynchedEntityData.defineId(Hydra.class, TFDataSerializers.STRING_LIST);
 	public final HydraHeadContainer[] hc = new HydraHeadContainer[MAX_HEADS];
 
 	private final HydraPart[] partArray;
@@ -88,6 +88,7 @@ public class Hydra extends BaseTFBoss {
 		this.partArray = parts.toArray(new HydraPart[0]);
 
 		this.setId(ENTITY_COUNTER.getAndAdd(this.partArray.length + 1) + 1);
+		TFPart.assignPartIDs(this);
 
 		this.xpReward = 511;
 	}
@@ -551,7 +552,7 @@ public class Hydra extends BaseTFBoss {
 	}
 
 	private void destroyBlocksInAABB(ServerLevel server, AABB box) {
-		if (this.deathTime <= 0 && EventHooks.canEntityGrief(server, this)) {
+		if (this.deathTime <= 0 && server.getGameRules().get(GameRules.MOB_GRIEFING)) {
 			for (BlockPos pos : WorldUtil.getAllInBB(box)) {
 				if (EntityUtil.canDestroyBlock(this.level(), pos, this)) {
 					this.level().destroyBlock(pos, false);
@@ -574,7 +575,7 @@ public class Hydra extends BaseTFBoss {
 		if (source.getEntity() == this || source.getDirectEntity() == this)
 			return false;
 		if (this.getParts() != null)
-			for (PartEntity<?> partEntity : this.getParts())
+			for (Entity partEntity : this.getParts())
 				if (partEntity == source.getEntity() || partEntity == source.getDirectEntity())
 					return false;
 
@@ -634,7 +635,7 @@ public class Hydra extends BaseTFBoss {
 		return !source.is(TFDamageTypes.HYDRA_MORTAR) && super.isInvulnerableTo(serverLevel, source);
 	}
 
-	@Override
+	// Fabric: Entity.isMultipartEntity() not available in vanilla
 	public boolean isMultipartEntity() {
 		return true;
 	}
@@ -643,8 +644,7 @@ public class Hydra extends BaseTFBoss {
 	 * We need to do this for the bounding boxes on the parts to become active
 	 */
 	@Nullable
-	@Override
-	public PartEntity<?>[] getParts() {
+	public Entity[] getParts() {
 		return this.partArray;
 	}
 
@@ -664,6 +664,9 @@ public class Hydra extends BaseTFBoss {
 
 	/**
 	 * This is set as off for the hydra, which has an enormous bounding box, but set as on for the parts.
+	 * The main entity must remain in the level.getEntities() result for the ProjectileUtilMixin to
+	 * discover and add its parts, but isPickable()=false ensures the ray-trace skips the main entity
+	 * and only tests the parts.
 	 */
 	@Override
 	public boolean isPickable() {
@@ -688,17 +691,17 @@ public class Hydra extends BaseTFBoss {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.HYDRA_GROWL.get();
+		return TFSounds.HYDRA_GROWL;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.HYDRA_HURT.get();
+		return TFSounds.HYDRA_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.HYDRA_DEATH.get();
+		return TFSounds.HYDRA_DEATH;
 	}
 
 	@Override
@@ -734,12 +737,12 @@ public class Hydra extends BaseTFBoss {
 
 	@Override
 	public Block getDeathContainer(RandomSource random) {
-		return TFBlocks.MANGROVE_CHEST.get();
+		return TFBlocks.MANGROVE_CHEST;
 	}
 
 	@Override
 	public Block getBossSpawner() {
-		return TFBlocks.HYDRA_BOSS_SPAWNER.get();
+		return TFBlocks.HYDRA_BOSS_SPAWNER;
 	}
 
 	@Override
@@ -750,7 +753,7 @@ public class Hydra extends BaseTFBoss {
 		if (this.deathTime == 1) {
 			for (int i = 0; i < MAX_HEADS; i++) {
 				this.hc[i].setRespawnCounter(-1);
-				if (!this.hc[i].isDead()) {
+				if (this.hc[i].isActive()) {
 					this.hc[i].setNextState(HydraHeadContainer.State.IDLE);
 					this.hc[i].endCurrentAction();
 					this.hc[i].setHurtTime(200);
@@ -762,7 +765,7 @@ public class Hydra extends BaseTFBoss {
 		if (this.deathTime <= 140 && this.deathTime % 20 == 0) {
 			int headToDie = (this.deathTime / 20) - 1;
 
-			if (!this.hc[headToDie].isDead()) {
+			if (this.hc[headToDie].isActive()) {
 				this.hc[headToDie].setNextState(HydraHeadContainer.State.DYING);
 				this.hc[headToDie].endCurrentAction();
 			}

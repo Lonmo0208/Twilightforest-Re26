@@ -12,7 +12,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.FakePlayer;
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import twilightforest.TFRegistries;
 import twilightforest.init.custom.TravellersModifiersManager;
 import twilightforest.item.travellers_gear.modifiers.InsertableTravellersModifier;
@@ -21,7 +21,7 @@ import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
 
 import java.util.function.Function;
 
-@tamaized.beanification.Component
+@twilightforest.beanification.Component
 public class TravellersGearCommand {
 
 	private static final DynamicCommandExceptionType ERROR_INVALID_MODIFIER = new DynamicCommandExceptionType(p_304101_ -> Component.translatableEscape("commands.tffeature.invalid_modifier", p_304101_));

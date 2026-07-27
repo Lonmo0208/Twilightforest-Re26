@@ -34,15 +34,15 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
-import tamaized.beanification.Autowired;
+import twilightforest.beanification.Autowired;
 import twilightforest.entity.EnforcedHomePoint;
 import twilightforest.entity.ai.goal.QuestRamEatWoolGoal;
 import twilightforest.entity.passive.quest.ram.QuestingRamCurrentContext;
 import twilightforest.init.TFAdvancements;
 import twilightforest.init.TFSounds;
 import twilightforest.init.TFStructures;
+import twilightforest.network.PacketDistributor;
 import twilightforest.network.ParticlePacket;
 import twilightforest.util.landmarks.LandmarkUtil;
 
@@ -137,7 +137,7 @@ public class QuestRam extends Animal implements EnforcedHomePoint {
 		rewards.forEach(stack -> this.spawnAtLocation(server, stack, 1.0F));
 
 		for (ServerPlayer player : this.level().getEntitiesOfClass(ServerPlayer.class, getBoundingBox().inflate(16.0D, 16.0D, 16.0D))) {
-			TFAdvancements.QUEST_RAM_COMPLETED.get().trigger(player);
+			TFAdvancements.QUEST_RAM_COMPLETED.trigger(player);
 		}
 
 		LandmarkUtil.markStructureConquered(this.level(), this, TFStructures.QUEST_GROVE, true);
@@ -254,22 +254,22 @@ public class QuestRam extends Animal implements EnforcedHomePoint {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.QUEST_RAM_AMBIENT.get();
+		return TFSounds.QUEST_RAM_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.QUEST_RAM_HURT.get();
+		return TFSounds.QUEST_RAM_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.QUEST_RAM_DEATH.get();
+		return TFSounds.QUEST_RAM_DEATH;
 	}
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState state) {
-		this.playSound(TFSounds.QUEST_RAM_STEP.get(), 0.15F, 1.0F);
+		this.playSound(TFSounds.QUEST_RAM_STEP, 0.15F, 1.0F);
 	}
 
 	@Override

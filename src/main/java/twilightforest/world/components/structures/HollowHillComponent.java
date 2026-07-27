@@ -24,7 +24,6 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
-import twilightforest.TwilightForestMod;
 import twilightforest.init.TFEntities;
 import twilightforest.init.TFStructurePieceTypes;
 import twilightforest.init.custom.StructureSpeleothemConfigs;
@@ -46,7 +45,7 @@ public class HollowHillComponent extends TFStructureComponentOld {
 	protected final Identifier speleothemConfigId;
 
 	public HollowHillComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		this(ctx, TFStructurePieceTypes.TFHill.get(), nbt);
+		this(ctx, TFStructurePieceTypes.TFHill, nbt);
 	}
 
 	public HollowHillComponent(StructurePieceSerializationContext ctx, StructurePieceType piece, CompoundTag nbt) {
@@ -97,12 +96,8 @@ public class HollowHillComponent extends TFStructureComponentOld {
 		//float drainRadius = this.radius * this.radius * 0.95f;
 		float drainRadius = this.hillSize * 16.5f;
 
-		TwilightForestMod.LOGGER.error("TF-HollowHill: postProcess hillSize={}, center={}, writeableBounds={}, radius={}, speleothemConfig type={}", this.hillSize, center, writeableBounds, this.radius, this.speleothemConfig.speleothemVarietyType());
-		TwilightForestMod.LOGGER.error("TF-HollowHill: varietyConfig is null? {}", this.speleothemConfig.getVarietyConfig() == null);
-
 		drainWater(generator, writeableBounds, this.boundingBox, world, this.hillSize * 3 + 2, Blocks.CAVE_AIR.defaultBlockState(), center.getX(), center.getZ(), drainRadius * drainRadius, Blocks.STONE.defaultBlockState());
 
-		int count = 0;
 		// Use two rectangle-grid lattices to simulate a triangular-grid lattice, simulating an optimal hexagonal-packing pattern for filling this structure
 		// with stalactites, stalagmites, chests, and spawners
 
@@ -111,15 +106,9 @@ public class HollowHillComponent extends TFStructureComponentOld {
 			float distSq = getDistSqFromCenter(center, latticePos);
 
 			if (distSq > shortenedRadiusSq) continue;
-			count++;
-			if (count <= 5) {
-				TwilightForestMod.LOGGER.error("TF-HollowHill: Placing features at latticePos={}, distSq={}, floorY={}, ceilingY={}", latticePos, distSq, this.getFloorY(distSq), this.getCeilingY(distSq));
-			}
 
 			this.setFeatures(world, rand, writeableBounds, latticePos, distSq);
 		}
-
-		TwilightForestMod.LOGGER.error("TF-HollowHill: Total feature positions to place: {}", count);
 
 		// Cakes!
 		//drainWater(generator, writeableBounds, this.boundingBox, world, this.hillSize * 3 + 2, Blocks.MAGENTA_CANDLE.defaultBlockState(), center.getX(), center.getZ(), drainRadius * drainRadius, Blocks.CAKE.defaultBlockState());

@@ -1,14 +1,11 @@
 package twilightforest.item;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -26,8 +23,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 import twilightforest.init.TFDamageTypes;
 import twilightforest.init.TFItems;
@@ -41,6 +36,7 @@ import twilightforest.util.entities.EntityUtil;
 
 import java.util.List;
 import java.util.Optional;
+import twilightforest.network.PacketDistributor;
 
 public class LifedrainScepterItem extends ScepterItem {
 
@@ -135,13 +131,13 @@ public class LifedrainScepterItem extends ScepterItem {
 			if (pointedEntity instanceof LivingEntity target && !(target instanceof ArmorStand) && target.isPickable()) {
 				if (!target.isDeadOrDying()) {
 					PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, new LifedrainParticlePacket(living.getId(), target.getEyePosition()));
-					level.playSound(null, living.blockPosition(), TFSounds.LIFE_SCEPTER_DRAIN.get(), SoundSource.PLAYERS);
+					level.playSound(null, living.blockPosition(), TFSounds.LIFE_SCEPTER_DRAIN, SoundSource.PLAYERS);
 				}
 
 				DamageSource damageSource = TFDamageTypes.getEntityDamageSource(level, TFDamageTypes.LIFEDRAIN, living);
 				if (target.hurtServer(serverLevel, damageSource, 1)) {
 					// make it explode
-					if (target.getHealth() <= 1 && !target.is(Tags.EntityTypes.BOSSES)) {
+					if (target.getHealth() <= 1 && !target.is(TFEntityTypeTags.BOSSES)) { // TODO: Port - verify BOSSES tag exists in TFEntityTypeTags
 						if (!target.is(TFEntityTypeTags.LIFEDRAIN_DROPS_NO_FLESH) && living instanceof Player player) {
 							LootParams ctx = new LootParams.Builder(serverLevel)
 								.withParameter(LootContextParams.THIS_ENTITY, target)
@@ -193,55 +189,6 @@ public class LifedrainScepterItem extends ScepterItem {
 		}
 	}
 
-	public static void makeRedMagicTrail(Level level, LivingEntity source, Vec3 target) {
-		// make particle trail
-		Vec3 handPos = getPlayerHandPos(source, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
-		double distance = handPos.distanceTo(target);
-
-		for (double i = 0; i <= distance * 3; i++) {
-			Vec3 particlePos = handPos.subtract(target).scale(i / (distance * 3));
-			particlePos = handPos.subtract(particlePos);
-			float r = 1.0F;
-			float g = 0.5F;
-			float b = 0.5F;
-			level.addParticle(ColorParticleOption.create(TFParticleType.MAGIC_EFFECT.get(), r, g, b), particlePos.x(), particlePos.y(), particlePos.z(), 0.0D, 0.0D, 0.0D);
-		}
-	}
-
-	/**
-	 * Slightly reformatted vanilla copy of:
-	 * net.minecraft.client.renderer.entity.FishingHookRenderer#getPlayerHandPos(net.minecraft.world.entity.player.Player, float, float)
-	 * ( cant link it cuz its client only or some shit, idk, you do it, wise guy )
-	 */
-	private static Vec3 getPlayerHandPos(LivingEntity living, float partialTicks) {
-		float armSwing = Mth.sin(Mth.sqrt(living.getAttackAnim(partialTicks)) * (float) Math.PI);
-		int invert = living.getMainArm() == HumanoidArm.RIGHT ? 1 : -1;
-		if (!(living.getMainHandItem().getItem() instanceof LifedrainScepterItem)) invert = -invert;
-
-		Minecraft minecraft = Minecraft.getInstance();
-		if (minecraft.options.getCameraType().isFirstPerson() && living == minecraft.player) {
-			float fov = minecraft.options.fov().get();
-			double viewBobbingScale = 960.0 / fov;
-			Vec3 vec3 = minecraft.getEntityRenderDispatcher()
-				.camera
-				.getNearPlane(fov)
-				.getPointOnPlane((float) invert * 0.525F, -0.1F)
-				.scale(viewBobbingScale)
-				.yRot(armSwing * 0.5F)
-				.xRot(-armSwing * 0.7F);
-			return living.getEyePosition(partialTicks).add(vec3);
-		} else {
-			float yRot = Mth.lerp(partialTicks, living.yBodyRotO, living.yBodyRot) * Mth.DEG_TO_RAD;
-			double sin = Mth.sin(yRot);
-			double cos = Mth.cos(yRot);
-			float scale = living.getScale();
-			double offset = (double) invert * 0.35 * (double) scale;
-			double factor = 0.8 * (double) scale;
-			float crouch = living.isCrouching() ? -0.1875F : 0.0F;
-			return living.getEyePosition(partialTicks).add(-cos * offset - sin * factor, (double) crouch - 0.45 * (double) scale, -sin * offset + cos * factor);
-		}
-	}
-
 	@Override
 	public int getUseDuration(ItemStack stack, LivingEntity user) {
 		return 72000;
@@ -252,13 +199,5 @@ public class LifedrainScepterItem extends ScepterItem {
 		return ItemUseAnimation.BOW;
 	}
 
-	@Override
-	public boolean canContinueUsing(ItemStack oldStack, ItemStack newStack) {
-		return oldStack.getItem() == newStack.getItem();
-	}
 
-	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		return slotChanged || newStack.getItem() != oldStack.getItem();
-	}
 }

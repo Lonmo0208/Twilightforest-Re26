@@ -22,7 +22,7 @@ import twilightforest.init.custom.TravellersModifiersManager;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifiable;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -55,7 +55,7 @@ public abstract class TravellersGearModifierRecipe extends CustomRecipe {
 			return ItemStack.EMPTY;  // Should never happen
 
 		ItemStack stack = travellerArmorStack.copy();
-		HolderLookup.Provider registries = net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer().registryAccess();
+		HolderLookup.Provider registries = net.minecraft.core.RegistryAccess.EMPTY;
 		return applyModifier(registries, stack, input.items().stream().map(stack1 -> Ingredient.of(stack1.getItem())).toList());
 	}
 

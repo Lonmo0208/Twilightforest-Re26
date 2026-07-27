@@ -48,7 +48,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.ai.control.NoClipMoveControl;
@@ -65,6 +64,7 @@ import twilightforest.util.landmarks.LandmarkUtil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import twilightforest.network.PacketDistributor;
 
 public class KnightPhantom extends BaseTFBoss {
 	private static final Vec3 DYING_ASCENT = new Vec3(0.0D, 0.015D, 0.0D);
@@ -143,9 +143,9 @@ public class KnightPhantom extends BaseTFBoss {
 
 	@Override
 	protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
-		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_SWORD.get()));
-		this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(TFItems.PHANTOM_CHESTPLATE.get()));
-		this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(TFItems.PHANTOM_HELMET.get()));
+		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_SWORD));
+		this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(TFItems.PHANTOM_CHESTPLATE));
+		this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(TFItems.PHANTOM_HELMET));
 	}
 
 	public Formation getCurrentFormation() {
@@ -171,7 +171,7 @@ public class KnightPhantom extends BaseTFBoss {
 		if (this.level().isClientSide() && this.isChargingAtPlayer() && this.hasYetToDisappear()) {
 			// make particles
 			for (int i = 0; i < 4; ++i) {
-				Item particleID = this.getRandom().nextBoolean() ? TFItems.PHANTOM_HELMET.get() : TFItems.KNIGHTMETAL_SWORD.get();
+				Item particleID = this.getRandom().nextBoolean() ? TFItems.PHANTOM_HELMET : TFItems.KNIGHTMETAL_SWORD;
 
 				this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStackTemplate(particleID)), this.getX() + (this.getRandom().nextFloat() - 0.5D) * this.getBbWidth(), this.getY() + this.getRandom().nextFloat() * (this.getBbHeight() - 0.75D) + 0.5D, this.getZ() + (this.getRandom().nextFloat() - 0.5D) * this.getBbWidth(), 0.0D, -0.1D, 0.0D);
 				this.level().addParticle(ParticleTypes.SMOKE, this.getX() + (this.getRandom().nextFloat() - 0.5D) * this.getBbWidth(), this.getY() + this.getRandom().nextFloat() * (this.getBbHeight() - 0.75D) + 0.5D, this.getZ() + (this.getRandom().nextFloat() - 0.5D) * this.getBbWidth(), 0.0D, 0.1D, 0.0D);
@@ -250,9 +250,9 @@ public class KnightPhantom extends BaseTFBoss {
 
 				//trigger criteria for killing every phantom in a group
 				if (cause.getEntity() instanceof ServerPlayer player) {
-					TFAdvancements.KILL_ALL_PHANTOMS.get().trigger(player);
+					TFAdvancements.KILL_ALL_PHANTOMS.trigger(player);
 					for (ServerPlayer otherPlayer : this.level().getEntitiesOfClass(ServerPlayer.class, new AABB(treasurePos).inflate(32.0D))) {
-						TFAdvancements.KILL_ALL_PHANTOMS.get().trigger(otherPlayer);
+						TFAdvancements.KILL_ALL_PHANTOMS.trigger(otherPlayer);
 					}
 				}
 
@@ -350,13 +350,13 @@ public class KnightPhantom extends BaseTFBoss {
 				BlockPos ground = getBlockPosBelowThatAffectsMyMovement();
 				float f = 0.91F;
 				if (this.onGround()) {
-					f = this.level().getBlockState(ground).getFriction(this.level(), ground, this) * 0.91F;
+					f = this.level().getBlockState(ground).getBlock().getFriction() * 0.91F;
 				}
 
 				float f1 = 0.16277137F / (f * f * f);
 				f = 0.91F;
 				if (this.onGround()) {
-					f = this.level().getBlockState(ground).getFriction(this.level(), ground, this) * 0.91F;
+					f = this.level().getBlockState(ground).getBlock().getFriction() * 0.91F;
 				}
 
 				this.moveRelative(this.onGround() ? 0.1F * f1 : 0.02F, vec3);
@@ -450,17 +450,17 @@ public class KnightPhantom extends BaseTFBoss {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.KNIGHT_PHANTOM_AMBIENT.get();
+		return TFSounds.KNIGHT_PHANTOM_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.KNIGHT_PHANTOM_HURT.get();
+		return TFSounds.KNIGHT_PHANTOM_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.KNIGHT_PHANTOM_DEATH.get();
+		return TFSounds.KNIGHT_PHANTOM_DEATH;
 	}
 
 	private void switchToFormationByNumber(int formationNumber) {
@@ -493,15 +493,15 @@ public class KnightPhantom extends BaseTFBoss {
 	}
 
 	public boolean isSwordKnight() {
-		return this.getMainHandItem().is(TFItems.KNIGHTMETAL_SWORD.get());
+		return this.getMainHandItem().is(TFItems.KNIGHTMETAL_SWORD);
 	}
 
 	public boolean isAxeKnight() {
-		return this.getMainHandItem().is(TFItems.KNIGHTMETAL_AXE.get());
+		return this.getMainHandItem().is(TFItems.KNIGHTMETAL_AXE);
 	}
 
 	public boolean isPickKnight() {
-		return this.getMainHandItem().is(TFItems.KNIGHTMETAL_PICKAXE.get());
+		return this.getMainHandItem().is(TFItems.KNIGHTMETAL_PICKAXE);
 	}
 
 	public int getNumber() {
@@ -514,9 +514,9 @@ public class KnightPhantom extends BaseTFBoss {
 
 		// set weapon per number
 		switch (number % 3) {
-			case 0 -> this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_SWORD.get()));
-			case 1 -> this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_AXE.get()));
-			case 2 -> this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_PICKAXE.get()));
+			case 0 -> this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_SWORD));
+			case 1 -> this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_AXE));
+			case 2 -> this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_PICKAXE));
 		}
 	}
 
@@ -561,12 +561,12 @@ public class KnightPhantom extends BaseTFBoss {
 
 	@Override
 	public Block getDeathContainer(RandomSource random) {
-		return TFBlocks.DARK_CHEST.get();
+		return TFBlocks.DARK_CHEST;
 	}
 
 	@Override
 	public Block getBossSpawner() {
-		return TFBlocks.KNIGHT_PHANTOM_BOSS_SPAWNER.get();
+		return TFBlocks.KNIGHT_PHANTOM_BOSS_SPAWNER;
 	}
 
 	public boolean hasYetToDisappear() {
@@ -640,7 +640,7 @@ public class KnightPhantom extends BaseTFBoss {
 					}
 
 					if (this.random.nextInt(5) == 0) {
-						Item particleID = this.getRandom().nextBoolean() ? TFItems.PHANTOM_HELMET.get() : TFItems.KNIGHTMETAL_SWORD.get();
+						Item particleID = this.getRandom().nextBoolean() ? TFItems.PHANTOM_HELMET : TFItems.KNIGHTMETAL_SWORD;
 						this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStackTemplate(particleID)), this.getX() + (this.getRandom().nextFloat() - 0.5D) * this.getBbWidth(), this.getY() + this.getRandom().nextFloat() * (this.getBbHeight() - 0.75D) + 0.5D, this.getZ() + (this.getRandom().nextFloat() - 0.5D) * this.getBbWidth(), 0.0D, -0.1D, 0.0D);
 					}
 				}

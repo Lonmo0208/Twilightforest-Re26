@@ -3,6 +3,7 @@ package twilightforest.world.components.structures.type;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.RandomSource;
@@ -44,7 +45,7 @@ public class LichTowerStructure extends ControlledSpawningStructure {
 
 	@Override
 	public StructureType<?> type() {
-		return TFStructureTypes.LICH_TOWER.get();
+		return TFStructureTypes.LICH_TOWER;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -63,7 +64,7 @@ public class LichTowerStructure extends ControlledSpawningStructure {
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_naga"))),
 			Optional.of(new HintConfig(HintConfig.book("lichtower", 4), TFEntities.KOBOLD.get())),
 			Optional.of(new DecorationConfig(1, false, true, true)),
-			true, Optional.of(TFMapDecorations.LICH_TOWER),
+			true, Optional.of(BuiltInRegistries.MAP_DECORATION_TYPE.wrapAsHolder(TFMapDecorations.LICH_TOWER)),
 			new StructureSettings(
 				context.lookup(Registries.BIOME).getOrThrow(TFBiomeTags.VALID_LICH_TOWER_BIOMES),
 				Arrays.stream(MobCategory.values()).collect(Collectors.<MobCategory, MobCategory, StructureSpawnOverride>toMap(category -> category, category -> new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, WeightedList.<MobSpawnSettings.SpawnerData>builder().build()))),

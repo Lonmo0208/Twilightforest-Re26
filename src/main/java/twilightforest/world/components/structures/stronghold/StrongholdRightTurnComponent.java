@@ -19,11 +19,11 @@ import twilightforest.init.TFStructurePieceTypes;
 public class StrongholdRightTurnComponent extends KnightStrongholdComponent {
 
 	public StrongholdRightTurnComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		super(TFStructurePieceTypes.TFSRT.get(), nbt);
+		super(TFStructurePieceTypes.TFSRT, nbt);
 	}
 
 	public StrongholdRightTurnComponent(int i, Direction facing, int x, int y, int z) {
-		super(TFStructurePieceTypes.TFSRT.get(), i, facing, x, y, z);
+		super(TFStructurePieceTypes.TFSRT, i, facing, x, y, z);
 	}
 
 	@Override

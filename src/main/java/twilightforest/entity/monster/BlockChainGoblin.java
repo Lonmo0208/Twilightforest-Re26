@@ -27,7 +27,9 @@ import twilightforest.entity.TFPart;
 import twilightforest.entity.ai.goal.AvoidAnyEntityGoal;
 import twilightforest.entity.ai.goal.ThrowSpikeBlockGoal;
 import twilightforest.init.TFDamageTypes;
+import twilightforest.init.TFEntities;
 import twilightforest.init.TFSounds;
+import twilightforest.util.TFEntityExtensions;
 import twilightforest.util.entities.EntityUtil;
 
 import java.util.List;
@@ -59,7 +61,7 @@ public class BlockChainGoblin extends Monster {
 	public static abstract class MultipartGenericsAreDumb extends TFPart<Entity> {
 
 		public MultipartGenericsAreDumb(Entity parent) {
-			super(parent);
+			super(parent, TFEntities.TF_PART.get(), parent.level());
 		}
 	}
 
@@ -94,17 +96,17 @@ public class BlockChainGoblin extends Monster {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.BLOCKCHAIN_GOBLIN_AMBIENT.get();
+		return TFSounds.BLOCKCHAIN_GOBLIN_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.BLOCKCHAIN_GOBLIN_HURT.get();
+		return TFSounds.BLOCKCHAIN_GOBLIN_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.BLOCKCHAIN_GOBLIN_DEATH.get();
+		return TFSounds.BLOCKCHAIN_GOBLIN_DEATH;
 	}
 
 	/**
@@ -227,7 +229,7 @@ public class BlockChainGoblin extends Monster {
 
 		if (this.isThrowing() && collider.isInWall()) {
 			this.setThrowing(false);
-			collider.playSound(TFSounds.BLOCK_AND_CHAIN_COLLIDE.get(), 0.65F, 0.75F);
+			collider.playSound(TFSounds.BLOCK_AND_CHAIN_COLLIDE, 0.65F, 0.75F);
 			this.gameEvent(GameEvent.HIT_GROUND);
 		}
 	}
@@ -241,7 +243,7 @@ public class BlockChainGoblin extends Monster {
 			if (collided instanceof LivingEntity) {
 				if (super.doHurtTarget(server, collided)) {
 					collided.push(0, 0.4, 0);
-					this.playSound(TFSounds.BLOCK_AND_CHAIN_HIT.get(), 1.0F, 1.0F);
+					this.playSound(TFSounds.BLOCK_AND_CHAIN_HIT, 1.0F, 1.0F);
 					this.gameEvent(GameEvent.PROJECTILE_LAND);
 					this.recoilCounter = 40;
 					if (this.isThrowing()) {
@@ -288,21 +290,8 @@ public class BlockChainGoblin extends Monster {
 	}
 
 	@Override
-	public boolean isMultipartEntity() {
-		return true;
-	}
-
-	@Override
 	public void recreateFromPacket(ClientboundAddEntityPacket packet) {
 		super.recreateFromPacket(packet);
 		TFPart.assignPartIDs(this);
-	}
-
-	/**
-	 * We need to do this for the bounding boxes on the parts to become active
-	 */
-	@Override
-	public MultipartGenericsAreDumb[] getParts() {
-		return partsArray;
 	}
 }

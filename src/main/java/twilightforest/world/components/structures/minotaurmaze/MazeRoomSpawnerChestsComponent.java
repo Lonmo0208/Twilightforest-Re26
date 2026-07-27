@@ -21,11 +21,11 @@ import twilightforest.loot.TFLootTables;
 public class MazeRoomSpawnerChestsComponent extends MazeRoomComponent {
 
 	public MazeRoomSpawnerChestsComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		super(TFStructurePieceTypes.TFMMRSC.get(), nbt);
+		super(TFStructurePieceTypes.TFMMRSC, nbt);
 	}
 
 	public MazeRoomSpawnerChestsComponent(int i, RandomSource rand, int x, int y, int z) {
-		super(TFStructurePieceTypes.TFMMRSC.get(), i, rand, x, y, z);
+		super(TFStructurePieceTypes.TFMMRSC, i, rand, x, y, z);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class MazeRoomSpawnerChestsComponent extends MazeRoomComponent {
 	private void placePillarEnclosure(WorldGenLevel world, BoundingBox sbb,
 									  int dx, int dz) {
 		for (int y = 1; y < 5; y++) {
-			final BlockState chiselledMazeBlock = TFBlocks.CUT_MAZESTONE.get().defaultBlockState();
+			final BlockState chiselledMazeBlock = TFBlocks.CUT_MAZESTONE.defaultBlockState();
 			placeBlock(world, chiselledMazeBlock, dx, y, dz, sbb);
 			placeBlock(world, chiselledMazeBlock, dx + 2, y, dz, sbb);
 			placeBlock(world, chiselledMazeBlock, dx, y, dz + 2, sbb);

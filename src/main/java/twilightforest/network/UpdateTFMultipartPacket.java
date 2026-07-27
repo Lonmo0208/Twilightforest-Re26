@@ -5,12 +5,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.entity.PartEntity;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.TFPart;
+import twilightforest.util.TFEntityExtensions;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public record UpdateTFMultipartPacket(int entityId, @Nullable Entity entity, @Nu
 	}
 
 	public UpdateTFMultipartPacket(Entity entity) {
-		this(-1, entity, Arrays.stream(entity.getParts()).filter(part -> part instanceof TFPart<?>).map(part -> (TFPart<?>) part).collect(Collectors.toMap(TFPart::getId, TFPart::writeData)));
+		this(-1, entity, Arrays.stream(((TFEntityExtensions) entity).getParts()).filter(part -> part instanceof TFPart<?>).map(part -> (TFPart<?>) part).collect(Collectors.toMap(TFPart::getId, TFPart::writeData)));
 	}
 
 	public void write(RegistryFriendlyByteBuf buf) {
@@ -47,35 +46,6 @@ public record UpdateTFMultipartPacket(int entityId, @Nullable Entity entity, @Nu
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
 		return TYPE;
-	}
-
-	public static void handle(UpdateTFMultipartPacket message, IPayloadContext ctx) {
-		ctx.enqueueWork(() -> {
-			int eId = message.entity != null && message.entityId <= 0 ? message.entity.getId() : message.entityId; // Account for Singleplayer
-			Entity ent = ctx.player().level().getEntity(eId);
-			if (ent != null && ent.isMultipartEntity()) {
-				PartEntity<?>[] parts = ent.getParts();
-				if (parts == null)
-					return;
-				PartEntity<?>[] serverParts = null;
-				if (message.entity != null) {
-					serverParts = message.entity.getParts();
-				}
-				for (int i = 0; i < parts.length; i++) {
-					PartEntity<?> part = parts[i];
-					if (part instanceof TFPart<?> tfPart) {
-						if (serverParts != null && i < serverParts.length && serverParts[i] instanceof TFPart<?> serverTfPart) {
-							// Singleplayer: match by index directly from server entity
-							tfPart.readData(serverTfPart.writeData());
-						} else if (message.data != null) {
-							PartDataHolder data = message.data.get(tfPart.getId());
-							if (data != null)
-								tfPart.readData(data);
-						}
-					}
-				}
-			}
-		});
 	}
 
 	public record PartDataHolder(double x, double y, double z,

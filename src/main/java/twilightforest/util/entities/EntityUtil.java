@@ -33,8 +33,7 @@ import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
-import net.neoforged.neoforge.event.EventHooks;
+
 import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.EnforcedHomePoint;
@@ -62,9 +61,8 @@ public class EntityUtil {
 		float hardness = state.getDestroySpeed(world, pos);
 		return hardness >= 0f && hardness < 50f && !state.isAir()
 			&& !(world.getBlockEntity(pos) instanceof Container)
-			&& state.getBlock().canEntityDestroy(state, world, pos, entity)
 			&& (/* rude type limit */!(entity instanceof LivingEntity)
-			|| EventHooks.onEntityDestroyBlock((LivingEntity) entity, pos, state));
+			|| true); // TODO: Port - onEntityDestroyBlock
 	}
 
 	/**
@@ -86,10 +84,7 @@ public class EntityUtil {
 		return rayTrace(player, modifier == null ? range : modifier.applyAsDouble(range));
 	}
 
-	private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
-	private static final Method LivingEntity_getDeathSound = ObfuscationReflectionHelper.findMethod(LivingEntity.class, "getDeathSound");
 	private static final MethodHandle handle_LivingEntity_getDeathSound;
-	private static final Method HangingEntity_setDirection = ObfuscationReflectionHelper.findMethod(HangingEntity.class, "setDirection", Direction.class);
 	private static final MethodHandle handle_HangingEntity_setDirection;
 
 	static {
@@ -97,11 +92,21 @@ public class EntityUtil {
 		MethodHandle tmp_handle_HangingEntity_setDirection = null;
 
 		try {
-			tmp_handle_LivingEntity_getDeathSound = LOOKUP.unreflect(LivingEntity_getDeathSound);
-			tmp_handle_HangingEntity_setDirection = LOOKUP.unreflect(HangingEntity_setDirection);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			Method m1 = LivingEntity.class.getDeclaredMethod("getDeathSound");
+			m1.setAccessible(true);
+			tmp_handle_LivingEntity_getDeathSound = MethodHandles.lookup().unreflect(m1);
+		} catch (Exception e) {
+			TwilightForestMod.LOGGER.error("Failed to get LivingEntity.getDeathSound() method handle", e);
 		}
+
+		try {
+			Method m2 = HangingEntity.class.getDeclaredMethod("setDirection", Direction.class);
+			m2.setAccessible(true);
+			tmp_handle_HangingEntity_setDirection = MethodHandles.lookup().unreflect(m2);
+		} catch (Exception e) {
+			TwilightForestMod.LOGGER.error("Failed to get HangingEntity.setDirection() method handle", e);
+		}
+
 		handle_LivingEntity_getDeathSound = tmp_handle_LivingEntity_getDeathSound;
 		handle_HangingEntity_setDirection = tmp_handle_HangingEntity_setDirection;
 	}
@@ -283,7 +288,7 @@ public class EntityUtil {
 		if (!(oldEntity.level() instanceof ServerLevel level)) return false;
 		var newEntity = newType.create(level, EntitySpawnReason.CONVERSION);
 		if (newEntity == null) return false;
-		if (!(newEntity instanceof LivingEntity living) || EventHooks.canLivingConvert(oldEntity, (EntityType<? extends LivingEntity>) living.getType(), timer -> {})) {
+		if (!(newEntity instanceof LivingEntity living) || true) { // TODO: Port - canLivingConvert check
 			var passengerSave = oldEntity.getPassengers();
 			if (oldEntity instanceof Mob mob && newEntity instanceof Mob newMob) {
 				ConversionParams params = ConversionParams.single(mob, true, true);
@@ -302,7 +307,7 @@ public class EntityUtil {
 						}
 					}
 
-					EventHooks.finalizeMobSpawn(mob, level, level.getCurrentDifficultyAt(oldEntity.blockPosition()), EntitySpawnReason.CONVERSION, null);
+					// EventHooks.finalizeMobSpawn(mob, level, level.getCurrentDifficultyAt(oldEntity.blockPosition()), EntitySpawnReason.CONVERSION, null)); // TODO: Port - NeoForge hook
 				}
 
 				oldEntity.level().addFreshEntity(newEntity);
@@ -339,8 +344,8 @@ public class EntityUtil {
 				}
 			}
 
-			if (newEntity instanceof LivingEntity living) EventHooks.onLivingConvert(oldEntity, living);
-			level.playSound(null, newEntity.blockPosition(), TFSounds.POWDER_USE.get(), newEntity.getSoundSource());
+			if (newEntity instanceof LivingEntity living) { /* TODO: Port - onLivingConvert */ }
+			level.playSound(null, newEntity.blockPosition(), TFSounds.POWDER_USE, newEntity.getSoundSource());
 			return true;
 		}
 		return false;

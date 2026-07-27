@@ -1,0 +1,12 @@
+{
+  "parent": "twilightforest:block/template_trophy_pedestal",
+  "textures": {
+    "down": "twilightforest:block/pedestal/top",
+    "east": "twilightforest:block/pedestal/ur-ghast_flat",
+    "north": "twilightforest:block/pedestal/naga_flat",
+    "particle": "minecraft:block/stone",
+    "south": "twilightforest:block/pedestal/lich_flat",
+    "up": "twilightforest:block/pedestal/top_flat",
+    "west": "twilightforest:block/pedestal/hydra_flat"
+  }
+}

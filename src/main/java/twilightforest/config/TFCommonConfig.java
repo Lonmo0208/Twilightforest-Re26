@@ -2,7 +2,6 @@ package twilightforest.config;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.permissions.PermissionLevel;
-import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +14,14 @@ public class TFCommonConfig {
 	final UncraftingStuff UNCRAFTING_STUFFS = new UncraftingStuff();
 	final ShieldInteractions SHIELD_INTERACTIONS = new ShieldInteractions();
 
-	final ModConfigSpec.BooleanValue casketUUIDLocking;
-	final ModConfigSpec.BooleanValue disableSkullCandles;
-	final ModConfigSpec.BooleanValue defaultItemEnchants;
-	final ModConfigSpec.BooleanValue bossDropChests;
-	final ModConfigSpec.IntValue cloudBlockPrecipitationDistance;
-	final ModConfigSpec.EnumValue<TFConfig.MultiplayerFightAdjuster> multiplayerFightAdjuster;
+	final FabricModConfigSpec.BooleanValue casketUUIDLocking;
+	final FabricModConfigSpec.BooleanValue disableSkullCandles;
+	final FabricModConfigSpec.BooleanValue defaultItemEnchants;
+	final FabricModConfigSpec.BooleanValue bossDropChests;
+	final FabricModConfigSpec.IntValue cloudBlockPrecipitationDistance;
+	final FabricModConfigSpec.EnumValue<TFConfig.MultiplayerFightAdjuster> multiplayerFightAdjuster;
 
-	public TFCommonConfig(ModConfigSpec.Builder builder) {
+	public TFCommonConfig(FabricModConfigSpec.Builder builder) {
 		builder.comment(ConfigComments.DIMENSION).translation(TFConfig.CONFIG_ID + "dim_settings").push("Dimension Settings");
 		{
 			DIMENSION.newPlayersSpawnInTF = builder
@@ -208,44 +207,44 @@ public class TFCommonConfig {
 	}
 
 	static class Dimension {
-		ModConfigSpec.BooleanValue newPlayersSpawnInTF;
-		ModConfigSpec.BooleanValue portalForNewPlayerSpawn;
+		FabricModConfigSpec.BooleanValue newPlayersSpawnInTF;
+		FabricModConfigSpec.BooleanValue portalForNewPlayerSpawn;
 	}
 
 	static class Portal {
-		ModConfigSpec.ConfigValue<String> originDimension;
-		ModConfigSpec.BooleanValue allowPortalsInOtherDimensions;
-		ModConfigSpec.EnumValue<PermissionLevel> portalCreationPermission;
-		ModConfigSpec.BooleanValue disablePortalCreation;
-		ModConfigSpec.BooleanValue checkPortalPlacement;
-		ModConfigSpec.BooleanValue destructivePortalLightning;
-		ModConfigSpec.BooleanValue shouldReturnPortalBeUsable;
-		ModConfigSpec.ConfigValue<String> portalAdvancementLock;
-		ModConfigSpec.IntValue maxPortalSize;
+		FabricModConfigSpec.StringValue originDimension;
+		FabricModConfigSpec.BooleanValue allowPortalsInOtherDimensions;
+		FabricModConfigSpec.EnumValue<PermissionLevel> portalCreationPermission;
+		FabricModConfigSpec.BooleanValue disablePortalCreation;
+		FabricModConfigSpec.BooleanValue checkPortalPlacement;
+		FabricModConfigSpec.BooleanValue destructivePortalLightning;
+		FabricModConfigSpec.BooleanValue shouldReturnPortalBeUsable;
+		FabricModConfigSpec.StringValue portalAdvancementLock;
+		FabricModConfigSpec.IntValue maxPortalSize;
 	}
 
 	static class UncraftingStuff {
-		ModConfigSpec.DoubleValue uncraftingXpCostMultiplier;
-		ModConfigSpec.DoubleValue repairingXpCostMultiplier;
-		ModConfigSpec.BooleanValue allowShapelessUncrafting;
-		ModConfigSpec.BooleanValue disableIngredientSwitching;
-		ModConfigSpec.ConfigValue<List<? extends String>> disableUncraftingRecipes;
-		ModConfigSpec.BooleanValue reverseRecipeBlacklist;
-		ModConfigSpec.ConfigValue<List<? extends String>> blacklistedUncraftingModIds;
-		ModConfigSpec.BooleanValue flipUncraftingModIdList;
-		ModConfigSpec.BooleanValue disableUncraftingOnly;
-		ModConfigSpec.BooleanValue disableEntireTable;
+		FabricModConfigSpec.DoubleValue uncraftingXpCostMultiplier;
+		FabricModConfigSpec.DoubleValue repairingXpCostMultiplier;
+		FabricModConfigSpec.BooleanValue allowShapelessUncrafting;
+		FabricModConfigSpec.BooleanValue disableIngredientSwitching;
+		FabricModConfigSpec.ListValue<String> disableUncraftingRecipes;
+		FabricModConfigSpec.BooleanValue reverseRecipeBlacklist;
+		FabricModConfigSpec.ListValue<String> blacklistedUncraftingModIds;
+		FabricModConfigSpec.BooleanValue flipUncraftingModIdList;
+		FabricModConfigSpec.BooleanValue disableUncraftingOnly;
+		FabricModConfigSpec.BooleanValue disableEntireTable;
 	}
 
 	static class MagicTrees {
-		ModConfigSpec.IntValue timeRange;
-		ModConfigSpec.IntValue transformationRange;
-		ModConfigSpec.IntValue miningRange;
-		ModConfigSpec.IntValue sortingRange;
+		FabricModConfigSpec.IntValue timeRange;
+		FabricModConfigSpec.IntValue transformationRange;
+		FabricModConfigSpec.IntValue miningRange;
+		FabricModConfigSpec.IntValue sortingRange;
 	}
 
 	static class ShieldInteractions {
-		ModConfigSpec.BooleanValue parryNonTwilightAttacks;
-		ModConfigSpec.IntValue shieldParryTicks;
+		FabricModConfigSpec.BooleanValue parryNonTwilightAttacks;
+		FabricModConfigSpec.IntValue shieldParryTicks;
 	}
 }

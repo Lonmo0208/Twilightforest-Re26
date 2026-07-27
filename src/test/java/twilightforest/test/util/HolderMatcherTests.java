@@ -61,7 +61,7 @@ public class HolderMatcherTests {
 
 	@Test
 	public void matchesDeferred() {
-		Holder<Item> holder = Holder.direct(TFItems.EXPERIMENT_115.get());
+		Holder<Item> holder = Holder.direct(TFItems.EXPERIMENT_115);
 
 		boolean result = instance.match(holder, holder);
 
@@ -70,8 +70,8 @@ public class HolderMatcherTests {
 
 	@Test
 	public void matchesDeferredFailed() {
-		Holder<Item> holder = Holder.direct(TFItems.EXPERIMENT_115.get());
-		Holder<Item> other = Holder.direct(TFItems.STEELEAF_INGOT.get());
+		Holder<Item> holder = Holder.direct(TFItems.EXPERIMENT_115);
+		Holder<Item> other = Holder.direct(TFItems.STEELEAF_INGOT);
 
 		boolean result = instance.match(holder, other);
 
@@ -80,9 +80,9 @@ public class HolderMatcherTests {
 
 	@Test
 	public void matchesMixed() {
-		Holder<Item> ref = BuiltInRegistries.ITEM.get(BuiltInRegistries.ITEM.getResourceKey(TFItems.EXPERIMENT_115.value()).orElseThrow()).orElseThrow();
-		Holder<Item> direct = Holder.direct(TFItems.EXPERIMENT_115.value());
-		Holder<Item> deferred = Holder.direct(TFItems.EXPERIMENT_115.get());
+		Holder<Item> ref = BuiltInRegistries.ITEM.get(BuiltInRegistries.ITEM.getResourceKey(TFItems.EXPERIMENT_115).orElseThrow()).orElseThrow();
+		Holder<Item> direct = Holder.direct(TFItems.EXPERIMENT_115);
+		Holder<Item> deferred = Holder.direct(TFItems.EXPERIMENT_115);
 
 		assertTrue(instance.match(ref, direct));
 		assertTrue(instance.match(ref, deferred));

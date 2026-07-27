@@ -4,61 +4,97 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import twilightforest.TwilightForestMod;
 
 import java.util.function.Function;
 
 public class TFParticleType {
 
-	public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(Registries.PARTICLE_TYPE, TwilightForestMod.ID);
+	public static final SimpleParticleType LARGE_FLAME = new SimpleParticleType(false);
+	public static final SimpleParticleType LEAF_RUNE = new SimpleParticleType(false);
+	public static final SimpleParticleType BOSS_TEAR = new SimpleParticleType(false);
+	public static final SimpleParticleType GHAST_TRAP = new SimpleParticleType(false);
+	public static final SimpleParticleType PROTECTION = new SimpleParticleType(true);
+	public static final SimpleParticleType SNOW = new SimpleParticleType(false);
+	public static final SimpleParticleType SNOW_WARNING = new SimpleParticleType(false);
+	public static final SimpleParticleType EXTENDED_SNOW_WARNING = new SimpleParticleType(false);
+	public static final SimpleParticleType SNOW_GUARDIAN = new SimpleParticleType(false);
+	public static final SimpleParticleType ICE_BEAM = new SimpleParticleType(false);
+	public static final SimpleParticleType ANNIHILATE = new SimpleParticleType(false);
+	public static final SimpleParticleType PERFECT_DODGE = new SimpleParticleType(false);
+	public static final SimpleParticleType DOUBLE_JUMP = new SimpleParticleType(true);
+	public static final SimpleParticleType HUGE_SMOKE = new SimpleParticleType(false);
+	public static final SimpleParticleType FIREFLY = new SimpleParticleType(false);
+	public static final SimpleParticleType WANDERING_FIREFLY = new SimpleParticleType(false);
+	public static final SimpleParticleType PARTICLE_SPAWNER_FIREFLY = new SimpleParticleType(false);
+	public static final ParticleType<ColorParticleOption> FALLEN_LEAF = new ParticleType<ColorParticleOption>(false) {
+		@Override
+		public MapCodec<ColorParticleOption> codec() {
+			return ColorParticleOption.codec(this);
+		}
 
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LARGE_FLAME = PARTICLE_TYPES.register("large_flame", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LEAF_RUNE = PARTICLE_TYPES.register("leaf_rune", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BOSS_TEAR = PARTICLE_TYPES.register("boss_tear", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> GHAST_TRAP = PARTICLE_TYPES.register("ghast_trap", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> PROTECTION = PARTICLE_TYPES.register("protection", () -> new SimpleParticleType(true));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SNOW = PARTICLE_TYPES.register("snow", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SNOW_WARNING = PARTICLE_TYPES.register("snow_warning", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> EXTENDED_SNOW_WARNING = PARTICLE_TYPES.register("extended_snow_warning", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SNOW_GUARDIAN = PARTICLE_TYPES.register("snow_guardian", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ICE_BEAM = PARTICLE_TYPES.register("ice_beam", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ANNIHILATE = PARTICLE_TYPES.register("annihilate", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> PERFECT_DODGE = PARTICLE_TYPES.register("perfect_dodge", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DOUBLE_JUMP = PARTICLE_TYPES.register("double_jump", () -> new SimpleParticleType(true));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> HUGE_SMOKE = PARTICLE_TYPES.register("huge_smoke", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FIREFLY = PARTICLE_TYPES.register("firefly", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> WANDERING_FIREFLY = PARTICLE_TYPES.register("wandering_firefly", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> PARTICLE_SPAWNER_FIREFLY = PARTICLE_TYPES.register("particle_spawner_firefly", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, ParticleType<ColorParticleOption>> FALLEN_LEAF = register("fallen_leaf", false, ColorParticleOption::codec, ColorParticleOption::streamCodec);
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DIM_FLAME = PARTICLE_TYPES.register("dim_flame", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> OMINOUS_FLAME = PARTICLE_TYPES.register("ominous_flame", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SORTING_PARTICLE = PARTICLE_TYPES.register("sorting_particle", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TRANSFORMATION_PARTICLE = PARTICLE_TYPES.register("transformation_particle", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LOG_CORE_PARTICLE = PARTICLE_TYPES.register("log_core_particle", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CLOUD_PUFF = PARTICLE_TYPES.register("cloud_puff", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, ParticleType<ColorParticleOption>> MAGIC_EFFECT = register("magic_effect", false, ColorParticleOption::codec, ColorParticleOption::streamCodec);
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ANGRY_LICH = PARTICLE_TYPES.register("angry_lich", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TWILIGHT_ORB = PARTICLE_TYPES.register("twilight_orb", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SHIELD_BREAK = PARTICLE_TYPES.register("shield_break", () -> new SimpleParticleType(false));
-	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DRYING_RACK = PARTICLE_TYPES.register("drying_rack", () -> new SimpleParticleType(false));
+		@Override
+		public StreamCodec<? super RegistryFriendlyByteBuf, ColorParticleOption> streamCodec() {
+			return ColorParticleOption.streamCodec(this);
+		}
+	};
+	public static final SimpleParticleType DIM_FLAME = new SimpleParticleType(false);
+	public static final SimpleParticleType OMINOUS_FLAME = new SimpleParticleType(false);
+	public static final SimpleParticleType SORTING_PARTICLE = new SimpleParticleType(false);
+	public static final SimpleParticleType TRANSFORMATION_PARTICLE = new SimpleParticleType(false);
+	public static final SimpleParticleType LOG_CORE_PARTICLE = new SimpleParticleType(false);
+	public static final SimpleParticleType CLOUD_PUFF = new SimpleParticleType(false);
+	public static final ParticleType<ColorParticleOption> MAGIC_EFFECT = new ParticleType<ColorParticleOption>(false) {
+		@Override
+		public MapCodec<ColorParticleOption> codec() {
+			return ColorParticleOption.codec(this);
+		}
 
-	private static <T extends ParticleOptions> DeferredHolder<ParticleType<?>, ParticleType<T>> register(String name, boolean overrideLimiter, Function<ParticleType<T>, MapCodec<T>> codec, Function<ParticleType<T>, StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodec) {
-		return PARTICLE_TYPES.register(name, () -> new ParticleType<T>(overrideLimiter) {
-			@Override
-			public MapCodec<T> codec() {
-				return codec.apply(this);
-			}
+		@Override
+		public StreamCodec<? super RegistryFriendlyByteBuf, ColorParticleOption> streamCodec() {
+			return ColorParticleOption.streamCodec(this);
+		}
+	};
+	public static final SimpleParticleType ANGRY_LICH = new SimpleParticleType(false);
+	public static final SimpleParticleType TWILIGHT_ORB = new SimpleParticleType(false);
+	public static final SimpleParticleType SHIELD_BREAK = new SimpleParticleType(false);
+	public static final SimpleParticleType DRYING_RACK = new SimpleParticleType(false);
 
-			@Override
-			public StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec() {
-				return streamCodec.apply(this);
-			}
-		});
+	public static void init() {
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("large_flame"), LARGE_FLAME);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("leaf_rune"), LEAF_RUNE);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("boss_tear"), BOSS_TEAR);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("ghast_trap"), GHAST_TRAP);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("protection"), PROTECTION);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("snow"), SNOW);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("snow_warning"), SNOW_WARNING);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("extended_snow_warning"), EXTENDED_SNOW_WARNING);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("snow_guardian"), SNOW_GUARDIAN);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("ice_beam"), ICE_BEAM);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("annihilate"), ANNIHILATE);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("perfect_dodge"), PERFECT_DODGE);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("double_jump"), DOUBLE_JUMP);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("huge_smoke"), HUGE_SMOKE);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("firefly"), FIREFLY);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("wandering_firefly"), WANDERING_FIREFLY);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("particle_spawner_firefly"), PARTICLE_SPAWNER_FIREFLY);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("fallen_leaf"), FALLEN_LEAF);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("dim_flame"), DIM_FLAME);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("ominous_flame"), OMINOUS_FLAME);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("sorting_particle"), SORTING_PARTICLE);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("transformation_particle"), TRANSFORMATION_PARTICLE);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("log_core_particle"), LOG_CORE_PARTICLE);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("cloud_puff"), CLOUD_PUFF);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("magic_effect"), MAGIC_EFFECT);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("angry_lich"), ANGRY_LICH);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("twilight_orb"), TWILIGHT_ORB);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("shield_break"), SHIELD_BREAK);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, TwilightForestMod.prefix("drying_rack"), DRYING_RACK);
 	}
+
 }

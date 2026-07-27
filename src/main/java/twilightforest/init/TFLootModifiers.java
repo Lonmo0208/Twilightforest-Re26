@@ -1,18 +1,18 @@
 package twilightforest.init;
 
 import com.mojang.serialization.MapCodec;
-import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import twilightforest.TwilightForestMod;
 import twilightforest.loot.modifiers.FieryToolSmeltingModifier;
 import twilightforest.loot.modifiers.GiantToolGroupingModifier;
 
 public class TFLootModifiers {
 
-	public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, TwilightForestMod.ID);
+	public static final MapCodec<FieryToolSmeltingModifier> FIERY_PICK_SMELTING = Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, TwilightForestMod.prefix("fiery_pick_smelting"), FieryToolSmeltingModifier.CODEC);
+	public static final MapCodec<GiantToolGroupingModifier> GIANT_PICK_GROUPING = Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, TwilightForestMod.prefix("giant_block_grouping"), GiantToolGroupingModifier.CODEC);
 
-	public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<FieryToolSmeltingModifier>> FIERY_PICK_SMELTING = LOOT_MODIFIERS.register("fiery_pick_smelting", () -> FieryToolSmeltingModifier.CODEC);
-	public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<GiantToolGroupingModifier>> GIANT_PICK_GROUPING = LOOT_MODIFIERS.register("giant_block_grouping", () -> GiantToolGroupingModifier.CODEC);
+	public static void init() {
+		// Static initializer triggers all registrations
+	}
 }

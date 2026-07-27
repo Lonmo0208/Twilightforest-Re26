@@ -7,12 +7,10 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -26,7 +24,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.util.ConcatenatedListView;
+
 import org.jspecify.annotations.Nullable;
 import twilightforest.block.entity.spawner.SinisterSpawnerBlockEntity;
 import twilightforest.block.entity.spawner.SinisterSpawnerLogic;
@@ -35,6 +33,7 @@ import twilightforest.init.TFBlocks;
 import twilightforest.init.TFItems;
 import twilightforest.init.TFParticleType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static twilightforest.init.TFBlocks.KNIGHT_PHANTOM_BOSS_SPAWNER;
@@ -59,12 +58,7 @@ public class SinisterSpawnerBlock extends BaseEntityBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-		return createTickerHelper(blockEntityType, TFBlockEntities.SINISTER_SPAWNER.value(), level.isClientSide() ? SinisterSpawnerBlockEntity::clientTick : SinisterSpawnerBlockEntity::serverTick);
-	}
-
-	@Override
-	public int getExpDrop(BlockState state, LevelAccessor level, BlockPos pos, @Nullable BlockEntity blockEntity, @Nullable Entity breaker, ItemStack tool) {
-		return 15 + level.getRandom().nextInt(15) + level.getRandom().nextInt(15);
+		return createTickerHelper(blockEntityType, TFBlockEntities.SINISTER_SPAWNER, level.isClientSide() ? SinisterSpawnerBlockEntity::clientTick : SinisterSpawnerBlockEntity::serverTick);
 	}
 
 	//TODO
@@ -112,23 +106,23 @@ public class SinisterSpawnerBlock extends BaseEntityBlock {
 		if (stack.is(TFItems.NAGA_TROPHY) || stack.is(TFBlocks.NAGA_BOSS_SPAWNER.asItem())) {
 			return List.of(ParticleTypes.SMOKE, ParticleTypes.CRIT);
 		} else if (stack.is(TFItems.LICH_TROPHY) || stack.is(TFBlocks.LICH_BOSS_SPAWNER.asItem())) {
-			return List.of(ParticleTypes.SMOKE, TFParticleType.OMINOUS_FLAME.get());
+			return List.of(ParticleTypes.SMOKE, TFParticleType.OMINOUS_FLAME);
 		} else if (stack.is(TFItems.MINOSHROOM_TROPHY) || stack.is(TFBlocks.MINOSHROOM_BOSS_SPAWNER.asItem())) {
 			return List.of(ParticleTypes.SMOKE, ParticleTypes.CRIMSON_SPORE);
 		} else if (stack.is(TFItems.HYDRA_TROPHY) || stack.is(TFBlocks.HYDRA_BOSS_SPAWNER.asItem())) {
 			return List.of(ParticleTypes.SMOKE, ParticleTypes.FLAME);
 		} else if (stack.is(TFItems.KNIGHT_PHANTOM_TROPHY) || stack.is(KNIGHT_PHANTOM_BOSS_SPAWNER.asItem())) {
-			return List.of(ParticleTypes.SMOKE, TFParticleType.OMINOUS_FLAME.get());
+			return List.of(ParticleTypes.SMOKE, TFParticleType.OMINOUS_FLAME);
 		} else if (stack.is(TFItems.UR_GHAST_TROPHY) || stack.is(TFBlocks.UR_GHAST_BOSS_SPAWNER.asItem())) {
 			return List.of(ParticleTypes.SMOKE, DustParticleOptions.REDSTONE);
 		} else if (stack.is(TFItems.ALPHA_YETI_TROPHY) || stack.is(TFBlocks.ALPHA_YETI_BOSS_SPAWNER.asItem())) {
-			return List.of(TFParticleType.SNOW.get(), ParticleTypes.FALLING_WATER);
+			return List.of(TFParticleType.SNOW, ParticleTypes.FALLING_WATER);
 		} else if (stack.is(TFItems.SNOW_QUEEN_TROPHY) || stack.is(TFBlocks.SNOW_QUEEN_BOSS_SPAWNER.asItem())) {
-			return List.of(TFParticleType.SNOW.get(), TFParticleType.SNOW_WARNING.get());
+			return List.of(TFParticleType.SNOW, TFParticleType.SNOW_WARNING);
 		} else if (stack.is(TFBlocks.FINAL_BOSS_BOSS_SPAWNER.asItem())) {
-			return List.of(TFParticleType.ANNIHILATE.get());
+			return List.of(TFParticleType.ANNIHILATE);
 		} else if (stack.is(TFItems.QUEST_RAM_TROPHY)) {
-			return List.of(TFParticleType.TRANSFORMATION_PARTICLE.get());
+			return List.of(TFParticleType.TRANSFORMATION_PARTICLE);
 		}
 
 		return List.of();
@@ -142,7 +136,9 @@ public class SinisterSpawnerBlock extends BaseEntityBlock {
 			LootTable lootTable = entity.getLootTable();
 			if (lootTable != null) {
 				LootParams params = paramBuilder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
-				return ConcatenatedListView.of(drops, lootTable.getRandomItems(params));
+				List<ItemStack> combined = new ArrayList<>(drops);
+				combined.addAll(lootTable.getRandomItems(params));
+				return combined;
 			}
 		}
 

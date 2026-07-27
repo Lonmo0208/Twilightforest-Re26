@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "twilightforest:block/mining_planks_0"
+      },
+      {
+        "model": "twilightforest:block/mining_planks_1"
+      },
+      {
+        "model": "twilightforest:block/mining_planks_2"
+      },
+      {
+        "model": "twilightforest:block/mining_planks_3"
+      }
+    ]
+  }
+}

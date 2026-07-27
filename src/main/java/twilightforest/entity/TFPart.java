@@ -6,18 +6,26 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
 import twilightforest.TwilightForestMod;
 import twilightforest.network.UpdateTFMultipartPacket;
+import twilightforest.util.TFEntityExtensions;
 
 import java.util.Objects;
 
-public abstract class TFPart<T extends Entity> extends PartEntity<T> {
+public abstract class TFPart<T extends Entity> extends Entity {
 
 	public static final Identifier RENDERER = TwilightForestMod.prefix("noop");
+
+	private final T parentEntity;
+
+	public T getParent() {
+		return this.parentEntity;
+	}
 
 	protected EntityDimensions realSize = EntityDimensions.fixed(1F, 1F);
 
@@ -33,8 +41,9 @@ public abstract class TFPart<T extends Entity> extends PartEntity<T> {
 	public int deathTime;
 	public int hurtTime;
 
-	public TFPart(T parent) {
-		super(parent);
+	public TFPart(T parent, EntityType<?> type, Level level) {
+		super(type, level);
+		this.parentEntity = parent;
 	}
 
 	public Identifier renderer() {
@@ -85,6 +94,7 @@ public abstract class TFPart<T extends Entity> extends PartEntity<T> {
 
 	protected void setSize(EntityDimensions size) {
 		this.realSize = size;
+		this.dimensions = size;
 		this.refreshDimensions();
 	}
 
@@ -105,6 +115,11 @@ public abstract class TFPart<T extends Entity> extends PartEntity<T> {
 
 	@Override
 	public boolean isPickable() {
+		return true;
+	}
+
+	@Override
+	public boolean isAttackable() {
 		return true;
 	}
 
@@ -134,20 +149,25 @@ public abstract class TFPart<T extends Entity> extends PartEntity<T> {
 
 	public void readData(UpdateTFMultipartPacket.PartDataHolder data) {
 		Vec3 vec = new Vec3(data.x(), data.y(), data.z());
-		this.setPositionAndRotationDirect(vec.x(), vec.y(), vec.z(), data.yRot(), data.xRot(), 3);
+		// Directly set position and rotation instead of using setPositionAndRotationDirect().
+		// TFPart entities are not in the client world's entity list (they're only injected
+		// via MultipartEntityIteratorWrapper for rendering), so tick() is never called on them.
+		// setPositionAndRotationDirect() relies on tick() for interpolation, which never happens.
+		this.setPos(vec.x(), vec.y(), vec.z());
+		this.setRot(data.yRot(), data.xRot());
+		this.setOldPosAndRot();
 		final float w = data.width();
 		final float h = data.height();
 		this.setSize(data.fixed() ? EntityDimensions.fixed(w, h) : EntityDimensions.scalable(w, h));
 		if (data.data() != null)
 			getEntityData().assignValues(data.data());
 		this.refreshDimensions();
-		this.setPos(this.getX(), this.getY(), this.getZ());
 	}
 
 	public static void assignPartIDs(Entity parent) {
-		PartEntity<?>[] parts = parent.getParts();
+		Entity[] parts = ((TFEntityExtensions) parent).getParts();
 		for (int i = 0, partsLength = Objects.requireNonNull(parts).length; i < partsLength; i++) {
-			PartEntity<?> part = parts[i];
+			Entity part = parts[i];
 			part.setId(parent.getId() + i);
 		}
 	}

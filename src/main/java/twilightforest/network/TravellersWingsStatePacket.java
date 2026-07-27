@@ -6,21 +6,21 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
 import twilightforest.components.entity.TravellersWingsAttachment;
 import twilightforest.init.TFDataAttachments;
+import twilightforest.util.TFEntityExtensions;
 
 public class TravellersWingsStatePacket implements CustomPacketPayload {
 
 	public static final Type<TravellersWingsStatePacket> TYPE = new Type<>(TwilightForestMod.prefix("travellers_wings_state"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, TravellersWingsStatePacket> STREAM_CODEC = CustomPacketPayload.codec(TravellersWingsStatePacket::write, TravellersWingsStatePacket::new);
 
-	private final int entityId;
-	private final TravellersWingsAttachment.WingState state;
-	private final boolean sidestepLeft;
-	private final int doubleJumpTimer;
-	private final int sidestepTimer;
+	public final int entityId;
+	public final TravellersWingsAttachment.WingState state;
+	public final boolean sidestepLeft;
+	public final int doubleJumpTimer;
+	public final int sidestepTimer;
 
 	public TravellersWingsStatePacket(int entityId, TravellersWingsAttachment.WingState state, boolean sidestepLeft, int doubleJumpTimer, int sidestepTimer) {
 		this.entityId = entityId;
@@ -42,21 +42,7 @@ public class TravellersWingsStatePacket implements CustomPacketPayload {
 		this.sidestepTimer = buf.readInt();
 	}
 
-	public static void handle(TravellersWingsStatePacket message, IPayloadContext ctx) {
-		ctx.enqueueWork(() -> {
-			Player player = ctx.player();
-			if (player != null && player.level() != null) {
-				Entity entity = player.level().getEntity(message.entityId);
-				if (entity instanceof LivingEntity livingEntity) {
-					TravellersWingsAttachment attachment = livingEntity.getData(TFDataAttachments.TRAVELLERS_WINGS);
-					attachment.state = message.state;
-					attachment.sidestepLeft = message.sidestepLeft;
-					attachment.doubleJumpTimer = message.doubleJumpTimer;
-					attachment.sidestepTimer = message.sidestepTimer;
-				}
-			}
-		});
-	}
+	// Client-side handler moved to TravellersWingsStatePacketClientHandler
 
 	public void write(RegistryFriendlyByteBuf buf) {
 		buf.writeInt(this.entityId);

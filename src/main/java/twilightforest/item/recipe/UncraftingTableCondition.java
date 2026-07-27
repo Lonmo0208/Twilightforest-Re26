@@ -1,7 +1,6 @@
 package twilightforest.item.recipe;
 
 import com.mojang.serialization.MapCodec;
-import net.neoforged.neoforge.common.conditions.ICondition;
 import twilightforest.config.TFConfig;
 
 public class UncraftingTableCondition implements ICondition {

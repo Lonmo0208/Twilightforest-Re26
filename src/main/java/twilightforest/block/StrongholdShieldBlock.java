@@ -54,14 +54,10 @@ public class StrongholdShieldBlock extends DirectionalBlock {
 		Direction upFace = state.getValue(DirectionalBlock.FACING);
 
 		if (hitFace == (upOrDown ? upFace : sideFace)) {
-			return player.getDestroySpeed(Blocks.STONE.defaultBlockState(), pos) / 1.5F / 100F;
+			return player.getDestroySpeed(Blocks.STONE.defaultBlockState()) / 1.5F / 100F;
 		} else {
 			return super.getDestroyProgress(state, player, getter, pos);
 		}
 	}
 
-	@Override
-	public boolean canEntityDestroy(BlockState state, BlockGetter getter, BlockPos pos, Entity entity) {
-		return false;
-	}
 }

@@ -3,6 +3,7 @@ package twilightforest.world.components.structures.type;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.RandomSource;
@@ -44,7 +45,7 @@ public class DarkTowerStructure extends ControlledSpawningStructure {
 
 	@Override
 	public StructureType<?> type() {
-		return TFStructureTypes.DARK_TOWER.get();
+		return TFStructureTypes.DARK_TOWER;
 	}
 
 	public static DarkTowerStructure buildDarkTowerConfig(BootstrapContext<Structure> context) {
@@ -71,7 +72,7 @@ public class DarkTowerStructure extends ControlledSpawningStructure {
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_knights"))),
 			Optional.of(new HintConfig(HintConfig.book("darktower", 3), TFEntities.KOBOLD.get())),
 			Optional.of(new DecorationConfig(1, false, true, true)),
-			true, Optional.of(TFMapDecorations.DARK_TOWER),
+			true, Optional.of(BuiltInRegistries.MAP_DECORATION_TYPE.wrapAsHolder(TFMapDecorations.DARK_TOWER)),
 			new StructureSettings(
 				context.lookup(Registries.BIOME).getOrThrow(TFBiomeTags.VALID_DARK_TOWER_BIOMES),
 				Arrays.stream(MobCategory.values()).collect(Collectors.<MobCategory, MobCategory, StructureSpawnOverride>toMap(category -> category, category -> new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, WeightedList.<MobSpawnSettings.SpawnerData>builder().build()))), // Landmarks have Controlled Mob spawning

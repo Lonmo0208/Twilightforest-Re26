@@ -1,0 +1,16 @@
+{
+  "parent": "twilightforest:block/miniature/template_transforms",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "#grass_side",
+    "dirt": "block/dirt",
+    "grass_top": "block/grass_block_top",
+    "grass_side": "block/grass_block_side_overlay",
+    "stone": "block/stone"
+  },
+  "elements": [
+    {"from": [2, 0, 2], "to": [14, 5, 14], "faces": {"north": {"uv": [2, 11, 14, 16], "texture": "#dirt"}, "east": {"uv": [2, 11, 14, 16], "texture": "#dirt"}, "south": {"uv": [2, 11, 14, 16], "texture": "#dirt"}, "west": {"uv": [2, 11, 14, 16], "texture": "#dirt"}, "up": {"uv": [2, 2, 14, 14], "texture": "#grass_top", "tintindex": 0}, "down": {"uv": [2, 2, 14, 14], "texture": "#dirt"}}},
+    {"from": [2, 0, 2], "to": [14, 5, 14], "faces": {"north": {"uv": [0, 0, 6, 5], "texture": "#grass_side", "tintindex": 0}, "east": {"uv": [0, 0, 6, 5], "texture": "#grass_side", "tintindex": 0}, "south": {"uv": [0, 0, 6, 5], "texture": "#grass_side", "tintindex": 0}, "west": {"uv": [0, 0, 6, 5], "texture": "#grass_side", "tintindex": 0}}},
+    {"from": [3, 5, 3], "to": [13, 8, 13], "faces": {"north": {"uv": [3, 8, 13, 11], "texture": "#stone"}, "east": {"uv": [3, 8, 13, 11], "texture": "#stone"}, "south": {"uv": [3, 8, 13, 11], "texture": "#stone"}, "west": {"uv": [3, 8, 13, 11], "texture": "#stone"}, "up": {"uv": [3, 3, 13, 13], "texture": "#dirt"}, "down": {"uv": [3, 3, 13, 13], "texture": "#stone"}}}
+  ]
+}

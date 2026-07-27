@@ -1,9 +1,6 @@
 {
   "model": {
-    "type": "minecraft:special",
-    "base": "twilightforest:item/cicada",
-    "model": {
-      "type": "twilightforest:cicada"
-    }
+    "type": "minecraft:model",
+    "model": "twilightforest:block/cicada"
   }
 }

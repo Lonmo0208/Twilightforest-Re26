@@ -27,6 +27,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import twilightforest.TwilightForestMod;
@@ -37,16 +38,17 @@ import twilightforest.util.RotationUtil;
 import twilightforest.world.components.structures.TFMaze;
 import twilightforest.world.components.structures.TFStructureComponentOld;
 import twilightforest.world.components.structures.TFStructureDecorator;
+import twilightforest.world.components.structures.util.PieceBeardifierModifier;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DarkTowerMainComponent extends DarkTowerWingComponent {
+public class DarkTowerMainComponent extends DarkTowerWingComponent implements PieceBeardifierModifier {
 	private boolean placedKeys = false;
 
 	public DarkTowerMainComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		super(TFStructurePieceTypes.TFDTMai.get(), nbt);
+		super(TFStructurePieceTypes.TFDTMai, nbt);
 	}
 
 	public DarkTowerMainComponent(RandomSource rand, int index, int x, int y, int z) {
@@ -54,7 +56,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	}
 
 	public DarkTowerMainComponent(RandomSource rand, int index, int x, int y, int z, Direction rotation) {
-		super(TFStructurePieceTypes.TFDTMai.get(), index, x, y, z, 19, 56 + ((rand.nextInt(32) / 5) * 5), rotation);
+		super(TFStructurePieceTypes.TFDTMai, index, x, y, z, 19, 56 + ((rand.nextInt(32) / 5) * 5), rotation);
 
 		// check to make sure we can build the whole tower
 		if (this.boundingBox.maxY() > 245) {
@@ -578,7 +580,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 		maze.wallBlockState = deco.blockState;
 		maze.headBlockState = deco.accentState;
 		maze.pillarBlockState = deco.accentState;
-		maze.doorBlockState = TFBlocks.REAPPEARING_BLOCK.get().defaultBlockState();
+		maze.doorBlockState = TFBlocks.REAPPEARING_BLOCK.defaultBlockState();
 
 		maze.torchRarity = 0;
 		maze.tall = 3;
@@ -671,7 +673,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 			}
 		}
 
-		final BlockState antiBuilderBlockState = TFBlocks.ANTIBUILDER.get().defaultBlockState();
+		final BlockState antiBuilderBlockState = TFBlocks.ANTIBUILDER.defaultBlockState();
 
 		// place unbuilders
 		setBlockStateRotated(world, antiBuilderBlockState, 15, y + 2, 7, rotation, sbb);
@@ -741,14 +743,14 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	}
 
 	private void decorateBossSpawner(WorldGenLevel world, BoundingBox sbb, Rotation rotation, int y) {
-		this.setBlockStateRotated(world, TFBlocks.UR_GHAST_BOSS_SPAWNER.get().defaultBlockState(), 9, y + 4, 9, rotation, sbb);
+		this.setBlockStateRotated(world, TFBlocks.UR_GHAST_BOSS_SPAWNER.defaultBlockState(), 9, y + 4, 9, rotation, sbb);
 	}
 
 	private void decorateExperiment(WorldGenLevel world, BoundingBox sbb, Rotation rotation, int y) {
 		final BlockState obsidian = Blocks.OBSIDIAN.defaultBlockState();
 		final BlockState netherrack = Blocks.NETHERRACK.defaultBlockState();
 		final BlockState redstone = Blocks.REDSTONE_BLOCK.defaultBlockState();
-		final BlockState inactiveReactor = TFBlocks.CARMINITE_REACTOR.get().defaultBlockState();
+		final BlockState inactiveReactor = TFBlocks.CARMINITE_REACTOR.defaultBlockState();
 
 		//  crafting area in corner - walls
 		this.fillBlocksRotated(world, sbb, 17, y + 1, 1, 17, y + 4, 6, deco.pillarState, rotation);
@@ -772,25 +774,25 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 		setBlockStateRotated(world, Blocks.CRAFTING_TABLE.defaultBlockState(), 14, y + 2, 4, rotation, sbb);
 
 		// recipes in frames?
-		placeItemFrameRotated(world, 13, y + 2, 1, rotation, Direction.SOUTH, new ItemStack(TFItems.BORER_ESSENCE.get()), sbb);
+		placeItemFrameRotated(world, 13, y + 2, 1, rotation, Direction.SOUTH, new ItemStack(TFItems.BORER_ESSENCE), sbb);
 		placeItemFrameRotated(world, 14, y + 2, 1, rotation, Direction.SOUTH, new ItemStack(Items.REDSTONE), sbb);
-		placeItemFrameRotated(world, 15, y + 2, 1, rotation, Direction.SOUTH, new ItemStack(TFItems.BORER_ESSENCE.get()), sbb);
+		placeItemFrameRotated(world, 15, y + 2, 1, rotation, Direction.SOUTH, new ItemStack(TFItems.BORER_ESSENCE), sbb);
 		placeItemFrameRotated(world, 13, y + 3, 1, rotation, Direction.SOUTH, new ItemStack(Items.REDSTONE), sbb);
 		placeItemFrameRotated(world, 14, y + 3, 1, rotation, Direction.SOUTH, new ItemStack(Items.GHAST_TEAR), sbb);
 		placeItemFrameRotated(world, 15, y + 3, 1, rotation, Direction.SOUTH, new ItemStack(Items.REDSTONE), sbb);
-		placeItemFrameRotated(world, 13, y + 4, 1, rotation, Direction.SOUTH, new ItemStack(TFItems.BORER_ESSENCE.get()), sbb);
+		placeItemFrameRotated(world, 13, y + 4, 1, rotation, Direction.SOUTH, new ItemStack(TFItems.BORER_ESSENCE), sbb);
 		placeItemFrameRotated(world, 14, y + 4, 1, rotation, Direction.SOUTH, new ItemStack(Items.REDSTONE), sbb);
-		placeItemFrameRotated(world, 15, y + 4, 1, rotation, Direction.SOUTH, new ItemStack(TFItems.BORER_ESSENCE.get()), sbb);
+		placeItemFrameRotated(world, 15, y + 4, 1, rotation, Direction.SOUTH, new ItemStack(TFItems.BORER_ESSENCE), sbb);
 
-		placeItemFrameRotated(world, 17, y + 2, 3, rotation, Direction.WEST, new ItemStack(TFBlocks.ENCASED_TOWERWOOD.get()), sbb);
-		placeItemFrameRotated(world, 17, y + 2, 4, rotation, Direction.WEST, new ItemStack(TFBlocks.TOWERWOOD.get()), sbb);
-		placeItemFrameRotated(world, 17, y + 2, 5, rotation, Direction.WEST, new ItemStack(TFBlocks.ENCASED_TOWERWOOD.get()), sbb);
-		placeItemFrameRotated(world, 17, y + 3, 3, rotation, Direction.WEST, new ItemStack(TFBlocks.TOWERWOOD.get()), sbb);
-		placeItemFrameRotated(world, 17, y + 3, 4, rotation, Direction.WEST, new ItemStack(TFItems.CARMINITE.get()), sbb);
-		placeItemFrameRotated(world, 17, y + 3, 5, rotation, Direction.WEST, new ItemStack(TFBlocks.TOWERWOOD.get()), sbb);
-		placeItemFrameRotated(world, 17, y + 4, 3, rotation, Direction.WEST, new ItemStack(TFBlocks.ENCASED_TOWERWOOD.get()), sbb);
-		placeItemFrameRotated(world, 17, y + 4, 4, rotation, Direction.WEST, new ItemStack(TFBlocks.TOWERWOOD.get()), sbb);
-		placeItemFrameRotated(world, 17, y + 4, 5, rotation, Direction.WEST, new ItemStack(TFBlocks.ENCASED_TOWERWOOD.get()), sbb);
+		placeItemFrameRotated(world, 17, y + 2, 3, rotation, Direction.WEST, new ItemStack(TFBlocks.ENCASED_TOWERWOOD), sbb);
+		placeItemFrameRotated(world, 17, y + 2, 4, rotation, Direction.WEST, new ItemStack(TFBlocks.TOWERWOOD), sbb);
+		placeItemFrameRotated(world, 17, y + 2, 5, rotation, Direction.WEST, new ItemStack(TFBlocks.ENCASED_TOWERWOOD), sbb);
+		placeItemFrameRotated(world, 17, y + 3, 3, rotation, Direction.WEST, new ItemStack(TFBlocks.TOWERWOOD), sbb);
+		placeItemFrameRotated(world, 17, y + 3, 4, rotation, Direction.WEST, new ItemStack(TFItems.CARMINITE), sbb);
+		placeItemFrameRotated(world, 17, y + 3, 5, rotation, Direction.WEST, new ItemStack(TFBlocks.TOWERWOOD), sbb);
+		placeItemFrameRotated(world, 17, y + 4, 3, rotation, Direction.WEST, new ItemStack(TFBlocks.ENCASED_TOWERWOOD), sbb);
+		placeItemFrameRotated(world, 17, y + 4, 4, rotation, Direction.WEST, new ItemStack(TFBlocks.TOWERWOOD), sbb);
+		placeItemFrameRotated(world, 17, y + 4, 5, rotation, Direction.WEST, new ItemStack(TFBlocks.ENCASED_TOWERWOOD), sbb);
 
 		if (y < this.height - 13) {
 			// device bottom
@@ -855,7 +857,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	}
 
 	private void makeWoodPillar(WorldGenLevel world, int x, int y, int z, Rotation rotation, BoundingBox sbb) {
-		final BlockState log = TFBlocks.DARK_LOG.get().defaultBlockState();
+		final BlockState log = TFBlocks.DARK_LOG.defaultBlockState();
 		this.setBlockStateRotated(world, log, x, y + 2, z, rotation, sbb);
 		this.setBlockStateRotated(world, log, x, y + 3, z, rotation, sbb);
 		this.setBlockStateRotated(world, log, x, y + 4, z, rotation, sbb);
@@ -1063,6 +1065,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	}
 
 	private void placeTreePlanter(WorldGenLevel world, ChunkGenerator generator, int treeNum, int x, int y, int z, Rotation rotation, BoundingBox sbb) {
+		// Build the planter structure (pillars and stairs)
 		setBlockStateRotated(world, deco.pillarState, x + 1, y, z + 1, rotation, sbb);
 		setBlockStateRotated(world, deco.pillarState, x + 1, y, z - 1, rotation, sbb);
 		setBlockStateRotated(world, deco.pillarState, x - 1, y, z + 1, rotation, sbb);
@@ -1072,32 +1075,26 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 		setBlockStateRotated(world, getStairState(deco.stairState, Direction.SOUTH, false), x, y, z + 1, rotation, sbb);
 		setBlockStateRotated(world, getStairState(deco.stairState, Direction.NORTH, false), x, y, z - 1, rotation, sbb);
 
-		setBlockStateRotated(world, Blocks.DIRT.defaultBlockState(), x, y, z, rotation, sbb);
-
 		int dx = getXWithOffsetRotated(x, z, rotation);
 		int dy = getWorldY(y + 1);
 		int dz = getZWithOffsetRotated(x, z, rotation);
 		if (sbb.isInside(new BlockPos(dx, dy, dz))) {
-			ResourceKey<ConfiguredFeature<?, ?>> treeGen = switch (treeNum) {
-				case 1 ->
-					// jungle tree
-					// made a custom one so it doesnt cut through the floor
-					TFConfiguredFeatures.SMALLER_JUNGLE_TREE;
-				case 2 ->
-					// birch
-					TreeFeatures.BIRCH;
-				case 3 -> TFConfiguredFeatures.TWILIGHT_OAK_TREE;
-				case 4 -> TFConfiguredFeatures.RAINBOW_OAK_TREE;
-				default ->
-					// oak tree
-					TreeFeatures.OAK;
-			};
+			// Only use the smaller jungle tree variant designed for indoor planters
+			// Standard trees (oak, birch, etc.) can grow 5-7 blocks tall and would
+			// break through the tower ceiling since rooms are only 5 blocks high
+			ResourceKey<ConfiguredFeature<?, ?>> treeGen = TFConfiguredFeatures.SMALLER_JUNGLE_TREE;
 			// grow a tree
 
+			boolean treePlaced = false;
 			for (int i = 0; i < 100; i++) {
 				if (world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).get(treeGen).get().value().place(world, generator, world.getRandom(), new BlockPos(dx, dy, dz))) {
+					treePlaced = true;
 					break;
 				}
+			}
+			// Only place dirt if the tree successfully grew, otherwise leave the planter empty
+			if (treePlaced) {
+				setBlockStateRotated(world, Blocks.DIRT.defaultBlockState(), x, y, z, rotation, sbb);
 			}
 		}
 	}
@@ -1140,7 +1137,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	 * Make a lattice of log blocks
 	 */
 	protected void makeTimberBeams(WorldGenLevel world, RandomSource rand, BoundingBox sbb, Rotation rotation, int y, boolean isBottom, boolean isTop, int top) {
-		BlockState beamID = TFBlocks.TWILIGHT_OAK_LOG.get().defaultBlockState();
+		BlockState beamID = TFBlocks.TWILIGHT_OAK_LOG.defaultBlockState();
 		BlockState beamStateNS = beamID.setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
 		BlockState beamStateUD = beamID.setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
 		BlockState beamStateEW = beamID.setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
@@ -1286,7 +1283,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 			int sx = pickFrom(rand, 5, 9, 13);
 			int sz = (sx == 9) ? (rand.nextBoolean() ? 5 : 13) : 9;
 
-			final BlockState antibuilder = TFBlocks.ANTIBUILDER.get().defaultBlockState();
+			final BlockState antibuilder = TFBlocks.ANTIBUILDER.defaultBlockState();
 			setBlockStateRotated(world, antibuilder, sx, y + 2, sz, rotation, sbb);
 		} else {
 			// lamp cluster
@@ -1314,7 +1311,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 		setBlockStateRotated(world, deco.fenceState, 5, top + 1, 10, rotation, sbb);
 		setBlockStateRotated(world, deco.fenceState, 7, top + 1, 10, rotation, sbb);
 		// builder & lever
-		final BlockState inactiveBuilder = TFBlocks.CARMINITE_BUILDER.get().defaultBlockState();
+		final BlockState inactiveBuilder = TFBlocks.CARMINITE_BUILDER.defaultBlockState();
 		setBlockStateRotated(world, inactiveBuilder, 7, top - spacing, 10, rotation, sbb);
 		setBlockStateRotated(world, getLeverState(Blocks.LEVER.defaultBlockState(), AttachFace.FLOOR, rand.nextBoolean() ? Direction.EAST : Direction.NORTH, false), 7, top - spacing + 1, 11, rotation, sbb);
 	}
@@ -1331,7 +1328,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 		setBlockStateRotated(world, deco.accentState, 2, y, z + 1, rotation, sbb);
 
 		// builder & lever
-		final BlockState inactiveBuilder = TFBlocks.CARMINITE_BUILDER.get().defaultBlockState();
+		final BlockState inactiveBuilder = TFBlocks.CARMINITE_BUILDER.defaultBlockState();
 		setBlockStateRotated(world, inactiveBuilder, 2, y, hole ? z + 1 : z - 1, rotation, sbb);
 		setBlockStateRotated(world, getLeverState(Blocks.LEVER.defaultBlockState(), AttachFace.FLOOR, rand.nextBoolean() ? Direction.EAST : Direction.NORTH, false), 2, y + 1, z, rotation, sbb);
 	}
@@ -1442,11 +1439,37 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	private BlockState getNetherPlant(RandomSource random) {
 		List<BlockState> blocks = List.of(
 			Blocks.NETHER_WART.defaultBlockState(),
-			TFBlocks.BLIGHTBERRY_BUSH.get().defaultBlockState(),
-			TFBlocks.DUSKBERRY_BUSH.get().defaultBlockState(),
-			TFBlocks.SKYBERRY_BUSH.get().defaultBlockState(),
-			TFBlocks.STINGBERRY_BUSH.get().defaultBlockState()
+			TFBlocks.BLIGHTBERRY_BUSH.defaultBlockState(),
+			TFBlocks.DUSKBERRY_BUSH.defaultBlockState(),
+			TFBlocks.SKYBERRY_BUSH.defaultBlockState(),
+			TFBlocks.STINGBERRY_BUSH.defaultBlockState()
 		);
 		return Util.getRandom(blocks, random);
+	}
+
+	@Override
+	public TerrainAdjustment getTerrainAdjustment() {
+		return TerrainAdjustment.BEARD_BOX;
+	}
+
+	@Override
+	public BoundingBox getBeardifierBox() {
+		// Extend the box downward to cover terrain below the floating tower.
+		// The vanilla bounding box starts at the tower's bottom (above ground),
+		// so BEARD_BOX only carves terrain inside the tower volume, not below it.
+		// By extending to Y=-64 we ensure all terrain underneath is carved out.
+		return new BoundingBox(
+			this.boundingBox.minX(),
+			this.boundingBox.minY() - 64,
+			this.boundingBox.minZ(),
+			this.boundingBox.maxX(),
+			this.boundingBox.maxY(),
+			this.boundingBox.maxZ()
+		);
+	}
+
+	@Override
+	public int getGroundLevelDelta() {
+		return 0;
 	}
 }

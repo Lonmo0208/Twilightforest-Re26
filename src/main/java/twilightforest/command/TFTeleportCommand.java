@@ -18,7 +18,7 @@ import twilightforest.init.TFDimension;
 import java.util.Locale;
 import java.util.Set;
 
-@tamaized.beanification.Component
+@twilightforest.beanification.Component
 public class TFTeleportCommand {
 	private static final SimpleCommandExceptionType PLAYER_ONLY = new SimpleCommandExceptionType(Component.translatable("commands.tffeature.teleport.player_only"));
 	private static final SimpleCommandExceptionType DIMENSION_MISSING = new SimpleCommandExceptionType(Component.translatable("commands.tffeature.teleport.dimension_missing"));

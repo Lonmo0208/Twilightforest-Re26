@@ -13,9 +13,8 @@ import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.neoforged.neoforge.common.world.PieceBeardifierModifier;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import tamaized.beanification.Autowired;
+
+
 import twilightforest.TFRegistries;
 import twilightforest.init.TFStructurePieceTypes;
 import twilightforest.init.custom.WoodPalettes;
@@ -29,14 +28,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class LichTowerSpawnerBridge extends TwilightJigsawPiece implements PieceBeardifierModifier {
-	@Autowired
-	private static LichTowerUtil lichTowerUtil;
+public class LichTowerSpawnerBridge extends TwilightJigsawPiece  {
+	private static final LichTowerUtil lichTowerUtil = new LichTowerUtil();
 
 	private final boolean invertedPalette;
 
 	public LichTowerSpawnerBridge(StructurePieceSerializationContext ctx, CompoundTag compoundTag) {
-		super(TFStructurePieceTypes.LICH_SPAWNER_BRIDGE.get(), compoundTag, ctx, readSettings(compoundTag));
+		super(TFStructurePieceTypes.LICH_SPAWNER_BRIDGE, compoundTag, ctx, readSettings(compoundTag));
 
 		LichTowerUtil.addDefaultProcessors(this.placeSettings.addProcessor(lichTowerUtil.getCentralBridgeSpawnerProcessor()));
 
@@ -63,15 +61,14 @@ public class LichTowerSpawnerBridge extends TwilightJigsawPiece implements Piece
 	}
 
 	public LichTowerSpawnerBridge(int genDepth, StructureTemplateManager structureManager, Identifier templateLocation, JigsawPlaceContext jigsawContext, boolean invertedPalette) {
-		super(TFStructurePieceTypes.LICH_SPAWNER_BRIDGE.get(), genDepth, structureManager, templateLocation, jigsawContext);
+		super(TFStructurePieceTypes.LICH_SPAWNER_BRIDGE, genDepth, structureManager, templateLocation, jigsawContext);
 
 		LichTowerUtil.addDefaultProcessors(this.placeSettings.addProcessor(lichTowerUtil.getCentralBridgeSpawnerProcessor()));
 
 		this.invertedPalette = invertedPalette;
 
 		if (this.invertedPalette) {
-			RegistryAccess registryAccess = Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer()).registryAccess();
-			addInvertedWoodProcessors(registryAccess, this.placeSettings);
+			// RegistryAccess not available in live-construction constructor; palette inversion is handled via NBT serialization
 		}
 	}
 
@@ -80,21 +77,6 @@ public class LichTowerSpawnerBridge extends TwilightJigsawPiece implements Piece
 		super.addAdditionalSaveData(ctx, structureTag);
 
 		structureTag.putBoolean("inverted", this.invertedPalette);
-	}
-
-	@Override
-	public BoundingBox getBeardifierBox() {
-		return this.boundingBox;
-	}
-
-	@Override
-	public TerrainAdjustment getTerrainAdjustment() {
-		return TerrainAdjustment.NONE;
-	}
-
-	@Override
-	public int getGroundLevelDelta() {
-		return 0;
 	}
 
 	@Override

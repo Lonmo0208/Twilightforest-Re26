@@ -5,16 +5,13 @@ import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.Criterion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import tamaized.beanification.junit.MockitoFixer;
 import twilightforest.util.AdvancementDataMultiRequirements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoFixer.class)
 public class AdvancementDataMultiRequirementsTests {
 
 	private AdvancementDataMultiRequirements instance;

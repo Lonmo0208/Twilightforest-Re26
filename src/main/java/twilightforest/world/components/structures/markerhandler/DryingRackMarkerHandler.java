@@ -41,6 +41,6 @@ public record DryingRackMarkerHandler(BlockStateProvider provider, ResourceKey<L
 
 	@Override
 	public TemplateMarkerHandlerType getType() {
-		return TemplateMarkerHandlers.DRYING_RACK.value();
+		return TemplateMarkerHandlers.DRYING_RACK;
 	}
 }

@@ -42,10 +42,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.neoforged.neoforge.entity.PartEntity;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.gamerules.GameRules;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.TFPart;
 import twilightforest.entity.ai.control.NagaMoveControl;
@@ -61,6 +59,8 @@ import twilightforest.util.entities.EntityUtil;
 
 import java.util.Objects;
 import java.util.UUID;
+import twilightforest.network.PacketDistributor;
+import twilightforest.network.UpdateTFMultipartPacket;
 
 public class Naga extends BaseTFBoss {
 	private static final int DEATH_ANIMATION_DURATION = 24;
@@ -97,6 +97,9 @@ public class Naga extends BaseTFBoss {
 
 		this.healthPerSegment = this.getMaxHealth() / 10;
 		this.moveControl = new NagaMoveControl(this);
+
+		this.setId(ENTITY_COUNTER.getAndAdd(this.bodySegments.length + 1) + 1);
+		TFPart.assignPartIDs(this);
 	}
 
 	@Override
@@ -254,6 +257,10 @@ public class Naga extends BaseTFBoss {
 		this.setSegmentsPerHealth();
 		super.tick();
 		this.moveSegments();
+
+		if (!this.level().isClientSide()) {
+			PacketDistributor.sendToPlayersTrackingEntity(this, new UpdateTFMultipartPacket(this));
+		}
 	}
 
 	@Override
@@ -264,7 +271,7 @@ public class Naga extends BaseTFBoss {
 			this.setTarget(null);
 		}
 
-		if (EventHooks.canEntityGrief(server, this)) {
+		if (server.getGameRules().get(GameRules.MOB_GRIEFING)) {
 			AABB bb = this.getBoundingBox();
 
 			int minx = Mth.floor(bb.minX - 0.75D);
@@ -326,17 +333,17 @@ public class Naga extends BaseTFBoss {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.NAGA_HISS.get();
+		return TFSounds.NAGA_HISS;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.NAGA_HURT.get();
+		return TFSounds.NAGA_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.NAGA_HURT.get();
+		return TFSounds.NAGA_HURT;
 	}
 
 	@Override
@@ -508,20 +515,28 @@ public class Naga extends BaseTFBoss {
 		}
 	}
 
-	@Override
 	public boolean isMultipartEntity() {
 		return true;
 	}
 
 	@Override
+	public void setId(int id) {
+		super.setId(id);
+		for (int i = 0; i < this.bodySegments.length; i++) {
+			if (this.bodySegments[i] != null) {
+				this.bodySegments[i].setId(id + i); // TFPart.setId adds +1, resulting in id + i + 1
+			}
+		}
+	}
+
+	@Override
 	public void recreateFromPacket(ClientboundAddEntityPacket packet) {
 		super.recreateFromPacket(packet);
-		TFPart.assignPartIDs(this);
+		// Part IDs are set in setId() which is called by super.recreateFromPacket()
 	}
 
 	@Nullable
-	@Override
-	public PartEntity<?>[] getParts() {
+	public Entity[] getParts() {
 		return this.bodySegments;
 	}
 
@@ -537,12 +552,12 @@ public class Naga extends BaseTFBoss {
 
 	@Override
 	public Block getDeathContainer(RandomSource random) {
-		return random.nextBoolean() ? TFBlocks.TWILIGHT_OAK_CHEST.get() : TFBlocks.CANOPY_CHEST.get();
+		return random.nextBoolean() ? TFBlocks.TWILIGHT_OAK_CHEST : TFBlocks.CANOPY_CHEST;
 	}
 
 	@Override
 	public Block getBossSpawner() {
-		return TFBlocks.NAGA_BOSS_SPAWNER.get();
+		return TFBlocks.NAGA_BOSS_SPAWNER;
 	}
 
 	@Override

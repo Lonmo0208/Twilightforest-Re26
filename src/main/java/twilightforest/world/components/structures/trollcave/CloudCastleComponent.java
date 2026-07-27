@@ -13,7 +13,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
-import net.neoforged.neoforge.event.EventHooks;
 import twilightforest.entity.monster.ArmoredGiant;
 import twilightforest.entity.monster.GiantMiner;
 import twilightforest.init.TFBlocks;
@@ -26,12 +25,12 @@ import twilightforest.world.components.structures.TFStructureComponentOld;
 public class CloudCastleComponent extends TFStructureComponentOld {
 
 	public CloudCastleComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		super(TFStructurePieceTypes.TFClCa.get(), nbt);
+		super(TFStructurePieceTypes.TFClCa, nbt);
 	}
 
 	@SuppressWarnings("this-escape")
 	public CloudCastleComponent(int index, int x, int y, int z) {
-		super(TFStructurePieceTypes.TFClCa.get(), index, x, y, z);
+		super(TFStructurePieceTypes.TFClCa, index, x, y, z);
 		this.setOrientation(Direction.SOUTH);
 
 		// round to nearest mult of 4
@@ -74,9 +73,9 @@ public class CloudCastleComponent extends TFStructureComponentOld {
 	public void postProcess(WorldGenLevel world, StructureManager manager, ChunkGenerator generator, RandomSource rand, BoundingBox sbb, ChunkPos chunkPosIn, BlockPos blockPos) {
 
 		// make haus
-		this.generateBox(world, sbb, 8, 0, 8, 23, 3, 23, TFBlocks.FLUFFY_CLOUD.get().defaultBlockState(), TFBlocks.FLUFFY_CLOUD.get().defaultBlockState(), false);
-		this.generateBox(world, sbb, 8, 4, 8, 23, 15, 23, TFBlocks.GIANT_COBBLESTONE.get().defaultBlockState(), TFBlocks.GIANT_COBBLESTONE.get().defaultBlockState(), false);
-		this.generateBox(world, sbb, 8, 16, 8, 23, 19, 23, TFBlocks.GIANT_LOG.get().defaultBlockState(), TFBlocks.GIANT_LOG.get().defaultBlockState(), false);
+		this.generateBox(world, sbb, 8, 0, 8, 23, 3, 23, TFBlocks.FLUFFY_CLOUD.defaultBlockState(), TFBlocks.FLUFFY_CLOUD.defaultBlockState(), false);
+		this.generateBox(world, sbb, 8, 4, 8, 23, 15, 23, TFBlocks.GIANT_COBBLESTONE.defaultBlockState(), TFBlocks.GIANT_COBBLESTONE.defaultBlockState(), false);
+		this.generateBox(world, sbb, 8, 16, 8, 23, 19, 23, TFBlocks.GIANT_LOG.defaultBlockState(), TFBlocks.GIANT_LOG.defaultBlockState(), false);
 
 		// clear inside
 		this.generateAirBox(world, sbb, 12, 4, 12, 19, 15, 19);
@@ -100,7 +99,7 @@ public class CloudCastleComponent extends TFStructureComponentOld {
 			GiantMiner miner = TFEntities.GIANT_MINER.get().create(world.getLevel(), EntitySpawnReason.STRUCTURE);
 			miner.setPos(bx, by, bz);
 			miner.setPersistenceRequired();
-			EventHooks.finalizeMobSpawn(miner, world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
+			// EventHooks.finalizeMobSpawn(miner, world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null)); // TODO: Port - NeoForge hook
 
 			world.addFreshEntity(miner);
 		}
@@ -117,7 +116,7 @@ public class CloudCastleComponent extends TFStructureComponentOld {
 			ArmoredGiant warrior = TFEntities.ARMORED_GIANT.get().create(world.getLevel(), EntitySpawnReason.STRUCTURE);
 			warrior.setPos(bx, by, bz);
 			warrior.setPersistenceRequired();
-			EventHooks.finalizeMobSpawn(warrior, world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
+			// EventHooks.finalizeMobSpawn(warrior, world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null)); // TODO: Port - NeoForge hook
 
 			world.addFreshEntity(warrior);
 		}

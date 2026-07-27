@@ -1,0 +1,12 @@
+{
+  "parent": "twilightforest:block/miniature/template_transforms",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "#leaves",
+    "leaves": "block/oak_leaves",
+    "wood": "block/oak_log"
+  },
+  "elements": [
+    {"from": [2, 0, 2], "to": [14, 10, 14], "faces": {"north": {"uv": [2, 6, 14, 16], "texture": "#leaves"}, "east": {"uv": [2, 6, 14, 16], "texture": "#leaves"}, "south": {"uv": [2, 6, 14, 16], "texture": "#leaves"}, "west": {"uv": [2, 6, 14, 16], "texture": "#leaves"}, "up": {"uv": [2, 2, 14, 14], "texture": "#leaves"}, "down": {"uv": [2, 2, 14, 14], "texture": "#wood"}}}
+  ]
+}

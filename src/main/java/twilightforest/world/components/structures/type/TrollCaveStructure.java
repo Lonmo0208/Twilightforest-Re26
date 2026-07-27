@@ -3,6 +3,7 @@ package twilightforest.world.components.structures.type;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.RandomSource;
@@ -57,7 +58,7 @@ public class TrollCaveStructure extends ProgressionStructure implements Configur
 
 	@Override
 	protected @Nullable StructurePiece getFirstPiece(GenerationContext context, RandomSource random, ChunkPos chunkPos, int x, int y, int z) {
-		return new TrollCaveMainComponent(TFStructurePieceTypes.TFTCMai.get(), 0, x, y - 15, z, this.speleothemConfig);
+		return new TrollCaveMainComponent(TFStructurePieceTypes.TFTCMai, 0, x, y - 15, z, this.speleothemConfig);
 	}
 
 	@Override
@@ -67,7 +68,7 @@ public class TrollCaveStructure extends ProgressionStructure implements Configur
 
 	@Override
 	public StructureType<?> type() {
-		return TFStructureTypes.TROLL_CAVE.get();
+		return TFStructureTypes.TROLL_CAVE;
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class TrollCaveStructure extends ProgressionStructure implements Configur
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_merge"))),
 			Optional.of(new HintConfig(HintConfig.book("trollcave", 3), TFEntities.KOBOLD.get())),
 			Optional.of(new DecorationConfig(4, true, true, false)),
-			false, Optional.of(TFMapDecorations.TROLL_CAVES),
+			false, Optional.of(BuiltInRegistries.MAP_DECORATION_TYPE.wrapAsHolder(TFMapDecorations.TROLL_CAVES)),
 			new StructureSettings(
 				context.lookup(Registries.BIOME).getOrThrow(TFBiomeTags.VALID_TROLL_CAVE_BIOMES),
 				Arrays.stream(MobCategory.values()).collect(Collectors.<MobCategory, MobCategory, StructureSpawnOverride>toMap(category -> category, category -> new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, WeightedList.<MobSpawnSettings.SpawnerData>builder().build()))), // Landmarks have Controlled Mob spawning

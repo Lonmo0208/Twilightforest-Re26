@@ -18,7 +18,7 @@ import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.neoforged.neoforge.common.world.PieceBeardifierModifier;
+
 import twilightforest.TwilightForestMod;
 import twilightforest.block.CandelabraBlock;
 import twilightforest.block.LightableBlock;
@@ -34,32 +34,17 @@ import twilightforest.world.components.structures.TwilightJigsawPiece;
 
 import java.util.List;
 
-public class LichTowerFoyerDecor extends TwilightJigsawPiece implements PieceBeardifierModifier {
+public class LichTowerFoyerDecor extends TwilightJigsawPiece  {
 	public LichTowerFoyerDecor(StructurePieceSerializationContext ctx, CompoundTag compoundTag) {
-		super(TFStructurePieceTypes.LICH_FOYER_DECORATION.get(), compoundTag, ctx, readSettings(compoundTag));
+		super(TFStructurePieceTypes.LICH_FOYER_DECORATION, compoundTag, ctx, readSettings(compoundTag));
 
 		LichTowerUtil.addDefaultProcessors(this.placeSettings);
 	}
 
 	public LichTowerFoyerDecor(int genDepth, StructureTemplateManager structureManager, JigsawPlaceContext jigsawContext) {
-		super(TFStructurePieceTypes.LICH_FOYER_DECORATION.get(), genDepth, structureManager, TwilightForestMod.prefix("lich_tower/foyer_decor"), jigsawContext);
+		super(TFStructurePieceTypes.LICH_FOYER_DECORATION, genDepth, structureManager, TwilightForestMod.prefix("lich_tower/foyer_decor"), jigsawContext);
 
 		LichTowerUtil.addDefaultProcessors(this.placeSettings);
-	}
-
-	@Override
-	public BoundingBox getBeardifierBox() {
-		return this.boundingBox;
-	}
-
-	@Override
-	public TerrainAdjustment getTerrainAdjustment() {
-		return TerrainAdjustment.NONE;
-	}
-
-	@Override
-	public int getGroundLevelDelta() {
-		return 0;
 	}
 
 	@Override
@@ -92,7 +77,7 @@ public class LichTowerFoyerDecor extends TwilightJigsawPiece implements PieceBea
 					level.setBlock(placePos.above(), chestGap, Block.UPDATE_ALL);
 				}
 				case 3 -> {
-					BlockState candelabra = TFBlocks.CANDELABRA.value().defaultBlockState().rotate(rotation).setValue(CandelabraBlock.LIGHTING, LightableBlock.Lighting.DIM);
+					BlockState candelabra = TFBlocks.CANDELABRA.defaultBlockState().rotate(rotation).setValue(CandelabraBlock.LIGHTING, LightableBlock.Lighting.DIM);
 
 					for (BooleanProperty prop : CandelabraBlock.CANDLES) {
 						candelabra = candelabra.setValue(prop, true);
@@ -107,7 +92,7 @@ public class LichTowerFoyerDecor extends TwilightJigsawPiece implements PieceBea
 				}
 				default -> {
 					BlockState decorBlock = switch (random.nextInt(5)) {
-						case 3 -> TFBlocks.SKELETON_SKULL_CANDLE.value().defaultBlockState()
+						case 3 -> TFBlocks.SKELETON_SKULL_CANDLE.defaultBlockState()
 							.setValue(SkullCandleBlock.LIGHTING, LightableBlock.Lighting.NORMAL)
 							.setValue(SkullCandleBlock.CANDLES, random.nextIntBetweenInclusive(1, 3))
 							.setValue(SkullCandleBlock.ROTATION, random.nextIntBetweenInclusive(7, 9));

@@ -3,6 +3,7 @@ package twilightforest.init;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
@@ -10,34 +11,38 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 import twilightforest.TFRegistries;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.custom.BiomeLayerStack;
 import twilightforest.world.components.chunkgenerators.*;
 import twilightforest.world.components.layer.BiomeDensitySource;
+import net.minecraft.core.Registry;
 
 @SuppressWarnings("unused")
 public class TFDensityFunctions {
-	public static final DeferredRegister<MapCodec<? extends DensityFunction>> DENSITY_FUNCTION_TYPES = DeferredRegister.create(Registries.DENSITY_FUNCTION_TYPE, TwilightForestMod.ID);
 
-	public static final DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<TerrainDensityRouter>> BIOME_DRIVEN_TERRAIN = register("biome_driven_terrain", TerrainDensityRouter.CODEC);
-	public static final DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<NoiseDensityRouter>> BIOME_DRIVEN_NOISE = register("biome_driven_noise", NoiseDensityRouter.CODEC);
-	public static final DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<FocusedDensityFunction>> FOCUSED = register("focused", FocusedDensityFunction.CODEC);
-	public static final DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<HollowHillFunction>> HOLLOW_HILL = register("hollow_hill", HollowHillFunction.CODEC);
-	public static final DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<AbsoluteDifferenceFunction.Min>> COORD_MIN = register("coord_min", AbsoluteDifferenceFunction.Min.CODEC);
-	public static final DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<AbsoluteDifferenceFunction.Max>> COORD_MAX = register("coord_max", AbsoluteDifferenceFunction.Max.CODEC);
-	public static final DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<SqrtDensityFunction>> SQRT = register("sqrt", SqrtDensityFunction.CODEC);
+	public static final MapCodec<TerrainDensityRouter> BIOME_DRIVEN_TERRAIN = TerrainDensityRouter.CODEC;
+	public static final MapCodec<NoiseDensityRouter> BIOME_DRIVEN_NOISE = NoiseDensityRouter.CODEC;
+	public static final MapCodec<FocusedDensityFunction> FOCUSED = FocusedDensityFunction.CODEC;
+	public static final MapCodec<HollowHillFunction> HOLLOW_HILL = HollowHillFunction.CODEC;
+	public static final MapCodec<AbsoluteDifferenceFunction.Min> COORD_MIN = AbsoluteDifferenceFunction.Min.CODEC;
+	public static final MapCodec<AbsoluteDifferenceFunction.Max> COORD_MAX = AbsoluteDifferenceFunction.Max.CODEC;
+	public static final MapCodec<SqrtDensityFunction> SQRT = SqrtDensityFunction.CODEC;
 
 	public static final ResourceKey<DensityFunction> BIOME_TERRAIN_RAW = ResourceKey.create(Registries.DENSITY_FUNCTION, TwilightForestMod.prefix("raw_biome_terrain"));
 	public static final ResourceKey<DensityFunction> BIOME_NOISE_RAW = ResourceKey.create(Registries.DENSITY_FUNCTION, TwilightForestMod.prefix("raw_biome_noise"));
 	public static final ResourceKey<DensityFunction> FORESTED_TERRAIN = ResourceKey.create(Registries.DENSITY_FUNCTION, TwilightForestMod.prefix("forested_terrain"));
 	public static final ResourceKey<DensityFunction> SKYLIGHT_TERRAIN = ResourceKey.create(Registries.DENSITY_FUNCTION, TwilightForestMod.prefix("skylight_terrain"));
 
-	private static <T extends DensityFunction> DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<T>> register(String name, MapCodec<T> keyCodec) {
-		return DENSITY_FUNCTION_TYPES.register(name, () -> keyCodec);
+	public static void init() {
+		Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, TwilightForestMod.prefix("biome_driven_terrain"), BIOME_DRIVEN_TERRAIN);
+		Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, TwilightForestMod.prefix("biome_driven_noise"), BIOME_DRIVEN_NOISE);
+		Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, TwilightForestMod.prefix("focused"), FOCUSED);
+		Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, TwilightForestMod.prefix("hollow_hill"), HOLLOW_HILL);
+		Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, TwilightForestMod.prefix("coord_min"), COORD_MIN);
+		Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, TwilightForestMod.prefix("coord_max"), COORD_MAX);
+		Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, TwilightForestMod.prefix("sqrt"), SQRT);
 	}
 
 	public static void bootstrap(BootstrapContext<DensityFunction> context) {
@@ -60,9 +65,6 @@ public class TFDensityFunctions {
 			DensityFunctions.constant(8),
 			DensityFunctions.constant(-1.25)
 		);
-
-		// Debug: For a flat substitute of TerrainDensityRouter
-		//if (false) rawBiomeDensityReferenced = DensityFunctions.yClampedGradient(-31, 32, 2, -2);
 
 		return new DensityFunctions.HolderHolder(context.register(BIOME_TERRAIN_RAW, rawBiomeDensityReferenced));
 	}
@@ -95,16 +97,11 @@ public class TFDensityFunctions {
 			1
 		);
 
-		// Debug: For a flat substitute of TerrainDensityRouter
-		//if (false) rawStreamDensityReferenced = DensityFunctions.yClampedGradient(-31, 32, 2, -2);
-
 		return new DensityFunctions.HolderHolder(context.register(BIOME_NOISE_RAW, rawStreamDensityReferenced));
 	}
 
 	@NotNull
 	private static DensityFunction mulAddHalf(DensityFunction input) {
-		// mulAddHalf(x) = x * 0.5 + 0.5
-		// Useful for squeezing function range [-1,1] into [0,1]
 		return DensityFunctions.add(
 			DensityFunctions.constant(0.5),
 			DensityFunctions.mul(
@@ -139,10 +136,7 @@ public class TFDensityFunctions {
 		context.register(FORESTED_TERRAIN, finalDensity.clamp(-0.1, 0.5));
 	}
 
-	// Heavy WIP
 	private static void makeSkylightTerrain(BootstrapContext<DensityFunction> context, DensityFunction rawBiomeDensity, DensityFunction ambientTerrainNoise) {
-		// FIXME Rapid terrain changes around Highlands are causing islands to stretch into walls when transitioning from the Stream biome
-
 		DensityFunction skyIslandNoise = DensityFunctions.add(
 			DensityFunctions.constant(-0.5),
 			DensityFunctions.mul(

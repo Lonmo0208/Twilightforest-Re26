@@ -13,6 +13,7 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 import twilightforest.TwilightForestMod;
 import twilightforest.config.TFConfig;
 import twilightforest.init.TFDataAttachments;
+import twilightforest.util.TFEntityExtensions;
 
 import java.util.List;
 
@@ -42,8 +43,8 @@ public class MultiplayerBasedAdditionLootFunction extends LootItemConditionalFun
 	@Override
 	protected ItemStack run(ItemStack stack, LootContext context) {
 		if (TFConfig.multiplayerFightAdjuster.adjustsLootRolls()) {
-			if (context.hasParameter(LootContextParams.THIS_ENTITY) && context.getParameter(LootContextParams.THIS_ENTITY).hasData(TFDataAttachments.MULTIPLAYER_FIGHT)) {
-				int qualifiedPlayers = context.getParameter(LootContextParams.THIS_ENTITY).getData(TFDataAttachments.MULTIPLAYER_FIGHT).getQualifiedPlayers().size();
+			if (context.hasParameter(LootContextParams.THIS_ENTITY) && ((TFEntityExtensions) context.getParameter(LootContextParams.THIS_ENTITY)).hasData(() -> TFDataAttachments.MULTIPLAYER_FIGHT)) {
+				int qualifiedPlayers = ((TFEntityExtensions) context.getParameter(LootContextParams.THIS_ENTITY)).getData(() -> TFDataAttachments.MULTIPLAYER_FIGHT).getQualifiedPlayers().size();
 				if (qualifiedPlayers > 1) {
 					int participatingPlayers = qualifiedPlayers - 1;
 					int extraItems = this.value.getInt(context) * participatingPlayers;

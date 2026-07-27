@@ -1,0 +1,12 @@
+{
+  "parent": "twilightforest:block/template_trophy_pedestal",
+  "textures": {
+    "down": "twilightforest:block/pedestal/top",
+    "east": "twilightforest:block/pedestal/hydra_latent",
+    "north": "twilightforest:block/pedestal/snow_queen_latent",
+    "particle": "minecraft:block/stone",
+    "south": "twilightforest:block/pedestal/naga_latent",
+    "up": "twilightforest:block/pedestal/top",
+    "west": "twilightforest:block/pedestal/lich_latent"
+  }
+}

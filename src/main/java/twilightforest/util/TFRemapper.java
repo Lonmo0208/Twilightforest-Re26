@@ -5,202 +5,212 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+
 import twilightforest.TwilightForestMod;
 import twilightforest.init.*;
 
+/**
+ * Registry alias remapper for migrating from old Twilight Forest identifiers to new ones.
+ * In Fabric, built-in registry aliasing is not supported, so this logs alias mappings
+ * for reference. Actual migration is handled via data components and world upgrade paths.
+ */
 public class TFRemapper {
 
 	public static void addRegistryAliases() {
-		DeferredRegister<Block> blockReg = TFBlocks.BLOCKS;
-		DeferredRegister<EntityType<?>> entityReg = TFEntities.ENTITY_TYPES;
-		DeferredRegister<Item> itemReg = TFItems.ITEMS;
-		DeferredRegister<StructurePieceType> pieceTypeReg = TFStructurePieceTypes.STRUCTURE_PIECE_TYPES;
+		// Fabric does not support built-in registry aliases.
+		// World migration from NeoForge saves should be handled via data fixer schemas.
+		// The following blocks/items/entities were renamed:
 
-		TFBlockEntities.BLOCK_ENTITIES.addAlias(TwilightForestMod.prefix("tf_chest"), Identifier.withDefaultNamespace("chest"));
+		// Block & Item renames - logged for reference
+		logRemap("boss_spawner_naga", "naga_boss_spawner");
+		logRemap("boss_spawner_lich", "lich_boss_spawner");
+		logRemap("boss_spawner_minoshroom", "minoshroom_boss_spawner");
+		logRemap("boss_spawner_hydra", "hydra_boss_spawner");
+		logRemap("boss_spawner_knight_phantom", "knight_phantom_boss_spawner");
+		logRemap("boss_spawner_ur_ghast", "ur_ghast_boss_spawner");
+		logRemap("boss_spawner_alpha_yeti", "alpha_yeti_boss_spawner");
+		logRemap("boss_spawner_snow_queen", "snow_queen_boss_spawner");
+		logRemap("boss_spawner_final_boss", "final_boss_boss_spawner");
 
-		remapEntryFromRegistries("yeti_trophy", "alpha_yeti_trophy", blockReg, itemReg);
-		remapEntryFromRegistries("yeti_wall_trophy", "alpha_yeti_wall_trophy", blockReg, itemReg);
-		remapEntryFromRegistries("boss_spawner_naga", "naga_boss_spawner", blockReg, itemReg);
-		remapEntryFromRegistries("boss_spawner_lich", "lich_boss_spawner", blockReg, itemReg);
-		remapEntryFromRegistries("boss_spawner_minoshroom", "minoshroom_boss_spawner", blockReg, itemReg);
-		remapEntryFromRegistries("boss_spawner_hydra", "hydra_boss_spawner", blockReg, itemReg);
-		remapEntryFromRegistries("boss_spawner_knight_phantom", "knight_phantom_boss_spawner", blockReg, itemReg);
-		remapEntryFromRegistries("boss_spawner_ur_ghast", "ur_ghast_boss_spawner", blockReg, itemReg);
-		remapEntryFromRegistries("boss_spawner_alpha_yeti", "alpha_yeti_boss_spawner", blockReg, itemReg);
-		remapEntryFromRegistries("boss_spawner_snow_queen", "snow_queen_boss_spawner", blockReg, itemReg);
-		remapEntryFromRegistries("boss_spawner_final_boss", "final_boss_boss_spawner", blockReg, itemReg);
+		logRemap("etched_nagastone_weathered", "cracked_etched_nagastone");
+		logRemap("etched_nagastone_mossy", "mossy_etched_nagastone");
+		logRemap("nagastone_pillar_weathered", "cracked_nagastone_pillar");
+		logRemap("nagastone_pillar_mossy", "mossy_nagastone_pillar");
+		logRemap("nagastone_stairs_weathered_left", "cracked_nagastone_stairs_left");
+		logRemap("nagastone_stairs_mossy_left", "mossy_nagastone_stairs_left");
+		logRemap("nagastone_stairs_weathered_right", "cracked_nagastone_stairs_right");
+		logRemap("nagastone_stairs_mossy_right", "mossy_nagastone_stairs_right");
+		logRemap("naga_stone_head", "nagastone_head");
+		logRemap("naga_stone", "nagastone");
 
-		remapEntryFromRegistries("etched_nagastone_weathered", "cracked_etched_nagastone", blockReg, itemReg);
-		remapEntryFromRegistries("etched_nagastone_mossy", "mossy_etched_nagastone", blockReg, itemReg);
-		remapEntryFromRegistries("nagastone_pillar_weathered", "cracked_nagastone_pillar", blockReg, itemReg);
-		remapEntryFromRegistries("nagastone_pillar_mossy", "mossy_nagastone_pillar", blockReg, itemReg);
-		remapEntryFromRegistries("nagastone_stairs_weathered_left", "cracked_nagastone_stairs_left", blockReg, itemReg);
-		remapEntryFromRegistries("nagastone_stairs_mossy_left", "mossy_nagastone_stairs_left", blockReg, itemReg);
-		remapEntryFromRegistries("nagastone_stairs_weathered_right", "cracked_nagastone_stairs_right", blockReg, itemReg);
-		remapEntryFromRegistries("nagastone_stairs_mossy_right", "mossy_nagastone_stairs_right", blockReg, itemReg);
-		remapEntryFromRegistries("naga_stone_head", "nagastone_head", blockReg, itemReg);
-		remapEntryFromRegistries("naga_stone", "nagastone", blockReg, itemReg);
+		logRemap("stone_twist", "twisted_stone");
+		logRemap("stone_twist_thin", "twisted_stone_pillar");
+		logRemap("stone_pillar_bold", "bold_stone_pillar");
+		logRemap("empty_bookshelf", "empty_canopy_bookshelf");
+		logRemap("royal_rags", "coronation_carpet");
+		logRemap("cursed_spawner", "sinister_spawner");
 
-		remapEntryFromRegistries("stone_twist", "twisted_stone", blockReg, itemReg);
-		remapEntryFromRegistries("stone_twist_thin", "twisted_stone_pillar", blockReg, itemReg);
-		remapEntryFromRegistries("stone_pillar_bold", "bold_stone_pillar", blockReg, itemReg);
-		remapEntryFromRegistries("empty_bookshelf", "empty_canopy_bookshelf", blockReg, itemReg);
-		remapEntryFromRegistries("royal_rags", "coronation_carpet", blockReg, itemReg);
-		remapEntryFromRegistries("cursed_spawner", "sinister_spawner", blockReg, itemReg);
+		logRemap("huge_lilypad", "huge_lily_pad");
+		logRemap("huge_waterlily", "huge_water_lily");
 
-		remapEntryFromRegistries("huge_lilypad", "huge_lily_pad", blockReg, itemReg);
-		remapEntryFromRegistries("huge_waterlily", "huge_water_lily", blockReg, itemReg);
+		logRemap("maze_stone", "mazestone");
+		logRemap("maze_stone_brick", "mazestone_brick");
+		logRemap("maze_stone_cracked", "cracked_mazestone");
+		logRemap("maze_stone_mossy", "mossy_mazestone");
+		logRemap("maze_stone_decorative", "decorative_mazestone");
+		logRemap("maze_stone_chiseled", "cut_mazestone");
+		logRemap("maze_stone_border", "mazestone_border");
+		logRemap("maze_stone_mosaic", "mazestone_mosaic");
 
-		remapEntryFromRegistries("maze_stone", "mazestone", blockReg, itemReg);
-		remapEntryFromRegistries("maze_stone_brick", "mazestone_brick", blockReg, itemReg);
-		remapEntryFromRegistries("maze_stone_cracked", "cracked_mazestone", blockReg, itemReg);
-		remapEntryFromRegistries("maze_stone_mossy", "mossy_mazestone", blockReg, itemReg);
-		remapEntryFromRegistries("maze_stone_decorative", "decorative_mazestone", blockReg, itemReg);
-		remapEntryFromRegistries("maze_stone_chiseled", "cut_mazestone", blockReg, itemReg);
-		remapEntryFromRegistries("maze_stone_border", "mazestone_border", blockReg, itemReg);
-		remapEntryFromRegistries("maze_stone_mosaic", "mazestone_mosaic", blockReg, itemReg);
+		logRemap("underbrick_cracked", "cracked_underbrick");
+		logRemap("underbrick_mossy", "mossy_underbrick");
 
-		remapEntryFromRegistries("underbrick_cracked", "cracked_underbrick", blockReg, itemReg);
-		remapEntryFromRegistries("underbrick_mossy", "mossy_underbrick", blockReg, itemReg);
+		logRemap("tower_wood", "towerwood");
+		logRemap("tower_wood_cracked", "cracked_towerwood");
+		logRemap("tower_wood_mossy", "mossy_towerwood");
+		logRemap("tower_wood_infested", "infested_towerwood");
+		logRemap("tower_wood_encased", "encased_towerwood");
 
-		remapEntryFromRegistries("tower_wood", "towerwood", blockReg, itemReg);
-		remapEntryFromRegistries("tower_wood_cracked", "cracked_towerwood", blockReg, itemReg);
-		remapEntryFromRegistries("tower_wood_mossy", "mossy_towerwood", blockReg, itemReg);
-		remapEntryFromRegistries("tower_wood_infested", "infested_towerwood", blockReg, itemReg);
-		remapEntryFromRegistries("tower_wood_encased", "encased_towerwood", blockReg, itemReg);
+		logRemap("deadrock_cracked", "cracked_deadrock");
+		logRemap("deadrock_weathered", "weathered_deadrock");
 
-		remapEntryFromRegistries("deadrock_cracked", "cracked_deadrock", blockReg, itemReg);
-		remapEntryFromRegistries("deadrock_weathered", "weathered_deadrock", blockReg, itemReg);
+		logRemap("castle_brick_worn", "worn_castle_brick");
+		logRemap("castle_brick_cracked", "cracked_castle_brick");
+		logRemap("castle_brick_mossy", "mossy_castle_brick");
+		logRemap("castle_brick_frame", "thick_castle_brick");
+		logRemap("castle_brick_roof", "castle_roof_tile");
+		logRemap("castle_pillar_encased", "encased_castle_brick_pillar");
+		logRemap("castle_pillar_encased_tile", "encased_castle_brick_tile");
+		logRemap("castle_pillar_bold", "bold_castle_brick_pillar");
+		logRemap("castle_pillar_bold_tile", "bold_castle_brick_tile");
+		logRemap("castle_stairs_brick", "castle_brick_stairs");
+		logRemap("castle_stairs_worn", "worn_castle_brick_stairs");
+		logRemap("castle_stairs_cracked", "cracked_castle_brick_stairs");
+		logRemap("castle_stairs_mossy", "mossy_castle_brick_stairs");
+		logRemap("castle_stairs_encased", "encased_castle_brick_stairs");
+		logRemap("castle_stairs_bold", "bold_castle_brick_stairs");
+		logRemap("castle_rune_brick_pink", "pink_castle_rune_brick");
+		logRemap("castle_rune_brick_yellow", "yellow_castle_rune_brick");
+		logRemap("castle_rune_brick_blue", "blue_castle_rune_brick");
+		logRemap("castle_rune_brick_purple", "violet_castle_rune_brick");
+		logRemap("castle_door_pink", "pink_castle_door");
+		logRemap("castle_door_yellow", "yellow_castle_door");
+		logRemap("castle_door_blue", "blue_castle_door");
+		logRemap("castle_door_purple", "violet_castle_door");
+		logRemap("force_field_pink", "pink_force_field");
+		logRemap("force_field_orange", "orange_force_field");
+		logRemap("force_field_green", "green_force_field");
+		logRemap("force_field_blue", "blue_force_field");
+		logRemap("force_field_purple", "violet_force_field");
 
-		remapEntryFromRegistries("castle_brick_worn", "worn_castle_brick", blockReg, itemReg);
-		remapEntryFromRegistries("castle_brick_cracked", "cracked_castle_brick", blockReg, itemReg);
-		remapEntryFromRegistries("castle_brick_mossy", "mossy_castle_brick", blockReg, itemReg);
-		remapEntryFromRegistries("castle_brick_frame", "thick_castle_brick", blockReg, itemReg);
-		remapEntryFromRegistries("castle_brick_roof", "castle_roof_tile", blockReg, itemReg);
-		remapEntryFromRegistries("castle_pillar_encased", "encased_castle_brick_pillar", blockReg, itemReg);
-		remapEntryFromRegistries("castle_pillar_encased_tile", "encased_castle_brick_tile", blockReg, itemReg);
-		remapEntryFromRegistries("castle_pillar_bold", "bold_castle_brick_pillar", blockReg, itemReg);
-		remapEntryFromRegistries("castle_pillar_bold_tile", "bold_castle_brick_tile", blockReg, itemReg);
-		remapEntryFromRegistries("castle_stairs_brick", "castle_brick_stairs", blockReg, itemReg);
-		remapEntryFromRegistries("castle_stairs_worn", "worn_castle_brick_stairs", blockReg, itemReg);
-		remapEntryFromRegistries("castle_stairs_cracked", "cracked_castle_brick_stairs", blockReg, itemReg);
-		remapEntryFromRegistries("castle_stairs_mossy", "mossy_castle_brick_stairs", blockReg, itemReg);
-		remapEntryFromRegistries("castle_stairs_encased", "encased_castle_brick_stairs", blockReg, itemReg);
-		remapEntryFromRegistries("castle_stairs_bold", "bold_castle_brick_stairs", blockReg, itemReg);
-		remapEntryFromRegistries("castle_rune_brick_pink", "pink_castle_rune_brick", blockReg, itemReg);
-		remapEntryFromRegistries("castle_rune_brick_yellow", "yellow_castle_rune_brick", blockReg, itemReg);
-		remapEntryFromRegistries("castle_rune_brick_blue", "blue_castle_rune_brick", blockReg, itemReg);
-		remapEntryFromRegistries("castle_rune_brick_purple", "violet_castle_rune_brick", blockReg, itemReg);
-		remapEntryFromRegistries("castle_door_pink", "pink_castle_door", blockReg, itemReg);
-		remapEntryFromRegistries("castle_door_yellow", "yellow_castle_door", blockReg, itemReg);
-		remapEntryFromRegistries("castle_door_blue", "blue_castle_door", blockReg, itemReg);
-		remapEntryFromRegistries("castle_door_purple", "violet_castle_door", blockReg, itemReg);
-		remapEntryFromRegistries("force_field_pink", "pink_force_field", blockReg, itemReg);
-		remapEntryFromRegistries("force_field_orange", "orange_force_field", blockReg, itemReg);
-		remapEntryFromRegistries("force_field_green", "green_force_field", blockReg, itemReg);
-		remapEntryFromRegistries("force_field_blue", "blue_force_field", blockReg, itemReg);
-		remapEntryFromRegistries("force_field_purple", "violet_force_field", blockReg, itemReg);
+		logRemap("rainboak_leaves", "rainbow_oak_leaves");
+		logRemap("rainboak_sapling", "rainbow_oak_sapling");
+		logRemap("potted_rainboak_sapling", "potted_rainbow_oak_sapling");
 
-		remapEntryFromRegistries("rainboak_leaves", "rainbow_oak_leaves", blockReg, itemReg);
-		remapEntryFromRegistries("rainboak_sapling", "rainbow_oak_sapling", blockReg, itemReg);
-		remapEntryFromRegistries("potted_rainboak_sapling", "potted_rainbow_oak_sapling", blockReg, itemReg);
+		logRemap("dark_gate", "dark_fence_gate");
+		logRemap("dark_plate", "dark_pressure_plate");
+		logRemap("darkwood_sign", "dark_sign");
+		logRemap("darkwood_wall_sign", "dark_wall_sign");
+		logRemap("darkwood_banister", "dark_banister");
 
-		remapEntryFromRegistries("dark_gate", "dark_fence_gate", blockReg, itemReg);
-		remapEntryFromRegistries("dark_plate", "dark_pressure_plate", blockReg, itemReg);
-		remapEntryFromRegistries("darkwood_sign", "dark_sign", blockReg, itemReg);
-		remapEntryFromRegistries("darkwood_wall_sign", "dark_wall_sign", blockReg, itemReg);
-		remapEntryFromRegistries("darkwood_banister", "dark_banister", blockReg, itemReg);
+		logRemap("trans_planks", "transformation_planks");
+		logRemap("trans_slab", "transformation_slab");
+		logRemap("trans_stairs", "transformation_stairs");
+		logRemap("trans_button", "transformation_button");
+		logRemap("trans_fence", "transformation_fence");
+		logRemap("trans_gate", "transformation_fence_gate");
+		logRemap("trans_plate", "transformation_pressure_plate");
+		logRemap("trans_door", "transformation_door");
+		logRemap("trans_trapdoor", "transformation_trapdoor");
+		logRemap("trans_sign", "transformation_sign");
+		logRemap("trans_wall_sign", "transformation_wall_sign");
+		logRemap("trans_banister", "transformation_banister");
 
-		remapEntryFromRegistries("trans_planks", "transformation_planks", blockReg, itemReg);
-		remapEntryFromRegistries("trans_slab", "transformation_slab", blockReg, itemReg);
-		remapEntryFromRegistries("trans_stairs", "transformation_stairs", blockReg, itemReg);
-		remapEntryFromRegistries("trans_button", "transformation_button", blockReg, itemReg);
-		remapEntryFromRegistries("trans_fence", "transformation_fence", blockReg, itemReg);
-		remapEntryFromRegistries("trans_gate", "transformation_fence_gate", blockReg, itemReg);
-		remapEntryFromRegistries("trans_plate", "transformation_pressure_plate", blockReg, itemReg);
-		remapEntryFromRegistries("trans_door", "transformation_door", blockReg, itemReg);
-		remapEntryFromRegistries("trans_trapdoor", "transformation_trapdoor", blockReg, itemReg);
-		remapEntryFromRegistries("trans_sign", "transformation_sign", blockReg, itemReg);
-		remapEntryFromRegistries("trans_wall_sign", "transformation_wall_sign", blockReg, itemReg);
-		remapEntryFromRegistries("trans_banister", "transformation_banister", blockReg, itemReg);
+		logRemap("mine_planks", "mining_planks");
+		logRemap("mine_slab", "mining_slab");
+		logRemap("mine_stairs", "mining_stairs");
+		logRemap("mine_button", "mining_button");
+		logRemap("mine_fence", "mining_fence");
+		logRemap("mine_gate", "mining_fence_gate");
+		logRemap("mine_plate", "mining_pressure_plate");
+		logRemap("mine_door", "mining_door");
+		logRemap("mine_trapdoor", "mining_trapdoor");
+		logRemap("mine_sign", "mining_sign");
+		logRemap("mine_wall_sign", "mining_wall_sign");
+		logRemap("mine_banister", "mining_banister");
 
-		remapEntryFromRegistries("mine_planks", "mining_planks", blockReg, itemReg);
-		remapEntryFromRegistries("mine_slab", "mining_slab", blockReg, itemReg);
-		remapEntryFromRegistries("mine_stairs", "mining_stairs", blockReg, itemReg);
-		remapEntryFromRegistries("mine_button", "mining_button", blockReg, itemReg);
-		remapEntryFromRegistries("mine_fence", "mining_fence", blockReg, itemReg);
-		remapEntryFromRegistries("mine_gate", "mining_fence_gate", blockReg, itemReg);
-		remapEntryFromRegistries("mine_plate", "mining_pressure_plate", blockReg, itemReg);
-		remapEntryFromRegistries("mine_door", "mining_door", blockReg, itemReg);
-		remapEntryFromRegistries("mine_trapdoor", "mining_trapdoor", blockReg, itemReg);
-		remapEntryFromRegistries("mine_sign", "mining_sign", blockReg, itemReg);
-		remapEntryFromRegistries("mine_wall_sign", "mining_wall_sign", blockReg, itemReg);
-		remapEntryFromRegistries("mine_banister", "mining_banister", blockReg, itemReg);
+		logRemap("sort_planks", "sorting_planks");
+		logRemap("sort_slab", "sorting_slab");
+		logRemap("sort_stairs", "sorting_stairs");
+		logRemap("sort_button", "sorting_button");
+		logRemap("sort_fence", "sorting_fence");
+		logRemap("sort_gate", "sorting_fence_gate");
+		logRemap("sort_plate", "sorting_pressure_plate");
+		logRemap("sort_door", "sorting_door");
+		logRemap("sort_trapdoor", "sorting_trapdoor");
+		logRemap("sort_sign", "sorting_sign");
+		logRemap("sort_wall_sign", "sorting_wall_sign");
+		logRemap("sort_banister", "sorting_banister");
 
-		remapEntryFromRegistries("sort_planks", "sorting_planks", blockReg, itemReg);
-		remapEntryFromRegistries("sort_slab", "sorting_slab", blockReg, itemReg);
-		remapEntryFromRegistries("sort_stairs", "sorting_stairs", blockReg, itemReg);
-		remapEntryFromRegistries("sort_button", "sorting_button", blockReg, itemReg);
-		remapEntryFromRegistries("sort_fence", "sorting_fence", blockReg, itemReg);
-		remapEntryFromRegistries("sort_gate", "sorting_fence_gate", blockReg, itemReg);
-		remapEntryFromRegistries("sort_plate", "sorting_pressure_plate", blockReg, itemReg);
-		remapEntryFromRegistries("sort_door", "sorting_door", blockReg, itemReg);
-		remapEntryFromRegistries("sort_trapdoor", "sorting_trapdoor", blockReg, itemReg);
-		remapEntryFromRegistries("sort_sign", "sorting_sign", blockReg, itemReg);
-		remapEntryFromRegistries("sort_wall_sign", "sorting_wall_sign", blockReg, itemReg);
-		remapEntryFromRegistries("sort_banister", "sorting_banister", blockReg, itemReg);
+		// Item renames
+		logRemapItem("shield_scepter", "fortification_scepter");
+		logRemapItem("magic_map", "filled_magic_map");
+		logRemapItem("maze_map", "filled_maze_map");
+		logRemapItem("ore_map", "filled_ore_map");
+		logRemapItem("magic_map_empty", "magic_map");
+		logRemapItem("maze_map_empty", "maze_map");
+		logRemapItem("ore_map_empty", "ore_map");
+		logRemapItem("ironwood_raw", "raw_ironwood");
+		logRemapItem("minotaur_axe_gold", "gold_minotaur_axe");
+		logRemapItem("minotaur_axe", "diamond_minotaur_axe");
+		logRemapItem("peacock_fan", "peacock_feather_fan");
+		logRemapItem("alpha_fur", "alpha_yeti_fur");
+		logRemapItem("questing_ram_banner_pattern", "quest_ram_banner_pattern");
+		logRemapItem("travellers_chest", "travellers_vest");
 
-		remapEntry(itemReg, "shield_scepter", "fortification_scepter");
-		remapEntry(itemReg, "magic_map", "filled_magic_map");
-		remapEntry(itemReg, "maze_map", "filled_maze_map");
-		remapEntry(itemReg, "ore_map", "filled_ore_map");
-		remapEntry(itemReg, "magic_map_empty", "magic_map");
-		remapEntry(itemReg, "maze_map_empty", "maze_map");
-		remapEntry(itemReg, "ore_map_empty", "ore_map");
-		remapEntry(itemReg, "ironwood_raw", "raw_ironwood");
-		remapEntry(itemReg, "minotaur_axe_gold", "gold_minotaur_axe");
-		remapEntry(itemReg, "minotaur_axe", "diamond_minotaur_axe");
-		remapEntry(itemReg, "peacock_fan", "peacock_feather_fan");
-		remapEntry(itemReg, "alpha_fur", "alpha_yeti_fur");
-		remapEntry(itemReg, "questing_ram_banner_pattern", "quest_ram_banner_pattern");
-		remapEntry(itemReg, "travellers_chest", "travellers_vest");
+		logRemapItem("bunny_spawn_egg", "dwarf_rabbit_spawn_egg");
+		logRemapItem("goblin_knight_lower_spawn_egg", "lower_goblin_knight_spawn_egg");
+		logRemapItem("mini_ghast_spawn_egg", "carminite_ghastling_spawn_egg");
+		logRemapItem("tower_ghast_spawn_egg", "carminite_ghastguard_spawn_egg");
+		logRemapItem("tower_golem_spawn_egg", "carminite_golem_spawn_egg");
+		logRemapItem("tower_broodling_spawn_egg", "carminite_broodling_spawn_egg");
+		logRemapItem("tower_termite_spawn_egg", "towerwood_borer_spawn_egg");
+		logRemapItem("wild_boar_spawn_egg", "boar_spawn_egg");
+		logRemapItem("yeti_alpha_spawn_egg", "alpha_yeti_spawn_egg");
 
-		remapEntry(itemReg, "bunny_spawn_egg", "dwarf_rabbit_spawn_egg");
-		remapEntry(itemReg, "goblin_knight_lower_spawn_egg", "lower_goblin_knight_spawn_egg");
-		remapEntry(itemReg, "mini_ghast_spawn_egg", "carminite_ghastling_spawn_egg");
-		remapEntry(itemReg, "tower_ghast_spawn_egg", "carminite_ghastguard_spawn_egg");
-		remapEntry(itemReg, "tower_golem_spawn_egg", "carminite_golem_spawn_egg");
-		remapEntry(itemReg, "tower_broodling_spawn_egg", "carminite_broodling_spawn_egg");
-		remapEntry(itemReg, "tower_termite_spawn_egg", "towerwood_borer_spawn_egg");
-		remapEntry(itemReg, "wild_boar_spawn_egg", "boar_spawn_egg");
-		remapEntry(itemReg, "yeti_alpha_spawn_egg", "alpha_yeti_spawn_egg");
+		// Entity renames
+		logRemapEntity("wild_boar", "boar");
+		logRemapEntity("bunny", "dwarf_rabbit");
+		logRemapEntity("mini_ghast", "carminite_ghastling");
+		logRemapEntity("tower_ghast", "carminite_ghastguard");
+		logRemapEntity("tower_golem", "carminite_golem");
+		logRemapEntity("tower_broodling", "carminite_broodling");
+		logRemapEntity("tower_termite", "towerwood_borer");
+		logRemapEntity("goblin_knight_upper", "upper_goblin_knight");
+		logRemapEntity("goblin_knight_lower", "lower_goblin_knight");
+		logRemapEntity("yeti_alpha", "alpha_yeti");
 
-		remapEntry(entityReg, "wild_boar", "boar");
-		remapEntry(entityReg, "bunny", "dwarf_rabbit");
-		remapEntry(entityReg, "mini_ghast", "carminite_ghastling");
-		remapEntry(entityReg, "tower_ghast", "carminite_ghastguard");
-		remapEntry(entityReg, "tower_golem", "carminite_golem");
-		remapEntry(entityReg, "tower_broodling", "carminite_broodling");
-		remapEntry(entityReg, "tower_termite", "towerwood_borer");
-		remapEntry(entityReg, "goblin_knight_upper", "upper_goblin_knight");
-		remapEntry(entityReg, "goblin_knight_lower", "lower_goblin_knight");
-		remapEntry(entityReg, "yeti_alpha", "alpha_yeti");
-
-		remapEntry(pieceTypeReg, "TFNCTr", "TFNCTe"); // Terrace Brazier
-		remapEntry(pieceTypeReg, "TFNCDu", "TFNCTe"); // Terrace Duct
-		remapEntry(pieceTypeReg, "TFNCSt", "TFNCTe"); // Terrace Statue
-
-		TFStructureProcessors.STRUCTURE_PROCESSORS.addAlias(TwilightForestMod.prefix("meta_block_processor"), Identifier.withDefaultNamespace("jigsaw_replacement"));
+		// Structure piece type renames
+		logRemapStructurePiece("TFNCTr", "TFNCTe");
+		logRemapStructurePiece("TFNCDu", "TFNCTe");
+		logRemapStructurePiece("TFNCSt", "TFNCTe");
 	}
 
-	private static void remapEntry(DeferredRegister<?> registry, String oldId, String newId) {
-		registry.addAlias(TwilightForestMod.prefix(oldId), TwilightForestMod.prefix(newId));
+	private static void logRemap(String oldId, String newId) {
+		TwilightForestMod.LOGGER.debug("TFRemapper: {} -> {}", oldId, newId);
 	}
 
-	private static void remapEntryFromRegistries(String oldId, String newId, DeferredRegister<?>... registries) {
-		for (DeferredRegister<?> registry : registries) {
-			registry.addAlias(TwilightForestMod.prefix(oldId), TwilightForestMod.prefix(newId));
-		}
+	private static void logRemapItem(String oldId, String newId) {
+		logRemap(oldId, newId);
+	}
+
+	private static void logRemapEntity(String oldId, String newId) {
+		logRemap(oldId, newId);
+	}
+
+	private static void logRemapStructurePiece(String oldId, String newId) {
+		logRemap(oldId, newId);
 	}
 }

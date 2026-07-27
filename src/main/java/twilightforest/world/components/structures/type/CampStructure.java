@@ -64,7 +64,7 @@ public class CampStructure extends Structure implements DecorationClearance {
 
 	@Override
 	public StructureType<?> type() {
-		return TFStructureTypes.CAMP.value();
+		return TFStructureTypes.CAMP;
 	}
 
 	public static CampStructure buildStructureConfig(BootstrapContext<Structure> context) {

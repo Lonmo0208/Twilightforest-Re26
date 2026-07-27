@@ -1,33 +1,32 @@
 package twilightforest.config;
 
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TFClientConfig {
 
-	final ModConfigSpec.BooleanValue silentCicadas;
-	final ModConfigSpec.BooleanValue silentCicadasOnHead;
-	final ModConfigSpec.BooleanValue firstPersonEffects;
-	final ModConfigSpec.BooleanValue rotateTrophyHeadsGui;
-	final ModConfigSpec.BooleanValue disableOptifineNagScreen;
-	final ModConfigSpec.BooleanValue disableLockedBiomeToasts;
-	final ModConfigSpec.BooleanValue showQuestRamCrosshairIndicator;
-	final ModConfigSpec.BooleanValue showFortificationShieldIndicator;
-	final ModConfigSpec.BooleanValue showFortificationShieldIndicatorInCreative;
-	final ModConfigSpec.IntValue cloudBlockPrecipitationDistance;
-	final ModConfigSpec.ConfigValue<List<? extends String>> giantSkinUUIDs;
-	final ModConfigSpec.ConfigValue<List<? extends String>> auroraBiomes;
-	final ModConfigSpec.BooleanValue prettifyOreMeterGui;
-	final ModConfigSpec.BooleanValue spawnCharmAnimationAsTotem;
-	final ModConfigSpec.BooleanValue manualTravellersWingsGradualGlide;
-	final ModConfigSpec.BooleanValue firstPersonGloveOverlay;
+	final FabricModConfigSpec.BooleanValue silentCicadas;
+	final FabricModConfigSpec.BooleanValue silentCicadasOnHead;
+	final FabricModConfigSpec.BooleanValue firstPersonEffects;
+	final FabricModConfigSpec.BooleanValue rotateTrophyHeadsGui;
+	final FabricModConfigSpec.BooleanValue disableOptifineNagScreen;
+	final FabricModConfigSpec.BooleanValue disableLockedBiomeToasts;
+	final FabricModConfigSpec.BooleanValue showQuestRamCrosshairIndicator;
+	final FabricModConfigSpec.BooleanValue showFortificationShieldIndicator;
+	final FabricModConfigSpec.BooleanValue showFortificationShieldIndicatorInCreative;
+	final FabricModConfigSpec.IntValue cloudBlockPrecipitationDistance;
+	final FabricModConfigSpec.ListValue<String> giantSkinUUIDs;
+	final FabricModConfigSpec.ListValue<String> auroraBiomes;
+	final FabricModConfigSpec.BooleanValue prettifyOreMeterGui;
+	final FabricModConfigSpec.BooleanValue spawnCharmAnimationAsTotem;
+	final FabricModConfigSpec.BooleanValue manualTravellersWingsGradualGlide;
+	final FabricModConfigSpec.BooleanValue firstPersonGloveOverlay;
 
 	final ItemDisplay ITEM_DISPLAY = new ItemDisplay();
 
-	public TFClientConfig(ModConfigSpec.Builder builder) {
+	public TFClientConfig(FabricModConfigSpec.Builder builder) {
 		silentCicadas = builder
 			.translation(TFConfig.CONFIG_ID + "silent_cicadas")
 			.comment(ConfigComments.SILENT_CICADAS)
@@ -132,9 +131,9 @@ public class TFClientConfig {
 	}
 
 	static class ItemDisplay {
-		ModConfigSpec.IntValue screenOffsetX;
-		ModConfigSpec.IntValue screenOffsetY;
-		ModConfigSpec.DoubleValue screenScale;
-		ModConfigSpec.BooleanValue twentyFourHourFormat;
+		FabricModConfigSpec.IntValue screenOffsetX;
+		FabricModConfigSpec.IntValue screenOffsetY;
+		FabricModConfigSpec.DoubleValue screenScale;
+		FabricModConfigSpec.BooleanValue twentyFourHourFormat;
 	}
 }

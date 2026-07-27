@@ -6,8 +6,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import tamaized.beanification.junit.MockitoFixer;
 import twilightforest.init.TFDataComponents;
 import twilightforest.util.ArmorUtil;
 
@@ -15,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoFixer.class)
 public class ArmorUtilTests {
 
 	private ArmorUtil instance;
@@ -40,7 +37,7 @@ public class ArmorUtilTests {
 			.thenReturn(ItemStack.EMPTY);
 
 		ItemStack bootsStack = mock(ItemStack.class);
-		when(bootsStack.get(TFDataComponents.EMPERORS_CLOTH.get())).thenReturn(Unit.INSTANCE);
+		when(bootsStack.get(TFDataComponents.EMPERORS_CLOTH)).thenReturn(Unit.INSTANCE);
 		when(entity.getItemBySlot(EquipmentSlot.FEET)).thenReturn(bootsStack);
 
 		float result = instance.getShroudedArmorPercentage(entity);

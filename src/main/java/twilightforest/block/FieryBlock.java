@@ -8,12 +8,11 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.fml.ModList;
+import net.fabricmc.loader.api.FabricLoader;
 import twilightforest.init.TFDamageTypes;
 import twilightforest.init.TFItems;
 
@@ -29,7 +28,7 @@ public class FieryBlock extends Block {
 
 	@Override
 	public boolean skipRendering(BlockState state, BlockState otherState, Direction direction) {
-		return ModList.get().isLoaded("ctm") && otherState.getBlock() instanceof FieryBlock;
+		return FabricLoader.getInstance().isModLoaded("ctm") && otherState.getBlock() instanceof FieryBlock;
 	}
 
 	@Override
@@ -39,14 +38,10 @@ public class FieryBlock extends Block {
 
 	@Override
 	public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
-		if (!entity.fireImmune() && level instanceof ServerLevel sl && entity instanceof LivingEntity living && !living.getItemBySlot(EquipmentSlot.FEET).is(TFItems.FIERY_BOOTS.get())) {
+		if (!entity.fireImmune() && level instanceof ServerLevel sl && entity instanceof LivingEntity living && !living.getItemBySlot(EquipmentSlot.FEET).is(TFItems.FIERY_BOOTS)) {
 			entity.hurtServer(sl, TFDamageTypes.getDamageSource(level, TFDamageTypes.FIERY), 1.0F);
 		}
 		super.stepOn(level, pos, state, entity);
 	}
 
-	@Override
-	public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction) {
-		return true;
-	}
 }

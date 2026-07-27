@@ -5,9 +5,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
-import tamaized.beanification.junit.MockitoFixer;
 import twilightforest.client.BakedMultiPartRenderers;
 import twilightforest.entity.TFPart;
 import twilightforest.util.multiparts.MultipartEntityUtil;
@@ -15,7 +13,6 @@ import twilightforest.util.multiparts.MultipartEntityUtil;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoFixer.class)
 public class MultipartEntityUtilTests {
 
 	private MultipartEntityUtil instance;

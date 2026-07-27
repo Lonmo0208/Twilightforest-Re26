@@ -54,7 +54,7 @@ public class TravellersGogglesItem extends TravellersArmorItem {
 				slot.safeInsert(removedStack);
 				this.playRemoveOneSound(player);
 			}
-		} else if (itemstack.canFitInsideContainerItems()) {
+		} else if (true /* TODO: Port - canFitInsideContainerItems */) {
 			if (mutableContents.trySwap(SlotAccess.of(slot::getItem, slot::set), player))
 				this.playInsertSound(player);
 		}
@@ -116,7 +116,6 @@ public class TravellersGogglesItem extends TravellersArmorItem {
 		}
 	}
 
-	@Override
 	public boolean isGazeDisguise(ItemStack stack, Player player, @Nullable LivingEntity entity) {
 		return entity instanceof EnderMan && TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.ALL_NIGHT_GOGGLES_MODIFIER);
 	}

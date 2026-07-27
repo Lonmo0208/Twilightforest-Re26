@@ -24,12 +24,12 @@ import net.minecraft.world.item.component.BlockItemStateProperties;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ItemLike;
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import twilightforest.block.KeepsakeCasketBlock;
 import twilightforest.events.CharmEvents;
 import twilightforest.init.TFDataComponents;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -120,7 +120,7 @@ public class TFItemStackUtils {
 
 	public static boolean hasInfoTag(ItemStack stack, String key) {
 		CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
-		return customData != null && customData.contains(key);
+		return customData != null && customData.copyTag().contains(key);
 	}
 
 	public static void addInfoTag(ItemStack stack, String key) {
@@ -185,7 +185,7 @@ public class TFItemStackUtils {
 
 	public static void hurtButDontBreak(ItemStack stack, int amount, ServerLevel level, @Nullable LivingEntity entity) {
 		if (stack.isDamageableItem()) {
-			amount = stack.getItem().damageItem(stack, amount, entity, item -> {});
+			// NeoForge Item.damageItem() replaced with direct processing
 			if (entity == null || !entity.hasInfiniteMaterials()) {
 				if (amount > 0) {
 					amount = EnchantmentHelper.processDurabilityChange(level, stack, amount);

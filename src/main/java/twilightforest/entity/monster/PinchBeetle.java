@@ -54,22 +54,22 @@ public class PinchBeetle extends Monster implements IHostileMount {
 	@Nullable
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.PINCH_BEETLE_AMBIENT.get();
+		return TFSounds.PINCH_BEETLE_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.PINCH_BEETLE_HURT.get();
+		return TFSounds.PINCH_BEETLE_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.PINCH_BEETLE_DEATH.get();
+		return TFSounds.PINCH_BEETLE_DEATH;
 	}
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState state) {
-		playSound(TFSounds.PINCH_BEETLE_STEP.get(), 0.15F, 1.0F);
+		playSound(TFSounds.PINCH_BEETLE_STEP, 0.15F, 1.0F);
 	}
 
 	@Override
@@ -144,11 +144,6 @@ public class PinchBeetle extends Monster implements IHostileMount {
 	@Override
 	protected Vec3 getPassengerAttachmentPoint(Entity entity, EntityDimensions dimensions, float yRot) {
 		return new Vec3(0.0F, this.getEyeHeight(), 0.75F);
-	}
-
-	@Override
-	public boolean canRiderInteract() {
-		return true;
 	}
 
 	@Override

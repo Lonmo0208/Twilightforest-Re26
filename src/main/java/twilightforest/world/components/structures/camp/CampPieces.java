@@ -1,7 +1,7 @@
 package twilightforest.world.components.structures.camp;
 
 import net.minecraft.resources.Identifier;
-import tamaized.beanification.Component;
+import twilightforest.beanification.Component;
 import twilightforest.TwilightForestMod;
 
 @Component

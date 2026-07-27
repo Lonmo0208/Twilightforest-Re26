@@ -1,0 +1,35 @@
+{
+	"required": true,
+	"package": "twilightforest.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"AbstractFurnaceBlockEntityMixin",
+		"BaseContainerBlockEntityMixin",
+		"BaseSpawnerMixin",
+		"BeardifierAccessor",
+		"BeardifierMixin",
+		"BlockMixin",
+		"ChunkGeneratorMixin",
+		"ChunkStatusTasksMixin",
+		"BlockStateMixin",
+		"EntityMixin",
+		"ItemStackMixin",
+		"LevelMixin",
+		"LootTableMixin",
+		"MapItemMixin",
+		"MapItemSavedDataMixin",
+		"MobMixin",
+		"ProjectileUtilMixin",
+		"ServerEntityMixin",
+		"ServerLevelMixin",
+		"StructurePieceMixin",
+		"StructurePiecesBuilderMixin",
+		"StructureStartMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

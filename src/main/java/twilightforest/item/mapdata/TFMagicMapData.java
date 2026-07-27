@@ -12,6 +12,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 import twilightforest.item.MagicMapItem;
 import twilightforest.network.MagicMapPacket;
+import twilightforest.network.PacketDistributor;
 import twilightforest.util.Codecs;
 
 import java.nio.ByteBuffer;
@@ -170,7 +172,19 @@ public class TFMagicMapData extends MapItemSavedData {
 	@Override
 	public Packet<?> getUpdatePacket(MapId mapId, Player player) {
 		Packet<?> packet = super.getUpdatePacket(mapId, player);
-		return packet instanceof ClientboundMapItemDataPacket mapItemDataPacket ? new MagicMapPacket(mapItemDataPacket, this.conqueredStructures).toVanillaClientbound() : packet;
+		if (packet instanceof ClientboundMapItemDataPacket mapItemDataPacket) {
+			MagicMapPacket magicPacket = new MagicMapPacket(mapItemDataPacket, this.conqueredStructures);
+			// Send the custom payload through Fabric networking so the client-side
+			// MagicMapPacketClientHandler can register this TFMagicMapData instance.
+			// The vanilla ClientboundMapItemDataPacket alone won't work because the
+			// client stores TFMagicMapData under a custom key (twilightforest:magicmap_<id>)
+			// instead of the vanilla key (map_<id>).
+			if (player instanceof ServerPlayer serverPlayer) {
+				PacketDistributor.sendToPlayer(serverPlayer, magicPacket);
+			}
+			return magicPacket.toVanillaClientbound();
+		}
+		return packet;
 	}
 
 	public void addTFDecoration(Holder<MapDecorationType> decorationType, @Nullable LevelAccessor level, String id, double x, double z, double yRot, boolean conquered) {

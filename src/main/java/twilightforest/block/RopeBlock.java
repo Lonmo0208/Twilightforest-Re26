@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -86,11 +85,6 @@ public class RopeBlock extends Block implements SimpleWaterloggedBlock {
 		if (state.getValue(X) && context.isAbove(X_SHAPE, pos, false) && !context.isDescending()) shape = Shapes.or(shape, X_SHAPE);
 		if (state.getValue(Z) && context.isAbove(Z_SHAPE, pos, false) && !context.isDescending()) shape = Shapes.or(shape, Z_SHAPE);
 		return shape;
-	}
-
-	@Override
-	public boolean isScaffolding(BlockState state, LevelReader level, BlockPos pos, LivingEntity entity) {
-		return true;
 	}
 
 	@Override

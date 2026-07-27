@@ -1,0 +1,54 @@
+{
+	"schemaVersion": 1,
+	"id": "twilightforest",
+	"version": "${version}",
+	"name": "The Twilight Forest:Re26",
+	"description": "Unofficial port of Twilight Forest from Minecraft 1.21.1 to Minecraft 26.1.x and 26.2.x, adapting the mod's dimension, biomes, structures, bosses, items, and mechanics to the latest Minecraft version for modern gameplay.",
+	"authors": [
+		"Benimatic",
+		"AtomicBlom",
+		"Drullkus",
+		"Tamaized",
+		"williewillus",
+		"Killer_Demon",
+		"GizmoTheMoonPig",
+		"andrew0030",
+		"jodlodi",
+		"cScotPlay",
+		"MrKacafirekCZ",
+    "Lonmo"
+	],
+	"contact": {
+		"homepage": "https://github.com/Lonmo0208/twilightforest-Re26",
+		"sources": "https://github.com/Lonmo0208/twilightforest-Re26",
+		"issues": "https://github.com/Lonmo0208/twilightforest-Re26/issues"
+	},
+	"license": "LGPL-2.1-only-An-CC-BY-NC-SA 4.0",
+	"icon": "assets/twilightforest/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"twilightforest.TwilightForestMod"
+		],
+		"client": [
+			"twilightforest.client.TwilightForestClient"
+		],
+		"fabric-datagen": [
+			"twilightforest.datagen.TFDataGeneratorEntrypoint"
+		]
+	},
+	"mixins": [
+		"twilightforest.mixins.json",
+		{
+			"config": "twilightforest.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"accessWidener": "twilightforest.accesswidener",
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

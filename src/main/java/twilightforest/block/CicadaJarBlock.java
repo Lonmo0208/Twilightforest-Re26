@@ -1,6 +1,5 @@
 package twilightforest.block;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -13,7 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -36,7 +34,7 @@ public class CicadaJarBlock extends JarBlock {
 			ItemEntity cicada = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(TFBlocks.CICADA));
 			level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 			cicada.spawnAtLocation(sl, cicada.getItem());
-			cicada.spawnAtLocation(sl, Util.make(new ItemStack(TFBlocks.MASON_JAR.get()), jar -> jar.set(TFDataComponents.JAR_LID.get(), new JarLid(jarBE.lid))));
+			cicada.spawnAtLocation(sl, Util.make(new ItemStack(TFBlocks.MASON_JAR), jar -> jar.set(TFDataComponents.JAR_LID, new JarLid(jarBE.lid))));
 			level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 			return InteractionResult.SUCCESS;
 		}
@@ -49,20 +47,13 @@ public class CicadaJarBlock extends JarBlock {
 	}
 
 	@Override
-	public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
-		super.destroy(accessor, pos, state);
-		if (accessor.isClientSide())
-			Minecraft.getInstance().getSoundManager().stop(TFSounds.CICADA.get().location(), SoundSource.BLOCKS);
-	}
-
-	@Override
 	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
 		double dx = pos.getX() + ((random.nextFloat() - random.nextFloat()) * 0.2F + 0.5F);
 		double dy = pos.getY() + 0.4F + ((random.nextFloat() - random.nextFloat()) * 0.2F);
 		double dz = pos.getZ() + ((random.nextFloat() - random.nextFloat()) * 0.2F + 0.5F);
 		level.addParticle(ParticleTypes.NOTE, dx, dy, dz, 0, 0, 0);
 		if (level.getRandom().nextInt(75) == 0 && !TFConfig.silentCicadas) {
-			level.playLocalSound(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, TFSounds.CICADA.get(), SoundSource.BLOCKS, 1.0F, 1.0F, false);
+			level.playLocalSound(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, TFSounds.CICADA, SoundSource.BLOCKS, 1.0F, 1.0F, false);
 		}
 	}
 }

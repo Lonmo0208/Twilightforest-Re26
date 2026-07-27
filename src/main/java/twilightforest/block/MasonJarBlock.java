@@ -26,9 +26,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import twilightforest.block.entity.MasonJarBlockEntity;
 import twilightforest.init.TFSounds;
 
@@ -79,13 +76,9 @@ public class MasonJarBlock extends JarBlock implements SimpleWaterloggedBlock {
 			wiggle(server, pos, jar);
 			return;
 		}
-		ItemResource resource = handler.getResource(SLOT);
-		try (Transaction tx = Transaction.openRoot()) {
-			int extracted = handler.extract(SLOT, resource, ALL, tx);
-			tx.commit();
-			player.setItemInHand(hand, resource.toStack(extracted));
-		}
-		server.playSound(null, pos, TFSounds.JAR_REMOVE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+		player.setItemInHand(hand, handler.getItem());
+		handler.setItem(ItemStack.EMPTY);
+		server.playSound(null, pos, TFSounds.JAR_REMOVE, SoundSource.BLOCKS, 1.0F, 1.0F);
 		server.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 	}
 
@@ -116,12 +109,12 @@ public class MasonJarBlock extends JarBlock implements SimpleWaterloggedBlock {
 		remainder.shrink(canInsert);
 		player.setItemInHand(hand, player.hasInfiniteMaterials() ? before : remainder);
 		float filledRatio = (float) canInsert / (float) before.getMaxStackSize();
-		server.playSound(null, pos, TFSounds.JAR_INSERT.get(), SoundSource.BLOCKS, 1.0F, 0.7F + 0.5F * filledRatio);
+		server.playSound(null, pos, TFSounds.JAR_INSERT, SoundSource.BLOCKS, 1.0F, 0.7F + 0.5F * filledRatio);
 		server.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 	}
 
 	private static void wiggle(ServerLevel server, BlockPos pos, MasonJarBlockEntity jar) {
-		server.playSound(null, pos, TFSounds.JAR_WIGGLE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+		server.playSound(null, pos, TFSounds.JAR_WIGGLE, SoundSource.BLOCKS, 1.0F, 1.0F);
 		jar.wobble(DecoratedPotBlockEntity.WobbleStyle.NEGATIVE);
 	}
 
@@ -141,15 +134,8 @@ public class MasonJarBlock extends JarBlock implements SimpleWaterloggedBlock {
 	}
 
 	@Override
-	public boolean hasDynamicLightEmission(BlockState state) {
-		return true;
-	}
-
-	@Override
-	public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-		AuxiliaryLightManager lightManager = level.getAuxLightManager(pos);
-		if (lightManager != null) return lightManager.getLightAt(pos);
-		return super.getLightEmission(state, level, pos);
+	protected float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
+		return 1.0F;
 	}
 
 	@Override

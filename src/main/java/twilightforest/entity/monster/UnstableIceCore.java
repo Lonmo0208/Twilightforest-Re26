@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.event.EventHooks;
+import net.minecraft.world.level.gamerules.GameRules;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFSounds;
 import twilightforest.util.ColorUtil;
@@ -51,17 +51,17 @@ public class UnstableIceCore extends BaseIceMob {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.ICE_CORE_AMBIENT.get();
+		return TFSounds.ICE_CORE_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.ICE_CORE_HURT.get();
+		return TFSounds.ICE_CORE_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.ICE_CORE_DEATH.get();
+		return TFSounds.ICE_CORE_DEATH;
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class UnstableIceCore extends BaseIceMob {
 
 		if (this.deathTime == 60) { // delay until 3 seconds
 			if (this.level() instanceof ServerLevel server) {
-				boolean mobGriefing = EventHooks.canEntityGrief(server, this);
+				boolean mobGriefing = server.getGameRules().get(GameRules.MOB_GRIEFING);
 				this.level().explode(this, this.getX(), this.getY(), this.getZ(), UnstableIceCore.EXPLOSION_RADIUS, Level.ExplosionInteraction.MOB);
 
 				if (mobGriefing) {

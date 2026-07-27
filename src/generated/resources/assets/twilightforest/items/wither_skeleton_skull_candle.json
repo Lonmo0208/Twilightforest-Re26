@@ -1,10 +1,6 @@
 {
   "model": {
-    "type": "minecraft:special",
-    "base": "twilightforest:item/template_skull_candle",
-    "model": {
-      "type": "twilightforest:skull_candle",
-      "kind": "wither_skeleton"
-    }
+    "type": "minecraft:model",
+    "model": "twilightforest:block/wither_skeleton_skull_candle"
   }
 }

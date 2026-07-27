@@ -7,8 +7,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,22 +31,12 @@ public class LockedVanishingBlock extends VanishingBlock {
 	}
 
 	@Override
-	public float getExplosionResistance(BlockState state, BlockGetter getter, BlockPos pos, Explosion explosion) {
-		return state.getValue(LOCKED) ? 6000000.0F : super.getExplosionResistance(state, getter, pos, explosion);
-	}
-
-	@Override
-	public boolean canEntityDestroy(BlockState state, BlockGetter getter, BlockPos pos, Entity entity) {
-		return !state.getValue(LOCKED) && super.canEntityDestroy(state, getter, pos, entity);
-	}
-
-	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (!stack.isEmpty() && stack.is(TFItems.TOWER_KEY) && state.getValue(LOCKED)) {
 			if (!level.isClientSide()) {
 				stack.consume(1, player);
 				level.setBlockAndUpdate(pos, state.setValue(LOCKED, false));
-				level.playSound(null, pos, TFSounds.UNLOCK_VANISHING_BLOCK.get(), SoundSource.BLOCKS, 0.3F, 0.6F);
+				level.playSound(null, pos, TFSounds.UNLOCK_VANISHING_BLOCK, SoundSource.BLOCKS, 0.3F, 0.6F);
 			}
 			return InteractionResult.SUCCESS;
 		}

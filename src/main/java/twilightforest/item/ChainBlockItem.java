@@ -1,7 +1,6 @@
 package twilightforest.item;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,11 +15,10 @@ import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+
 import org.jspecify.annotations.Nullable;
 import twilightforest.entity.projectile.ChainBlock;
 import twilightforest.init.TFDataComponents;
-import twilightforest.init.TFEnchantments;
 import twilightforest.init.TFEntities;
 import twilightforest.init.TFSounds;
 import twilightforest.tags.TFBlockTags;
@@ -51,7 +49,7 @@ public class ChainBlockItem extends Item {
 		if (stack.get(TFDataComponents.THROWN_PROJECTILE) != null || !level.getWorldBorder().isWithinBounds(player.blockPosition()))
 			return InteractionResult.PASS;
 
-		player.playSound(TFSounds.BLOCK_AND_CHAIN_FIRED.get(), 0.5F, 1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F));
+		player.playSound(TFSounds.BLOCK_AND_CHAIN_FIRED, 0.5F, 1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F));
 
 		if (!level.isClientSide()) {
 			ChainBlock launchedBlock = new ChainBlock(TFEntities.CHAIN_BLOCK.get(), level, player, hand, stack);
@@ -92,11 +90,6 @@ public class ChainBlockItem extends Item {
 	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
 		//dont try to check harvest level if we arent thrown
 		if (stack.get(TFDataComponents.THROWN_PROJECTILE) == null || !state.is(TFBlockTags.MINEABLE_WITH_BLOCK_AND_CHAIN)) return false;
-		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		if (server != null) {
-			int destruction = stack.getEnchantmentLevel(server.registryAccess().holderOrThrow(TFEnchantments.DESTRUCTION));
-			if (destruction > 0) return this.canHarvest(server.registryAccess(), state, destruction);
-		}
 		return false;
 	}
 

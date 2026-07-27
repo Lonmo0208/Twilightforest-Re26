@@ -29,10 +29,10 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.ai.goal.HeavySpearAttackGoal;
 import twilightforest.init.TFSounds;
+import twilightforest.network.PacketDistributor;
 import twilightforest.network.ParticlePacket;
 
 import java.util.List;
@@ -154,17 +154,17 @@ public class UpperGoblinKnight extends Monster {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.GOBLIN_KNIGHT_AMBIENT.get();
+		return TFSounds.GOBLIN_KNIGHT_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.GOBLIN_KNIGHT_DEATH.get();
+		return TFSounds.GOBLIN_KNIGHT_DEATH;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.GOBLIN_KNIGHT_HURT.get();
+		return TFSounds.GOBLIN_KNIGHT_HURT;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package twilightforest.tags;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import twilightforest.TwilightForestMod;
@@ -110,7 +110,7 @@ public class TFBlockTags {
 	public static final TagKey<Block> FD_HEAT_SOURCES = create("farmersdelight", "heat_sources");
 
 	private static TagKey<Block> create(String tagName) {
-		return BlockTags.create(TwilightForestMod.prefix(tagName));
+		return TagKey.create(Registries.BLOCK, TwilightForestMod.prefix(tagName));
 	}
 
 	public static TagKey<Block> makeCommonTag(String tagName) {
@@ -118,6 +118,6 @@ public class TFBlockTags {
 	}
 
 	private static TagKey<Block> create(String modid, String tagName) {
-		return BlockTags.create(Identifier.fromNamespaceAndPath(modid, tagName));
+		return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(modid, tagName));
 	}
 }

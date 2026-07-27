@@ -21,7 +21,6 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.Lazy;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
 import twilightforest.util.ColorUtil;
@@ -37,7 +36,8 @@ public abstract class TFStructureComponent extends StructurePiece implements Spa
 
 	public TFStructureDecorator deco = null;
 	protected int spawnListIndex = 0;
-	private static final Lazy<Set<Block>> BLOCKS_NEEDING_POSTPROCESSING = Lazy.of(() -> ImmutableSet.<Block>builder()
+	private static final java.util.function.Supplier<Set<Block>> BLOCKS_NEEDING_POSTPROCESSING = () -> {
+		return ImmutableSet.<Block>builder()
 		.add(Blocks.NETHER_BRICK_FENCE)
 		.add(Blocks.TORCH)
 		.add(Blocks.WALL_TORCH)
@@ -65,16 +65,17 @@ public abstract class TFStructureComponent extends StructurePiece implements Spa
 		.add(Blocks.LAVA)
 		.add(Blocks.WATER)
 		.add(Blocks.QUARTZ_STAIRS)
-		.add(TFBlocks.CASTLE_BRICK_STAIRS.get())
-		.add(TFBlocks.BLUE_FORCE_FIELD.get())
-		.add(TFBlocks.GREEN_FORCE_FIELD.get())
-		.add(TFBlocks.PINK_FORCE_FIELD.get())
-		.add(TFBlocks.VIOLET_FORCE_FIELD.get())
-		.add(TFBlocks.ORANGE_FORCE_FIELD.get())
-		.add(TFBlocks.BROWN_THORNS.get())
-		.add(TFBlocks.GREEN_THORNS.get())
+		.add(TFBlocks.CASTLE_BRICK_STAIRS)
+		.add(TFBlocks.BLUE_FORCE_FIELD)
+		.add(TFBlocks.GREEN_FORCE_FIELD)
+		.add(TFBlocks.PINK_FORCE_FIELD)
+		.add(TFBlocks.VIOLET_FORCE_FIELD)
+		.add(TFBlocks.ORANGE_FORCE_FIELD)
+		.add(TFBlocks.BROWN_THORNS)
+		.add(TFBlocks.GREEN_THORNS)
 		.add(Blocks.GRAVEL)
-		.build());
+		.build();
+	};
 
 
 	public TFStructureComponent(StructurePieceType piece, CompoundTag nbt) {

@@ -13,17 +13,18 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.ItemAbilities;
 import org.jspecify.annotations.Nullable;
 import twilightforest.init.TFParticleType;
 
 import java.util.Locale;
+
 
 //all the common lighting/extinguishing methods for the candelabra and skull candles are here to reduce clutter
 //it may also be handy if we decide to add more candle-based blocks in the future
@@ -35,10 +36,17 @@ public interface LightableBlock {
 		if (stack.isEmpty() && player.getAbilities().mayBuild && state.getValue(LIGHTING) != Lighting.NONE) {
 			this.extinguish(player, state, level, pos);
 			return InteractionResult.SUCCESS;
-		} else if (this.canBeLit(state)) {
-			if (stack.canPerformAction(ItemAbilities.FIRESTARTER_LIGHT)) {
-				return InteractionResult.PASS;
+		} else if (this.canBeLit(state) && (stack.is(Items.FLINT_AND_STEEL) || stack.is(Items.FIRE_CHARGE))) {
+			this.setLit(level, state, pos, true);
+			level.playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+			if (!player.isCreative()) {
+				if (stack.is(Items.FLINT_AND_STEEL)) {
+					stack.hurtAndBreak(1, player, player.getUsedItemHand() == net.minecraft.world.InteractionHand.MAIN_HAND ? net.minecraft.world.entity.EquipmentSlot.MAINHAND : net.minecraft.world.entity.EquipmentSlot.OFFHAND);
+				} else {
+					stack.consume(1, player);
+				}
 			}
+			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
@@ -70,8 +78,8 @@ public interface LightableBlock {
 		}
 
 		ParticleOptions particle = switch (lighting) {
-			case DIM -> TFParticleType.DIM_FLAME.get();
-			case OMINOUS -> TFParticleType.OMINOUS_FLAME.get();
+			case DIM -> TFParticleType.DIM_FLAME;
+			case OMINOUS -> TFParticleType.OMINOUS_FLAME;
 			default -> ParticleTypes.SMALL_FLAME;
 		};
 

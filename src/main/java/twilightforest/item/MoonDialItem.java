@@ -23,7 +23,7 @@ public class MoonDialItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
-		builder.accept(getMoonPhase(context.level()).withStyle(ChatFormatting.GRAY));
+		builder.accept(getMoonPhase((Level) null).withStyle(ChatFormatting.GRAY));
 	}
 
 	public static MutableComponent getMoonPhase(@Nullable Level level) {

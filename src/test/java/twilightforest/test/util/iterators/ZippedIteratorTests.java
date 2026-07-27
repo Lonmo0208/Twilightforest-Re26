@@ -1,6 +1,5 @@
 package twilightforest.test.util.iterators;
 
-import net.neoforged.neoforge.common.util.ConcatenatedListView;
 import org.junit.jupiter.api.Test;
 import twilightforest.util.iterators.ZippedIterator;
 
@@ -49,6 +48,8 @@ public class ZippedIteratorTests {
 			collected.add(fruit);
 		}
 
-		assertLinesMatch(ConcatenatedListView.of(this.animals, this.fruits), collected);
+		List<String> combined = new ArrayList<>(this.animals);
+		combined.addAll(this.fruits);
+		assertLinesMatch(combined, collected);
 	}
 }

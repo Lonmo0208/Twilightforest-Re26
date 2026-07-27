@@ -174,4 +174,8 @@ public class TFLootTables {
 	public static Set<ResourceKey<LootTable>> allBuiltin() {
 		return TF_IMMUTABLE_LOCATIONS;
 	}
+
+	public static void init() {
+		// Static initializer triggers all loot table key registrations
+	}
 }

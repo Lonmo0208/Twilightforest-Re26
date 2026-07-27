@@ -124,7 +124,7 @@ public class TFCavesCarver extends WorldCarver<CaveCarverConfiguration> {
 				}
 			}
 
-			BlockState blockStateToPlace = this.getCarveState(ctx, config, pos, aquifer);
+			BlockState blockStateToPlace = this.getTFCaveState(ctx, config, pos, aquifer);
 			if (blockStateToPlace != null) {
 				RandomSource randomFromPos = ctx.randomState().oreRandom().at(pos);
 
@@ -287,8 +287,7 @@ public class TFCavesCarver extends WorldCarver<CaveCarverConfiguration> {
 	}
 
 	@Nullable
-	@Override
-	public BlockState getCarveState(CarvingContext context, CaveCarverConfiguration config, BlockPos pos, Aquifer aquifer) {
+	public BlockState getTFCaveState(CarvingContext context, CaveCarverConfiguration config, BlockPos pos, Aquifer aquifer) {
 		return Blocks.CAVE_AIR.defaultBlockState();
 	}
 }

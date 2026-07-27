@@ -26,19 +26,28 @@ public class TFJukeboxSongs {
 		return ResourceKey.create(Registries.JUKEBOX_SONG, TwilightForestMod.prefix(name));
 	}
 
-	public static void bootstrap(BootstrapContext<JukeboxSong> context) {
-		register(context, RADIANCE, TFSounds.MUSIC_DISC_RADIANCE, 123, 15);
-		register(context, STEPS, TFSounds.MUSIC_DISC_STEPS, 195, 15);
-		register(context, SUPERSTITIOUS, TFSounds.MUSIC_DISC_SUPERSTITIOUS, 192, 15);
-		register(context, HOME, TFSounds.MUSIC_DISC_HOME, 215, 15);
-		register(context, WAYFARER, TFSounds.MUSIC_DISC_WAYFARER, 173, 15);
-		register(context, FINDINGS, TFSounds.MUSIC_DISC_FINDINGS, 196, 15);
-		register(context, MAKER, TFSounds.MUSIC_DISC_MAKER, 207, 15);
-		register(context, THREAD, TFSounds.MUSIC_DISC_THREAD, 201, 15);
-		register(context, MOTION, TFSounds.MUSIC_DISC_MOTION, 169, 15);
+	public static void init() {
+		// JukeboxSongs are registered via datapack JSON files (data/twilightforest/jukebox_song/)
 	}
 
-	private static void register(BootstrapContext<JukeboxSong> context, ResourceKey<JukeboxSong> key, Holder<SoundEvent> sound, float length, int output) {
-		context.register(key, new JukeboxSong(sound, Component.translatable(Util.makeDescriptionId("jukebox_song", key.identifier())), length, output));
+	public static void bootstrap(BootstrapContext<JukeboxSong> context) {
+		registerSong(context, RADIANCE, TFSounds.MUSIC_DISC_RADIANCE, 122);
+		registerSong(context, STEPS, TFSounds.MUSIC_DISC_STEPS, 140);
+		registerSong(context, SUPERSTITIOUS, TFSounds.MUSIC_DISC_SUPERSTITIOUS, 160);
+		registerSong(context, HOME, TFSounds.MUSIC_DISC_HOME, 157);
+		registerSong(context, WAYFARER, TFSounds.MUSIC_DISC_WAYFARER, 176);
+		registerSong(context, FINDINGS, TFSounds.MUSIC_DISC_FINDINGS, 178);
+		registerSong(context, MAKER, TFSounds.MUSIC_DISC_MAKER, 175);
+		registerSong(context, THREAD, TFSounds.MUSIC_DISC_THREAD, 189);
+		registerSong(context, MOTION, TFSounds.MUSIC_DISC_MOTION, 200);
+	}
+
+	private static void registerSong(BootstrapContext<JukeboxSong> context, ResourceKey<JukeboxSong> key, SoundEvent soundEvent, int lengthInSeconds) {
+		context.register(key, new JukeboxSong(
+			Holder.direct(soundEvent),
+			Component.translatable(Util.makeDescriptionId("jukebox_song", key.identifier())),
+			lengthInSeconds,
+			0
+		));
 	}
 }

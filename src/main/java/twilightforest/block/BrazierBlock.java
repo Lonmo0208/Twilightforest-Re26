@@ -30,21 +30,16 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluids;
+
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.ItemAbilities;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+
 import org.jspecify.annotations.Nullable;
 import twilightforest.block.entity.BrazierBlockEntity;
 import twilightforest.enums.BrazierLight;
 import twilightforest.init.TFBlockEntities;
+
 
 public class BrazierBlock extends BaseEntityBlock {
 
@@ -76,7 +71,7 @@ public class BrazierBlock extends BaseEntityBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TFBlockEntities.BRAZIER.get(), BrazierBlockEntity::tick);
+		return createTickerHelper(type, TFBlockEntities.BRAZIER, BrazierBlockEntity::tick);
 	}
 
 	@Override
@@ -105,7 +100,7 @@ public class BrazierBlock extends BaseEntityBlock {
 
 	@Override
 	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-		if (!level.isClientSide() && (player.isCreative() || !player.hasCorrectToolForDrops(state, level, pos))) {
+		if (!level.isClientSide() && (player.isCreative() || !player.hasCorrectToolForDrops(state))) {
 			DoubleBlockHalf half = state.getValue(HALF);
 			if (half == DoubleBlockHalf.UPPER) {
 				BlockPos below = pos.below();
@@ -148,7 +143,7 @@ public class BrazierBlock extends BaseEntityBlock {
 	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
 		if (state.is(this) && state.getValue(HALF) == DoubleBlockHalf.UPPER) {
-			if (state.getValue(LIGHT) != BrazierLight.FULL && stack.canPerformAction(ItemAbilities.FIRESTARTER_LIGHT)) {
+			if (state.getValue(LIGHT) != BrazierLight.FULL && (stack.is(Items.FLINT_AND_STEEL) || stack.is(Items.FIRE_CHARGE))) {
 				level.setBlock(pos, state.cycle(LIGHT), 11);
 				level.getBlockState(pos.below()).cycle(LIGHT);
 				if (stack.is(Items.FLINT_AND_STEEL)) {
@@ -162,21 +157,12 @@ public class BrazierBlock extends BaseEntityBlock {
 			}
 
 			if (state.getValue(LIGHT).isLit()) {
-				if (FluidUtil.getFirstStackContained(stack).is(Fluids.WATER)) {
-					ItemAccess access = ItemAccess.forPlayerInteraction(player, hand);
-					ResourceHandler<FluidResource> handler = access.oneByOne().getCapability(Capabilities.Fluid.ITEM);
-					try (var tx = Transaction.openRoot()) {
-						if (handler != null && handler.extract(handler.getResource(0), FluidType.BUCKET_VOLUME, tx) == FluidType.BUCKET_VOLUME) {
-							level.setBlock(pos, state.setValue(LIGHT, BrazierLight.OFF), 11);
-							level.setBlock(pos.below(), level.getBlockState(pos.below()).setValue(LIGHT, BrazierLight.OFF), 11);
-							level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS);
-							player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
-							tx.commit();
-							return InteractionResult.SUCCESS;
-						} else {
-							return InteractionResult.FAIL;
-						}
-					}
+				if (stack.is(Items.WATER_BUCKET)) {
+					level.setBlock(pos, state.setValue(LIGHT, BrazierLight.OFF), 11);
+					level.setBlock(pos.below(), level.getBlockState(pos.below()).setValue(LIGHT, BrazierLight.OFF), 11);
+					level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS);
+					player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+					return InteractionResult.SUCCESS;
 				}
 			}
 		}

@@ -8,7 +8,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
@@ -22,11 +23,12 @@ public abstract class HydraPart extends TFPart<Hydra> {
 	private static final EntityDataAccessor<Boolean> DATA_SIZEACTIVE = SynchedEntityData.defineId(HydraPart.class, EntityDataSerializers.BOOLEAN);
 
 	boolean markedDead;
+
 	private EntityDimensions cacheSize;
 
 	@SuppressWarnings("this-escape")
-	public HydraPart(Hydra parent, float width, float height) {
-		super(parent);
+	public HydraPart(Hydra parent, EntityType<?> type, Level level, float width, float height) {
+		super(parent, type, level);
 		this.setSize(EntityDimensions.scalable(width, height));
 		this.refreshDimensions();
 	}
@@ -40,8 +42,11 @@ public abstract class HydraPart extends TFPart<Hydra> {
 	public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
 		super.onSyncedDataUpdated(accessor);
 		if (accessor == DATA_SIZEACTIVE) {
-			this.setSize(this.getDimensions(Pose.STANDING));
-			//reset death markers so things render again
+			if (this.getEntityData().get(DATA_SIZEACTIVE))
+				this.activate();
+			else
+				this.deactivate();
+			// reset death markers so things render again
 			if (this.isActive()) {
 				this.markedDead = false;
 				this.deathTime = 0;
@@ -135,12 +140,16 @@ public abstract class HydraPart extends TFPart<Hydra> {
 	}
 
 	public void activate() {
+		this.realSize = this.cacheSize;
 		this.dimensions = this.cacheSize;
 		this.getEntityData().set(DATA_SIZEACTIVE, true);
+		this.refreshDimensions();
 	}
 
 	public void deactivate() {
+		this.realSize = EntityDimensions.scalable(0, 0);
 		this.dimensions = EntityDimensions.scalable(0, 0);
 		this.getEntityData().set(DATA_SIZEACTIVE, false);
+		this.refreshDimensions();
 	}
 }

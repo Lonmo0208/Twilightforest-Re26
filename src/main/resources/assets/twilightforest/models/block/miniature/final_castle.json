@@ -1,0 +1,15 @@
+{
+  "parent": "twilightforest:block/miniature/template_transforms",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "#bricks",
+    "bricks": "block/stone_bricks",
+    "quartz": "block/quartz_block_side",
+    "dark": "block/deepslate_tiles"
+  },
+  "elements": [
+    {"from": [2, 0, 2], "to": [14, 9, 14], "faces": {"north": {"uv": [2, 7, 14, 16], "texture": "#bricks"}, "east": {"uv": [2, 7, 14, 16], "texture": "#bricks"}, "south": {"uv": [2, 7, 14, 16], "texture": "#bricks"}, "west": {"uv": [2, 7, 14, 16], "texture": "#bricks"}, "up": {"uv": [2, 2, 14, 14], "texture": "#dark"}, "down": {"uv": [2, 2, 14, 14], "texture": "#bricks"}}},
+    {"from": [3, 9, 3], "to": [13, 12, 13], "faces": {"north": {"uv": [3, 4, 13, 7], "texture": "#quartz"}, "east": {"uv": [3, 4, 13, 7], "texture": "#quartz"}, "south": {"uv": [3, 4, 13, 7], "texture": "#quartz"}, "west": {"uv": [3, 4, 13, 7], "texture": "#quartz"}, "up": {"uv": [3, 3, 13, 13], "texture": "#dark"}, "down": {"uv": [3, 3, 13, 13], "texture": "#quartz"}}},
+    {"from": [4, 12, 4], "to": [12, 14, 12], "faces": {"north": {"uv": [4, 2, 12, 4], "texture": "#bricks"}, "east": {"uv": [4, 2, 12, 4], "texture": "#bricks"}, "south": {"uv": [4, 2, 12, 4], "texture": "#bricks"}, "west": {"uv": [4, 2, 12, 4], "texture": "#bricks"}, "up": {"uv": [4, 4, 12, 12], "texture": "#quartz"}, "down": {"uv": [4, 4, 12, 12], "texture": "#bricks"}}}
+  ]
+}

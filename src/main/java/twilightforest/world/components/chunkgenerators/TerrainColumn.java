@@ -23,7 +23,7 @@ public final class TerrainColumn {
 	public static final Codec<TerrainColumn> CODEC = RecordCodecBuilder.create(instance ->
 		instance.group(
 			RegistryFixedCodec.create(Registries.BIOME).fieldOf("key_biome").forGetter(o -> o.keyBiome),
-			Codecs.doubleTreeCodec(Biome.CODEC).fieldOf("biome_layers").forGetter(o -> o.biomes),
+			Codecs.doubleTreeCodec(RegistryFixedCodec.create(Registries.BIOME)).fieldOf("biome_layers").forGetter(o -> o.biomes),
 			DensityFunction.HOLDER_HELPER_CODEC.fieldOf("depth").forGetter(o -> o.noiseDepth),
 			DensityFunction.HOLDER_HELPER_CODEC.fieldOf("scale").forGetter(o -> o.noiseScale),
 			DensityFunction.HOLDER_HELPER_CODEC.fieldOf("weight").forGetter(o -> o.noiseWeight)
@@ -36,7 +36,9 @@ public final class TerrainColumn {
 
 	public TerrainColumn(Holder<Biome> keyBiome, Double2ObjectSortedMap<Holder<Biome>> biomes, DensityFunction noiseDepth, DensityFunction noiseScale, DensityFunction noiseWeight) {
 		this.keyBiome = keyBiome;
-		this.resourceKey = this.keyBiome.unwrapKey().get();
+		this.resourceKey = this.keyBiome.unwrapKey().orElseThrow(
+			() -> new IllegalArgumentException("TerrainColumn keyBiome must be a Holder.Reference with a valid ResourceKey, got: " + keyBiome.getClass().getName())
+		);
 		this.biomes = biomes;
 		this.noiseDepth = noiseDepth;
 		this.noiseScale = noiseScale;

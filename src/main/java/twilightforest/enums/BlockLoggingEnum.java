@@ -20,7 +20,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Optional;
 
 public enum BlockLoggingEnum implements StringRepresentable {
 	AIR(Blocks.AIR, Fluids.EMPTY),
@@ -102,15 +101,6 @@ public enum BlockLoggingEnum implements StringRepresentable {
 			return false;
 		}
 
-		@Override
-		default Optional<SoundEvent> getPickupSound() {
-			return Optional.empty();
-		}
-
-		@Override
-		default Optional<SoundEvent> getPickupSound(BlockState state) {
-			return state.getValue(MULTILOGGED).fluid.getPickupSound();
-		}
 	}
 
 	private static class Ref {

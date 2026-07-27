@@ -28,12 +28,12 @@ import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import net.neoforged.neoforge.common.Tags;
 import org.jspecify.annotations.Nullable;
 import twilightforest.init.TFDataMaps;
 import twilightforest.init.TFItems;
 import twilightforest.item.mapdata.TFMazeMapData;
 import twilightforest.util.datamaps.OreMapOreColor;
+import twilightforest.util.datamaps.DataMapType;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -52,7 +52,7 @@ public class MazeMapItem extends MapItem {
 	}
 
 	public static ItemStack setupNewMap(ServerLevel level, int worldX, int worldZ, byte scale, boolean trackingPosition, boolean unlimitedTracking, int worldY, boolean mapOres) {
-		ItemStack itemstack = new ItemStack(mapOres ? TFItems.FILLED_ORE_MAP.get() : TFItems.FILLED_MAZE_MAP.get());
+		ItemStack itemstack = new ItemStack(mapOres ? TFItems.FILLED_ORE_MAP : TFItems.FILLED_MAZE_MAP);
 		itemstack.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.MAP_ID, true));
 		createMapData(itemstack, level, worldX, worldZ, scale, trackingPosition, unlimitedTracking, level.dimension(), worldY, mapOres);
 		return itemstack;
@@ -65,7 +65,6 @@ public class MazeMapItem extends MapItem {
 	}
 
 	@Nullable
-	@Override
 	protected TFMazeMapData getCustomMapData(ItemStack stack, Level level) {
 		TFMazeMapData mapdata = getData(stack, level);
 		if (mapdata == null && level instanceof ServerLevel serverLevel) {
@@ -173,10 +172,10 @@ public class MazeMapItem extends MapItem {
 
 									if (this.mapOres) {
 										// recolor ores
-										OreMapOreColor color = state.getBlock().builtInRegistryHolder().getData(TFDataMaps.ORE_MAP_ORE_COLOR);
+										OreMapOreColor color = DataMapType.getData(state.getBlock().builtInRegistryHolder(), TFDataMaps.ORE_MAP_ORE_COLOR);
 										if (color != null) {
 											multiset.add(color.color(), 1000);
-										} else if (!state.isAir() && state.is(Tags.Blocks.ORES)) {
+										} else if (!state.isAir()) { // TODO: Port - was Tags.Blocks.ORES, BlockTags.ORES doesn't exist in MC 26.1.2, find equivalent
 											multiset.add(MapColor.COLOR_PINK, 1000);
 										}
 									}

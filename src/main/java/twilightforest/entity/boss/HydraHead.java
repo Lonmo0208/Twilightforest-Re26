@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import twilightforest.TwilightForestMod;
+import twilightforest.init.TFEntities;
 
 public class HydraHead extends HydraPart {
 
@@ -26,7 +27,7 @@ public class HydraHead extends HydraPart {
 	private static final EntityDataAccessor<Float> DATA_HEAD_POS_Z = SynchedEntityData.defineId(HydraHead.class, EntityDataSerializers.FLOAT);
 
 	public HydraHead(Hydra hydra) {
-		super(hydra, 4F, 4F);
+		super(hydra, TFEntities.HYDRA_HEAD.get(), hydra.level(), 4F, 4F);
 	}
 
 	@Override

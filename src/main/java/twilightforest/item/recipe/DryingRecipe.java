@@ -36,12 +36,12 @@ return this.result.create().copy();
 
 @Override
 public RecipeSerializer<? extends Recipe<RecipeInput>> getSerializer() {
-return TFRecipes.DRYING_SERIALIZER.get();
+return TFRecipes.DRYING_SERIALIZER;
 }
 
 @Override
 public RecipeType<? extends Recipe<RecipeInput>> getType() {
-return TFRecipes.DRYING_RECIPE.get();
+return TFRecipes.DRYING_RECIPE;
 }
 
 @Override

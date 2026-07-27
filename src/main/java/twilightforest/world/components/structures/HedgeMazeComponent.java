@@ -32,14 +32,14 @@ public class HedgeMazeComponent extends TFStructureComponentOld {
 	private static final int FLOOR_LEVEL = 0;
 
 	public HedgeMazeComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		super(TFStructurePieceTypes.TFHedge.get(), nbt);
+		super(TFStructurePieceTypes.TFHedge, nbt);
 
 		this.boundingBox = BoundingBoxUtils.NBTToBoundingBox(nbt);
 	}
 
 	@SuppressWarnings("this-escape")
 	public HedgeMazeComponent(int i, int x, int y, int z) {
-		super(TFStructurePieceTypes.TFHedge.get(), i, x, y, z);
+		super(TFStructurePieceTypes.TFHedge, i, x, y, z);
 
 		this.setOrientation(Direction.SOUTH);
 
@@ -53,8 +53,8 @@ public class HedgeMazeComponent extends TFStructureComponentOld {
 		TFMaze maze = new TFMaze(MSIZE, MSIZE, rand);
 
 		maze.oddBias = 2;
-		maze.torchBlockState = TFBlocks.FIREFLY.get().defaultBlockState();
-		maze.wallBlockState = TFBlocks.HEDGE.get().defaultBlockState();
+		maze.torchBlockState = TFBlocks.FIREFLY.defaultBlockState();
+		maze.wallBlockState = TFBlocks.HEDGE.defaultBlockState();
 		maze.type = 4;
 		maze.tall = 3;
 		maze.roots = 3;
@@ -235,4 +235,5 @@ public class HedgeMazeComponent extends TFStructureComponentOld {
 	public TerrainAdjustment getTerrainAdjustment() {
 		return TerrainAdjustment.BEARD_BOX;
 	}
+
 }

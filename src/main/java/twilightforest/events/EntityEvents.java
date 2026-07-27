@@ -12,7 +12,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.random.Weighted;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -46,23 +45,8 @@ import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.damagesource.DamageContainer;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
-import net.neoforged.neoforge.event.entity.living.*;
-import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.ExplosionEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
-import tamaized.beanification.Autowired;
-import tamaized.beanification.PostConstruct;
+import twilightforest.beanification.Autowired;
+import twilightforest.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
 import twilightforest.advancements.DrinkFromFlaskTrigger;
 import twilightforest.block.*;
@@ -76,9 +60,9 @@ import twilightforest.entity.projectile.LichBomb;
 import twilightforest.init.*;
 import twilightforest.item.FieryArmorItem;
 import twilightforest.network.SyncQuestsPacket;
-import twilightforest.network.WipeOreMeterPacket;
 import twilightforest.tags.TFEntityTypeTags;
 import twilightforest.util.datamaps.EntityTransformation;
+import twilightforest.util.TFEntityExtensions;
 import twilightforest.util.entities.EntityUtil;
 import twilightforest.util.entities.OminousFireDamageSource;
 import twilightforest.world.components.structures.SpawnIndexProvider;
@@ -90,8 +74,9 @@ import twilightforest.world.components.structures.util.ValidatedSpawnLocations;
 import java.net.URI;
 import java.util.*;
 import java.util.function.Consumer;
+import twilightforest.network.PacketDistributor;
 
-@tamaized.beanification.Component
+@twilightforest.beanification.Component
 public class EntityEvents {
 
 	@Autowired
@@ -99,6 +84,8 @@ public class EntityEvents {
 
 	@PostConstruct
 	private void setup() {
+		// TODO: Port to Fabric event system
+		/*
 		NeoForge.EVENT_BUS.addListener(this::ominousFireConversion);
 		NeoForge.EVENT_BUS.addListener(this::zombifiedPlayerAttacks);
 		NeoForge.EVENT_BUS.addListener(this::entityHurts);
@@ -120,20 +107,21 @@ public class EntityEvents {
 		NeoForge.EVENT_BUS.addListener(this::resetFlaskLogic);
 		NeoForge.EVENT_BUS.addListener(this::handleLeashPathingOverrides);
 		NeoForge.EVENT_BUS.addListener(this::stopEndermenFromGrabbingBlocksInTF);
+		*/
 	}
 
-	private void ominousFireConversion(LivingDeathEvent event) {
+	private void ominousFireConversion(FabricEvents.LivingDeathEvent event) {
 		if (!event.isCanceled() && event.getSource().is(TFDamageTypes.OMINOUS_FIRE)) {
-			EntityTransformation dataMap = event.getEntity().getType().builtInRegistryHolder().getData(TFDataMaps.OMINOUS_FIRE);
+			EntityTransformation dataMap = null; // TODO: Port - getData from registry data maps
 
 			if (event.getEntity() instanceof ServerPlayer player) {
 				var zombie = EntityType.ZOMBIE.create(player.level(), EntitySpawnReason.CONVERSION);
-				zombie.setData(TFDataAttachments.ZOMBIFIED_PLAYER, player.getGameProfile());
+				((TFEntityExtensions) zombie).setData(() -> TFDataAttachments.ZOMBIFIED_PLAYER, player.getGameProfile());
 				zombie.setCustomName(player.getName());
 				zombie.copyPosition(player);
 				zombie.setCanPickUpLoot(true);
 				zombie.setBaby(false);
-				EventHooks.finalizeMobSpawn(zombie, player.level(), player.level().getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.CONVERSION, null);
+				// EventHooks.finalizeMobSpawn(zombie, player.level(), player.level().getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.CONVERSION, null)); // TODO: Port - NeoForge hook
 				player.level().addFreshEntity(zombie);
 			} else if (dataMap != null && event.getEntity().level() instanceof ServerLevel) {
 				EntityUtil.convertEntity(event.getEntity(), dataMap.result());
@@ -141,21 +129,21 @@ public class EntityEvents {
 		}
 	}
 
-	private void zombifiedPlayerAttacks(LivingIncomingDamageEvent event) {
-		if (!(event.getSource() instanceof OminousFireDamageSource) && event.getSource().getEntity() instanceof Zombie zombie && zombie.hasData(TFDataAttachments.ZOMBIFIED_PLAYER)) {
+	private void zombifiedPlayerAttacks(FabricEvents.LivingIncomingDamageEvent event) {
+		if (!(event.getSource() instanceof OminousFireDamageSource) && event.getSource().getEntity() instanceof Zombie zombie && ((TFEntityExtensions) zombie).hasData(() -> TFDataAttachments.ZOMBIFIED_PLAYER)) {
 			float amount = event.getAmount();
 			event.setCanceled(true);
 			event.getEntity().hurt(new OminousFireDamageSource(event.getSource()), amount);
 		}
 	}
 
-	private void alertPlayerCastleIsWIP(AdvancementEvent.AdvancementEarnEvent event) {
+	private void alertPlayerCastleIsWIP(FabricEvents.AdvancementEvent.AdvancementEarnEvent event) {
 		if (event.getAdvancement().id().equals(TwilightForestMod.prefix("progression_end"))) {
 			event.getEntity().sendSystemMessage(Component.translatable("gui.twilightforest.progression_end.message", Component.translatable("gui.twilightforest.progression_end.discord").withStyle(style -> style.withColor(ChatFormatting.BLUE).applyFormat(ChatFormatting.UNDERLINE).withClickEvent(new ClickEvent.OpenUrl(URI.create("https://discord.experiment115.com/"))))));
 		}
 	}
 
-	private void attachLeadToWroughtFence(PlayerInteractEvent.RightClickBlock event) {
+	private void attachLeadToWroughtFence(FabricEvents.PlayerInteractEvent.RightClickBlock event) {
 		Player player = event.getEntity();
 		ItemStack stack = player.getItemInHand(event.getHand());
 		if (stack.is(Items.LEAD)) {
@@ -171,17 +159,20 @@ public class EntityEvents {
 		}
 	}
 
-	private void wipeOreMeterOnLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
+	private void wipeOreMeterOnLeftClick(FabricEvents.PlayerInteractEvent.LeftClickEmpty event) {
+		// TODO: Port to Fabric - move to client-side handler using twilightforest.network.client.ClientPacketDistributor
+		/*
 		ItemStack item = event.getItemStack();
-		if (item.is(TFItems.ORE_METER.get()) && (item.has(TFDataComponents.ORE_DATA) || item.has(TFDataComponents.ORE_FILTER))) {
-			ClientPacketDistributor.sendToServer(new WipeOreMeterPacket(event.getHand()));
+		if (item.is(TFItems.ORE_METER) && (item.has(TFDataComponents.ORE_DATA) || item.has(TFDataComponents.ORE_FILTER))) {
+			// Use ClientPacketDistributor.sendToServer(new WipeOreMeterPacket(event.getHand()));
 			item.remove(TFDataComponents.ORE_DATA);
 			item.remove(TFDataComponents.ORE_FILTER);
-			event.getLevel().playSound(event.getEntity(), event.getEntity().blockPosition(), TFSounds.ORE_METER_CLEAR.get(), SoundSource.PLAYERS, 1.25F, event.getLevel().getRandom().nextFloat() * 0.2F + 0.6F);
+			event.getLevel().playSound(event.getEntity(), event.getEntity().blockPosition(), TFSounds.ORE_METER_CLEAR, SoundSource.PLAYERS, 1.25F, event.getLevel().getRandom().nextFloat() * 0.2F + 0.6F);
 		}
+		*/
 	}
 
-	private void entityHurts(LivingDamageEvent.Post event) {
+	private void entityHurts(FabricEvents.LivingDamageEvent.Post event) {
 		LivingEntity living = event.getEntity();
 		DamageSource source = event.getSource();
 		Entity trueSource = source.getEntity();
@@ -203,14 +194,14 @@ public class EntityEvents {
 		// triple bow strips invulnerableTime
 		if (source.getMsgId().equals("arrow") && trueSource instanceof Player player) {
 
-			if (player.getItemInHand(player.getUsedItemHand()).is(TFItems.TRIPLE_BOW.get())) {
+			if (player.getItemInHand(player.getUsedItemHand()).is(TFItems.TRIPLE_BOW)) {
 				living.invulnerableTime = 0;
 			}
 		}
 	}
 
 	//if our casket is owned by someone and that player isnt the one breaking it, stop them
-	private void onCasketBreak(BreakBlockEvent event) {
+	private void onCasketBreak(FabricEvents.BreakBlockEvent event) {
 		Player player = event.getPlayer();
 		if (event.getState().getBlock() instanceof SkullChestBlock) {
 			BlockEntity te = event.getLevel().getBlockEntity(event.getPos());
@@ -226,14 +217,13 @@ public class EntityEvents {
 		}
 	}
 
-	private void reduceFrostedEffectIfOnFire(LivingIncomingDamageEvent event) {
+	private void reduceFrostedEffectIfOnFire(FabricEvents.LivingIncomingDamageEvent event) {
 		if (!event.isCanceled()) {
 			LivingEntity living = event.getEntity();
 			Optional.ofNullable(living.getEffect(TFMobEffects.FROSTY)).ifPresent(mobEffectInstance -> {
-				DamageContainer container = event.getContainer();
-				if (container.getSource().typeHolder().is(DamageTypes.FREEZE)) {
-					container.setNewDamage(container.getOriginalDamage() + (float) (mobEffectInstance.getAmplifier() / 2));
-				} else if (container.getSource().typeHolder().is(DamageTypeTags.IS_FIRE)) {
+				if (event.getSource().typeHolder().is(DamageTypes.FREEZE)) {
+					event.setAmount(event.getAmount() + (float) (mobEffectInstance.getAmplifier() / 2));
+				} else if (event.getSource().typeHolder().is(DamageTypeTags.IS_FIRE)) {
 					living.removeEffect(TFMobEffects.FROSTY);
 					mobEffectInstance.amplifier -= 1;
 					if (mobEffectInstance.amplifier >= 0) living.addEffect(mobEffectInstance);
@@ -243,8 +233,10 @@ public class EntityEvents {
 	}
 
 	// Parrying
-	private void onParryProjectile(ProjectileImpactEvent event) {
-		final Projectile projectile = event.getProjectile();
+	private void onParryProjectile(FabricEvents.ProjectileImpactEvent event) {
+		Entity projectileEntity = event.getProjectile();
+
+		if (!(projectileEntity instanceof Projectile projectile)) return;
 
 		if (!projectile.level().isClientSide() && (TFConfig.parryNonTwilightAttacks || projectile instanceof ITFProjectile)) {
 			if (event.getRayTraceResult() instanceof EntityHitResult result) {
@@ -265,7 +257,7 @@ public class EntityEvents {
 	 */
 	// I wanted to make sure absolutely nothing broke, so I also check against the namespaces of the item to make sure theyre vanilla.
 	// Worst case some stupid mod adds their own stuff to the minecraft namespace and breaks this, then you can disable this via config.
-	private void createSkullCandle(PlayerInteractEvent.RightClickBlock event) {
+	private void createSkullCandle(FabricEvents.PlayerInteractEvent.RightClickBlock event) {
 		ItemStack stack = event.getItemStack();
 		Level level = event.getLevel();
 		BlockPos pos = event.getPos();
@@ -277,28 +269,28 @@ public class EntityEvents {
 					boolean wall = state.getBlock() instanceof WallSkullBlock;
 					switch (type) {
 						case SKELETON -> {
-							if (wall) makeSkullCandle(event, TFBlocks.SKELETON_WALL_SKULL_CANDLE.get());
-							else makeSkullCandle(event, TFBlocks.SKELETON_SKULL_CANDLE.get());
+							if (wall) makeSkullCandle(event, TFBlocks.SKELETON_WALL_SKULL_CANDLE);
+							else makeSkullCandle(event, TFBlocks.SKELETON_SKULL_CANDLE);
 						}
 						case WITHER_SKELETON -> {
-							if (wall) makeSkullCandle(event, TFBlocks.WITHER_SKELE_WALL_SKULL_CANDLE.get());
-							else makeSkullCandle(event, TFBlocks.WITHER_SKELE_SKULL_CANDLE.get());
+							if (wall) makeSkullCandle(event, TFBlocks.WITHER_SKELE_WALL_SKULL_CANDLE);
+							else makeSkullCandle(event, TFBlocks.WITHER_SKELE_SKULL_CANDLE);
 						}
 						case PLAYER -> {
-							if (wall) makeSkullCandle(event, TFBlocks.PLAYER_WALL_SKULL_CANDLE.get());
-							else makeSkullCandle(event, TFBlocks.PLAYER_SKULL_CANDLE.get());
+							if (wall) makeSkullCandle(event, TFBlocks.PLAYER_WALL_SKULL_CANDLE);
+							else makeSkullCandle(event, TFBlocks.PLAYER_SKULL_CANDLE);
 						}
 						case ZOMBIE -> {
-							if (wall) makeSkullCandle(event, TFBlocks.ZOMBIE_WALL_SKULL_CANDLE.get());
-							else makeSkullCandle(event, TFBlocks.ZOMBIE_SKULL_CANDLE.get());
+							if (wall) makeSkullCandle(event, TFBlocks.ZOMBIE_WALL_SKULL_CANDLE);
+							else makeSkullCandle(event, TFBlocks.ZOMBIE_SKULL_CANDLE);
 						}
 						case CREEPER -> {
-							if (wall) makeSkullCandle(event, TFBlocks.CREEPER_WALL_SKULL_CANDLE.get());
-							else makeSkullCandle(event, TFBlocks.CREEPER_SKULL_CANDLE.get());
+							if (wall) makeSkullCandle(event, TFBlocks.CREEPER_WALL_SKULL_CANDLE);
+							else makeSkullCandle(event, TFBlocks.CREEPER_SKULL_CANDLE);
 						}
 						case PIGLIN -> {
-							if (wall) makeSkullCandle(event, TFBlocks.PIGLIN_WALL_SKULL_CANDLE.get());
-							else makeSkullCandle(event, TFBlocks.PIGLIN_SKULL_CANDLE.get());
+							if (wall) makeSkullCandle(event, TFBlocks.PIGLIN_WALL_SKULL_CANDLE);
+							else makeSkullCandle(event, TFBlocks.PIGLIN_SKULL_CANDLE);
 						}
 						default -> {
 							return;
@@ -307,7 +299,7 @@ public class EntityEvents {
 					stack.consume(1, event.getEntity());
 					event.getEntity().swing(event.getHand());
 					if (event.getEntity() instanceof ServerPlayer)
-						event.getEntity().awardStat(TFStats.SKULL_CANDLES_MADE.get());
+						event.getEntity().awardStat(TFStats.SKULL_CANDLES_MADE);
 					//this is to prevent anything from being placed afterwords
 					event.setCanceled(true);
 				}
@@ -315,7 +307,7 @@ public class EntityEvents {
 		}
 	}
 
-	private static void makeSkullCandle(PlayerInteractEvent.RightClickBlock event, Block newBlock) {
+	private static void makeSkullCandle(FabricEvents.PlayerInteractEvent.RightClickBlock event, Block newBlock) {
 		ResolvableProfile profile = null;
 		Level level = event.getLevel();
 		if (level.getBlockEntity(event.getPos()) instanceof SkullBlockEntity skull)
@@ -344,7 +336,7 @@ public class EntityEvents {
 		return amount;
 	}
 
-	private void addCloudJumpParticles(LivingEvent.LivingJumpEvent event) {
+	private void addCloudJumpParticles(FabricEvents.LivingEvent.LivingJumpEvent event) {
 		LivingEntity living = event.getEntity();
 		if (living.level().isClientSide() && !living.isSpectator() && living.level().getBlockState(living.getOnPos()).getBlock() instanceof CloudBlock) {
 			for (int i = 0; i < 12; i++)
@@ -370,7 +362,7 @@ public class EntityEvents {
 		}
 	};
 
-	public static void gatherPotentialSpawns(StructureManager structureManager, MobCategory classification, BlockPos pos, Consumer<Weighted<MobSpawnSettings.SpawnerData>> consumer) {		ChunkPos chunkPos = ChunkPos.containing(pos);
+	public static void gatherPotentialSpawns(StructureManager structureManager, MobCategory classification, BlockPos pos, Consumer<? super MobSpawnSettings.SpawnerData> consumer) {		ChunkPos chunkPos = ChunkPos.containing(pos);
 		List<StructureStart> structureStarts;
 		synchronized (STRUCTURE_STARTS_CACHE) {
 			structureStarts = STRUCTURE_STARTS_CACHE.computeIfAbsent(ChunkPos.pack(chunkPos.x(), chunkPos.z()), k -> structureManager.startsForStructure(chunkPos, s -> s instanceof ControlledSpawns));
@@ -385,7 +377,7 @@ public class EntityEvents {
 				if (classification != MobCategory.MONSTER) {
 					landmark.getSpawnableList(classification)
 						.unwrap()
-						.forEach(consumer);
+						.forEach(weighted -> consumer.accept(weighted.value()));
 
 					return;
 				}
@@ -402,18 +394,18 @@ public class EntityEvents {
 
 				landmark.getSpawnableMonsterList(index)
 					.unwrap()
-					.forEach(consumer);
+					.forEach(weighted -> consumer.accept(weighted.value()));
 
 				return;
 			}
 		}
 	}
 
-	private void structureSpecialSpawns(LevelEvent.PotentialSpawns event) {
+	private void structureSpecialSpawns(FabricEvents.LevelEvent.PotentialSpawns event) {
 		if (!(event.getLevel() instanceof ServerLevel serverLevel))
 			return;
 
-		List<Weighted<MobSpawnSettings.SpawnerData>> potentialStructureSpawns = new ArrayList<>();
+		List<MobSpawnSettings.SpawnerData> potentialStructureSpawns = new ArrayList<>();
 
 		gatherPotentialSpawns(
 			serverLevel.structureManager(),
@@ -428,7 +420,7 @@ public class EntityEvents {
 		}
 	}
 
-	private void removeCastleTextIfAttacked(AttackEntityEvent event) {
+	private void removeCastleTextIfAttacked(FabricEvents.AttackEntityEvent event) {
 		// For clearing our Display text entities at the Final Castle Gazebo, there's no other way to remove them otherwise
 		// The tag distinguishes our Interaction entities from other Mods' utilization
 		if (event.getTarget().level() instanceof ServerLevel level && event.getTarget() instanceof Interaction interaction
@@ -439,7 +431,7 @@ public class EntityEvents {
 		}
 	}
 
-	private void adjustEntityHealthInMultiplayerFights(FinalizeSpawnEvent event) {
+	private void adjustEntityHealthInMultiplayerFights(FabricEvents.FinalizeSpawnEvent event) {
 		if (event.getEntity().is(TFEntityTypeTags.MULTIPLAYER_INCLUSIVE_ENTITIES)) {
 			if (TFConfig.multiplayerFightAdjuster.adjustsHealth()) {
 				List<ServerPlayer> nearbyPlayers = event.getLevel().getEntitiesOfClass(ServerPlayer.class, event.getEntity().getBoundingBox().inflate(32, 10, 32), player -> EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(EntitySelector.ENTITY_STILL_ALIVE).test(player));
@@ -459,62 +451,63 @@ public class EntityEvents {
 		};
 	}
 
-	private void addQualifiedGroupPlayerIfNeeded(LivingDamageEvent.Post event) {
+	private void addQualifiedGroupPlayerIfNeeded(FabricEvents.LivingDamageEvent.Post event) {
 		if (event.getEntity().is(TFEntityTypeTags.MULTIPLAYER_INCLUSIVE_ENTITIES)) {
-			var data = event.getEntity().getData(TFDataAttachments.MULTIPLAYER_FIGHT);
+			var data = ((TFEntityExtensions) event.getEntity()).getData(() -> TFDataAttachments.MULTIPLAYER_FIGHT);
 			if (event.getSource().getEntity() != null) {
 				data.maybeAddQualifiedPlayer(event.getSource().getEntity());
 			}
 		}
 	}
 
-	private void grantGroupAdvancementIfNeeded(LivingDeathEvent event) {
-		if (!event.isCanceled() && event.getEntity().hasData(TFDataAttachments.MULTIPLAYER_FIGHT)) {
-			event.getEntity().getData(TFDataAttachments.MULTIPLAYER_FIGHT).grantGroupAdvancement(event.getEntity());
+	private void grantGroupAdvancementIfNeeded(FabricEvents.LivingDeathEvent event) {
+		if (!event.isCanceled() && ((TFEntityExtensions) event.getEntity()).hasData(() -> TFDataAttachments.MULTIPLAYER_FIGHT)) {
+			((TFEntityExtensions) event.getEntity()).getData(() -> TFDataAttachments.MULTIPLAYER_FIGHT).grantGroupAdvancement(event.getEntity());
 		}
 	}
 
-	private void lichBombsDontBlowUpItems(ExplosionEvent.Detonate event) {
+	private void lichBombsDontBlowUpItems(FabricEvents.ExplosionEvent.Detonate event) {
 		if (event.getExplosion().getDirectSourceEntity() instanceof LichBomb) {
 			event.getAffectedEntities().removeIf(entity -> entity instanceof ItemEntity || entity instanceof LichBomb);
 		}
 	}
 
-	private void handleQuestSyncing(OnDatapackSyncEvent event) {
+	private void handleQuestSyncing(FabricEvents.OnDatapackSyncEvent event) {
 		if (event.getPlayer() != null) {
-			PacketDistributor.sendToPlayer(event.getPlayer(), new SyncQuestsPacket(this.questingRamCurrentContext.getContext()));
+			PacketDistributor.sendToPlayer((net.minecraft.server.level.ServerPlayer) event.getPlayer(), new SyncQuestsPacket(this.questingRamCurrentContext.getContext()));
 		} else {
 			event.getPlayerList().getPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, new SyncQuestsPacket(this.questingRamCurrentContext.getContext())));
 		}
 	}
 
-	private void resetFlaskLogic(AdvancementEvent.AdvancementEarnEvent event) {
+	private void resetFlaskLogic(FabricEvents.AdvancementEvent.AdvancementEarnEvent event) {
 		for (var criteria : event.getAdvancement().value().criteria().entrySet()) {
 			if (criteria.getValue().trigger() instanceof DrinkFromFlaskTrigger) {
-				event.getEntity().getData(TFDataAttachments.FLASK_DOSES).resetDoses();
+				((TFEntityExtensions) event.getEntity()).getData(() -> TFDataAttachments.FLASK_DOSES).resetDoses();
 				break;
 			}
 		}
 	}
 
-	private void handleLeashPathingOverrides(EntityJoinLevelEvent event) {
-		if (!(event.getEntity() instanceof PathfinderMob mob && mob.hasData(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE))) {
+	private void handleLeashPathingOverrides(FabricEvents.EntityJoinLevelEvent event) {
+		if (!(event.getEntity() instanceof PathfinderMob mob && ((TFEntityExtensions) mob).hasData(() -> TFDataAttachments.LEASH_PATHFINDER_OVERRIDE))) {
 			return;
 		}
 
 		if (!mob.mayBeLeashed()) {
-			mob.removeData(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE);
+			((TFEntityExtensions) mob).removeData(() -> TFDataAttachments.LEASH_PATHFINDER_OVERRIDE);
 		}
 	}
 
-	private void stopEndermenFromGrabbingBlocksInTF(EntityJoinLevelEvent event) {
+	private void stopEndermenFromGrabbingBlocksInTF(FabricEvents.EntityJoinLevelEvent event) {
 		if (event.getEntity() instanceof EnderMan enderMan) {
-			enderMan.goalSelector.getAvailableGoals().stream()
+			var goalSelector = ((TFEntityExtensions) enderMan).getGoalSelector();
+			goalSelector.getAvailableGoals().stream()
 				.filter(g -> g.getGoal().getClass().getName().contains("EndermanTakeBlockGoal"))
 				.findAny()
 				.ifPresent(g -> {
-					enderMan.goalSelector.removeGoal(g.getGoal());
-					enderMan.goalSelector.addGoal(g.getPriority(), new ExtendedEndermanTakeBlockGoal(g.getGoal(), enderMan));
+					goalSelector.removeGoal(g.getGoal());
+					goalSelector.addGoal(g.getPriority(), new ExtendedEndermanTakeBlockGoal(g.getGoal(), enderMan));
 				});
 		}
 	}

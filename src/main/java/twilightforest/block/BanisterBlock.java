@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -31,10 +32,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.ItemAbilities;
 import org.jspecify.annotations.Nullable;
 import twilightforest.enums.BanisterShape;
 import twilightforest.tags.TFBlockTags;
+
 
 public class BanisterBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock {
 
@@ -195,12 +196,6 @@ public class BanisterBlock extends HorizontalDirectionalBlock implements SimpleW
 //		tooltip.add(Component.translatable("block.twilightforest.banister.cycle").withStyle(ChatFormatting.GRAY));
 //	}
 
-	@Nullable
-	@Override
-	public PathType getBlockPathType(BlockState state, BlockGetter level, BlockPos pos, @Nullable Mob mob) {
-		return PathType.FENCE;
-	}
-
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> blockStateBuilder) {
 		blockStateBuilder.add(SHAPE, EXTENDED, FACING, WATERLOGGED);
@@ -213,7 +208,7 @@ public class BanisterBlock extends HorizontalDirectionalBlock implements SimpleW
 
 	@Override
 	protected InteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-		if (held.canPerformAction(ItemAbilities.AXE_WAX_OFF)) {
+		if (held.is(ItemTags.AXES)) {
 			BlockState newState = state.cycle(SHAPE);
 			BlockState belowState = level.getBlockState(pos.below());
 

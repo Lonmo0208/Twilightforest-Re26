@@ -18,12 +18,12 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.EventHooks;
+import net.minecraft.world.level.gamerules.GameRules;
 import twilightforest.init.TFDataMaps;
 import twilightforest.init.TFSounds;
 import twilightforest.init.TFStats;
 import twilightforest.util.WorldUtil;
+import twilightforest.util.datamaps.DataMapType;
 
 public class CrumbleHornItem extends Item {
 
@@ -34,7 +34,7 @@ public class CrumbleHornItem extends Item {
 	@Override
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		player.startUsingItem(hand);
-		player.playSound(TFSounds.QUEST_RAM_AMBIENT.get(), 1.0F, 0.8F);
+		player.playSound(TFSounds.QUEST_RAM_AMBIENT, 1.0F, 0.8F);
 		return InteractionResult.CONSUME;
 	}
 
@@ -42,7 +42,7 @@ public class CrumbleHornItem extends Item {
 	public void onUseTick(Level level, LivingEntity living, ItemStack stack, int count) {
 		if (count > 10 && count % 5 == 0 && level instanceof ServerLevel serverLevel) {
 			this.doCrumble(serverLevel, living, stack);
-			serverLevel.playSound(null, living.getX(), living.getY(), living.getZ(), TFSounds.QUEST_RAM_AMBIENT.get(), living.getSoundSource(), 1.0F, 0.8F);
+			serverLevel.playSound(null, living.getX(), living.getY(), living.getZ(), TFSounds.QUEST_RAM_AMBIENT, living.getSoundSource(), 1.0F, 0.8F);
 		}
 	}
 
@@ -56,15 +56,7 @@ public class CrumbleHornItem extends Item {
 		return 72000;
 	}
 
-	@Override
-	public boolean canContinueUsing(ItemStack oldStack, ItemStack newStack) {
-		return oldStack.getItem() == newStack.getItem();
-	}
 
-	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		return slotChanged || newStack.getItem() != oldStack.getItem();
-	}
 
 	private void doCrumble(ServerLevel serverLevel, LivingEntity living, ItemStack stack) {
 		final double centerDistance = 3.0D;
@@ -83,7 +75,7 @@ public class CrumbleHornItem extends Item {
 		for (BlockPos pos : WorldUtil.getAllInBB(box)) {
 			if (this.crumbleBlock(serverLevel, living, pos)) {
 				if (living instanceof ServerPlayer player) {
-					player.awardStat(TFStats.BLOCKS_CRUMBLED.get());
+					player.awardStat(TFStats.BLOCKS_CRUMBLED);
 				}
 				stack.hurtAndBreak(1, living,living.getUsedItemHand());
 				if (stack.getDamageValue() >= stack.getMaxDamage()) break;
@@ -94,19 +86,18 @@ public class CrumbleHornItem extends Item {
 	private boolean crumbleBlock(ServerLevel serverLevel, LivingEntity living, BlockPos pos) {
 		BlockState state = serverLevel.getBlockState(pos);
 		Block block = state.getBlock();
-		var crumbleMap = block.builtInRegistryHolder().getData(TFDataMaps.CRUMBLE_HORN);
+		var crumbleMap = DataMapType.getData(block.builtInRegistryHolder(), TFDataMaps.CRUMBLE_HORN);
 
 		if (state.isAir() || crumbleMap == null) return false;
 
 		if (living instanceof Player) {
-			if (NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.event.level.block.BreakBlockEvent(serverLevel, pos, state, (Player) living)).isCanceled())
-				return false;
+			// TODO: Port to Fabric - Block break event handling
 		}
 
 		if (crumbleMap.result() == Blocks.AIR) {
 			if (serverLevel.getRandom().nextFloat() < crumbleMap.chanceToCrumble()) {
 				if (living instanceof Player player) {
-					if (block.canHarvestBlock(state, serverLevel, pos, player)) {
+					if (player.hasCorrectToolForDrops(state)) {
 						serverLevel.removeBlock(pos, false);
 						block.playerDestroy(serverLevel, player, pos, state, serverLevel.getBlockEntity(pos), ItemStack.EMPTY);
 						serverLevel.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
@@ -115,7 +106,7 @@ public class CrumbleHornItem extends Item {
 						}
 						return true;
 					}
-				} else if (EventHooks.canEntityGrief(serverLevel, living)) {
+				} else if (serverLevel.getGameRules().get(GameRules.MOB_GRIEFING)) {
 					serverLevel.destroyBlock(pos, true);
 					return true;
 				}

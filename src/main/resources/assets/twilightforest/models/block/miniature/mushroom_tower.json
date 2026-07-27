@@ -1,0 +1,15 @@
+{
+  "parent": "twilightforest:block/miniature/template_transforms",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "#stem",
+    "stem": "block/mushroom_stem",
+    "cap": "block/red_mushroom_block",
+    "spots": "block/mushroom_block_inside"
+  },
+  "elements": [
+    {"from": [5, 0, 5], "to": [11, 8, 11], "faces": {"north": {"uv": [5, 8, 11, 16], "texture": "#stem"}, "east": {"uv": [5, 8, 11, 16], "texture": "#stem"}, "south": {"uv": [5, 8, 11, 16], "texture": "#stem"}, "west": {"uv": [5, 8, 11, 16], "texture": "#stem"}, "up": {"uv": [5, 5, 11, 11], "texture": "#stem"}, "down": {"uv": [5, 5, 11, 11], "texture": "#stem"}}},
+    {"from": [2, 8, 2], "to": [14, 10, 14], "faces": {"north": {"uv": [2, 6, 14, 8], "texture": "#cap"}, "east": {"uv": [2, 6, 14, 8], "texture": "#cap"}, "south": {"uv": [2, 6, 14, 8], "texture": "#cap"}, "west": {"uv": [2, 6, 14, 8], "texture": "#cap"}, "up": {"uv": [2, 2, 14, 14], "texture": "#spots"}, "down": {"uv": [2, 2, 14, 14], "texture": "#cap"}}},
+    {"from": [1, 10, 1], "to": [15, 12, 15], "faces": {"north": {"uv": [1, 4, 15, 6], "texture": "#cap"}, "east": {"uv": [1, 4, 15, 6], "texture": "#cap"}, "south": {"uv": [1, 4, 15, 6], "texture": "#cap"}, "west": {"uv": [1, 4, 15, 6], "texture": "#cap"}, "up": {"uv": [1, 1, 15, 15], "texture": "#spots"}, "down": {"uv": [1, 1, 15, 15], "texture": "#cap"}}}
+  ]
+}

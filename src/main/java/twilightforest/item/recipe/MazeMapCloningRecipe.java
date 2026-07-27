@@ -76,6 +76,6 @@ public class MazeMapCloningRecipe extends CustomRecipe {
 
 	@Override
 	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
-		return TFRecipes.MAZE_MAP_CLONING_RECIPE.get();
+		return TFRecipes.MAZE_MAP_CLONING_RECIPE;
 	}
 }

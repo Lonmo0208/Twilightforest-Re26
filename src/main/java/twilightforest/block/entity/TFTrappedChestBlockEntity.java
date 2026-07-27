@@ -14,7 +14,7 @@ import twilightforest.init.TFBlockEntities;
 public class TFTrappedChestBlockEntity extends ChestBlockEntity {
 
 	public TFTrappedChestBlockEntity(BlockPos pos, BlockState state) {
-		super(TFBlockEntities.TF_TRAPPED_CHEST.get(), pos, state);
+		super(TFBlockEntities.TF_TRAPPED_CHEST, pos, state);
 	}
 
 	@Override

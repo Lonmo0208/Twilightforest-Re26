@@ -1,6 +1,5 @@
 package twilightforest.network;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -8,7 +7,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapId;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
 import twilightforest.item.mapdata.TFMagicMapData;
 
@@ -28,30 +26,13 @@ public record MagicMapPacket(ClientboundMapItemDataPacket inner, List<String> co
 		return TYPE;
 	}
 
-	@SuppressWarnings("Convert2Lambda")
-	public static void handle(MagicMapPacket message, IPayloadContext ctx) {
-		//ensure this is only done on clients as this uses client only code
-		if (ctx.flow().isClientbound()) {
-			ctx.enqueueWork(new Runnable() {
-				@Override
-				public void run() {
-					Level level = ctx.player().level();
-					// [VanillaCopy] ClientPacketListener#handleMapItemData with our own mapdatas
-					MapId mapId = message.inner.mapId();
-					TFMagicMapData mapdata = TFMagicMapData.getMagicMapData(level, mapId);
-					if (mapdata == null) {
-						mapdata = new TFMagicMapData(0, 0, message.inner.scale(), false, false, message.inner.locked(), level.dimension());
-						TFMagicMapData.registerMagicMapData(level, mapdata, mapId);
-					}
-
-					message.inner.applyToMap(mapdata);
-					//TF: sync conquered structures for map
-					mapdata.conqueredStructures.clear();
-					mapdata.conqueredStructures.addAll(message.conqueredStructures());
-					//TF: update map texture from received color data
-					Minecraft.getInstance().getMapTextureManager().update(message.inner.mapId(), mapdata);
-				}
-			});
-		}
+	/**
+	 * Converts this custom payload back to a vanilla packet for the standard update packet pipeline.
+	 * The custom data (conqueredStructures) is sent separately through the Fabric custom payload channel.
+	 */
+	public ClientboundMapItemDataPacket toVanillaClientbound() {
+		return this.inner;
 	}
+
+	// Client-side handler moved to MagicMapPacketClientHandler
 }

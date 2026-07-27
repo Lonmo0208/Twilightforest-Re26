@@ -1,23 +1,25 @@
 package twilightforest.datagen.data.tags;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.StructureTagsProvider;
-import twilightforest.TwilightForestMod;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import twilightforest.init.TFStructures;
 import twilightforest.tags.TFStructureTags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class StructureTagGenerator extends StructureTagsProvider {
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 
-	public StructureTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
-		super(output, provider, TwilightForestMod.ID);
+public class StructureTagGenerator extends FabricTagsProvider<Structure> {
+
+	public StructureTagGenerator(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+		super(output, Registries.STRUCTURE, provider);
 	}
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(TFStructureTags.LANDMARK).add(
+		this.builder(TFStructureTags.LANDMARK).add(
 			TFStructures.HEDGE_MAZE,
 			TFStructures.QUEST_GROVE,
 			TFStructures.MUSHROOM_TOWER,
@@ -35,5 +37,10 @@ public class StructureTagGenerator extends StructureTagsProvider {
 			TFStructures.TROLL_CAVE,
 			TFStructures.FINAL_CASTLE
 		);
+	}
+
+	@Override
+	public String getName() {
+		return "Twilight Forest Structure Tags";
 	}
 }

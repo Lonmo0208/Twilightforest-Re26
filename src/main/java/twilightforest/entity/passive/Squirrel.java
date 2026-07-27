@@ -83,16 +83,16 @@ public class Squirrel extends Animal {
 	@Nullable
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return TFSounds.SQUIRREL_AMBIENT.get();
+		return TFSounds.SQUIRREL_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource source) {
-		return TFSounds.SQUIRREL_HURT.get();
+		return TFSounds.SQUIRREL_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return TFSounds.SQUIRREL_DEATH.get();
+		return TFSounds.SQUIRREL_DEATH;
 	}
 }

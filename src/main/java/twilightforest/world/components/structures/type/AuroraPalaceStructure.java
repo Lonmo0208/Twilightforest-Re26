@@ -3,6 +3,7 @@ package twilightforest.world.components.structures.type;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.RandomSource;
@@ -43,7 +44,7 @@ public class AuroraPalaceStructure extends ControlledSpawningStructure {
 
 	@Override
 	public StructureType<?> type() {
-		return TFStructureTypes.AURORA_PALACE.get();
+		return TFStructureTypes.AURORA_PALACE;
 	}
 
 	public static AuroraPalaceStructure buildAuroraPalaceConfig(BootstrapContext<Structure> context) {
@@ -57,7 +58,7 @@ public class AuroraPalaceStructure extends ControlledSpawningStructure {
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_yeti"))),
 			Optional.of(new HintConfig(HintConfig.book("icetower", 3), TFEntities.KOBOLD.get())),
 			Optional.of(new DecorationConfig(2, false, true, false)),
-			true, Optional.of(TFMapDecorations.AURORA_PALACE),
+			true, Optional.of(BuiltInRegistries.MAP_DECORATION_TYPE.wrapAsHolder(TFMapDecorations.AURORA_PALACE)),
 			new StructureSettings(
 				context.lookup(Registries.BIOME).getOrThrow(TFBiomeTags.VALID_AURORA_PALACE_BIOMES),
 				Arrays.stream(MobCategory.values()).collect(Collectors.<MobCategory, MobCategory, StructureSpawnOverride>toMap(category -> category, category -> new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, WeightedList.of()))), // Landmarks have Controlled Mob spawning

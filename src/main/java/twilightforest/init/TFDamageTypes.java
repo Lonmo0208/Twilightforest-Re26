@@ -10,15 +10,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import tamaized.beanification.Autowired;
 import twilightforest.TwilightForestMod;
 import twilightforest.enums.extensions.TFDamageEffectsEnumExtension;
 import twilightforest.util.entities.EntityExcludedDamageSource;
 
 public class TFDamageTypes {
 
-	@Autowired
-	private static TFDamageEffectsEnumExtension tfDamageEffectsEnumExtension;
+	private static TFDamageEffectsEnumExtension tfDamageEffectsEnumExtension = new TFDamageEffectsEnumExtension();
 
 	public static final ResourceKey<DamageType> GHAST_TEAR = create("ghast_tear"); //Ur-Ghast
 	public static final ResourceKey<DamageType> HYDRA_BITE = create("hydra_bite"); //Hydra
@@ -75,7 +73,8 @@ public class TFDamageTypes {
 	}
 
 	public static DamageSource getIndirectEntityDamageSource(Level level, ResourceKey<DamageType> type, @Nullable Entity attacker, @Nullable Entity indirectAttacker, EntityType<?>... toIgnore) {
-		return toIgnore.length > 0 ? new EntityExcludedDamageSource(level.registryAccess().holderOrThrow(type), attacker, indirectAttacker, toIgnore) : new DamageSource(level.registryAccess().holderOrThrow(type), attacker, indirectAttacker);
+		var damageType = level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(type);
+		return toIgnore.length > 0 ? new EntityExcludedDamageSource(damageType, attacker, indirectAttacker, toIgnore) : new DamageSource(damageType, attacker, indirectAttacker);
 	}
 
 	public static void bootstrap(BootstrapContext<DamageType> context) {

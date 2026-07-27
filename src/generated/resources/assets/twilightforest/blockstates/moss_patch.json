@@ -1,7 +1,6 @@
-{
+﻿{
   "variants": {
     "": {
-      "type": "twilightforest:patch",
       "model": "twilightforest:block/moss_patch"
     }
   }

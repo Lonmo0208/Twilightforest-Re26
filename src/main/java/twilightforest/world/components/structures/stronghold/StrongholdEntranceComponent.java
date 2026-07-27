@@ -24,13 +24,13 @@ public class StrongholdEntranceComponent extends KnightStrongholdComponent {
 	public final StrongholdPieces lowerPieces;
 
 	public StrongholdEntranceComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
-		super(TFStructurePieceTypes.TFSEnter.get(), nbt);
+		super(TFStructurePieceTypes.TFSEnter, nbt);
 		this.deco = new StrongholdDecorator();
 		this.lowerPieces = new StrongholdPieces();
 	}
 
 	public StrongholdEntranceComponent(int i, int x, int y, int z) {
-		super(TFStructurePieceTypes.TFSEnter.get(), i, Direction.SOUTH, x, y - 10, z);
+		super(TFStructurePieceTypes.TFSEnter, i, Direction.SOUTH, x, y - 10, z);
 		this.deco = new StrongholdDecorator();
 		this.lowerPieces = new StrongholdPieces();
 	}
@@ -61,7 +61,7 @@ public class StrongholdEntranceComponent extends KnightStrongholdComponent {
 			}
 			this.addNewComponent(parent, old, random, Rotation.COUNTERCLOCKWISE_90, 18, 1, 4);
 			if (!this.listContainsBossRoom(list)) {
-				TwilightForestMod.LOGGER.error("Did not find boss room from exit 3 - EPIC FAIL"); //Sorry, no fatal here anymore
+				TwilightForestMod.LOGGER.warn("Did not find boss room from exit 3");
 			}
 
 			// add the upper stronghold

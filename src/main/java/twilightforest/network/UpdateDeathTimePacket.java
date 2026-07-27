@@ -1,12 +1,9 @@
 package twilightforest.network;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
 
 public record UpdateDeathTimePacket(int entityID, int deathTime) implements CustomPacketPayload {
@@ -28,12 +25,5 @@ public record UpdateDeathTimePacket(int entityID, int deathTime) implements Cust
 		return TYPE;
 	}
 
-	public static void handle(UpdateDeathTimePacket message, IPayloadContext ctx) {
-		ctx.enqueueWork(() -> {
-			ClientLevel level = Minecraft.getInstance().level;
-			if (level != null && Minecraft.getInstance().level.getEntity(message.entityID) instanceof LivingEntity living) {
-                living.deathTime = message.deathTime();
-            }
-		});
-	}
+	// Client-side handler moved to UpdateDeathTimePacketClientHandler
 }

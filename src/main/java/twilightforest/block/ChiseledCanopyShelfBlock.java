@@ -22,12 +22,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 import twilightforest.block.entity.bookshelf.ChiseledCanopyShelfBlockEntity;
 import twilightforest.init.TFBlockEntities;
 import twilightforest.init.TFSounds;
 import twilightforest.network.ParticlePacket;
+import twilightforest.network.PacketDistributor;
 
 public class ChiseledCanopyShelfBlock extends ChiseledBookShelfBlock {
 	public static final BooleanProperty SPAWNER = BooleanProperty.create("spawner");
@@ -49,20 +49,6 @@ public class ChiseledCanopyShelfBlock extends ChiseledBookShelfBlock {
 	}
 
 	@Override
-	public boolean onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction face, @Nullable LivingEntity igniter) {
-		if (level.getBlockState(pos).getValue(SPAWNER) && level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof ChiseledCanopyShelfBlockEntity shelf) {
-			for (int i = 0; i < ChiseledCanopyShelfBlock.SLOT_OCCUPIED_PROPERTIES.size(); i++) {
-				BooleanProperty property = ChiseledCanopyShelfBlock.SLOT_OCCUPIED_PROPERTIES.get(i);
-				if (state.hasProperty(property) && state.getValue(property)) {
-					shelf.getSpawner().attemptSpawnTome(i, serverLevel, pos, true, igniter, 5);
-				}
-			}
-			return level.destroyBlock(pos, false);
-		}
-		return super.onCaughtFire(state, level, pos, face, igniter);
-	}
-
-	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
 		//always allow spawn eggs to be clicked so spawns can be set
 		if (level.getBlockEntity(pos) instanceof ChiseledCanopyShelfBlockEntity shelf && stack.getItem() instanceof SpawnEggItem) {
@@ -70,7 +56,7 @@ public class ChiseledCanopyShelfBlock extends ChiseledBookShelfBlock {
 			if (shelf.isEmpty()) {
 				return InteractionResult.CONSUME;
 			}
-			level.playSound(null, pos, TFSounds.BOOKSHELF_CONVERTS.get(), SoundSource.BLOCKS, 0.35F, 0.6F + level.getRandom().nextFloat() * 0.4F);
+			level.playSound(null, pos, TFSounds.BOOKSHELF_CONVERTS, SoundSource.BLOCKS, 0.35F, 0.6F + level.getRandom().nextFloat() * 0.4F);
 			return InteractionResult.SUCCESS;
 		}
 		if (state.getValue(SPAWNER)) return InteractionResult.FAIL;
@@ -86,7 +72,7 @@ public class ChiseledCanopyShelfBlock extends ChiseledBookShelfBlock {
 	@Override
 	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
 		if (level instanceof ServerLevel serverLevel && state.getValue(SPAWNER)) {
-			level.playSound(null, pos, TFSounds.DEATH_TOME_DEATH.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+			level.playSound(null, pos, TFSounds.DEATH_TOME_DEATH, SoundSource.BLOCKS, 1.0F, 1.0F);
 			ParticlePacket particlePacket = new ParticlePacket();
 			for (int i = 0; i < 20; ++i) {
 				particlePacket.queueParticle(ParticleTypes.POOF,
@@ -108,6 +94,6 @@ public class ChiseledCanopyShelfBlock extends ChiseledBookShelfBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TFBlockEntities.CHISELED_CANOPY_BOOKSHELF.get(), ChiseledCanopyShelfBlockEntity::tick);
+		return createTickerHelper(type, TFBlockEntities.CHISELED_CANOPY_BOOKSHELF, ChiseledCanopyShelfBlockEntity::tick);
 	}
 }

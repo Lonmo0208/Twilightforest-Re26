@@ -60,9 +60,9 @@ public class ThornsBlock extends ConnectableRotatedPillarBlock implements Simple
 	@Override
 	public boolean canConnectTo(Direction.Axis thisAxis, Direction facing, BlockState facingState, boolean solidSide) {
 		return (facingState.getBlock() instanceof ThornsBlock
-			|| facingState.getBlock().equals(TFBlocks.THORN_ROSE.get())
-			|| facingState.getBlock().equals(TFBlocks.THORN_LEAVES.get())
-			|| facingState.getBlock().equals(TFBlocks.WEATHERED_DEADROCK.get()));
+			|| facingState.getBlock().equals(TFBlocks.THORN_ROSE)
+			|| facingState.getBlock().equals(TFBlocks.THORN_LEAVES)
+			|| facingState.getBlock().equals(TFBlocks.WEATHERED_DEADROCK));
 	}
 
 	@Override
@@ -77,12 +77,6 @@ public class ThornsBlock extends ConnectableRotatedPillarBlock implements Simple
 		if (state.getValue(EAST)) shape = Shapes.or(shape, EAST_SHAPE);
 
 		return shape;
-	}
-
-	@Nullable
-	@Override
-	public PathType getBlockPathType(BlockState state, BlockGetter getter, BlockPos pos, @Nullable Mob entity) {
-		return PathType.DAMAGING;
 	}
 
 	@Override
@@ -101,18 +95,7 @@ public class ThornsBlock extends ConnectableRotatedPillarBlock implements Simple
 		super.stepOn(level, pos, state, entity);
 	}
 
-	@Override
-	public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, ItemStack toolStack, boolean willHarvest, FluidState fluid) {
-		if (!player.isCreative()) {
-			if (!level.isClientSide()) {
-				// grow more
-				this.doThornBurst(level, pos, state);
-			}
-			return false;
-		} else {
-			return super.onDestroyedByPlayer(state, level, pos, player, toolStack, willHarvest, fluid);
-		}
-	}
+
 
 	/**
 	 * Grow thorns out of both the ends, then maybe in another direction too
@@ -149,7 +132,7 @@ public class ThornsBlock extends ConnectableRotatedPillarBlock implements Simple
 			BlockPos dPos = pos.relative(dir, i);
 
 			if (level.isEmptyBlock(dPos)) {
-				level.setBlock(dPos, TFBlocks.GREEN_THORNS.get().defaultBlockState().setValue(AXIS, dir.getAxis()), Block.UPDATE_CLIENTS);
+				level.setBlock(dPos, TFBlocks.GREEN_THORNS.defaultBlockState().setValue(AXIS, dir.getAxis()), Block.UPDATE_CLIENTS);
 			} else {
 				break;
 			}
