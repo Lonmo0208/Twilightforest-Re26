@@ -4,7 +4,8 @@
   "package": "twilightforest.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ClientLevelMixin"
+    "ClientLevelMixin",
+    "EntityRenderDispatcherMixin"
   ],
   "injectors": {
     "defaultRequire": 1

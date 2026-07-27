@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.relocation.SimpleRelocator
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import net.neoforged.moddevgradle.internal.RunGameTask
@@ -26,24 +25,10 @@ plugins {
 	// Version List: https://projects.neoforged.net/neoforged/ModDevGradle
 	id 'net.neoforged.moddev' version "${mdg_version}"
 	id "com.dorongold.task-tree" version "4.0.1"
-	id 'com.gradleup.shadow' version "${shadowjar_version}"
+	id 'com.gradleup.shadow' version '9.4.1'
 }
 
 apply plugin: 'tamaized.beanification'
-
-repositories {
-	gradlePluginPortal()
-}
-
-dependencies { // Forces intellij to grab sources for the gradle build script
-	compileOnly "com.gradleup.shadow:shadow-gradle-plugin:${shadowjar_version}"
-	compileOnly "net.neoforged.moddev:net.neoforged.moddev.gradle.plugin:${mdg_version}"
-}
-
-wrapper {
-	gradleVersion = '9.1.0'
-	distributionType = Wrapper.DistributionType.ALL
-}
 
 configurations {
 	shade
@@ -53,8 +38,13 @@ shadowJar {
 	archiveClassifier.set('universal')
 	dependsOn(tasks.named("jar"))
 	configurations = [project.configurations.shade]
-	relocate(new SimpleRelocator('tamaized', 'twilightforest')) {
-		exclude 'twilightforest.**'
+	relocate 'tamaized.beanification', "${project.mod_id}.beanification"
+
+	// Include slim JAR content + explicitly preserve jarJar nested JAR
+	// (shadowJar strips META-INF/jarjar/ during default repackaging)
+	afterEvaluate {
+		from({ tasks.named("jar").get().outputs.files.filter { f -> !f.name.endsWith('-slim.jar') } })
+		from({ zipTree(tasks.named("jar").get().archiveFile.get().asFile).matching { include 'META-INF/jarjar/**' } })
 	}
 }
 
@@ -160,6 +150,7 @@ neoForge {
 		"${mod_id}-data" {
 			it.sourceSet this.sourceSets.main
 			it.sourceSet this.sourceSets.data
+			it.sourceSet this.sourceSets.test
 		}
 	}
 
@@ -169,8 +160,8 @@ neoForge {
 
 	unitTest {
 		enable()
-		testedMod = mainMod
-		loadedMods = [mainMod]
+		// For whatever reason, tests break if we dont combine all source sets, which the data source set does
+		testedMod = dataMod
 	}
 
 	runs {
@@ -354,7 +345,18 @@ processResources {
 	}
 	doLast {
 		lazyTree.get().each {
-			File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+			File file ->
+				if (file.length() == 0) {
+					println "Skipping empty file: ${file.path}"
+					return
+				}
+				try {
+					file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+				} catch (Exception e) {
+					println "Error processing JSON file: ${file.path}"
+					println "Error: ${e.message}"
+					throw e
+				}
 		}
 	}
 }
@@ -380,35 +382,13 @@ publishing {
 	publications {
 		create('mavenJava', MavenPublication) {
 			afterEvaluate {
-				artifact this.project.jar
+				artifact this.project.shadowJar
 				artifact this.project.sourceJar
 				artifact this.project.dataJar
 				artifact this.project.dataSourceJar
 			}
 			groupId 'team-twilight'
 			artifactId this.project.mod_id
-
-			def depsProvider = this.project.provider {
-				[
-					beanification_version: this.project.beanification_version
-				]
-			}
-
-			pom.withXml {
-				def dependenciesNode = asNode().appendNode('dependencies')
-
-				def addDep = { String group, String name, String version ->
-					def depNode = dependenciesNode.appendNode('dependency')
-					depNode.appendNode('groupId', group)
-					depNode.appendNode('artifactId', name)
-					depNode.appendNode('version', version)
-					depNode.appendNode('scope', 'compile')
-				}
-
-				def deps = depsProvider.get()
-
-				addDep('tamaized', 'beanification', deps.beanification_version)
-			}
 		}
 	}
 	repositories {
