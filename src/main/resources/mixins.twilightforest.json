@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "ClientLevelMixin",
+    "EntityRenderDispatcherMixin",
     "MixinClientModLoader",
     "MixinWindow",
     "SulfurCubeRendererMixin"
