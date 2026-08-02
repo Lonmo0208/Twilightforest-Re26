@@ -10,6 +10,8 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tamaized.beanification.BeanContext;
@@ -101,7 +103,11 @@ public final class TwilightForestMod {
 
 		//TODO: Port compat modules
 		if (ModList.get().isLoaded("curios")) loadCuriosCompat(bus);
-		//if (ModList.get().isLoaded("cosmeticarmorreworked")) NeoForge.EVENT_BUS.addListener(CosmeticArmorCompat::keepCosmeticArmor);
+
+		// Cache the overworld seed on the server thread so async chunk-generation threads (Moonrise)
+		// can read it without ServerLifecycleHooks.getCurrentServer() (thread-local, null on workers).
+		NeoForge.EVENT_BUS.addListener(ServerStartedEvent.class, event -> twilightforest.util.WorldUtil.cacheOverworldSeed(event.getServer()));
+		NeoForge.EVENT_BUS.addListener(ServerStoppedEvent.class, event -> twilightforest.util.WorldUtil.clearOverworldSeed());
 	}
 
 	private static void loadCuriosCompat(IEventBus bus) {
