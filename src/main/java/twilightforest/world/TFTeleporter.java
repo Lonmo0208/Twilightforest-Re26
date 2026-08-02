@@ -60,13 +60,27 @@ public class TFTeleporter {
 		if (transition != null)
 			return transition;
 
-		return new TeleportTransition(dest, Vec3.atCenterOf(dest.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos)), Vec3.ZERO, entity.getYRot(), entity.getXRot(), TeleportTransition.PLACE_PORTAL_TICKET);
+		// loadSurroundingArea() synchronously prepares the destination area, so createPosition()
+		// above should always have produced a portal. If it somehow still failed, defer and let
+		// PortalProcessor retry rather than teleporting the player without a portal.
+		LOGGER.info("Deferring portal transition for {}: no destination portal could be prepared", entity.getName().getString());
+		return null;
 	}
 
 	@Nullable
 	protected static TeleportTransition createPosition(ServerLevel dest, Entity entity, BlockPos destPos, TeleporterCache cache, boolean locked) {
+		// Ensure the destination area is generated first (synchronous 3x3 load, mirrors vanilla
+		// PortalForcer). Without this, moveToSafeCoords()'s getBiome()/getBlockState() calls would
+		// synchronously load chunks on the server thread and trip the Purpur Watchdog (issue #4).
+		if (!loadSurroundingArea(dest, Vec3.atCenterOf(destPos))) {
+			return null;
+		}
+
 		Vec3 safePos = moveToSafeCoords(dest, entity, destPos);
 		BlockPos portalPos = makePortal(cache, entity, dest, safePos, locked);
+		if (portalPos == null) {
+			return null;
+		}
 		return placeInExistingPortal(cache, dest, entity, portalPos);
 	}
 
@@ -83,7 +97,10 @@ public class TFTeleporter {
 			flag = false;
 			// Validate that the Portal still exists
 			LOGGER.debug("Using cache, validating. {}", blockpos);
-			if (blockpos == null || !destDim.getBlockState(blockpos).is(TFBlocks.TWILIGHT_PORTAL)) {
+			// Don't call getBlockState() on a chunk that isn't loaded: it would synchronously
+			// force-load an arbitrary (possibly distant) chunk on the server thread. A cached
+			// portal in an unloaded chunk is treated as invalid so it gets recreated nearby.
+			if (blockpos == null || !isChunkReady(destDim, ChunkPos.containing(blockpos)) || !destDim.getBlockState(blockpos).is(TFBlocks.TWILIGHT_PORTAL)) {
 				// Portal was broken, we need to recreate it.
 				LOGGER.debug("Portal Invalid, recreating.");
 				blockpos = null;
@@ -186,9 +203,16 @@ public class TFTeleporter {
 
 	private static int getScanHeight(ServerLevel world, int x, int z) {
 		int worldHeight = world.getMaxY() - 1;
+		// Use getChunkNow: getChunk() synchronously generates the chunk, and findPortalCoords()
+		// calls this per-column (up to 1024x), blocking the server thread for a very long time
+		// on Moonrise/Purpur where a single stuck generation task hangs syncLoad forever.
+		LevelChunk chunk = world.getChunkSource().getChunkNow(x >> 4, z >> 4);
+		if (chunk == null) {
+			return worldHeight;
+		}
 		//FIXME find an alternative to getHighestSectionPosition, its marked for removal
 		@SuppressWarnings("removal")
-		int chunkHeight = world.getChunk(x >> 4, z >> 4).getHighestSectionPosition() + 15;
+		int chunkHeight = chunk.getHighestSectionPosition() + 15;
 		return Math.min(worldHeight, chunkHeight);
 	}
 
@@ -277,6 +301,16 @@ public class TFTeleporter {
 	}
 
 	public static boolean isSafeAround(Level world, BlockPos pos, Entity entity, boolean checkProgression) {
+		// Never claim safety for chunks that aren't loaded: the biome lookup below would
+		// synchronously force-load an arbitrary distant chunk (Purpur Watchdog). The biome-safety
+		// scan then naturally confines itself to the already-loaded destination area.
+		if (world instanceof ServerLevel serverLevel) {
+			LevelChunk chunk = serverLevel.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
+			if (chunk == null || chunk.getFullStatus() == FullChunkStatus.INACCESSIBLE) {
+				return false;
+			}
+		}
+
 		if (isUnsafe(world, pos, entity, checkProgression)) {
 			return false;
 		}
@@ -316,7 +350,13 @@ public class TFTeleporter {
 			.map(HolderSet.ListBacked::iterator)
 			.orElse(Collections.emptyIterator());
 
-		LevelChunk chunkAt = destLevel.getChunkAt(pos);
+		// Use getChunkNow instead of getChunkAt: the latter synchronously loads the chunk and can
+		// block the server thread indefinitely if the chunk system is unhealthy (Moonrise), which
+		// caused a Watchdog timeout (GitHub issue #4). Missing chunks are treated as safe.
+		LevelChunk chunkAt = destLevel.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
+		if (chunkAt == null) {
+			return false;
+		}
 
 		while (landmarksInChunk.hasNext()) {
 			Holder<Structure> structureHolder = landmarksInChunk.next();
@@ -329,14 +369,26 @@ public class TFTeleporter {
 	}
 
 	private static boolean biomeUnsafe(Level world, BlockPos pos, Entity entity) {
+		// Don't force-load a distant chunk just to check its biome: getBiome() would synchronously
+		// generate it on the server thread (Purpur Watchdog). Unloaded chunks count as safe, and
+		// isSafeAround() separately rejects unloaded positions so the safety scan stays local.
+		if (world instanceof ServerLevel serverLevel) {
+			LevelChunk chunk = serverLevel.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
+			if (chunk == null || chunk.getFullStatus() == FullChunkStatus.INACCESSIBLE) {
+				return false;
+			}
+		}
 		return !Restriction.isBiomeSafeFor(world.getBiome(pos).value(), entity);
 	}
 
 	protected static BlockPos makePortal(TeleporterCache cache, Entity entity, ServerLevel world, Vec3 pos, boolean locked) {
 		ServerLevel src = entity.level() instanceof ServerLevel serverLevel ? serverLevel : null;
 
-		// ensure area is populated first
-		loadSurroundingArea(world, pos);
+		// ensure area is populated first - non-blocking; if chunks aren't ready yet, defer to next tick
+		if (!loadSurroundingArea(world, pos)) {
+			LOGGER.debug("Surrounding chunks not ready yet, deferring portal creation for {}", entity.getName().getString());
+			return null;
+		}
 
 		BlockPos spot = findPortalCoords(world, pos, blockPos -> isPortalAt(world, blockPos));
 		String name = entity.getName().getString();
@@ -391,16 +443,74 @@ public class TFTeleporter {
 		return spot;
 	}
 
-	protected static void loadSurroundingArea(ServerLevel world, Vec3 pos) {
+	/**
+	 * Ensures the destination area is generated so the portal can be placed and scanned.
+	 * <p>
+	 * The 3x3 chunk area around {@code pos} is loaded synchronously, mirroring what vanilla
+	 * {@code PortalForcer} does for nether portals: on Moonrise/Purpur this blocks the server
+	 * thread until generation completes, but generation runs on the worker threads and finishes
+	 * in a bounded time (typically a few hundred ms to a couple of seconds). The previous
+	 * "one chunk per tick" approach was catastrophic because vanilla applies a 300-tick portal
+	 * cooldown whenever {@code getPortalDestination} returns {@code null}, so every deferred
+	 * attempt cost ~15 seconds of waiting — teleports took minutes or never completed.
+	 * <p>
+	 * The surrounding 5x5 ring is only requested via background tickets: missing chunks there
+	 * are treated as safe by the (now non-blocking) biome/structure scans.
+	 *
+	 * @return {@code true} if the core area is ready (or {@code false} only on a generation failure)
+	 */
+	protected static boolean loadSurroundingArea(ServerLevel world, Vec3 pos) {
 
 		int x = Mth.floor(pos.x()) >> 4;
-		int z = Mth.floor(pos.y()) >> 4;
+		int z = Mth.floor(pos.z()) >> 4;
 
+		int missing = 0;
+		try {
+			for (int dx = -1; dx <= 1; dx++) {
+				for (int dz = -1; dz <= 1; dz++) {
+					ChunkPos chunkPos = new ChunkPos(x + dx, z + dz);
+					if (!isChunkReady(world, chunkPos)) {
+						missing++;
+						world.getChunk(chunkPos.x(), chunkPos.z());
+					}
+				}
+			}
+		} catch (Exception e) {
+			// A failing generation task (e.g. a mod conflict) must not crash the server tick;
+			// defer the transition so PortalProcessor retries with the portal cooldown instead.
+			LOGGER.error("Failed to load portal destination area around {} in {}; deferring transition", pos, world.dimension().identifier(), e);
+			return false;
+		}
+
+		if (missing > 0) {
+			LOGGER.info("Loaded {} chunk(s) for portal destination at ({}, {}) in {}", missing, x * 16, z * 16, world.dimension().identifier());
+		}
+
+		// Kick background generation for the outer ring (non-blocking; used only by scans that
+		// treat missing chunks as safe).
 		for (int dx = -2; dx <= 2; dx++) {
 			for (int dz = -2; dz <= 2; dz++) {
-				world.getChunk(x + dx, z + dz);
+				if (Math.abs(dx) <= 1 && Math.abs(dz) <= 1) {
+					continue;
+				}
+				ChunkPos chunkPos = new ChunkPos(x + dx, z + dz);
+				if (!isChunkReady(world, chunkPos)) {
+					world.getChunkSource().addTicketWithRadius(TicketType.PORTAL, chunkPos, 2);
+				}
 			}
 		}
+
+		return true;
+	}
+
+	/**
+	 * A chunk is "ready" once it is present in the cache AND has advanced past the INACCESSIBLE
+	 * status; an INACCESSIBLE chunk would still trigger a synchronous load on the next
+	 * getBiome/getBlockState call.
+	 */
+	private static boolean isChunkReady(ServerLevel world, ChunkPos chunkPos) {
+		LevelChunk chunk = world.getChunkSource().getChunkNow(chunkPos.x(), chunkPos.z());
+		return chunk != null && chunk.getFullStatus() != FullChunkStatus.INACCESSIBLE;
 	}
 
 	@Nullable
@@ -499,6 +609,7 @@ public class TFTeleporter {
 	}
 
 	protected static BlockPos makePortalAt(Level world, BlockPos pos, boolean locked) {
+		LOGGER.info("Placing Twilight portal at {} in {}", pos, world.dimension().identifier());
 		// grass all around it
 		BlockState grass = Blocks.GRASS_BLOCK.defaultBlockState();
 
