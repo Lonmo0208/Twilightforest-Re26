@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
+import twilightforest.TwilightForestMod;
 import twilightforest.init.TFDimensionData;
 import twilightforest.util.landmarks.LegacyLandmarkPlacements;
 import twilightforest.world.components.structures.placements.LandmarkGridPlacement;
@@ -38,8 +40,49 @@ public final class WorldUtil {
 	private WorldUtil() {
 	}
 
+	/**
+	 * Cached overworld seed. {@link ServerLifecycleHooks#getCurrentServer()} is thread-local and only
+	 * bound on the server thread; with Paper/Moonrise chunk engines, structure generation
+	 * ({@code minecraft:structure_starts}) runs on worker threads where it returns {@code null},
+	 * which crashed with an NPE (see GitHub issue #3). The seed is captured on the server thread
+	 * during {@code ServerStartedEvent} and read from this cache on worker threads.
+	 */
+	private static volatile Long overworldSeedCache = null;
+
 	public static long getOverworldSeed() {
-		return Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer()).overworld().getSeed();
+		Long cached = overworldSeedCache;
+		if (cached != null) {
+			return cached;
+		}
+
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		if (server != null && server.overworld() != null) {
+			long seed = server.overworld().getSeed();
+			overworldSeedCache = seed;
+			return seed;
+		}
+
+		// Should only happen before the server has fully started (e.g. datagen), where no world
+		// generation takes place; never crash the chunk system over a seed we cannot obtain.
+		TwilightForestMod.LOGGER.error("[TF-WorldUtil] getOverworldSeed() called without a cached seed and without a thread-bound server; returning 0!", new Throwable());
+		return 0;
+	}
+
+	/**
+	 * Invoked from {@code ServerStartedEvent} on the server thread so that async chunk-generation
+	 * threads can read the overworld seed without touching the thread-local server reference.
+	 */
+	public static void cacheOverworldSeed(MinecraftServer server) {
+		if (server != null && server.overworld() != null) {
+			overworldSeedCache = server.overworld().getSeed();
+		}
+	}
+
+	/**
+	 * Invoked from {@code ServerStoppedEvent} so a freshly loaded world (new seed) re-caches its own seed.
+	 */
+	public static void clearOverworldSeed() {
+		overworldSeedCache = null;
 	}
 
 	public static RegistryAccess getRegistryAccess() {
