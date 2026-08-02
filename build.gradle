@@ -149,10 +149,19 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${project.mod_id}" }
 	}
+	archiveFileName = "${project.mod_id}.re26-${project.minecraft_version}-${project.mod_version}-fabric.jar"
+}
+
+tasks.withType(Jar).configureEach { task ->
+	if (task.name == 'remapJar') {
+		task.archiveFileName = "${project.mod_id}.re26-${project.minecraft_version}-${project.mod_version}-fabric.jar"
+	}
 }
 
 sourcesJar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+	// sources jar 与主 jar 命名保持一致，追加 -sources
+	archiveFileName = "${project.mod_id}.re26-${project.minecraft_version}-${project.mod_version}-fabric-sources.jar"
 }
 
 publishing {
