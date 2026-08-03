@@ -5,6 +5,8 @@ import twilightforest.beanification.Component;
 @Component
 public class QuestingRamCurrentContext {
 
+	public static final QuestingRamCurrentContext SHARED = new QuestingRamCurrentContext();
+
 	private QuestingRamContext context = QuestingRamContext.FALLBACK;
 
 	public void setContext(QuestingRamContext context) {

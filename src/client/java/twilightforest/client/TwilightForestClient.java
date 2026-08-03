@@ -1,6 +1,7 @@
 package twilightforest.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
@@ -69,6 +70,7 @@ import twilightforest.network.*;
 import twilightforest.network.client.*;
 import twilightforest.network.UpdateTFMultipartPacket;
 import twilightforest.network.TFNetwork;
+import twilightforest.util.TFEntityExtensions;
 
 import java.util.Set;
 
@@ -89,6 +91,19 @@ public class TwilightForestClient implements ClientModInitializer {
 
 		// Register client-side packet handlers (payload types already registered in TwilightForestMod)
 		registerClientHandlers();
+
+		// Clear the client-side feather-fan flag when the player lands. Fabric attachments
+		// are not synced when they change, so the client must maintain this flag locally to
+		// prevent the Peacock Feather Fan from granting an unlimited mid-air jump.
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			if (client.player != null) {
+				var player = client.player;
+				if (((TFEntityExtensions) player).getData(() -> TFDataAttachments.FEATHER_FAN)
+					&& (player.onGround() || player.isSwimming() || player.isInWater())) {
+					((TFEntityExtensions) player).setData(() -> TFDataAttachments.FEATHER_FAN, false);
+				}
+			}
+		});
 	}
 
 	private void registerAtlases() {

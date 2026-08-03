@@ -43,8 +43,10 @@ import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.Nullable;
 import twilightforest.beanification.Autowired;
 import twilightforest.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
@@ -362,7 +364,16 @@ public class EntityEvents {
 		}
 	};
 
-	public static void gatherPotentialSpawns(StructureManager structureManager, MobCategory classification, BlockPos pos, Consumer<? super MobSpawnSettings.SpawnerData> consumer) {		ChunkPos chunkPos = ChunkPos.containing(pos);
+	/**
+	 * Returns the structure-controlled spawn list at the given position, or {@code null} when
+	 * no controlled-spawns structure applies. This is the Fabric equivalent of the NeoForge
+	 * PotentialSpawns event: NaturalSpawnerMixin calls this while the game picks the spawn
+	 * list so that mobs inside Twilight Forest structures (Tower, Lich Tower, Dark Tower, ...)
+	 * spawn from the structure's own list instead of the biome list.
+	 */
+	@Nullable
+	public static WeightedList<MobSpawnSettings.SpawnerData> getPotentialStructureSpawns(StructureManager structureManager, MobCategory classification, BlockPos pos) {
+		ChunkPos chunkPos = ChunkPos.containing(pos);
 		List<StructureStart> structureStarts;
 		synchronized (STRUCTURE_STARTS_CACHE) {
 			structureStarts = STRUCTURE_STARTS_CACHE.computeIfAbsent(ChunkPos.pack(chunkPos.x(), chunkPos.z()), k -> structureManager.startsForStructure(chunkPos, s -> s instanceof ControlledSpawns));
@@ -375,29 +386,29 @@ public class EntityEvents {
 					continue;
 
 				if (classification != MobCategory.MONSTER) {
-					landmark.getSpawnableList(classification)
-						.unwrap()
-						.forEach(weighted -> consumer.accept(weighted.value()));
-
-					return;
+					return landmark.getSpawnableList(classification);
 				}
 
 				if (start instanceof TFStructureStart s && s.isConquered())
-					return;
+					return null;
 
 				if (landmark instanceof ValidatedSpawnLocations validator && !validator.canSpawnMob(pos, start.getBoundingBox()))
-					return;
+					return null;
 
 				final int index = getSpawnListIndexAt(start, pos);
 				if (index < 0)
-					return;
+					return null;
 
-				landmark.getSpawnableMonsterList(index)
-					.unwrap()
-					.forEach(weighted -> consumer.accept(weighted.value()));
-
-				return;
+				return landmark.getSpawnableMonsterList(index);
 			}
+		}
+		return null;
+	}
+
+	public static void gatherPotentialSpawns(StructureManager structureManager, MobCategory classification, BlockPos pos, Consumer<? super MobSpawnSettings.SpawnerData> consumer) {
+		WeightedList<MobSpawnSettings.SpawnerData> structureSpawns = getPotentialStructureSpawns(structureManager, classification, pos);
+		if (structureSpawns != null) {
+			structureSpawns.unwrap().forEach(weighted -> consumer.accept(weighted.value()));
 		}
 	}
 

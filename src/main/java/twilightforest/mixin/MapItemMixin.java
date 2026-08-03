@@ -9,12 +9,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import twilightforest.item.mapdata.TFMagicMapData;
+import twilightforest.item.mapdata.TFMazeMapData;
 
 /**
  * Redirects {@link MapItem#getSavedData(MapId, Level)} to also look up TFMagicMapData
- * when the vanilla map data lookup returns null.
- * This is necessary because TFMagicMapData is stored under a custom key
- * (twilightforest:magicmap_&lt;id&gt;) instead of the vanilla key (map_&lt;id&gt;).
+ * and TFMazeMapData when the vanilla map data lookup returns null.
+ * This is necessary because TF maps are stored under custom keys
+ * (twilightforest:magicmap_&lt;id&gt; / twilightforest:mazemap_&lt;id&gt;) instead of the vanilla key (map_&lt;id&gt;).
  */
 @Mixin(MapItem.class)
 public class MapItemMixin {
@@ -30,6 +31,14 @@ public class MapItemMixin {
 			TFMagicMapData magicData = TFMagicMapData.getMagicMapData(level, id);
 			if (magicData != null) {
 				cir.setReturnValue(magicData);
+				return;
+			}
+			// Maze / ore maps are stored under a custom key (twilightforest:mazemap_<id>);
+			// without this lookup the client would render only the checkerboard background
+			// because the vanilla lookup cannot find the data.
+			TFMazeMapData mazeData = TFMazeMapData.getMazeMapData(level, id);
+			if (mazeData != null) {
+				cir.setReturnValue(mazeData);
 			}
 		}
 	}

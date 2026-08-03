@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class QuestReloadListener extends SimpleJsonResourceReloadListener<JsonElement> implements IdentifiableResourceReloadListener {
 
-	private static final QuestingRamCurrentContext questingRamCurrentContext = new QuestingRamCurrentContext();
+	private static final QuestingRamCurrentContext questingRamCurrentContext = QuestingRamCurrentContext.SHARED;
 
 	public QuestReloadListener() {
 		super(ExtraCodecs.JSON, FileToIdConverter.json("twilight/quests"));

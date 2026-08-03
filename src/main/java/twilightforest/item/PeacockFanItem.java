@@ -78,6 +78,12 @@ public class PeacockFanItem extends Item {
 			}
 			// jump if the player is in the air
 			if (flag) {
+				// Mark the fan used locally on the client so the mid-air jump cannot be
+				// spammed every tick. Fabric attachments do NOT sync changes automatically
+				// (unlike NeoForge), so without this the client would never see the flag
+				// the server sets, allowing infinite flight. The flag is cleared on the
+				// client when the player lands (see TwilightForestClient tick handler).
+				((TFEntityExtensions) player).setData(() -> TFDataAttachments.FEATHER_FAN, true);
 				player.setDeltaMovement(new Vec3(
 					player.getDeltaMovement().x() * 1.05F,
 					1.5F,

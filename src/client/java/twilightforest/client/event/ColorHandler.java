@@ -426,60 +426,63 @@ public class ColorHandler {
 		}), TFBlocks.TOWERWOOD, TFBlocks.CRACKED_TOWERWOOD, TFBlocks.INFESTED_TOWERWOOD, TFBlocks.MOSSY_TOWERWOOD);
 
 		// --- Castle rune bricks and doors ---
+		// Note: the ARGB tint must keep an opaque alpha (0xFF000000), otherwise
+		// ModelBlockRenderer.multiplyColor() would multiply by a zero alpha and
+		// render the rune layer fully transparent.
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
-				return 0xFF00FF;
+				return 0xFFFF00FF;
 			}
 
 			@Override
 			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-				return castleDoorColor(0xFF00FF, state);
+				return castleDoorColor(0xFFFF00FF, state);
 			}
 		}), TFBlocks.PINK_CASTLE_RUNE_BRICK, TFBlocks.PINK_CASTLE_DOOR);
 
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
-				return 0x00FFFF;
+				return 0xFF00FFFF;
 			}
 
 			@Override
 			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-				return castleDoorColor(0x00FFFF, state);
+				return castleDoorColor(0xFF00FFFF, state);
 			}
 		}), TFBlocks.BLUE_CASTLE_RUNE_BRICK, TFBlocks.BLUE_CASTLE_DOOR);
 
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
-				return 0xFFFF00;
+				return 0xFFFFFF00;
 			}
 
 			@Override
 			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-				return castleDoorColor(0xFFFF00, state);
+				return castleDoorColor(0xFFFFFF00, state);
 			}
 		}), TFBlocks.YELLOW_CASTLE_RUNE_BRICK, TFBlocks.YELLOW_CASTLE_DOOR);
 
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
-				return 0x4B0082;
+				return 0xFF4B0082;
 			}
 
 			@Override
 			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-				return castleDoorColor(0x4B0082, state);
+				return castleDoorColor(0xFF4B0082, state);
 			}
 		}), TFBlocks.VIOLET_CASTLE_RUNE_BRICK, TFBlocks.VIOLET_CASTLE_DOOR);
 
 		// --- Force fields ---
-		BlockColorRegistry.register(List.of(simpleTint(0x5C1074)), TFBlocks.VIOLET_FORCE_FIELD);
-		BlockColorRegistry.register(List.of(simpleTint(0xFA057E)), TFBlocks.PINK_FORCE_FIELD);
-		BlockColorRegistry.register(List.of(simpleTint(0xFF5B02)), TFBlocks.ORANGE_FORCE_FIELD);
-		BlockColorRegistry.register(List.of(simpleTint(0x89E701)), TFBlocks.GREEN_FORCE_FIELD);
-		BlockColorRegistry.register(List.of(simpleTint(0x0DDEFF)), TFBlocks.BLUE_FORCE_FIELD);
+		BlockColorRegistry.register(List.of(simpleTint(0xFF5C1074)), TFBlocks.VIOLET_FORCE_FIELD);
+		BlockColorRegistry.register(List.of(simpleTint(0xFFFA057E)), TFBlocks.PINK_FORCE_FIELD);
+		BlockColorRegistry.register(List.of(simpleTint(0xFFFF5B02)), TFBlocks.ORANGE_FORCE_FIELD);
+		BlockColorRegistry.register(List.of(simpleTint(0xFF89E701)), TFBlocks.GREEN_FORCE_FIELD);
+		BlockColorRegistry.register(List.of(simpleTint(0xFF0DDEFF)), TFBlocks.BLUE_FORCE_FIELD);
 
 		// --- Miniature structure blocks ---
 		BlockColorRegistry.register(List.of(grassTintSource),

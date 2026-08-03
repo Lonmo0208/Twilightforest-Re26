@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import twilightforest.TwilightForestMod;
 import twilightforest.asmhooks.WorldgenHooks;
 import twilightforest.world.components.structures.CustomDensitySource;
 
@@ -27,9 +26,6 @@ public class BeardifierMixin {
 	@Unique
 	private static final Map<Beardifier, ObjectList<DensityFunction>> CUSTOM_DENSITIES = Collections.synchronizedMap(new WeakHashMap<>());
 
-	@Unique
-	private static int debugCounter = 0;
-
 	@Inject(method = "forStructuresInChunk", at = @At("RETURN"), cancellable = true)
 	private static void tf$addPieceBeardifierModifiers(StructureManager structureManager, ChunkPos chunkPos, CallbackInfoReturnable<Beardifier> cir) {
 		Beardifier original = cir.getReturnValue();
@@ -39,10 +35,6 @@ public class BeardifierMixin {
 			if (start.getStructure() instanceof CustomDensitySource customDensitySource) {
 				DensityFunction terraformer = customDensitySource.getStructureTerraformer(chunkPos, start);
 				customDensities.add(terraformer);
-				if (debugCounter++ % 100 == 0) {
-					TwilightForestMod.LOGGER.info("TF-BeardifierMixin: Added custom density from {} for chunk ({},{})",
-						start.getStructure().getClass().getSimpleName(), chunkPos.x(), chunkPos.z());
-				}
 			}
 		}
 
@@ -63,10 +55,6 @@ public class BeardifierMixin {
 			double added = 0;
 			for (int i = 0; i < densities.size(); i++) {
 				added += densities.get(i).compute(context);
-			}
-			if (debugCounter++ % 100 == 0) {
-				TwilightForestMod.LOGGER.info("TF-BeardifierMixin: Custom density applied: original={}, added={}, result={}",
-					original, added, original + added);
 			}
 			cir.setReturnValue(original + added);
 		}

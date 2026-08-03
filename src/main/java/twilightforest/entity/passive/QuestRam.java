@@ -50,8 +50,7 @@ import java.util.Optional;
 
 public class QuestRam extends Animal implements EnforcedHomePoint {
 
-	@Autowired
-	private static QuestingRamCurrentContext questingRamCurrentContext;
+	private static final QuestingRamCurrentContext questingRamCurrentContext = QuestingRamCurrentContext.SHARED;
 
 	private static final EntityDataAccessor<Integer> DATA_COLOR = SynchedEntityData.defineId(QuestRam.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> DATA_REWARDED = SynchedEntityData.defineId(QuestRam.class, EntityDataSerializers.BOOLEAN);

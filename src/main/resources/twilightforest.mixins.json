@@ -19,6 +19,7 @@
 		"MapItemMixin",
 		"MapItemSavedDataMixin",
 		"MobMixin",
+		"NaturalSpawnerMixin",
 		"ProjectileUtilMixin",
 		"ServerEntityMixin",
 		"ServerLevelMixin",
