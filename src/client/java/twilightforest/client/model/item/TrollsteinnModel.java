@@ -22,7 +22,7 @@ import twilightforest.TwilightForestMod;
 import twilightforest.block.TrollsteinnBlock;
 
 public class TrollsteinnModel implements ItemModel {
-	public static final Identifier LIT_TROLLSTEINN = TwilightForestMod.prefix("item/trollsteinn_light");
+	public static final Identifier LIT_TROLLSTEINN = TwilightForestMod.prefix("items/trollsteinn_light");
 	public static final ModelDebugName DEBUG_NAME = () -> "TrollsteinnModel";
 
 	private final ItemModel baseModel;

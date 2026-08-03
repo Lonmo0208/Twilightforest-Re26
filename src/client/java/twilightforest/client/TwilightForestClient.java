@@ -48,6 +48,7 @@ import twilightforest.client.model.block.connected.ConnectedTextureBlockStateMod
 import twilightforest.client.model.block.forcefield.ForceFieldModelLoader;
 import twilightforest.client.model.block.forcefield.UnbakedForceFieldBlockStateModel;
 import twilightforest.client.model.block.giantblock.UnbakedGiantBlockStateModel;
+import twilightforest.client.model.block.patch.PatchModelLoader;
 import twilightforest.client.model.block.patch.UnbakedPatchBlockStateModel;
 import twilightforest.client.model.entity.*;
 import twilightforest.client.model.item.TravellersGearItemModel;
@@ -123,6 +124,7 @@ public class TwilightForestClient implements ClientModInitializer {
 
 		// UnbakedModel deserializers (Fabric equivalent of NeoForge's ModelEvent.RegisterLoaders)
 		UnbakedModelDeserializer.register(TwilightForestMod.prefix("force_field"), (json, context) -> ForceFieldModelLoader.INSTANCE.read(json, context));
+		UnbakedModelDeserializer.register(TwilightForestMod.prefix("patch"), (json, context) -> PatchModelLoader.INSTANCE.read(json, context));
 
 		// CustomUnbakedBlockStateModel types (Fabric equivalent of NeoForge's RegisterBlockStateModels)
 		CustomUnbakedBlockStateModel.register(TwilightForestMod.prefix("noise_varying"), UnbakedNoiseVaryingBlockStateModel.MAP_CODEC);
