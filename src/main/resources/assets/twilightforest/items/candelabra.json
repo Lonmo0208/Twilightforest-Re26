@@ -8,7 +8,7 @@
       },
       {
         "type": "minecraft:special",
-        "base": "twilightforest:item/candelabra",
+        "base": "twilightforest:block/candelabra",
         "model": {
           "type": "twilightforest:block/candelabra"
         }

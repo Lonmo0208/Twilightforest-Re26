@@ -1,4 +1,4 @@
-{
+﻿{
   "type": "minecraft:block",
   "pools": [
     {
@@ -11,7 +11,7 @@
               "function": "minecraft:explosion_decay"
             }
           ],
-          "name": "twilightforest:firefly_particle_spawner"
+          "name": "twilightforest:firefly_spawner"
         }
       ],
       "rolls": 1.0
@@ -29,7 +29,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "twilightforest:firefly_particle_spawner",
+                      "block": "twilightforest:firefly_spawner",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "particle_radius": "1"
@@ -49,7 +49,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "twilightforest:firefly_particle_spawner",
+                      "block": "twilightforest:firefly_spawner",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "particle_radius": "2"
@@ -69,7 +69,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "twilightforest:firefly_particle_spawner",
+                      "block": "twilightforest:firefly_spawner",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "particle_radius": "3"
@@ -89,7 +89,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "twilightforest:firefly_particle_spawner",
+                      "block": "twilightforest:firefly_spawner",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "particle_radius": "4"
@@ -109,7 +109,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "twilightforest:firefly_particle_spawner",
+                      "block": "twilightforest:firefly_spawner",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "particle_radius": "5"
@@ -129,7 +129,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "twilightforest:firefly_particle_spawner",
+                      "block": "twilightforest:firefly_spawner",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "particle_radius": "6"
@@ -149,7 +149,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "twilightforest:firefly_particle_spawner",
+                      "block": "twilightforest:firefly_spawner",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "particle_radius": "7"
@@ -169,7 +169,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "twilightforest:firefly_particle_spawner",
+                      "block": "twilightforest:firefly_spawner",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "particle_radius": "8"
@@ -189,7 +189,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "twilightforest:firefly_particle_spawner",
+                      "block": "twilightforest:firefly_spawner",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "particle_radius": "9"
@@ -209,7 +209,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "twilightforest:firefly_particle_spawner",
+                      "block": "twilightforest:firefly_spawner",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "particle_radius": "10"
@@ -233,5 +233,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "twilightforest:blocks/firefly_particle_spawner"
+  "random_sequence": "twilightforest:blocks/firefly_spawner"
 }

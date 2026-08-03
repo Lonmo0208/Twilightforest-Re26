@@ -1,4 +1,4 @@
-{
+﻿{
   "type": "minecraft:block",
   "pools": [
     {
@@ -26,7 +26,7 @@
                   }
                 }
               ],
-              "name": "twilightforest:root"
+              "name": "twilightforest:root_block"
             },
             {
               "type": "minecraft:item",
@@ -52,5 +52,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "twilightforest:blocks/root"
+  "random_sequence": "twilightforest:blocks/root_block"
 }

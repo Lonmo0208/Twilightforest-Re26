@@ -1,8 +1,8 @@
-{
+﻿{
   "banister": "twilightforest:transformation_banister",
   "button": "twilightforest:transformation_button",
   "fence": "twilightforest:transformation_fence",
-  "gate": "twilightforest:transformation_fence_gate",
+  "gate": "twilightforest:transformation_gate",
   "planks": "twilightforest:transformation_planks",
   "plate": "twilightforest:transformation_pressure_plate",
   "slab": "twilightforest:transformation_slab",

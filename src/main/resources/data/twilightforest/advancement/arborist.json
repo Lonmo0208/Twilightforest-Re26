@@ -1,4 +1,4 @@
-{
+﻿{
   "parent": "twilightforest:root",
   "criteria": {
     "beanstalk_leaves": {
@@ -91,11 +91,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "canopy_fence_gate": {
+    "canopy_gate": {
       "conditions": {
         "items": [
           {
-            "items": "twilightforest:canopy_fence_gate"
+            "items": "twilightforest:canopy_gate"
           }
         ]
       },
@@ -311,11 +311,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "dark_fence_gate": {
+    "dark_gate": {
       "conditions": {
         "items": [
           {
-            "items": "twilightforest:dark_fence_gate"
+            "items": "twilightforest:dark_gate"
           }
         ]
       },
@@ -681,11 +681,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "mangrove_fence_gate": {
+    "mangrove_gate": {
       "conditions": {
         "items": [
           {
-            "items": "twilightforest:mangrove_fence_gate"
+            "items": "twilightforest:mangrove_gate"
           }
         ]
       },
@@ -891,11 +891,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "mining_fence_gate": {
+    "mining_gate": {
       "conditions": {
         "items": [
           {
-            "items": "twilightforest:mining_fence_gate"
+            "items": "twilightforest:mining_gate"
           }
         ]
       },
@@ -1141,11 +1141,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "sorting_fence_gate": {
+    "sorting_gate": {
       "conditions": {
         "items": [
           {
-            "items": "twilightforest:sorting_fence_gate"
+            "items": "twilightforest:sorting_gate"
           }
         ]
       },
@@ -1521,11 +1521,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "time_fence_gate": {
+    "time_gate": {
       "conditions": {
         "items": [
           {
-            "items": "twilightforest:time_fence_gate"
+            "items": "twilightforest:time_gate"
           }
         ]
       },
@@ -1731,11 +1731,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "transformation_fence_gate": {
+    "transformation_gate": {
       "conditions": {
         "items": [
           {
-            "items": "twilightforest:transformation_fence_gate"
+            "items": "twilightforest:transformation_gate"
           }
         ]
       },
@@ -1931,11 +1931,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "twilight_oak_fence_gate": {
+    "twilight_oak_gate": {
       "conditions": {
         "items": [
           {
-            "items": "twilightforest:twilight_oak_fence_gate"
+            "items": "twilightforest:twilight_oak_gate"
           }
         ]
       },
@@ -2113,7 +2113,7 @@
       "twilight_oak_fence"
     ],
     [
-      "twilight_oak_fence_gate"
+      "twilight_oak_gate"
     ],
     [
       "twilight_oak_pressure_plate"
@@ -2182,7 +2182,7 @@
       "canopy_fence"
     ],
     [
-      "canopy_fence_gate"
+      "canopy_gate"
     ],
     [
       "canopy_pressure_plate"
@@ -2257,7 +2257,7 @@
       "mangrove_fence"
     ],
     [
-      "mangrove_fence_gate"
+      "mangrove_gate"
     ],
     [
       "mangrove_pressure_plate"
@@ -2326,7 +2326,7 @@
       "dark_fence"
     ],
     [
-      "dark_fence_gate"
+      "dark_gate"
     ],
     [
       "dark_pressure_plate"
@@ -2395,7 +2395,7 @@
       "time_fence"
     ],
     [
-      "time_fence_gate"
+      "time_gate"
     ],
     [
       "time_pressure_plate"
@@ -2464,7 +2464,7 @@
       "transformation_fence"
     ],
     [
-      "transformation_fence_gate"
+      "transformation_gate"
     ],
     [
       "transformation_pressure_plate"
@@ -2533,7 +2533,7 @@
       "mining_fence"
     ],
     [
-      "mining_fence_gate"
+      "mining_gate"
     ],
     [
       "mining_pressure_plate"
@@ -2602,7 +2602,7 @@
       "sorting_fence"
     ],
     [
-      "sorting_fence_gate"
+      "sorting_gate"
     ],
     [
       "sorting_pressure_plate"

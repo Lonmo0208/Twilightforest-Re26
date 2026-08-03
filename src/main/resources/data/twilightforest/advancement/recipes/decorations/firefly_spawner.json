@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "twilightforest:firefly_particle_spawner"
+        "recipe": "twilightforest:firefly_spawner"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "twilightforest:firefly_particle_spawner"
+      "twilightforest:firefly_spawner"
     ]
   }
 }

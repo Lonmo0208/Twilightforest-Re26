@@ -1,8 +1,8 @@
-{
+﻿{
   "banister": "twilightforest:mining_banister",
   "button": "twilightforest:mining_button",
   "fence": "twilightforest:mining_fence",
-  "gate": "twilightforest:mining_fence_gate",
+  "gate": "twilightforest:mining_gate",
   "planks": "twilightforest:mining_planks",
   "plate": "twilightforest:mining_pressure_plate",
   "slab": "twilightforest:mining_slab",
