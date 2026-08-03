@@ -47,7 +47,7 @@ public class GiantToolGroupingModifier implements LootItemCondition {
 		if (context.getParameter(LootContextParams.THIS_ENTITY) instanceof Player player) {
 			if (!generatedLoot.isEmpty() && generatedLoot.getFirst().getItem() instanceof BlockItem block) {
 				if (CONVERSIONS.containsKey(block.getBlock())) {
-					var attachment = ((TFEntityExtensions) player).getData(() -> TFDataAttachments.GIANT_PICKAXE_MINING);
+					var attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.GIANT_PICKAXE_MINING);
 					int blockConversion = attachment.getGiantBlockConversion();
 					attachment.setGiantBlockConversion(blockConversion - 1);
 					if (blockConversion == 64)

@@ -38,10 +38,10 @@ public class HostileMountEvents {
 			event.setCanceled(true);
 		}
 
-		if (damageSource.is(DamageTypes.FALL) && ((TFEntityExtensions) living).getData(() -> TFDataAttachments.YETI_THROWING).getThrown()) {
+		if (damageSource.is(DamageTypes.FALL) && ((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.YETI_THROWING).getThrown()) {
 			float amount = event.getAmount();
 			event.setCanceled(true);
-			living.hurt(TFDamageTypes.getEntityDamageSource(living.level(), TFDamageTypes.YEETED, ((TFEntityExtensions) living).getData(() -> TFDataAttachments.YETI_THROWING).getThrower()), amount);
+			living.hurt(TFDamageTypes.getEntityDamageSource(living.level(), TFDamageTypes.YEETED, ((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.YETI_THROWING).getThrower()), amount);
 		}
 	}
 

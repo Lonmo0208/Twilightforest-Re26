@@ -20,8 +20,8 @@ public class MultipartEntityIteratorWrapperTests {
 	private Entity mockEntity(TFPart<?>... parts) {
 		Entity entity = mock(Entity.class, withSettings().extraInterfaces(TFEntityExtensions.class));
 		TFEntityExtensions ext = (TFEntityExtensions) entity;
-		when(ext.isMultipartEntity()).thenReturn(parts.length > 0);
-		when(ext.getParts()).thenReturn(parts);
+		when(ext.twilightforest$isMultipartEntity()).thenReturn(parts.length > 0);
+		when(ext.twilightforest$getParts()).thenReturn(parts);
 		return entity;
 	}
 

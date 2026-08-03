@@ -7,10 +7,10 @@
       "model": "twilightforest:block/yellow_castle_door_vanished"
     },
     "active=true,vanish=false": {
-      "model": "twilightforest:block/yellow_castle_door"
+      "model": "twilightforest:block/yellow_castle_door_active"
     },
     "active=true,vanish=true": {
-      "model": "twilightforest:block/yellow_castle_door_vanished"
+      "model": "twilightforest:block/yellow_castle_door_vanished_active"
     }
   }
 }

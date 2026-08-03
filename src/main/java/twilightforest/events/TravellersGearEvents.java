@@ -45,15 +45,14 @@ import twilightforest.network.ParticlePacket;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import twilightforest.network.PacketDistributor;
 import twilightforest.util.TFEntityExtensions;
 
 @Component
 public class TravellersGearEvents {
-	private static final List<Supplier<AttachmentType<?>>> ATTACHMENTS_TO_PRESERVE_ON_DEATH = List.of(
-		() -> TFDataAttachments.TRAVELLERS_GOGGLES_RED_THREAD_VISION
+	private static final List<AttachmentType<?>> ATTACHMENTS_TO_PRESERVE_ON_DEATH = List.of(
+		TFDataAttachments.TRAVELLERS_GOGGLES_RED_THREAD_VISION
 	);
 
 	@PostConstruct
@@ -139,13 +138,13 @@ public class TravellersGearEvents {
 		LivingEntity livingEntity = event.getEntity();
 		ItemStack boots = livingEntity.getItemBySlot(EquipmentSlot.FEET);
 		Float coefficient = boots.get(TFDataComponents.SLIMY_SOLES_COEFFICIENT);
-		SlimySolesAttachment slimySolesAttachment = ((TFEntityExtensions) livingEntity).getData(() -> TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO);
+		SlimySolesAttachment slimySolesAttachment = ((TFEntityExtensions) livingEntity).twilightforest$getData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO);
 		if (!livingEntity.isShiftKeyDown() && TravellersModifiersManager.isModifierActive(livingEntity, boots, TravellersModifiersManager.SLIMY_SOLES_MODIFIER) && coefficient != null && (calculateFallDamage(event) > 0 || slimySolesAttachment.forceBounce)) {
 			event.setCanceled(true);
 			slimySolesAttachment.bounceVelocity = -livingEntity.getDeltaMovement().y() * Math.sqrt(coefficient);
 			slimySolesAttachment.doubleJumpBoostVelocity = slimySolesAttachment.bounceVelocity;
 			slimySolesAttachment.hasBounced = false;
-			((TFEntityExtensions) livingEntity).setData(() -> TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, slimySolesAttachment);
+			((TFEntityExtensions) livingEntity).twilightforest$setData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, slimySolesAttachment);
 		}
 	}
 
@@ -159,10 +158,10 @@ public class TravellersGearEvents {
 
 	private void cancelSlimySolesJump(FabricEvents.LivingEvent.LivingJumpEvent event) {
 		LivingEntity livingEntity = event.getEntity();
-		SlimySolesAttachment slimySolesAttachment = ((TFEntityExtensions) livingEntity).getData(() -> TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO);
+		SlimySolesAttachment slimySolesAttachment = ((TFEntityExtensions) livingEntity).twilightforest$getData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO);
 		slimySolesAttachment.bounceVelocity = 0;
 		slimySolesAttachment.forceBounce = false;
-		((TFEntityExtensions) livingEntity).setData(() -> TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, slimySolesAttachment);
+		((TFEntityExtensions) livingEntity).twilightforest$setData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, slimySolesAttachment);
 	}
 
 	private void tickMovementModifiers(FabricEvents.PlayerTickEvent.Pre event) {
@@ -173,9 +172,9 @@ public class TravellersGearEvents {
 		else if (player.onGround() || player.isInLiquid() || player.onClimbable())
 			hasDoubleJump = true;
 
-		if (hasDoubleJump != null && hasDoubleJump != ((TFEntityExtensions) player).getData(() -> TFDataAttachments.HAS_DOUBLE_JUMP)) {
-			((TFEntityExtensions) player).setData(() -> TFDataAttachments.HAS_DOUBLE_JUMP, hasDoubleJump);
-			((TFEntityExtensions) player).setData(() -> TFDataAttachments.DOUBLE_JUMP_VALIDATOR, 0);
+		if (hasDoubleJump != null && hasDoubleJump != ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.HAS_DOUBLE_JUMP)) {
+			((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.HAS_DOUBLE_JUMP, hasDoubleJump);
+			((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.DOUBLE_JUMP_VALIDATOR, 0);
 			AttributeInstance instance = player.getAttribute(Attributes.SAFE_FALL_DISTANCE);
 			if (instance != null)
 				instance.removeModifier(TFAttributeModifiers.TRAVELLERS_DOUBLE_JUMP_SAFE_FALL_DISTANCE);
@@ -183,16 +182,16 @@ public class TravellersGearEvents {
 
 		if (!player.level().isClientSide()) {
 			boolean modifierActive = TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.GRADUAL_GLIDE_MODIFIER);
-			if (!modifierActive && ((TFEntityExtensions) player).getData(() -> TFDataAttachments.IS_GRADUALLY_GLIDING)) {
-				((TFEntityExtensions) player).setData(() -> TFDataAttachments.IS_GRADUALLY_GLIDING, false);
+			if (!modifierActive && ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.IS_GRADUALLY_GLIDING)) {
+				((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.IS_GRADUALLY_GLIDING, false);
 				PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new GradualGlidePacket(false, player.getUUID()));
 			}
 		}
 
 		//reset double jump wing anim if on the ground
 		if (event.getEntity().level().isClientSide()) {
-			if (((TFEntityExtensions) player).getData(() -> TFDataAttachments.TRAVELLERS_WINGS_ANIM).doubleJump && player.onGround()) {
-				((TFEntityExtensions) player).getData(() -> TFDataAttachments.TRAVELLERS_WINGS_ANIM).doubleJump = false;
+			if (((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TRAVELLERS_WINGS_ANIM).doubleJump && player.onGround()) {
+				((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TRAVELLERS_WINGS_ANIM).doubleJump = false;
 			}
 		}
 
@@ -279,7 +278,7 @@ public class TravellersGearEvents {
 	private void setLastDamageArmorTime(FabricEvents.ArmorHurtEvent event) {
 		if (Arrays.stream(EquipmentSlot.values()).noneMatch(slot -> event.getNewDamage(slot) > 0)) return;
 		LivingEntity entity = event.getEntity();
-		((TFEntityExtensions) entity).setData(() -> TFDataAttachments.LAST_DAMAGE_ARMOR_TIME, entity.level().getGameTime());
+		((TFEntityExtensions) entity).twilightforest$setData(TFDataAttachments.LAST_DAMAGE_ARMOR_TIME, entity.level().getGameTime());
 	}
 
 
@@ -371,15 +370,15 @@ public class TravellersGearEvents {
 
 	public void keepAttachmentsOnDeath(FabricEvents.PlayerEvent.Clone event) {
 		if (event.isWasDeath()) {
-			for (Supplier<AttachmentType<?>> attachmentHolder : ATTACHMENTS_TO_PRESERVE_ON_DEATH) {
-				copyAttachmentData(event.getOriginal(), event.getEntity(), attachmentHolder.get());
+			for (AttachmentType<?> attachmentHolder : ATTACHMENTS_TO_PRESERVE_ON_DEATH) {
+				copyAttachmentData(event.getOriginal(), event.getEntity(), attachmentHolder);
 			}
 		}
 	}
 
 	private <T> void copyAttachmentData(Player source, Player target, AttachmentType<T> type) {
-		if (((TFEntityExtensions) source).hasData(() -> type)) {
-			((TFEntityExtensions) target).setData(() -> type, ((TFEntityExtensions) source).getData(() -> type));
+		if (((TFEntityExtensions) source).twilightforest$hasData(type)) {
+			((TFEntityExtensions) target).twilightforest$setData(type, ((TFEntityExtensions) source).twilightforest$getData(type));
 		}
 	}
 }

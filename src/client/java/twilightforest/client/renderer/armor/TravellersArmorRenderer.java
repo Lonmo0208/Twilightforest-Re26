@@ -29,7 +29,7 @@ public class TravellersArmorRenderer extends TFArmorRenderer {
 	@Nullable
 	public Identifier getArmorTexture(ItemStack stack, EquipmentClientInfo.LayerType type, EquipmentClientInfo.Layer layer, Identifier def) {
 		LivingEntity entity = Minecraft.getInstance().player;
-		if (type != EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS && entity != null && ((TFEntityExtensions) entity).getData(() -> TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER)) {
+		if (type != EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS && entity != null && ((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER)) {
 			return TwilightForestMod.prefix("textures/models/armor/travellers_layer_1_down.png");
 		}
 		return def;

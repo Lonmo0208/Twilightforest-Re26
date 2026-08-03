@@ -1,3 +1,6 @@
 {
-  "parent": "twilightforest:block/castle_door_template"
+  "parent": "twilightforest:block/castle_door_template",
+  "textures": {
+    "all": "twilightforest:block/castle_door_vanished"
+  }
 }

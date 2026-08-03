@@ -5,31 +5,29 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.Supplier;
-
 /**
  * Interface for methods added to Entity via mixin.
  * Cast Entity to this interface to call these methods at compile time.
  */
 public interface TFEntityExtensions {
 
-	<T> T getData(Supplier<? extends AttachmentType<T>> type);
+	<T> T twilightforest$getData(AttachmentType<T> type);
 
-	<T> void setData(Supplier<? extends AttachmentType<T>> type, T value);
+	<T> void twilightforest$setData(AttachmentType<T> type, T value);
 
-	boolean hasData(Supplier<? extends AttachmentType<?>> type);
+	boolean twilightforest$hasData(AttachmentType<?> type);
 
-	void removeData(Supplier<? extends AttachmentType<?>> type);
+	void twilightforest$removeData(AttachmentType<?> type);
 
-	CompoundTag getPersistentData();
+	CompoundTag twilightforest$getPersistentData();
 
-	Entity[] getParts();
+	Entity[] twilightforest$getParts();
 
-	boolean isMultipartEntity();
+	boolean twilightforest$isMultipartEntity();
 
-	boolean canFitInsideContainerItems();
+	boolean twilightforest$canFitInsideContainerItems();
 
-	void breakItem(ItemStack stack);
+	void twilightforest$breakItem(ItemStack stack);
 
 	net.minecraft.world.entity.ai.goal.GoalSelector getGoalSelector();
 }

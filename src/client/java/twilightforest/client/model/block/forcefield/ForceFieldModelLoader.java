@@ -5,10 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.client.resources.model.cuboid.CuboidModelElement;
+import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.util.GsonHelper;
-// TODO: Port to Fabric - StandardModelParameters and UnbakedModelLoader are NeoForge-specific
-// import net.neoforged.neoforge.client.model.StandardModelParameters;
-// import net.neoforged.neoforge.client.model.UnbakedModelLoader;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.client.model.block.forcefield.ForceFieldModel.ExtraDirection;
 
@@ -46,9 +44,13 @@ public class ForceFieldModelLoader {
 			}
 		}
 
+		// Parse the texture map ("pane"/"particle") so baked materials can be resolved at bake time
+		TextureSlots.Data textureSlots = json.has("textures")
+			? TextureSlots.parseTextureMap(GsonHelper.getAsJsonObject(json, "textures"))
+			: TextureSlots.Data.EMPTY;
+
 		// TODO: Port to Fabric - StandardModelParameters.parse is NeoForge-specific
-		// return new UnbakedForceFieldModel(elementsAndConditions, StandardModelParameters.parse(json, context));
-		return new UnbakedForceFieldModel(elementsAndConditions);
+		return new UnbakedForceFieldModel(elementsAndConditions, textureSlots);
 	}
 
 	public record Condition(@Nullable ExtraDirection direction, boolean b, List<ExtraDirection> parents) {

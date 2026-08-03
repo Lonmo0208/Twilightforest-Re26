@@ -1,0 +1,6 @@
+{
+  "parent": "twilightforest:block/force_field_up",
+  "textures": {
+    "all": "twilightforest:block/green_force_field"
+  }
+}

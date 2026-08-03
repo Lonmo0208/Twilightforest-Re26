@@ -29,7 +29,7 @@ public record GiantPickUsedCondition(LootContext.EntityTarget target) implements
 	@Override
 	public boolean test(LootContext context) {
 		if (context.getOptionalParameter(this.target.contextParam()) instanceof Player player) {
-			var attachment = ((TFEntityExtensions) player).getData(() -> TFDataAttachments.GIANT_PICKAXE_MINING);
+			var attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.GIANT_PICKAXE_MINING);
 			return player.level().getGameTime() == attachment.getMining() && attachment.canMakeGiantBlock();
 		}
 		return false;

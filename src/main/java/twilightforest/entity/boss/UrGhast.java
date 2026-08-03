@@ -353,10 +353,23 @@ public class UrGhast extends BaseTFBoss {
 			this.getLogicalScanPoint(),
 			this.getHomeRadius(),
 			PoiManager.Occupancy.ANY);
-		return stream.map(PoiRecord::getPos)
+		List<BlockPos> positions = stream.map(PoiRecord::getPos)
 			.filter(trapPos -> level.canSeeSky(trapPos.above()))
 			.sorted(Comparator.comparingDouble(trapPos -> trapPos.distSqr(this.getLogicalScanPoint())))
 			.collect(Collectors.toList());
+		if (!positions.isEmpty())
+			return positions;
+		// POI 记录缺失时回退到直接扫描陷阱方块（参考 1.21.1 Fabric 移植版做法），确保陷阱位置一定能被找到
+		BlockPos center = this.getLogicalScanPoint();
+		for (BlockPos immutable : BlockPos.betweenClosed(center.offset(-48, -48, -48), center.offset(48, 48, 48))) {
+			if (level.getBlockState(immutable).is(TFBlocks.GHAST_TRAP) && level.canSeeSky(immutable.above())) {
+				positions.add(immutable.immutable());
+				if (positions.size() >= 16)
+					break;
+			}
+		}
+		positions.sort(Comparator.comparingDouble(pos -> pos.distSqr(center)));
+		return positions;
 	}
 
 	private void doTantrumDamageEffects() {

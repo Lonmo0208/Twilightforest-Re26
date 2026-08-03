@@ -51,7 +51,6 @@ public class DarkTowerStructure extends ControlledSpawningStructure {
 	public static DarkTowerStructure buildDarkTowerConfig(BootstrapContext<Structure> context) {
 		return new DarkTowerStructure(
 			ControlledSpawningConfig.create(List.of(WeightedList.<MobSpawnSettings.SpawnerData>builder()
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.CARMINITE_GOLEM.get(), 1, 2), 10)
 				.add(new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 1, 2), 10)
 				.add(new MobSpawnSettings.SpawnerData(EntityType.CREEPER, 1, 1), 5)
 				.add(new MobSpawnSettings.SpawnerData(EntityType.ENDERMAN, 1, 2), 2)

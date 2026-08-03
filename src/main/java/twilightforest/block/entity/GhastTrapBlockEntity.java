@@ -5,6 +5,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.level.Level;
@@ -17,6 +18,7 @@ import twilightforest.entity.boss.UrGhast;
 import twilightforest.entity.monster.CarminiteGhastling;
 import twilightforest.init.TFBlockEntities;
 import twilightforest.init.TFBlocks;
+import twilightforest.init.TFEntities;
 import twilightforest.init.TFParticleType;
 import twilightforest.init.TFSounds;
 
@@ -177,10 +179,52 @@ public class GhastTrapBlockEntity extends BlockEntity {
 
 			}
 
+			// 陷阱激活期间，在陷阱附近生成砷铅铁恶灵守卫（确保打暮初恶魂时陷阱房间内有坤铅铁恶灵）
+			if (te.counter % 20 == 0) {
+				te.spawnCarminiteGhastling((ServerLevel) level, pos);
+			}
+
 			if (te.counter >= 120) {
 				level.setBlockAndUpdate(pos, state.setValue(GhastTrapBlock.ACTIVE, false));
 				level.blockEvent(pos, state.getBlock(), GhastTrapBlock.DEACTIVATE_EVENT, 0);
 			}
 		}
+	}
+
+	/**
+	 * 在恶魂陷阱附近生成一只砷铅铁恶灵（陷阱 24 格内已有砷铅铁恶灵时不再生成）
+	 */
+	private void spawnCarminiteGhastling(ServerLevel level, BlockPos pos) {
+		AABB aabb = new AABB(pos).inflate(24D, 16D, 24D);
+		if (!level.getEntitiesOfClass(CarminiteGhastling.class, aabb).isEmpty())
+			return;
+
+		for (int i = 0; i < 6; i++) {
+			// 在陷阱上方寻找开阔空间（恶灵 4x4 体型需要约 5x4x5 空间）
+			BlockPos spawnPos = pos.offset(this.rand.nextInt(9) - 4, 2 + this.rand.nextInt(4), this.rand.nextInt(9) - 4);
+			if (isValidGhastlingSpawn(level, spawnPos)) {
+				CarminiteGhastling ghastling = TFEntities.CARMINITE_GHASTLING.get().create(level, EntitySpawnReason.TRIGGERED);
+				if (ghastling != null) {
+					ghastling.setPos(spawnPos.getX() + 0.5D, spawnPos.getY(), spawnPos.getZ() + 0.5D);
+					level.addFreshEntityWithPassengers(ghastling);
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 检查位置是否有足够的开阔空间容纳 4x4 体型的砷铅铁恶灵
+	 */
+	private boolean isValidGhastlingSpawn(ServerLevel level, BlockPos pos) {
+		for (int dx = -2; dx <= 2; dx++) {
+			for (int dy = 0; dy < 4; dy++) {
+				for (int dz = -2; dz <= 2; dz++) {
+					if (!level.getBlockState(pos.offset(dx, dy, dz)).isAir())
+						return false;
+				}
+			}
+		}
+		return true;
 	}
 }

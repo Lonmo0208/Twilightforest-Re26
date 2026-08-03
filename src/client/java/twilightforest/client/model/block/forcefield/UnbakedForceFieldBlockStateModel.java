@@ -24,8 +24,10 @@ public record UnbakedForceFieldBlockStateModel(Identifier modelId) implements Cu
 		ResolvedModel resolved = modelBaker.getModel(this.modelId);
 		TextureSlots textureSlots = resolved.getTopTextureSlots();
 		UnbakedModel wrapped = resolved.wrapped();
+		System.out.println("[TF-DEBUG] UnbakedForceFieldBlockStateModel.bake modelId=" + this.modelId + " wrapped=" + (wrapped == null ? "null" : wrapped.getClass().getName()) + " textureSlots=" + textureSlots);
 
 		if (wrapped instanceof UnbakedForceFieldModel forceField) {
+			System.out.println("[TF-DEBUG] force field going bakeInternal, textureSlots=" + forceField.textureSlots());
 			return forceField.bakeInternal(
 				textureSlots,
 				modelBaker,
@@ -37,6 +39,7 @@ public record UnbakedForceFieldBlockStateModel(Identifier modelId) implements Cu
 			);
 		}
 
+		System.out.println("[TF-DEBUG] force field going fallback SimpleModelWrapper");
 		return new SingleVariant(SimpleModelWrapper.bake(modelBaker, this.modelId, BlockModelRotation.IDENTITY));
 	}
 

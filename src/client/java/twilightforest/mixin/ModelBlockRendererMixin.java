@@ -9,18 +9,19 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import twilightforest.client.model.block.aurorablock.NoiseVaryingModel;
+import twilightforest.client.model.block.LevelAwareBlockStateModel;
 
 /**
  * Mixin to support level-aware block model variant selection.
  * The vanilla ModelBlockRenderer only calls collectParts(RandomSource, ...),
- * but NoiseVaryingModel needs BlockPos to select the correct variant via simplex noise.
+ * but models like NoiseVaryingModel, ForceFieldModel and GiantBlockModel need the
+ * level/position to select the correct variant.
  */
 @Mixin(ModelBlockRenderer.class)
 public class ModelBlockRendererMixin {
 
 	/**
-	 * Redirect collectParts to use the level-aware version when the model is a NoiseVaryingModel.
+	 * Redirect collectParts to the level-aware version when the model implements LevelAwareBlockStateModel.
 	 * Intercepts after the seed is set but before collectParts is called.
 	 */
 	@Inject(
@@ -41,12 +42,13 @@ public class ModelBlockRendererMixin {
 		long seed,
 		CallbackInfo ci
 	) {
-		if (model instanceof NoiseVaryingModel noiseModel) {
-			// Use level-aware variant selection based on BlockPos
-			noiseModel.collectParts(level, pos, blockState, RandomSource.create(seed), ((ModelBlockRendererAccessor) this).getParts());
+		if (model instanceof LevelAwareBlockStateModel levelAwareModel) {
+			System.out.println("[TF-DEBUG] mixin intercepting collectParts for " + model.getClass().getName() + " at " + pos);
+			// Use level-aware variant selection based on BlockPos / surroundings
+			levelAwareModel.collectParts(level, pos, blockState, RandomSource.create(seed), ((ModelBlockRendererAccessor) this).getParts());
 			// Cancel vanilla collectParts call since we handled it
 			ci.cancel();
 		}
-		// If not NoiseVaryingModel, let vanilla code run normally
+		// If not a level-aware model, let vanilla code run normally
 	}
 }

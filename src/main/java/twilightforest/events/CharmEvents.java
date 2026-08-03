@@ -372,7 +372,7 @@ public class CharmEvents {
 	public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
 
 	public static CompoundTag getPlayerData(Player player) {
-		CompoundTag persistentData = ((TFEntityExtensions) player).getPersistentData();
+		CompoundTag persistentData = ((TFEntityExtensions) player).twilightforest$getPersistentData();
 		if (!persistentData.contains(PERSISTED_NBT_TAG)) {
 			persistentData.put(PERSISTED_NBT_TAG, new CompoundTag());
 		}

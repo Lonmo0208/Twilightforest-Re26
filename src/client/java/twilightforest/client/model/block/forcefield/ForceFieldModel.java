@@ -19,19 +19,24 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.state.BlockState;import org.joml.Vector3f;
+import net.minecraft.world.level.block.state.BlockState;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.block.ForceFieldBlock;
+import twilightforest.client.model.block.LevelAwareBlockStateModel;
+import twilightforest.client.model.block.LevelAwareModelEmitter;
 import twilightforest.client.model.block.forcefield.ForceFieldModelLoader.Condition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 // TODO: Port to Fabric - Previously implemented DynamicBlockStateModel (NeoForge-specific)
-public class ForceFieldModel implements BlockStateModel {
+public class ForceFieldModel implements BlockStateModel, LevelAwareBlockStateModel {
 
         private final List<QuadEntry> entries;
         private final Material.Baked particle;
@@ -85,7 +90,9 @@ public class ForceFieldModel implements BlockStateModel {
         }
 
         // TODO: Port to Fabric - level-aware collectParts was from NeoForge DynamicBlockStateModel
+	@Override
 	public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
+                System.out.println("[TF-DEBUG] ForceFieldModel.collectParts(level) pos=" + pos + " entries=" + this.entries.size() + " state=" + state);
                 @SuppressWarnings({"unchecked", "rawtypes"})
 				List<BakedQuad>[] quadsByDirection = new List[6];
                 for (int i = 0; i < 6; i++) quadsByDirection[i] = new ArrayList<>();
@@ -185,6 +192,12 @@ public class ForceFieldModel implements BlockStateModel {
         @Override
         @Deprecated
         public void collectParts(RandomSource random, List<BlockStateModelPart> output) {
+        }
+
+        // Fabric (FRAPI) world rendering entry point - routes through the level-aware collectParts
+        @Override
+        public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
+                LevelAwareModelEmitter.emitQuads(this, emitter, level, pos, state, random, cullTest);
         }
 
         public enum ExtraDirection implements StringRepresentable {

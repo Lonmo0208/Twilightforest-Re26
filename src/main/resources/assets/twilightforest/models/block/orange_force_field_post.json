@@ -1,0 +1,6 @@
+{
+  "parent": "twilightforest:block/force_field_post",
+  "textures": {
+    "all": "twilightforest:block/orange_force_field"
+  }
+}

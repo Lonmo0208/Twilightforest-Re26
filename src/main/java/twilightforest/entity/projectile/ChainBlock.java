@@ -3,7 +3,6 @@ package twilightforest.entity.projectile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -12,7 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -161,7 +159,7 @@ public class ChainBlock extends ThrowableProjectile {
 			BlockState state = level.getBlockState(pos);
 			if (!state.isAir()) {
 				boolean restrictedPlaceMode = this.getOwner() instanceof ServerPlayer player && player.gameMode.getGameModeForPlayer().isBlockPlacingRestricted();
-				if (!canBreakBlockAt(level, pos, state, this.stack, restrictedPlaceMode) || ((TFEntityExtensions) this).getData(() -> TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed() >= 12) {
+				if (!canBreakBlockAt(level, pos, state, this.stack, restrictedPlaceMode) || ((TFEntityExtensions) this).twilightforest$getData(TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed() >= 12) {
 					this.bounce(result.getDirection());
 				}
 
@@ -265,8 +263,8 @@ public class ChainBlock extends ThrowableProjectile {
 				if (this.isReturning()) {
 					// despawn if close enough
 					if (distToPlayer < 2F) {
-						if (this.stack != null && this.getOwner() instanceof LivingEntity living && ((TFEntityExtensions) living).getData(() -> TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed() > 0) {
-							this.stack.hurtAndBreak(Math.min(((TFEntityExtensions) living).getData(() -> TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed(), 3), living, this.getHand());
+						if (this.stack != null && this.getOwner() instanceof LivingEntity living && ((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed() > 0) {
+							this.stack.hurtAndBreak(Math.min(((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed(), 3), living, this.getHand());
 						}
 						this.discard();
 					}

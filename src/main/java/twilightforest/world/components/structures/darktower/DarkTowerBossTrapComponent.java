@@ -28,8 +28,8 @@ public class DarkTowerBossTrapComponent extends DarkTowerWingComponent {
 	protected DarkTowerBossTrapComponent(int i, int x, int y, int z, int pSize, int pHeight, Direction direction) {
 		super(TFStructurePieceTypes.TFDTBT, i, x, y, z, pSize, pHeight, direction);
 
-		// no spawns
-		this.spawnListIndex = -1;
+		// 恶魂陷阱房间内使用结构主刷怪列表（索引 0），确保坤铅铁恶灵能在陷阱附近/房间内自然生成
+		this.spawnListIndex = 0;
 	}
 
 	@Override

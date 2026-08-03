@@ -37,7 +37,9 @@ public class QuestReloadListener extends SimpleJsonResourceReloadListener<JsonEl
 		boolean found = false;
 		RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
 		for (var entry : object.entrySet()) {
-			if (entry.getKey().getPath().endsWith("/questing_ram")) {
+			// FileToIdConverter.json("twilight/quests") produces ids whose path is the relative path
+			// without extension, so "twilight/quests/questing_ram.json" maps to path "questing_ram".
+			if (entry.getKey().getPath().equals("questing_ram")) {
 				questingRamCurrentContext.setContext(QuestingRamContext.CODEC.parse(ops, entry.getValue()).getOrThrow(RuntimeException::new));
 				TwilightForestMod.LOGGER.debug("Questing Ram quest set by mod {}", entry.getKey().getNamespace());
 				found = true;

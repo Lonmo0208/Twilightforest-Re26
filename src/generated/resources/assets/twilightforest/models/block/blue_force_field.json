@@ -1779,7 +1779,7 @@
       ]
     }
   ],
-  "loader": "twilightforest:force_field",
+  "fabric:type": "twilightforest:force_field",
   "render_type": "minecraft:translucent",
   "textures": {
     "pane": "twilightforest:block/blue_force_field",

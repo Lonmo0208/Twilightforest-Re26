@@ -6,9 +6,7 @@
     "minecraft:bowl",
     {
       "fabric:type": "fabric:components",
-      "base": {
-        "item": "minecraft:potion"
-      },
+      "base": "minecraft:potion",
       "components": {
         "minecraft:potion_contents": {
           "potion": "minecraft:water"

@@ -32,7 +32,7 @@ public class ThrowRiderGoal extends MeleeAttackGoal {
 			this.mob.getTarget() != null &&
 			// TODO: Port - find equivalent tag for EntityTypes.BOSSES
 			!this.mob.getTarget().is(TFEntityTypeTags.BOSSES) && // TODO: Port - verify BOSSES tag exists in TFEntityTypeTags
-			((TFEntityExtensions) this.mob.getTarget()).getData(() -> TFDataAttachments.YETI_THROWING).getThrowCooldown() <= 0 &&
+			((TFEntityExtensions) this.mob.getTarget()).twilightforest$getData(TFDataAttachments.YETI_THROWING).getThrowCooldown() <= 0 &&
 			super.canUse();
 	}
 
@@ -81,7 +81,7 @@ public class ThrowRiderGoal extends MeleeAttackGoal {
 			Vec3 throwVec = new Vec3(this.mob.getLookAngle().x() * 2.0D, 0.9, this.mob.getLookAngle().z() * 2.0D);
 
 			if (rider instanceof Player player) {
-				var attachment = ((TFEntityExtensions) player).getData(() -> TFDataAttachments.YETI_THROWING);
+				var attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.YETI_THROWING);
 				attachment.setThrown(player, true, this.mob);
 				// Make it so other yetis won't try to pick us up for a bit, 10 seconds seems fair
 				attachment.setThrowVector(throwVec);

@@ -6,6 +6,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -18,7 +19,6 @@ import twilightforest.util.TFEntityExtensions;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 /**
  * Mixin to add NeoForge-compatible methods to Entity.
@@ -38,65 +38,66 @@ public abstract class EntityMixin implements TFEntityExtensions {
 	}
 
 	@Unique
-	private final Map<Supplier<?>, Object> tfAttachments = new ConcurrentHashMap<>();
+	private final Map<AttachmentType<?>, Object> tfAttachments = new ConcurrentHashMap<>();
 
 	@Override
 	@Unique
 	@SuppressWarnings("unchecked")
-	public <T> T getData(Supplier<? extends AttachmentType<T>> type) {
+	public <T> @NonNull T twilightforest$getData(@NonNull AttachmentType<T> type) {
 		Object value = tfAttachments.get(type);
 		if (value != null) {
 			return (T) value;
 		}
-		Supplier<T> initializer = type.get().initializer();
-		return initializer != null ? initializer.get() : null;
+		java.util.function.Supplier<T> initializer = type.initializer();
+		if (initializer != null) return initializer.get();
+		return null;
 	}
 
 	@Override
 	@Unique
-	public <T> void setData(Supplier<? extends AttachmentType<T>> type, T value) {
+	public <T> void twilightforest$setData(@NonNull AttachmentType<T> type, @NonNull T value) {
 		tfAttachments.put(type, value);
 	}
 
 	@Override
 	@Unique
-	public boolean hasData(Supplier<? extends AttachmentType<?>> type) {
+	public boolean twilightforest$hasData(@NonNull AttachmentType<?> type) {
 		return tfAttachments.containsKey(type);
 	}
 
 	@Override
 	@Unique
-	public void removeData(Supplier<? extends AttachmentType<?>> type) {
+	public void twilightforest$removeData(@NonNull AttachmentType<?> type) {
 		tfAttachments.remove(type);
 	}
 
 	@Override
 	@Unique
-	public CompoundTag getPersistentData() {
+	public @NonNull CompoundTag twilightforest$getPersistentData() {
 		return new CompoundTag();
 	}
 
 	@Override
 	@Unique
-	public Entity[] getParts() {
+	public Entity @NonNull [] twilightforest$getParts() {
 		return new Entity[0];
 	}
 
 	@Override
 	@Unique
-	public boolean isMultipartEntity() {
+	public boolean twilightforest$isMultipartEntity() {
 		return false;
 	}
 
 	@Override
 	@Unique
-	public boolean canFitInsideContainerItems() {
+	public boolean twilightforest$canFitInsideContainerItems() {
 		return true;
 	}
 
 	@Override
 	@Unique
-	public void breakItem(ItemStack stack) {
+	public void twilightforest$breakItem(@NonNull ItemStack stack) {
 	}
 
 	/**
@@ -109,7 +110,7 @@ public abstract class EntityMixin implements TFEntityExtensions {
 	@Inject(method = "recreateFromPacket", at = @At("TAIL"))
 	private void twilightforest$assignPartIdsOnRecreate(ClientboundAddEntityPacket packet, CallbackInfo ci) {
 		Entity self = (Entity) (Object) this;
-		if (self instanceof TFEntityExtensions ext && ext.isMultipartEntity()) {
+		if (self instanceof TFEntityExtensions ext && ext.twilightforest$isMultipartEntity()) {
 			TFPart.assignPartIDs(self);
 		}
 	}

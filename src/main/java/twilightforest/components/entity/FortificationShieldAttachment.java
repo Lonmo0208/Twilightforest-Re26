@@ -88,7 +88,7 @@ public class FortificationShieldAttachment {
 			player.awardStat(TFStats.TF_SHIELDS_BROKEN);
 		}
 		entity.level().playSound(null, entity.blockPosition(), expired ? TFSounds.SHIELD_EXPIRE : TFSounds.SHIELD_BREAK, SoundSource.PLAYERS, 1.0F, (entity.getRandom().nextFloat() - entity.getRandom().nextFloat()) * 0.3F + 1.0F);
-		((TFEntityExtensions) entity).setData(() -> TFDataAttachments.FORTIFICATION_SHIELDS, this);
+		((TFEntityExtensions) entity).twilightforest$setData(TFDataAttachments.FORTIFICATION_SHIELDS, this);
 	}
 
 	public static void addShieldBreakParticles(DamageSource src, LivingEntity entity) {
@@ -110,7 +110,7 @@ public class FortificationShieldAttachment {
 				double x = sizeRange * offset.z * horizontal;
 				double y = sizeRange * (entity.getRandom().nextDouble() - 0.5D);
 				double z = sizeRange * offset.x * -horizontal;
-		
+
 			}
 		} else {
 			pos = entity.position().add(0.0D, entity.getBbHeight() * 0.65D, 0.0D);
@@ -133,7 +133,7 @@ public class FortificationShieldAttachment {
 		} else {
 			this.permanentShields = Math.clamp(amount, 0, 115);
 		}
-		((TFEntityExtensions) entity).setData(() -> TFDataAttachments.FORTIFICATION_SHIELDS, this);
+		((TFEntityExtensions) entity).twilightforest$setData(TFDataAttachments.FORTIFICATION_SHIELDS, this);
 	}
 
 	public void addShields(LivingEntity entity, int amount, boolean temp) {
@@ -146,7 +146,7 @@ public class FortificationShieldAttachment {
 		} else {
 			this.permanentShields = Math.clamp(this.permanentShields + amount, 0, 115);
 		}
-		((TFEntityExtensions) entity).setData(() -> TFDataAttachments.FORTIFICATION_SHIELDS, this);
+		((TFEntityExtensions) entity).twilightforest$setData(TFDataAttachments.FORTIFICATION_SHIELDS, this);
 	}
 
 	private void resetTimer() {

@@ -34,8 +34,8 @@ public class MultipartEntityIteratorWrapper implements Iterator<Entity> {
 			return next;
 		}
 		Entity next = delegate.next();
-		if (((TFEntityExtensions) next).isMultipartEntity()) {
-			Entity[] arr = ((TFEntityExtensions) next).getParts();
+		if (((TFEntityExtensions) next).twilightforest$isMultipartEntity()) {
+			Entity[] arr = ((TFEntityExtensions) next).twilightforest$getParts();
 			// getParts is nullable, the annotation is used incorrectly
 			//noinspection ConstantValue
 			if (arr != null) {

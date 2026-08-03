@@ -44,7 +44,7 @@ public abstract class ServerLevelMixin {
 		ServerLevel self = (ServerLevel) (Object) this;
 		for (Entity owner : self.getAllEntities()) {
 			if (owner instanceof TFEntityExtensions ext) {
-				Entity[] parts = ext.getParts();
+				Entity[] parts = ext.twilightforest$getParts();
 				if (parts == null) continue;
 				for (Entity part : parts) {
 					if (part != null && part.getId() == id) {

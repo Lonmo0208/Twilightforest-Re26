@@ -317,7 +317,6 @@ public class FabricEvents {
 		public Level getLevel() { return level; }
 		public BlockPos getPos() { return pos; }
 		public BlockState getState() { return state; }
-		@Nullable
 		public Player getPlayer() { return player; }
 		public boolean isCanceled() { return false; }
 		public void setCanceled(boolean canceled) {}

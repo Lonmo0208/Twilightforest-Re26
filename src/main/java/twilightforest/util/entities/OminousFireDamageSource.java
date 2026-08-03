@@ -15,11 +15,11 @@ public class OminousFireDamageSource extends DamageSource {
 
 	@Override
 	public Component getLocalizedDeathMessage(LivingEntity living) {
-		if (living.getKillCredit() instanceof Zombie zombie && ((TFEntityExtensions) zombie).hasData(() -> TFDataAttachments.ZOMBIFIED_PLAYER)) {
-			if (living instanceof Player player && player.getGameProfile().name().equals(((TFEntityExtensions) zombie).getData(() -> TFDataAttachments.ZOMBIFIED_PLAYER).name())) {
+		if (living.getKillCredit() instanceof Zombie zombie && ((TFEntityExtensions) zombie).twilightforest$hasData(TFDataAttachments.ZOMBIFIED_PLAYER)) {
+			if (living instanceof Player player && player.getGameProfile().name().equals(((TFEntityExtensions) zombie).twilightforest$getData(TFDataAttachments.ZOMBIFIED_PLAYER).name())) {
 				return Component.translatable("death.attack.twilightforest.ominousFire.zombified_player.self", living.getDisplayName());
 			}
-			return Component.translatable("death.attack.twilightforest.ominousFire.zombified_player", living.getDisplayName(), ((TFEntityExtensions) zombie).getData(() -> TFDataAttachments.ZOMBIFIED_PLAYER).name());
+			return Component.translatable("death.attack.twilightforest.ominousFire.zombified_player", living.getDisplayName(), ((TFEntityExtensions) zombie).twilightforest$getData(TFDataAttachments.ZOMBIFIED_PLAYER).name());
 		}
 		return super.getLocalizedDeathMessage(living);
 	}

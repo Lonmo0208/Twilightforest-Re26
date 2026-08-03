@@ -27,7 +27,7 @@ public record UpdateTFMultipartPacket(int entityId, @Nullable Entity entity, @Nu
 	}
 
 	public UpdateTFMultipartPacket(Entity entity) {
-		this(-1, entity, Arrays.stream(((TFEntityExtensions) entity).getParts()).filter(part -> part instanceof TFPart<?>).map(part -> (TFPart<?>) part).collect(Collectors.toMap(TFPart::getId, TFPart::writeData)));
+		this(-1, entity, Arrays.stream(((TFEntityExtensions) entity).twilightforest$getParts()).filter(part -> part instanceof TFPart<?>).map(part -> (TFPart<?>) part).collect(Collectors.toMap(TFPart::getId, TFPart::writeData)));
 	}
 
 	public void write(RegistryFriendlyByteBuf buf) {

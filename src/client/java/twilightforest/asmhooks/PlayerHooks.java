@@ -46,7 +46,7 @@ public class PlayerHooks {
 			return;
 		AttributeModifier modifier = attributeInstance.getModifier(TFAttributeModifiers.STRAIGHT_AHEAD_ATTRIBUTE_MODIFIER_LOCATION);
 		double multiplier = modifier == null ? 1 : modifier.amount() + 1;
-		((TFEntityExtensions) player).setData(() -> TFDataAttachments.TEMPORARY_SAVED_STRAIGHT_AHEAD, multiplier);
+		((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.TEMPORARY_SAVED_STRAIGHT_AHEAD, multiplier);
 		attributeInstance.removeModifier(TFAttributeModifiers.STRAIGHT_AHEAD_ATTRIBUTE_MODIFIER_LOCATION);
 	}
 
@@ -62,7 +62,7 @@ public class PlayerHooks {
 		AttributeInstance attributeInstance = player.getAttributes().getInstance(Attributes.MOVEMENT_SPEED);
 		if (attributeInstance == null)
 			return;
-		double multiplier = ((TFEntityExtensions) player).getData(() -> TFDataAttachments.TEMPORARY_SAVED_STRAIGHT_AHEAD);
+		double multiplier = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TEMPORARY_SAVED_STRAIGHT_AHEAD);
 		attributeInstance.addTransientModifier(new AttributeModifier(TFAttributeModifiers.STRAIGHT_AHEAD_ATTRIBUTE_MODIFIER_LOCATION, multiplier - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 	}
 }

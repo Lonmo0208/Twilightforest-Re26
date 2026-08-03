@@ -1,11 +1,13 @@
 package twilightforest.client.model.block;
 
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -14,9 +16,10 @@ import twilightforest.block.entity.ReactorDebrisBlockEntity;
 import twilightforest.client.renderer.block.ReactorDebrisRenderer;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 // TODO: Port to Fabric - DynamicBlockStateModel is NeoForge-specific
-public class ReactorDebrisModel implements BlockStateModel {
+public class ReactorDebrisModel implements BlockStateModel, LevelAwareBlockStateModel {
 
 	private final BlockStateModel wrappedModel;
 
@@ -25,6 +28,7 @@ public class ReactorDebrisModel implements BlockStateModel {
 	}
 
 	// TODO: Port to Fabric - level-aware collectParts was from NeoForge DynamicBlockStateModel
+	@Override
 	public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
 		// Determine the particle texture from the block entity
 		Identifier textureForParticle = ReactorDebrisBlockEntity.DEFAULT_TEXTURE;
@@ -42,6 +46,12 @@ public class ReactorDebrisModel implements BlockStateModel {
 	@Deprecated
 	public void collectParts(RandomSource random, @NotNull List<BlockStateModelPart> parts) {
 		this.wrappedModel.collectParts(random, parts);
+	}
+
+	// Fabric (FRAPI) world rendering entry point - routes through the level-aware collectParts
+	@Override
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
+		LevelAwareModelEmitter.emitQuads(this, emitter, level, pos, state, random, cullTest);
 	}
 
 	// TODO: Port to Fabric - level-aware particleMaterial was from NeoForge DynamicBlockStateModel

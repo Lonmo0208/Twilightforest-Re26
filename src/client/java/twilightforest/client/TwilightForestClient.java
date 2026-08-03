@@ -3,6 +3,7 @@ package twilightforest.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
+import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.AtlasRegistry;
@@ -44,6 +45,7 @@ import twilightforest.client.model.block.UnbakedReactorDebrisBlockStateModel;
 import twilightforest.client.model.block.aurorablock.UnbakedNoiseVaryingBlockStateModel;
 import twilightforest.client.model.block.carpet.UnbakedRoyalRagsBlockStateModel;
 import twilightforest.client.model.block.connected.ConnectedTextureBlockStateModel;
+import twilightforest.client.model.block.forcefield.ForceFieldModelLoader;
 import twilightforest.client.model.block.forcefield.UnbakedForceFieldBlockStateModel;
 import twilightforest.client.model.block.giantblock.UnbakedGiantBlockStateModel;
 import twilightforest.client.model.block.patch.UnbakedPatchBlockStateModel;
@@ -69,7 +71,6 @@ import twilightforest.item.travellers_gear.TravellersGogglesItem;
 import twilightforest.network.*;
 import twilightforest.network.client.*;
 import twilightforest.network.UpdateTFMultipartPacket;
-import twilightforest.network.TFNetwork;
 import twilightforest.util.TFEntityExtensions;
 
 import java.util.Set;
@@ -98,9 +99,9 @@ public class TwilightForestClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player != null) {
 				var player = client.player;
-				if (((TFEntityExtensions) player).getData(() -> TFDataAttachments.FEATHER_FAN)
+				if (((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.FEATHER_FAN)
 					&& (player.onGround() || player.isSwimming() || player.isInWater())) {
-					((TFEntityExtensions) player).setData(() -> TFDataAttachments.FEATHER_FAN, false);
+					((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.FEATHER_FAN, false);
 				}
 			}
 		});
@@ -119,6 +120,9 @@ public class TwilightForestClient implements ClientModInitializer {
 		// ItemModel.Unbaked types
 		ItemModels.ID_MAPPER.put(TwilightForestMod.prefix("trollsteinn"), TrollsteinnModel.Unbaked.MAP_CODEC);
 		ItemModels.ID_MAPPER.put(TwilightForestMod.prefix("travellers_gear"), TravellersGearItemModel.Unbaked.MAP_CODEC);
+
+		// UnbakedModel deserializers (Fabric equivalent of NeoForge's ModelEvent.RegisterLoaders)
+		UnbakedModelDeserializer.register(TwilightForestMod.prefix("force_field"), (json, context) -> ForceFieldModelLoader.INSTANCE.read(json, context));
 
 		// CustomUnbakedBlockStateModel types (Fabric equivalent of NeoForge's RegisterBlockStateModels)
 		CustomUnbakedBlockStateModel.register(TwilightForestMod.prefix("noise_varying"), UnbakedNoiseVaryingBlockStateModel.MAP_CODEC);

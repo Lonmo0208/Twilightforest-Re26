@@ -66,7 +66,7 @@ public class EntityHooks {
 	 * Targets: IRETURN
 	 */
 	public static boolean overrideStayCloseToHolder(boolean prior, PathfinderMob mob) {
-		return prior && !((TFEntityExtensions) mob).hasData(() -> TFDataAttachments.LEASH_PATHFINDER_OVERRIDE);
+		return prior && !((TFEntityExtensions) mob).twilightforest$hasData(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE);
 	}
 
 	/**

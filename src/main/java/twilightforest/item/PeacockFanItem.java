@@ -40,13 +40,13 @@ public class PeacockFanItem extends Item {
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 
-		boolean flag = !player.onGround() && !player.isSwimming() && !((TFEntityExtensions) player).getData(() -> TFDataAttachments.FEATHER_FAN);
+		boolean flag = !player.onGround() && !player.isSwimming() && !((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.FEATHER_FAN);
 
 		if (!level.isClientSide()) {
 			int fanned = this.doFan(level, player);
 			stack.hurtAndBreak(fanned + 1, player, hand);
 			if (flag) {
-				((TFEntityExtensions) player).setData(() -> TFDataAttachments.FEATHER_FAN, true);
+				((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.FEATHER_FAN, true);
 			} else {
 				AABB fanBox = this.getEffectAABB(player);
 				Vec3 lookVec = player.getLookAngle();
@@ -83,7 +83,7 @@ public class PeacockFanItem extends Item {
 				// (unlike NeoForge), so without this the client would never see the flag
 				// the server sets, allowing infinite flight. The flag is cleared on the
 				// client when the player lands (see TwilightForestClient tick handler).
-				((TFEntityExtensions) player).setData(() -> TFDataAttachments.FEATHER_FAN, true);
+				((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.FEATHER_FAN, true);
 				player.setDeltaMovement(new Vec3(
 					player.getDeltaMovement().x() * 1.05F,
 					1.5F,

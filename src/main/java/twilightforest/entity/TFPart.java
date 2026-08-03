@@ -165,7 +165,7 @@ public abstract class TFPart<T extends Entity> extends Entity {
 	}
 
 	public static void assignPartIDs(Entity parent) {
-		Entity[] parts = ((TFEntityExtensions) parent).getParts();
+		Entity[] parts = ((TFEntityExtensions) parent).twilightforest$getParts();
 		for (int i = 0, partsLength = Objects.requireNonNull(parts).length; i < partsLength; i++) {
 			Entity part = parts[i];
 			part.setId(parent.getId() + i);

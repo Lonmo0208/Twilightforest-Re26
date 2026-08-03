@@ -41,14 +41,14 @@ public class ServerEntityMixin {
 	 */
 	@Inject(method = "sendPairingData", at = @At("TAIL"))
 	private void tf$sendInitialMultipartEntityData(ServerPlayer player, Consumer<Packet<ClientGamePacketListener>> broadcast, CallbackInfo ci) {
-		if (this.entity instanceof TFEntityExtensions extensions && extensions.isMultipartEntity()) {
+		if (this.entity instanceof TFEntityExtensions extensions && extensions.twilightforest$isMultipartEntity()) {
 			PacketDistributor.sendToPlayer(player, new UpdateTFMultipartPacket(this.entity));
 		}
 	}
 
 	@Inject(method = "sendDirtyEntityData", at = @At("HEAD"))
 	private void tf$sendDirtyMultipartEntityData(CallbackInfo ci) {
-		if (this.entity instanceof TFEntityExtensions extensions && extensions.isMultipartEntity()) {
+		if (this.entity instanceof TFEntityExtensions extensions && extensions.twilightforest$isMultipartEntity()) {
 			PacketDistributor.sendToPlayersTrackingEntity(this.entity, new UpdateTFMultipartPacket(this.entity));
 		}
 	}

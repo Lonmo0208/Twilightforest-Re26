@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "twilightforest:block/force_field_up",
   "textures": {
     "all": "twilightforest:block/blue_force_field"
   }

@@ -33,11 +33,14 @@ import twilightforest.block.GiantBlock;
 import twilightforest.components.entity.GiantPickaxeMiningAttachment;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFItems;
+import twilightforest.mixin.AbstractArrowMixin;
 import twilightforest.util.TFEntityExtensions;
 import twilightforest.item.*;
 import twilightforest.loot.modifiers.GiantToolGroupingModifier;
 import twilightforest.tags.TFBlockTags;
 import twilightforest.tags.TFEntityTypeTags;
+
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 
 import java.util.List;
 
@@ -69,7 +72,7 @@ public class ToolEvents {
 			&& result.getEntity() instanceof LivingEntity living
 			&& arrow.getOwner() != result.getEntity() && !result.getEntity().is(TFEntityTypeTags.BOSSES)) { // TODO: Port - verify BOSSES tag exists in TFEntityTypeTags
 
-			if (((TFEntityExtensions) player).getPersistentData().getCompound("PlayerPersisted").orElse(new net.minecraft.nbt.CompoundTag()).contains(EnderBowItem.KEY)) {
+			if (((TFEntityExtensions) player).twilightforest$getPersistentData().getCompound("PlayerPersisted").orElse(new net.minecraft.nbt.CompoundTag()).contains(EnderBowItem.KEY)) {
 				double sourceX = player.getX(), sourceY = player.getY(), sourceZ = player.getZ();
 				float sourceYaw = player.getYRot(), sourcePitch = player.getXRot();
 				@Nullable Entity playerVehicle = player.getVehicle();
@@ -95,6 +98,44 @@ public class ToolEvents {
 				living.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 1.0F, 1.0F);
 			}
 		}
+	}
+
+	/**
+	 * Triggered by {@link AbstractArrowMixin} when an arrow marked with
+	 * {@link TFDataAttachments#ENDER_BOW_ARROW} hits a living entity.
+	 * Performs the ender bow position swap between shooter and target.
+	 */
+	public static void performEnderBowSwap(AbstractArrow arrow, EntityHitResult result) {
+		if (!((TFEntityExtensions) arrow).twilightforest$hasData(TFDataAttachments.ENDER_BOW_ARROW)) return;
+		if (!(arrow.getOwner() instanceof Player player)) return;
+		if (!(result.getEntity() instanceof LivingEntity living)) return;
+		if (player == living || living.is(TFEntityTypeTags.BOSSES)) return;
+
+		double sourceX = player.getX(), sourceY = player.getY(), sourceZ = player.getZ();
+		float sourceYaw = player.getYRot(), sourcePitch = player.getXRot();
+		@Nullable Entity playerVehicle = player.getVehicle();
+
+		player.setYRot(living.getYRot());
+		player.teleportTo(living.getX(), living.getY(), living.getZ());
+		player.invulnerableTime = 40;
+		player.level().broadcastEntityEvent(player, (byte) 46);
+		if (living.isPassenger() && living.getVehicle() != null) {
+			player.startRiding(living.getVehicle());
+			living.stopRiding();
+		}
+		player.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 1.0F, 1.0F);
+
+		living.setYRot(sourceYaw);
+		living.setXRot(sourcePitch);
+		living.teleportTo(sourceX, sourceY, sourceZ);
+		living.level().broadcastEntityEvent(living, (byte) 46);
+		if (playerVehicle != null) {
+			living.startRiding(playerVehicle);
+			player.stopRiding();
+		}
+		living.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 1.0F, 1.0F);
+
+		arrow.discard();
 	}
 
 	private void fieryToolSetFire(FabricEvents.LivingIncomingDamageEvent event) {
@@ -164,7 +205,7 @@ public class ToolEvents {
 		BlockState state = event.getState();
 
 		if (event.getPlayer() instanceof ServerPlayer player && canHarvestWithGiantPick(player, state, pos)) {
-			var attachment = ((TFEntityExtensions) player).getData(() -> TFDataAttachments.GIANT_PICKAXE_MINING);
+			var attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.GIANT_PICKAXE_MINING);
 
 			if (shouldBreakGiantBlock(player, attachment)) {
 				attachment.setBreaking(true); // Tell the capability that a block breaking loop is happening, so it knows to fail the if check above. Otherwise, this would go on forever

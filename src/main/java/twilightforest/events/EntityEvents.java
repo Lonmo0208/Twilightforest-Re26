@@ -70,6 +70,7 @@ import twilightforest.util.entities.OminousFireDamageSource;
 import twilightforest.world.components.structures.SpawnIndexProvider;
 import twilightforest.world.components.structures.finalcastle.FinalCastleBossGazeboComponent;
 import twilightforest.world.components.structures.start.TFStructureStart;
+import twilightforest.world.components.structures.type.DarkTowerStructure;
 import twilightforest.world.components.structures.util.ControlledSpawns;
 import twilightforest.world.components.structures.util.ValidatedSpawnLocations;
 
@@ -118,7 +119,7 @@ public class EntityEvents {
 
 			if (event.getEntity() instanceof ServerPlayer player) {
 				var zombie = EntityType.ZOMBIE.create(player.level(), EntitySpawnReason.CONVERSION);
-				((TFEntityExtensions) zombie).setData(() -> TFDataAttachments.ZOMBIFIED_PLAYER, player.getGameProfile());
+				((TFEntityExtensions) zombie).twilightforest$setData(TFDataAttachments.ZOMBIFIED_PLAYER, player.getGameProfile());
 				zombie.setCustomName(player.getName());
 				zombie.copyPosition(player);
 				zombie.setCanPickUpLoot(true);
@@ -132,7 +133,7 @@ public class EntityEvents {
 	}
 
 	private void zombifiedPlayerAttacks(FabricEvents.LivingIncomingDamageEvent event) {
-		if (!(event.getSource() instanceof OminousFireDamageSource) && event.getSource().getEntity() instanceof Zombie zombie && ((TFEntityExtensions) zombie).hasData(() -> TFDataAttachments.ZOMBIFIED_PLAYER)) {
+		if (!(event.getSource() instanceof OminousFireDamageSource) && event.getSource().getEntity() instanceof Zombie zombie && ((TFEntityExtensions) zombie).twilightforest$hasData(TFDataAttachments.ZOMBIFIED_PLAYER)) {
 			float amount = event.getAmount();
 			event.setCanceled(true);
 			event.getEntity().hurt(new OminousFireDamageSource(event.getSource()), amount);
@@ -381,6 +382,11 @@ public class EntityEvents {
 
 		for (StructureStart start : structureStarts) {
 			if (start.getStructure() instanceof ControlledSpawns landmark) {
+				boolean isDarkTower = start.getStructure() instanceof DarkTowerStructure;
+
+				if (isDarkTower) {
+					TwilightForestMod.LOGGER.info("TF-DEBUG DarkTower start found pos={} isValid={} conquered={}", pos, start.isValid(), start instanceof TFStructureStart s && s.isConquered());
+				}
 
 				if (!start.isValid())
 					continue;
@@ -389,15 +395,28 @@ public class EntityEvents {
 					return landmark.getSpawnableList(classification);
 				}
 
-				if (start instanceof TFStructureStart s && s.isConquered())
+				if (start instanceof TFStructureStart s && s.isConquered()) {
+					if (isDarkTower) {
+						TwilightForestMod.LOGGER.info("TF-DEBUG DarkTower isConquered -> blocked");
+					}
 					return null;
+				}
 
 				if (landmark instanceof ValidatedSpawnLocations validator && !validator.canSpawnMob(pos, start.getBoundingBox()))
 					return null;
 
 				final int index = getSpawnListIndexAt(start, pos);
-				if (index < 0)
-					return null;
+				if (isDarkTower) {
+					TwilightForestMod.LOGGER.info("TF-DEBUG DarkTower spawn check pos={} index={} pieces={}", pos, index, start.getPieces().size());
+				}
+				if (index < 0) {
+					if (isDarkTower) {
+						TwilightForestMod.LOGGER.info("TF-DEBUG DarkTower index<0 -> fallback to main list");
+					}
+					// 位置在结构范围内但不在任何组件包围盒内（如翼楼间隙、桥梁、外围）时，
+					// 回退到结构主刷怪列表（索引 0），确保坤铅铁恶灵等结构怪物能在整个结构区域自然生成
+					return landmark.getSpawnableMonsterList(0);
+				}
 
 				return landmark.getSpawnableMonsterList(index);
 			}
@@ -464,7 +483,7 @@ public class EntityEvents {
 
 	private void addQualifiedGroupPlayerIfNeeded(FabricEvents.LivingDamageEvent.Post event) {
 		if (event.getEntity().is(TFEntityTypeTags.MULTIPLAYER_INCLUSIVE_ENTITIES)) {
-			var data = ((TFEntityExtensions) event.getEntity()).getData(() -> TFDataAttachments.MULTIPLAYER_FIGHT);
+			var data = ((TFEntityExtensions) event.getEntity()).twilightforest$getData(TFDataAttachments.MULTIPLAYER_FIGHT);
 			if (event.getSource().getEntity() != null) {
 				data.maybeAddQualifiedPlayer(event.getSource().getEntity());
 			}
@@ -472,8 +491,8 @@ public class EntityEvents {
 	}
 
 	private void grantGroupAdvancementIfNeeded(FabricEvents.LivingDeathEvent event) {
-		if (!event.isCanceled() && ((TFEntityExtensions) event.getEntity()).hasData(() -> TFDataAttachments.MULTIPLAYER_FIGHT)) {
-			((TFEntityExtensions) event.getEntity()).getData(() -> TFDataAttachments.MULTIPLAYER_FIGHT).grantGroupAdvancement(event.getEntity());
+		if (!event.isCanceled() && ((TFEntityExtensions) event.getEntity()).twilightforest$hasData(TFDataAttachments.MULTIPLAYER_FIGHT)) {
+			((TFEntityExtensions) event.getEntity()).twilightforest$getData(TFDataAttachments.MULTIPLAYER_FIGHT).grantGroupAdvancement(event.getEntity());
 		}
 	}
 
@@ -494,19 +513,19 @@ public class EntityEvents {
 	private void resetFlaskLogic(FabricEvents.AdvancementEvent.AdvancementEarnEvent event) {
 		for (var criteria : event.getAdvancement().value().criteria().entrySet()) {
 			if (criteria.getValue().trigger() instanceof DrinkFromFlaskTrigger) {
-				((TFEntityExtensions) event.getEntity()).getData(() -> TFDataAttachments.FLASK_DOSES).resetDoses();
+				((TFEntityExtensions) event.getEntity()).twilightforest$getData(TFDataAttachments.FLASK_DOSES).resetDoses();
 				break;
 			}
 		}
 	}
 
 	private void handleLeashPathingOverrides(FabricEvents.EntityJoinLevelEvent event) {
-		if (!(event.getEntity() instanceof PathfinderMob mob && ((TFEntityExtensions) mob).hasData(() -> TFDataAttachments.LEASH_PATHFINDER_OVERRIDE))) {
+		if (!(event.getEntity() instanceof PathfinderMob mob && ((TFEntityExtensions) mob).twilightforest$hasData(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE))) {
 			return;
 		}
 
 		if (!mob.mayBeLeashed()) {
-			((TFEntityExtensions) mob).removeData(() -> TFDataAttachments.LEASH_PATHFINDER_OVERRIDE);
+			((TFEntityExtensions) mob).twilightforest$removeData(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE);
 		}
 	}
 

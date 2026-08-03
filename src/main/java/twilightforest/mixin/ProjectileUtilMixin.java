@@ -83,14 +83,14 @@ public abstract class ProjectileUtilMixin {
 		// These are excluded by the pickable filter, but their parts must still be reachable
 		// by the ray-trace so the client can send attack packets targeting the parts.
 		List<Entity> nonPickableMultiparts = level.getEntities(shooter, box, entity ->
-			!entity.isPickable() && entity instanceof TFEntityExtensions ext && ext.isMultipartEntity());
+			!entity.isPickable() && entity instanceof TFEntityExtensions ext && ext.twilightforest$isMultipartEntity());
 		// Query for ALL multipart entity owners (both pickable and non-pickable) with an
 		// expanded box. This is necessary for entities like Naga whose body segments can be
 		// far from the head (up to 24 blocks away). The head may be outside the ray-trace box
 		// when the player attacks a body segment, but we still need to find the parts.
 		// Expand by 30 blocks to cover the maximum Naga body length (12 segments * 2 blocks).
 		List<Entity> allMultiparts = level.getEntities(shooter, box.inflate(30.0D), entity ->
-			entity instanceof TFEntityExtensions ext && ext.isMultipartEntity());
+			entity instanceof TFEntityExtensions ext && ext.twilightforest$isMultipartEntity());
 		List<Entity> augmented = null;
 		// Combine all three lists for part discovery
 		List<Entity> allOwners = new ArrayList<>(original);
@@ -98,7 +98,7 @@ public abstract class ProjectileUtilMixin {
 		allOwners.addAll(allMultiparts);
 		for (Entity ent : allOwners) {
 			if (ent instanceof TFEntityExtensions ext) {
-				Entity[] parts = ext.getParts();
+				Entity[] parts = ext.twilightforest$getParts();
 				if (parts == null) continue;
 				for (Entity part : parts) {
 					if (!(part instanceof TFPart<?> tfPart)) continue;

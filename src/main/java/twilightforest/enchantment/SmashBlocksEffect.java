@@ -38,7 +38,7 @@ public record SmashBlocksEffect(LevelBasedValue maxSmash, LevelBasedValue radius
 	@Override
 	public void apply(ServerLevel level, int enchantmentLevel, EnchantedItemInUse item, Entity entity, Vec3 position) {
 		if (item.owner() instanceof ServerPlayer player) {
-			int blocksSmashed = ((TFEntityExtensions) entity).getData(() -> TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed();
+			int blocksSmashed = ((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed();
 			int maxSmash = Math.round(this.maxSmash.calculate(enchantmentLevel));
 			if (blocksSmashed >= maxSmash) return;
 			BlockPos start = BlockPos.containing(position);
@@ -61,7 +61,7 @@ public record SmashBlocksEffect(LevelBasedValue maxSmash, LevelBasedValue radius
 				}
 			}
 
-			((TFEntityExtensions) entity).getData(() -> TFDataAttachments.SMASH_BLOCKS).setBlocksSmashed(blocksSmashed);
+			((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.SMASH_BLOCKS).setBlocksSmashed(blocksSmashed);
 		}
 	}
 

@@ -9,6 +9,7 @@ import net.minecraft.client.resources.model.cuboid.CuboidFace;
 import net.minecraft.client.resources.model.cuboid.CuboidModelElement;
 import net.minecraft.client.resources.model.cuboid.FaceBakery;
 import net.minecraft.client.resources.model.cuboid.ItemTransforms;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
@@ -17,38 +18,34 @@ import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Direction;
 import org.joml.Vector3fc;
 import net.minecraft.util.context.ContextMap;
-// TODO: Port to Fabric - AbstractUnbakedModel, StandardModelParameters, CustomUnbakedBlockStateModel are NeoForge-specific
-// import net.neoforged.neoforge.client.model.AbstractUnbakedModel;
-// import net.neoforged.neoforge.client.model.StandardModelParameters;
-// import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 // TODO: Port to Fabric - Previously extended AbstractUnbakedModel and implemented CustomUnbakedBlockStateModel (NeoForge-specific)
-public class UnbakedForceFieldModel {
+public class UnbakedForceFieldModel implements UnbakedModel {
 
 	private static final ModelDebugName DEBUG_NAME = () -> "twilightforest:force_field";
 
 	private final Map<CuboidModelElement, ForceFieldModelLoader.Condition> elementsAndConditions;
+	private final TextureSlots.Data textureSlots;
 
-	// TODO: Port to Fabric - StandardModelParameters is NeoForge-specific
-	public UnbakedForceFieldModel(Map<CuboidModelElement, ForceFieldModelLoader.Condition> elementsAndConditions) {
-		// super(parameters);
+	public UnbakedForceFieldModel(Map<CuboidModelElement, ForceFieldModelLoader.Condition> elementsAndConditions, TextureSlots.Data textureSlots) {
 		this.elementsAndConditions = elementsAndConditions;
+		this.textureSlots = textureSlots;
 	}
 
-	// TODO: Port to Fabric - bake() overrides CustomUnbakedBlockStateModel
+	@Override
+	public TextureSlots.Data textureSlots() {
+		return this.textureSlots;
+	}
+
+	// Fabric bake entry point (called when this model is baked directly, e.g. by SimpleModelWrapper fallback paths).
+	// The level-aware connection logic is handled by UnbakedForceFieldBlockStateModel.bake() -> bakeInternal(),
+	// so here we bake with the texture slots parsed from the JSON "textures" map.
 	public BlockStateModel bake(ModelBaker baker) {
-		// ResolvedModel resolved = baker.resolveInlineModel(this, DEBUG_NAME);
-		// TextureSlots textureSlots = resolved.getTopTextureSlots();
-		// ContextMap additionalProperties = resolved.getTopAdditionalProperties();
-		// ModelState state = BlockModelRotation.IDENTITY;
-		// boolean useAmbientOcclusion = true;
-		// boolean usesBlockLight = true;
-		// ItemTransforms itemTransforms = this.parameters.itemTransforms();
-		// return bakeInternal(textureSlots, baker, state, useAmbientOcclusion, usesBlockLight, itemTransforms, additionalProperties);
-		return null;
+		TextureSlots resolvedSlots = new TextureSlots.Resolver().addLast(this.textureSlots).resolve(DEBUG_NAME);
+		return bakeInternal(resolvedSlots, baker, BlockModelRotation.IDENTITY, true, true, null, null);
 	}
 
 	public BlockStateModel bakeInternal(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {

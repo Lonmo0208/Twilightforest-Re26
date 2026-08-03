@@ -3,6 +3,7 @@
 	"package": "twilightforest.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
+		"AbstractArrowMixin",
 		"AbstractFurnaceBlockEntityMixin",
 		"BaseContainerBlockEntityMixin",
 		"BaseSpawnerMixin",

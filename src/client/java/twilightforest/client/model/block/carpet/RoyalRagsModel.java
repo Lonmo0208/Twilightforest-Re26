@@ -1,5 +1,6 @@
 package twilightforest.client.model.block.carpet;
 
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
@@ -13,15 +14,18 @@ import net.minecraft.world.level.block.state.BlockState;
 // TODO: Port to Fabric - DynamicBlockStateModel is NeoForge-specific
 // import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import org.jetbrains.annotations.Nullable;
+import twilightforest.client.model.block.LevelAwareBlockStateModel;
+import twilightforest.client.model.block.LevelAwareModelEmitter;
 import twilightforest.client.model.block.connected.ConnectionLogic;
 import twilightforest.init.TFBlocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 // TODO: Port to Fabric - Previously implemented DynamicBlockStateModel (NeoForge)
-public class RoyalRagsModel implements BlockStateModel {
+public class RoyalRagsModel implements BlockStateModel, LevelAwareBlockStateModel {
 	@Nullable
 	private final List<BakedQuad>[] baseQuads;
 	private final BakedQuad[][][] quads;
@@ -35,6 +39,7 @@ public class RoyalRagsModel implements BlockStateModel {
 	}
 
 	// TODO: Port to Fabric - level-aware collectParts was from NeoForge DynamicBlockStateModel
+	@Override
 	public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
 		// Compute connection logic for each face at this position
 		ConnectionLogic[][] logic = new ConnectionLogic[6][4];
@@ -95,6 +100,12 @@ public class RoyalRagsModel implements BlockStateModel {
 	@Override
 	@Deprecated
 	public void collectParts(RandomSource random, List<BlockStateModelPart> output) {
+	}
+
+	// Fabric (FRAPI) world rendering entry point - routes through the level-aware collectParts
+	@Override
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
+		LevelAwareModelEmitter.emitQuads(this, emitter, level, pos, state, random, cullTest);
 	}
 
 	@Override

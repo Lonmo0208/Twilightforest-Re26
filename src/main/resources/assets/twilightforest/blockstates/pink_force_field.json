@@ -1,7 +1,8 @@
 {
   "variants": {
     "": {
-      "model": "twilightforest:block/pink_force_field_noside"
+            "fabric:type": "twilightforest:force_field",
+            "model": "twilightforest:block/pink_force_field"
     }
   }
 }

@@ -100,4 +100,7 @@ public class TFDataAttachments {
 
 	public static final AttachmentType<SlimySolesAttachment> SLIMY_SOLES_BOUNCE_INFO = AttachmentRegistry.create(TwilightForestMod.prefix("slimy_soles_bounce_info"), builder ->
 		builder.initializer(SlimySolesAttachment::new).persistent(SlimySolesAttachment.CODEC.codec()));
+
+	public static final AttachmentType<Boolean> ENDER_BOW_ARROW = AttachmentRegistry.create(TwilightForestMod.prefix("ender_bow_arrow"), builder ->
+		builder.initializer(() -> false).persistent(Codec.BOOL.fieldOf("ender_bow_arrow").codec()));
 }
