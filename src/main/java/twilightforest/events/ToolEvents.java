@@ -1,7 +1,10 @@
 package twilightforest.events;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
@@ -52,17 +55,21 @@ public class ToolEvents {
 
 	@PostConstruct
 	private void setup() {
-		// TODO: Port to Fabric event system
-		/*
-		NeoForge.EVENT_BUS.addListener(this::onEnderBowHit);
-		NeoForge.EVENT_BUS.addListener(this::fieryToolSetFire);
-		NeoForge.EVENT_BUS.addListener(this::doKnightmetalToolLogic);
-		NeoForge.EVENT_BUS.addListener(this::addExtraAxeChargingDamage);
-		NeoForge.EVENT_BUS.addListener(this::damageNonMazebreakerToolsMore);
-		NeoForge.EVENT_BUS.addListener(this::preventFatigueWithPocketWatch);
-		NeoForge.EVENT_BUS.addListener(this::handleGiantPickaxeMining);
-		NeoForge.EVENT_BUS.addListener(this::refreshOreMagnetCache);
-		*/
+		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
+			OreMagnetItem.markOreCacheDirty();
+			OreMagnetItem.refreshOreCacheFromTags();
+		});
+
+		PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
+			FabricEvents.BreakBlockEvent event = new FabricEvents.BreakBlockEvent(world, pos, state, player);
+			handleGiantPickaxeMining(event);
+			return !event.isCanceled();
+		});
+
+		PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
+			FabricEvents.BreakBlockEvent event = new FabricEvents.BreakBlockEvent(world, pos, state, player);
+			damageNonMazebreakerToolsMore(event);
+		});
 	}
 
 	private void onEnderBowHit(FabricEvents.ProjectileImpactEvent evt) {
@@ -255,7 +262,7 @@ public class ToolEvents {
 		return attachment.getMining() == player.level().getGameTime() && !attachment.getBreaking();
 	}
 
-	private void refreshOreMagnetCache(FabricEvents.TagsUpdatedEvent event) {
+	private void refreshOreMagnetCache(RegistryAccess registryAccess) {
 		OreMagnetItem.MAGNET_ORE_TO_BLOCK_REPLACEMENTS.clear();
 		OreMagnetItem.TREE_ORE_TO_BLOCK_REPLACEMENTS.clear();
 

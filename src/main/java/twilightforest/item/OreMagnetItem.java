@@ -2,8 +2,12 @@ package twilightforest.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -34,9 +38,54 @@ public class OreMagnetItem extends Item {
 	public static final ConcurrentHashMap<Block, Block> MAGNET_ORE_TO_BLOCK_REPLACEMENTS = new ConcurrentHashMap<>();
 	public static final ConcurrentHashMap<Block, Block> TREE_ORE_TO_BLOCK_REPLACEMENTS = new ConcurrentHashMap<>();
 	private static final float WIGGLE = 10F;
+	private static boolean oreCacheNeedsBuild = true;
 
 	public OreMagnetItem(Properties properties) {
 		super(properties);
+	}
+
+	public static void markOreCacheDirty() {
+		oreCacheNeedsBuild = true;
+	}
+
+	public static void refreshOreCacheFromTags() {
+		MAGNET_ORE_TO_BLOCK_REPLACEMENTS.clear();
+		TREE_ORE_TO_BLOCK_REPLACEMENTS.clear();
+
+		for (var tag : BuiltInRegistries.BLOCK.getTags().filter(t -> t.key().location().getNamespace().equals("c")).toList()) {
+			Identifier tagId = tag.key().location();
+			if (!tagId.getPath().startsWith("ores_in_ground/")) continue;
+			String ground = tagId.getPath().substring("ores_in_ground/".length());
+			Identifier groundTagId = Identifier.fromNamespaceAndPath("c", "ore_bearing_ground/" + ground);
+
+			Iterable<net.minecraft.core.Holder<Block>> groundHolders = BuiltInRegistries.BLOCK.getTagOrEmpty(TagKey.create(Registries.BLOCK, groundTagId));
+			for (var groundHolder : groundHolders) {
+				Block groundBlock = groundHolder.value();
+				for (var oreHolder : tag) {
+					Block ore = oreHolder.value();
+					if (!ore.defaultBlockState().is(TFBlockTags.ORE_MAGNET_IGNORE)) {
+						MAGNET_ORE_TO_BLOCK_REPLACEMENTS.put(ore, groundBlock);
+					}
+					if (!ore.defaultBlockState().is(TFBlockTags.MINING_CORE_EXCLUDED)) {
+						TREE_ORE_TO_BLOCK_REPLACEMENTS.put(ore, groundBlock);
+					}
+				}
+			}
+		}
+
+		if (!Blocks.ANCIENT_DEBRIS.defaultBlockState().is(TFBlockTags.ORE_MAGNET_IGNORE)) {
+			MAGNET_ORE_TO_BLOCK_REPLACEMENTS.putIfAbsent(Blocks.ANCIENT_DEBRIS, Blocks.NETHERRACK);
+		}
+		if (!Blocks.ANCIENT_DEBRIS.defaultBlockState().is(TFBlockTags.MINING_CORE_EXCLUDED)) {
+			TREE_ORE_TO_BLOCK_REPLACEMENTS.putIfAbsent(Blocks.ANCIENT_DEBRIS, Blocks.NETHERRACK);
+		}
+		oreCacheNeedsBuild = false;
+	}
+
+	private static void initOre2BlockMap() {
+		if (oreCacheNeedsBuild) {
+			refreshOreCacheFromTags();
+		}
 	}
 
 	@Override
@@ -110,6 +159,8 @@ public class OreMagnetItem extends Item {
 	}
 
 	public static int doMagnet(Level level, BlockPos usePos, BlockPos destPos, boolean sourceIsMineCore) {
+		initOre2BlockMap();
+
 		int blocksMoved = 0;
 
 		// find some ore?
@@ -127,7 +178,7 @@ public class OreMagnetItem extends Item {
 					basePos = coord;
 				}
 				// This ordering is so that the base pos is found first before we pull ores - pushing ores away is a baaaaad idea!
-			} else if (foundPos == null && searchState.getBlock() != Blocks.AIR && isOre(searchState.getBlock(), sourceIsMineCore) && level.getBlockEntity(coord) == null) {
+			} else if (foundPos == null && searchState.getBlock() != Blocks.AIR && isOre(searchState.getBlock(), sourceIsMineCore)) {
 				attactedOreBlock = searchState;
 				replacementBlock = (sourceIsMineCore ? TREE_ORE_TO_BLOCK_REPLACEMENTS : MAGNET_ORE_TO_BLOCK_REPLACEMENTS).getOrDefault(attactedOreBlock.getBlock(), Blocks.STONE).defaultBlockState();
 				foundPos = coord;

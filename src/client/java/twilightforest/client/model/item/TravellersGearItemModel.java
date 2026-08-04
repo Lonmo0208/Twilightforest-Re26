@@ -1,16 +1,15 @@
 package twilightforest.client.model.item;
 
 import com.google.common.collect.Maps;
-import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.item.*;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.cuboid.ItemModelGenerator;
 import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material;
@@ -22,11 +21,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-// TODO: Port to Fabric - ComposedModelState is NeoForge-specific; use Fabric equivalent
-// TODO: Port to Fabric - ComposedModelState is NeoForge-specific
-// import net.neoforged.neoforge.client.model.ComposedModelState;
 import org.joml.Matrix4fc;
-import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 import twilightforest.init.TFDataComponents;
 import twilightforest.init.custom.TravellersModifiersManager;
@@ -35,22 +30,10 @@ import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class TravellersGearItemModel implements ItemModel {
 
-	private static final Function<Float, Transformation> TRANSFORM = new Function<>() {
-		@Override
-		public Transformation apply(Float f) {
-			return new Transformation(null, null, new Vector3f(1.0F + f), null);
-		}
-	};
-	private static final ModelDebugName DEBUG_NAME = new ModelDebugName() {
-		@Override
-		public String debugName() {
-			return "TravellersGearItemModel";
-		}
-	};
+	private static final ModelDebugName DEBUG_NAME = () -> "TravellersGearItemModel";
 
 	private final ItemModel baseModel;
 	private final Identifier modifierDirectory;
@@ -83,13 +66,9 @@ public class TravellersGearItemModel implements ItemModel {
 			if (!modifiers.isEmpty()) {
 				String key = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath()
 					+ this.getModifiersSuffix(modifiers);
-				this.possibleCombos.computeIfAbsent(key, new Function<>() {
-					@Override
-					public ItemModel apply(String _key) {
-						return TravellersGearItemModel.this.getModifiedGear(modifiers);
-					}
-				})
-					.update(state, stack, resolver, context, level, owner, seed);
+				this.possibleCombos.computeIfAbsent(key, k ->
+					TravellersGearItemModel.this.getModifiedGear(modifiers)
+				).update(state, stack, resolver, context, level, owner, seed);
 			}
 		}
 	}
@@ -98,24 +77,17 @@ public class TravellersGearItemModel implements ItemModel {
 		ModelBaker baker = this.bakingContext.blockModelBaker();
 		MaterialBaker materials = baker.materials();
 		List<ItemModel> modelLayers = new ArrayList<>();
-		int layers = 1;
+		int layerIndex = 0;
 
 		for (Holder.Reference<TravellersModifier> modifier : modifiers) {
 			Material.Baked modSprite = this.getModifierSprite(modifier.key(), materials);
 			if (!modSprite.sprite().contents().name().equals(MissingTextureAtlasSprite.getLocation())) {
-				ModelRenderProperties overlayRenderProps =
-					new ModelRenderProperties(false, modSprite, this.itemTransforms);
-				// TODO: Port to Fabric - ComposedModelState is NeoForge-specific; use Fabric equivalent
-				// QuadCollection overlayQuads = baker.compute(
-				// 	new ItemModelGenerator.ItemLayerKey(modSprite,
-				// 		new ComposedModelState(BlockModelRotation.IDENTITY,
-				// 			TRANSFORM.apply(layers * 0.001F)), layers)
-				// );
-				// TODO: Port to Fabric - CuboidItemModelWrapper has private constructor in 26.1.2
-			// Need to use builder/unbaked API. Skipping empty overlay for now.
-			// QuadCollection overlayQuads = baker.compute(...);
-			// modelLayers.add(new CuboidItemModelWrapper(List.of(), overlayQuads, overlayRenderProps, this.transformation));
-			// layers++;
+				QuadCollection overlayQuads = ItemModelLayerHelper.computeItemLayer(
+					baker, modSprite, BlockModelRotation.IDENTITY, layerIndex
+				);
+				boolean usesBlockLight = modSprite.sprite().atlasLocation() == TextureAtlas.LOCATION_BLOCKS;
+				modelLayers.add(new SimpleItemModel(overlayQuads, modSprite, this.itemTransforms, this.transformation, usesBlockLight));
+				layerIndex++;
 			}
 		}
 		return new CompositeModel(modelLayers);
@@ -129,11 +101,38 @@ public class TravellersGearItemModel implements ItemModel {
 		return ret.toString();
 	}
 
-	private Material.Baked getModifierSprite(ResourceKey<TravellersModifier> modifier,
+	private Material.Baked getModifierSprite(ResourceKey<TravellersModifier> modifierKey,
 	                                         MaterialBaker baker) {
-		Identifier spriteId = modifier.identifier()
+		Identifier spriteId = modifierKey.identifier()
 			.withPath(p -> "item/" + this.modifierDirectory.getPath() + "/" + p);
 		return baker.get(new Material(spriteId), DEBUG_NAME);
+	}
+
+	/**
+	 * Simple ItemModel implementation that renders a QuadCollection with given properties.
+	 */
+	private record SimpleItemModel(QuadCollection quads, Material.Baked particleMaterial,
+	                               ItemTransforms itemTransforms, Matrix4fc localTransform,
+	                               boolean usesBlockLight) implements ItemModel {
+
+		@Override
+		public void update(ItemStackRenderState output, ItemStack item, ItemModelResolver resolver,
+		                   ItemDisplayContext displayContext, @Nullable ClientLevel level,
+		                   @Nullable ItemOwner owner, int seed) {
+			if (this.quads.getAll().isEmpty()) return;
+
+			output.appendModelIdentityElement(this);
+			ItemStackRenderState.LayerRenderState layer = output.newLayer();
+			layer.setUsesBlockLight(this.usesBlockLight);
+			layer.setParticleMaterial(this.particleMaterial);
+			layer.setItemTransform(this.itemTransforms.getTransform(displayContext));
+			layer.setLocalTransform(this.localTransform);
+			layer.prepareQuadList().addAll(this.quads.getAll());
+
+			if (this.quads.hasMaterialFlag(2)) {
+				output.setAnimated();
+			}
+		}
 	}
 
 	public record Unbaked(ItemModel.Unbaked baseModel, Identifier modifierDirectory)

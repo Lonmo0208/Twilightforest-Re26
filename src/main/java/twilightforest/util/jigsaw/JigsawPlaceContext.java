@@ -22,8 +22,8 @@ import java.util.function.UnaryOperator;
 
 public record JigsawPlaceContext(BlockPos templatePos, StructurePlaceSettings placementSettings, JigsawRecord seedJigsaw, List<JigsawRecord> spareJigsaws, Identifier templateLocation) {
 	@Nullable
-	public static JigsawPlaceContext pickPlaceableJunction(BlockPos parentStructureTemplatePos, BlockPos sourceJigsawPos, FrontAndTop sourceOrientation, StructureTemplateManager structureManager, @Nullable Identifier templateLocation, String jigsawNameLabel, RandomSource random) {
-		if (templateLocation == null)
+	public static JigsawPlaceContext pickPlaceableJunction(BlockPos parentStructureTemplatePos, BlockPos sourceJigsawPos, FrontAndTop sourceOrientation, @Nullable StructureTemplateManager structureManager, @Nullable Identifier templateLocation, String jigsawNameLabel, RandomSource random) {
+		if (templateLocation == null || structureManager == null)
 			return null;
 
 		List<StructureTemplate.StructureBlockInfo> connectables = JigsawUtil.readConnectableJigsaws(

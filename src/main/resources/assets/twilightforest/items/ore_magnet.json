@@ -7,6 +7,10 @@
     },
     "on_true": {
       "type": "minecraft:range_dispatch",
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "twilightforest:item/ore_magnet_pulling_1"
+      },
       "entries": [
         {
           "model": {

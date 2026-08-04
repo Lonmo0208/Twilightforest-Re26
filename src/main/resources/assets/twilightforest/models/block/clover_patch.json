@@ -1,6 +1,8 @@
 {
-  "parent": "minecraft:block/cross",
+  "fabric:type": "twilightforest:patch",
+  "shaggify": false,
   "textures": {
-    "cross": "twilightforest:block/cloverpatch"
+    "particle": "twilightforest:block/cloverpatch",
+    "texture": "twilightforest:block/cloverpatch"
   }
 }

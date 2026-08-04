@@ -1,12 +1,8 @@
 {
-  "parent": "minecraft:block/cube",
+  "parent": "twilightforest:item/giant_block_base",
   "textures": {
-    "down": "minecraft:block/obsidian",
-    "east": "minecraft:block/obsidian",
-    "north": "minecraft:block/obsidian",
-    "particle": "minecraft:block/obsidian",
-    "south": "minecraft:block/obsidian",
-    "up": "minecraft:block/obsidian",
-    "west": "minecraft:block/obsidian"
+    "all": "minecraft:block/obsidian",
+    "top": "minecraft:block/obsidian",
+    "particle": "minecraft:block/obsidian"
   }
 }

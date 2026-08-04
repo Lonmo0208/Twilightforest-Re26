@@ -21,6 +21,10 @@ public record UnbakedPatchBlockStateModel(Identifier modelId) implements CustomU
 	@Override
 	public BlockStateModel bake(ModelBaker baker) {
 		ResolvedModel resolved = baker.getModel(this.modelId);
+		UnbakedModel wrapped = resolved.wrapped();
+		if (wrapped instanceof UnbakedPatchModel patch) {
+			return patch.bakeInternal(resolved.getTopTextureSlots(), baker, BlockModelRotation.IDENTITY, true, true, null, null);
+		}
 		return new SingleVariant(SimpleModelWrapper.bake(baker, this.modelId, BlockModelRotation.IDENTITY));
 	}
 

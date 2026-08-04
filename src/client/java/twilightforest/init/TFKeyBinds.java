@@ -27,5 +27,9 @@ public abstract class TFKeyBinds {
 		return "key." + TwilightForestMod.ID + "." + s;
 	}
 
-	public static void init() {}
+	public static void init() {
+		// KeyMappings are created statically and automatically registered via their constructors.
+		// The Category is also created statically.
+		// Nothing additional needed for registration - the static initializers handle it.
+	}
 }

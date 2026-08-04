@@ -37,9 +37,20 @@ public class UnbakedPatchModel implements UnbakedModel {
 	}
 
 	public BlockStateModel bakeInternal(TextureSlots textures, ModelBaker baker, ModelState modelState, boolean useAmbientOcclusion, boolean usesBlockLight, ItemTransforms itemTransforms, ContextMap additionalProperties) {
-		TextureSlots resolved = new TextureSlots.Resolver().addLast(textures).addLast(this.textureSlots).resolve(DEBUG_NAME);
-		Material textureMaterial = resolved.getMaterial("texture");
-		Material particleMaterial = resolved.getMaterial("particle");
+		// The incoming textures are already resolved TextureSlots - use them directly for material lookups.
+		Material textureMaterial = textures.getMaterial("texture");
+		Material particleMaterial = textures.getMaterial("particle");
+
+		// Fallback: if not found in incoming textures, resolve our own slot definitions
+		if (textureMaterial == null || particleMaterial == null) {
+			TextureSlots ourResolved = new TextureSlots.Resolver().addLast(this.textureSlots).resolve(DEBUG_NAME);
+			if (textureMaterial == null) {
+				textureMaterial = ourResolved.getMaterial("texture");
+			}
+			if (particleMaterial == null) {
+				particleMaterial = ourResolved.getMaterial("particle");
+			}
+		}
 
 		Material.Baked texture = textureMaterial != null ? baker.materials().get(textureMaterial, DEBUG_NAME) : null;
 		Material.Baked particle = particleMaterial != null ? baker.materials().get(particleMaterial, DEBUG_NAME) : texture;

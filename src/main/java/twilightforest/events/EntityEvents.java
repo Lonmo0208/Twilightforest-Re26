@@ -409,14 +409,8 @@ public class EntityEvents {
 				if (isDarkTower) {
 					TwilightForestMod.LOGGER.info("TF-DEBUG DarkTower spawn check pos={} index={} pieces={}", pos, index, start.getPieces().size());
 				}
-				if (index < 0) {
-					if (isDarkTower) {
-						TwilightForestMod.LOGGER.info("TF-DEBUG DarkTower index<0 -> fallback to main list");
-					}
-					// 位置在结构范围内但不在任何组件包围盒内（如翼楼间隙、桥梁、外围）时，
-					// 回退到结构主刷怪列表（索引 0），确保坤铅铁恶灵等结构怪物能在整个结构区域自然生成
-					return landmark.getSpawnableMonsterList(0);
-				}
+				if (index < 0)
+					return null;
 
 				return landmark.getSpawnableMonsterList(index);
 			}

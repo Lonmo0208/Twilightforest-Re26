@@ -3,6 +3,8 @@
 	"package": "twilightforest.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
+		"CameraMixin",
+		"MouseHandlerMixin",
 		"ClientLevelMixin",
 		"EntityRenderDispatcherMixin",
 		"MapRendererMixin",

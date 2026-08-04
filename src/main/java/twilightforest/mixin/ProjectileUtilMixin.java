@@ -7,8 +7,6 @@ import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
 import twilightforest.entity.TFPart;
 import twilightforest.util.TFEntityExtensions;
 
@@ -37,9 +35,6 @@ import java.util.function.Predicate;
  */
 @Mixin(ProjectileUtil.class)
 public abstract class ProjectileUtilMixin {
-
-	private static final Logger LOGGER = LogUtils.getLogger();
-	private static int debugCounter = 0;
 
 	/**
 	 * Server-side projectile / arrow ray-trace path.
@@ -109,10 +104,6 @@ public abstract class ProjectileUtilMixin {
 					augmented.add(tfPart);
 				}
 			}
-		}
-		if (augmented != null && debugCounter++ % 20 == 0) {
-			LOGGER.info("[TF Debug] ProjectileUtilMixin: added {} TFPart(s) to entity pick list (total entities: {} -> {})",
-				augmented.size() - original.size(), original.size(), augmented.size());
 		}
 		return augmented != null ? augmented : original;
 	}

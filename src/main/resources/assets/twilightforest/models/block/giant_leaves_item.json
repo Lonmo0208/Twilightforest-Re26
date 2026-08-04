@@ -1,12 +1,8 @@
 {
-  "parent": "minecraft:block/cube",
+  "parent": "twilightforest:item/giant_block_base",
   "textures": {
-    "down": "minecraft:block/oak_leaves",
-    "east": "minecraft:block/oak_leaves",
-    "north": "minecraft:block/oak_leaves",
-    "particle": "minecraft:block/oak_leaves",
-    "south": "minecraft:block/oak_leaves",
-    "up": "minecraft:block/oak_leaves",
-    "west": "minecraft:block/oak_leaves"
+    "all": "minecraft:block/oak_leaves",
+    "top": "minecraft:block/oak_leaves",
+    "particle": "minecraft:block/oak_leaves"
   }
 }

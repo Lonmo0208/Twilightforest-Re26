@@ -1,12 +1,8 @@
 {
-  "parent": "minecraft:block/cube",
+  "parent": "twilightforest:item/giant_block_base",
   "textures": {
-    "down": "minecraft:block/oak_log_top",
-    "east": "minecraft:block/oak_log",
-    "north": "minecraft:block/oak_log",
-    "particle": "minecraft:block/oak_log",
-    "south": "minecraft:block/oak_log",
-    "up": "minecraft:block/oak_log_top",
-    "west": "minecraft:block/oak_log"
+    "all": "minecraft:block/oak_log",
+    "top": "minecraft:block/oak_log_top",
+    "particle": "minecraft:block/oak_log"
   }
 }

@@ -29,8 +29,10 @@ import net.minecraft.world.phys.Vec2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import twilightforest.beanification.Component;
+import twilightforest.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.model.TFModelLayers;
 import twilightforest.config.TFConfig;
@@ -52,8 +54,47 @@ public class TravellersClientEvents {
 		return TFKeyBinds.ZOOM_KEY.isDown() && !player.isScoping();
 	}
 
-	// TODO: Port to Fabric - Event registration (these methods need to be called from Fabric event callbacks)
+	private static boolean safeBoolAttachment(Player player, AttachmentType<Boolean> type) {
+		Boolean val = player.getAttached(type);
+		return val != null && val;
+	}
+
+	private static int safeIntAttachment(Player player, AttachmentType<Integer> type) {
+		Integer val = player.getAttached(type);
+		return val != null ? val : 0;
+	}
+
+	private static float safeFloatAttachment(Player player, AttachmentType<Float> type) {
+		Float val = player.getAttached(type);
+		return val != null ? val : 0.0F;
+	}
+
+	@PostConstruct
 	private void setup() {
+		// Register per-frame client tick handling for all traveler's gear keybinds and modifiers
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			LocalPlayer localPlayer = client.player;
+			if (localPlayer == null) return;
+
+			// Key press detection (consumeClick for fresh presses)
+			this.handleDoubleJump();
+			this.cycleItemDisplayMap();
+			this.swapHotbar();
+			this.toggleRedThreadVision();
+
+			// Per-frame state updates
+			this.updateZoomState();
+			this.updateGradualGlideState();
+
+			// Movement modifiers
+			this.handleAgileRanger(localPlayer);
+			this.handleStraightAhead(localPlayer);
+			this.speedUpControlledWhileSneaking(localPlayer);
+			this.handleSidestep(localPlayer);
+
+			// Stealth effect
+			this.handleStealth();
+		});
 	}
 
 	// Reflection-based helper to set the protected moveVector field on ClientInput
@@ -87,7 +128,6 @@ public class TravellersClientEvents {
 		boolean isLegalItem = (stack.getItem() instanceof ProjectileWeaponItem || stack.is(TFItemTags.TRAVELLERS_AGILE_RANGER_WHITELISTED)) && !stack.is(TFItemTags.TRAVELLERS_AGILE_RANGER_BLACKLISTED);
 		if (localPlayer.isUsingItem() && !localPlayer.isPassenger() && isLegalItem) {
 			ClientInput input = localPlayer.input;
-			// In 26.1.2, ClientInput.moveVector is protected -- use reflection to modify it
 			Vec2 old = input.getMoveVector();
 			setMoveVector(input, new Vec2(old.x * agileRangerModifier, old.y * agileRangerModifier));
 		}
@@ -106,15 +146,13 @@ public class TravellersClientEvents {
 		if (!TravellersModifiersManager.isModifierActive(localPlayer, bootsStack, TravellersModifiersManager.STRAIGHT_AHEAD_MODIFIER) || multiplier == null || input.getMoveVector().y <= 0)
 			multiplier = 1D;
 		attributeInstance.addOrUpdateTransientModifier(new AttributeModifier(TFAttributeModifiers.STRAIGHT_AHEAD_ATTRIBUTE_MODIFIER_LOCATION, multiplier - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
-		// In 26.1.2, ClientInput.moveVector is protected -- use reflection to modify it
 		Vec2 old = input.getMoveVector();
 		setMoveVector(input, new Vec2((float)(old.x / multiplier), old.y));
 	}
 
 	private void speedUpControlledWhileSneaking(LocalPlayer localPlayer) {
-		if (localPlayer == null || !localPlayer.getAttached(TFDataAttachments.IS_GRADUALLY_GLIDING) || !localPlayer.isShiftKeyDown())
+		if (localPlayer == null || !safeBoolAttachment(localPlayer, TFDataAttachments.IS_GRADUALLY_GLIDING) || !localPlayer.isShiftKeyDown())
 			return;
-		// In 26.1.2, ClientInput.moveVector is protected -- use reflection to modify it
 		Vec2 old = localPlayer.input.getMoveVector();
 		setMoveVector(localPlayer.input, new Vec2(old.x / 0.2F, old.y / 0.2F));
 	}
@@ -125,10 +163,10 @@ public class TravellersClientEvents {
 
 		ClientInput input = localPlayer.input;
 		float leftImpulse = input.getMoveVector().x;
-		boolean lastImpulseZero = localPlayer.getAttached(TFDataAttachments.LAST_HORIZONTAL_IMPULSE) == 0;
-		boolean sameImpulseDirection = Math.signum(localPlayer.getAttached(TFDataAttachments.LAST_NON_ZERO_HORIZONTAL_IMPULSE)) == Math.signum(leftImpulse);
+		boolean lastImpulseZero = safeFloatAttachment(localPlayer, TFDataAttachments.LAST_HORIZONTAL_IMPULSE) == 0;
+		boolean sameImpulseDirection = Math.signum(safeFloatAttachment(localPlayer, TFDataAttachments.LAST_NON_ZERO_HORIZONTAL_IMPULSE)) == Math.signum(leftImpulse);
 		int currentTime = localPlayer.tickCount;
-		int lastWalkingTime = localPlayer.getAttached(TFDataAttachments.LAST_HORIZONTAL_WALKING_TIME);
+		int lastWalkingTime = safeIntAttachment(localPlayer, TFDataAttachments.LAST_HORIZONTAL_WALKING_TIME);
 		boolean hasDoubleTapped = currentTime - lastWalkingTime < 4;
 
 		if (lastImpulseZero && sameImpulseDirection && hasDoubleTapped && leftImpulse != 0) {
@@ -145,13 +183,6 @@ public class TravellersClientEvents {
 		}
 	}
 
-	// Legacy NeoForge event-based methods removed -- use the Fabric-compatible versions above
-
-	// TODO: Wire these methods into Fabric event callbacks (ClientTickEvents, etc.)
-
-	/**
-	 * Called per frame from ClientTickEvents (or equivalent) to apply stealth effect.
-	 */
 	private void handleStealth() {
 		if (Minecraft.getInstance().level == null)
 			return;
@@ -161,16 +192,12 @@ public class TravellersClientEvents {
 		}
 	}
 
-	/**
-	 * Called per frame from ClientTickEvents (or equivalent) to detect double-jump key press.
-	 * Uses KeyMapping.consumeClick() to detect fresh presses (Fabric-compatible pattern).
-	 */
 	private void handleDoubleJump() {
 		if (!(Minecraft.getInstance().player instanceof LocalPlayer localPlayer)
 			|| !Minecraft.getInstance().options.keyJump.consumeClick()
 			|| Minecraft.getInstance().screen != null)
 			return;
-		int lastJumpKeyPressTime = localPlayer.getAttached(TFDataAttachments.LAST_JUMP_KEY_PRESS_TIME);
+		int lastJumpKeyPressTime = safeIntAttachment(localPlayer, TFDataAttachments.LAST_JUMP_KEY_PRESS_TIME);
 		localPlayer.setAttached(TFDataAttachments.LAST_JUMP_KEY_PRESS_TIME, localPlayer.tickCount);
 		boolean avoidCreativeFly = localPlayer.getAbilities().mayfly && localPlayer.tickCount - lastJumpKeyPressTime <= 6;
 		if (!avoidCreativeFly && TravellersModifiersManager.isModifierActive(localPlayer, TravellersModifiersManager.DOUBLE_JUMP_MODIFIER)) {
@@ -180,36 +207,25 @@ public class TravellersClientEvents {
 		}
 	}
 
-	/**
-	 * Called when the FOV modifier is computed (via Fabric FovModifierCallback or similar).
-	 * Returns the modified FOV modifier.
-	 */
-	private float updateZoomState(float currentFovModifier) {
+	private void updateZoomState() {
 		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null) return currentFovModifier;
-		boolean wasUsingZoom = player.getAttached(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER);
+		if (player == null) return;
+		boolean wasUsingZoom = safeBoolAttachment(player, TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER);
 		ItemStack headStack = player.getItemBySlot(EquipmentSlot.HEAD);
 		Float zoomModifier = headStack.get(TFDataComponents.ZOOM_ABILITY_MODIFIER);
 		boolean isUsingZoom = isZoomKeyHeld(player) && TravellersModifiersManager.isModifierActive(player, headStack, TravellersModifiersManager.ZOOM_ABILITY) && zoomModifier != null;
-		float result = currentFovModifier;
-		if (isUsingZoom)
-			result = currentFovModifier * zoomModifier;
 		if (isUsingZoom == wasUsingZoom)
-			return result;
+			return;
 
 		player.setAttached(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER, isUsingZoom);
 		player.playSound(isUsingZoom ? TFSounds.GOGGLES_ZOOM_IN : TFSounds.GOGGLES_ZOOM_OUT);
 		ClientPlayNetworking.send(new GogglesZoomPacket(isUsingZoom, player.getUUID()));
-		return result;
 	}
 
-	/**
-	 * Called per frame from ClientTickEvents (or equivalent) to update gradual glide state.
-	 */
 	private void updateGradualGlideState() {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
-		boolean wasGraduallyGliding = player.getAttached(TFDataAttachments.IS_GRADUALLY_GLIDING);
+		boolean wasGraduallyGliding = safeBoolAttachment(player, TFDataAttachments.IS_GRADUALLY_GLIDING);
 		boolean shiftHeld = player.isShiftKeyDown();
 		boolean isGraduallyGliding = TFConfig.manualTravellersWingsGradualGlideDefault == shiftHeld && player.getKnownMovement().y() < 0 && !player.onGround();
 		if (isGraduallyGliding == wasGraduallyGliding)
@@ -219,18 +235,12 @@ public class TravellersClientEvents {
 		ClientPlayNetworking.send(new GradualGlidePacket(isGraduallyGliding, player.getUUID()));
 	}
 
-	/**
-	 * Called from a key input callback or ClientTickEvents when ITEM_DISPLAY_MAP_CYCLE_KEY is pressed.
-	 */
 	private void cycleItemDisplayMap() {
 		if (!(Minecraft.getInstance().player instanceof LocalPlayer localPlayer) || !TFKeyBinds.ITEM_DISPLAY_MAP_CYCLE_KEY.consumeClick())
 			return;
 		ClientPlayNetworking.send(CycleMapSlotPacket.INSTANCE);
 	}
 
-	/**
-	 * Called from a key input callback or ClientTickEvents when SWAP_HOTBAR_KEY is pressed.
-	 */
 	private void swapHotbar() {
 		if (!TFKeyBinds.SWAP_HOTBAR_KEY.consumeClick())
 			return;
@@ -243,9 +253,6 @@ public class TravellersClientEvents {
 		ClientPlayNetworking.send(SwapHotbarPacket.INSTANCE);
 	}
 
-	/**
-	 * Called from a key input callback or ClientTickEvents when RED_THREAD_VISION_KEY is pressed.
-	 */
 	private void toggleRedThreadVision() {
 		this.toggleBooleanDataAttachment(TFKeyBinds.RED_THREAD_VISION_KEY.consumeClick(), TravellersModifiersManager.RED_THREAD_VISION_MODIFIER, TFDataAttachments.TRAVELLERS_GOGGLES_RED_THREAD_VISION);
 	}
@@ -258,15 +265,11 @@ public class TravellersClientEvents {
 		if (player == null || !TravellersModifiersManager.isModifierActive(player, modifier))
 			return;
 
-		boolean current = player.getAttached(attachment);
+		boolean current = safeBoolAttachment(player, attachment);
 		player.setAttached(attachment, !current);
 	}
 
-	/**
-	 * Called when the mouse sensitivity is computed (via a Fabric callback or mixin).
-	 * Returns the modified mouse sensitivity.
-	 */
-	private double slowZoomSensitivity(boolean cinematicCameraEnabled, double mouseSensitivity) {
+	public double slowZoomSensitivity(boolean cinematicCameraEnabled, double mouseSensitivity) {
 		Player player = Minecraft.getInstance().player;
 		if (cinematicCameraEnabled || player == null)
 			return mouseSensitivity;
@@ -276,26 +279,17 @@ public class TravellersClientEvents {
 		if (zoomModifier == null || !isZoomKeyHeld(player))
 			return mouseSensitivity;
 
-		// vanilla math for turning is (m * 0.6 + 0.2)³ * 8; where m is the mouse sensitivity
-		// vanilla spyglasses avoid using the "* 8" part, so we probably want to as well
-		// the mod value to reverse that was borrowed from IE since they also have zoom functionality
-		// we can then divide by our zoom modifier (and add 0.05 to slow it down slightly) to set the sensitivity to a reasonable value when zooming
 		double mod = 0.5D - 1 / (6 * mouseSensitivity);
 		double fovMod = zoomModifier + 0.05F;
 		return mod * mouseSensitivity / fovMod;
 	}
 
-	/**
-	 * Called to render traveller gloves over the first-person arm.
-	 * Returns true if the gloves were rendered (cancelling the default arm render).
-	 */
-	private boolean renderGlovesInFirstPerson(AbstractClientPlayer player, HumanoidArm arm, SubmitNodeCollector collector, PoseStack poseStack, int packedLight) {
+	public boolean renderGlovesInFirstPerson(AbstractClientPlayer player, HumanoidArm arm, SubmitNodeCollector collector, PoseStack poseStack, int packedLight) {
 		if (TFConfig.firstPersonGloveOverlay) {
 			ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
 			if (chestStack.has(TFDataComponents.TRAVELLERS_HAS_GLOVES) && !chestStack.has(TFDataComponents.EMPERORS_CLOTH)) {
 				boolean rightArm = arm == HumanoidArm.RIGHT;
 
-				// Get player model for arm pose setup (same as AvatarRenderer.renderHand)
 				AvatarRenderer<AbstractClientPlayer> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getPlayerRenderer(player);
 				PlayerModel playerModel = renderer.getModel();
 				ModelPart armPart = rightArm ? playerModel.rightArm : playerModel.leftArm;
@@ -306,10 +300,8 @@ public class TravellersClientEvents {
 				playerModel.leftArm.zRot = -0.1F;
 				playerModel.rightArm.zRot = 0.1F;
 
-				// Get the player's skin texture
 				Identifier skinTexture = player.getSkin().body().texturePath();
 
-				// Render the player's arm skin FIRST
 				collector.submitModelPart(
 					armPart,
 					poseStack,
@@ -319,7 +311,6 @@ public class TravellersClientEvents {
 					null
 				);
 
-				// Get the glove model part from the baked armor model layer
 				boolean slim = playerModel.slim;
 				ModelPart gloveRoot = Minecraft.getInstance().getEntityModels().bakeLayer(
 					slim ? TFModelLayers.TRAVELLERS_ARMOR_CHEST_GLOVES_SLIM : TFModelLayers.TRAVELLERS_ARMOR_CHEST_GLOVES
@@ -330,12 +321,10 @@ public class TravellersClientEvents {
 				gloveArmPart.skipDraw = false;
 				gloveArmPart.visible = true;
 
-				// Copy the pose from the vanilla arm to the glove arm
 				gloveArmPart.xRot = armPart.xRot;
 				gloveArmPart.yRot = armPart.yRot;
 				gloveArmPart.zRot = armPart.zRot;
 
-				// Render the glove ON TOP of the arm skin
 				Identifier gloveLocation = TwilightForestMod.prefix("textures/models/armor/travellers_layer_1.png");
 				collector.submitModelPart(
 					gloveArmPart,

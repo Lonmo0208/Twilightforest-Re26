@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:block/block",
   "textures": {
-    "layer0": "twilightforest:block/castle_door"
+    "all": "twilightforest:block/castle_door",
+    "particle": "twilightforest:block/castle_door"
   }
 }

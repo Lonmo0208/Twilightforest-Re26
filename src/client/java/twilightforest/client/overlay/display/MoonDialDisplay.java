@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.MoonPhase;
 import twilightforest.TwilightForestMod;
-import twilightforest.item.MoonDialItem;
 
 public class MoonDialDisplay implements ItemDisplay {
 
@@ -29,8 +28,20 @@ public class MoonDialDisplay implements ItemDisplay {
 	}
 
 	private Component getText(Minecraft minecraft) {
-		return MoonDialItem.getMoonPhase(minecraft.level);
+		MoonPhase phase = minecraft.level.environmentAttributes().getDimensionValue(EnvironmentAttributes.MOON_PHASE);
+		return Component.translatable(PHASE_KEYS[phase.index()]);
 	}
+
+	private static final String[] PHASE_KEYS = new String[]{
+		"item.twilightforest.moon_dial.phase_0",
+		"item.twilightforest.moon_dial.phase_1",
+		"item.twilightforest.moon_dial.phase_2",
+		"item.twilightforest.moon_dial.phase_3",
+		"item.twilightforest.moon_dial.phase_4",
+		"item.twilightforest.moon_dial.phase_5",
+		"item.twilightforest.moon_dial.phase_6",
+		"item.twilightforest.moon_dial.phase_7"
+	};
 
 	@Override
 	public Bounds getWidgetSize(ItemStack item, Minecraft minecraft, Gui gui, Player player, int widestWidgetWidth) {

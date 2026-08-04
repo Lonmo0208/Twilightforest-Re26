@@ -640,11 +640,20 @@ public class Hydra extends BaseTFBoss {
 		return true;
 	}
 
+	public boolean twilightforest$isMultipartEntity() {
+		return true;
+	}
+
 	/**
 	 * We need to do this for the bounding boxes on the parts to become active
 	 */
 	@Nullable
 	public Entity[] getParts() {
+		return this.partArray;
+	}
+
+	@Nullable
+	public Entity[] twilightforest$getParts() {
 		return this.partArray;
 	}
 

@@ -6,5 +6,6 @@ import twilightforest.TwilightForestMod;
 public abstract class TFKeyBindsCategories {
 	public static final KeyMapping.Category TRAVELLERS_GEAR = new KeyMapping.Category(TwilightForestMod.prefix("travellers_gear"));
 
-	public static void init() {}
+	public static void init() {
+	}
 }

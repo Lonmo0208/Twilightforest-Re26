@@ -8,11 +8,11 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.TooltipFlag;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -25,27 +25,21 @@ public class PocketWatchItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
-		if (!level.isClientSide() && owner instanceof Player player) {
-			if (slot == null) {
-				for (int i = 0; i <= 8; i++) {
-					if (player.getInventory().getItem(i).is(this)) {
-						player.addEffect(new MobEffectInstance(MobEffects.SPEED, 5, 0, false, false, false));
-						player.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, 5, 0, false, false, false));
-						break;
-					}
-				}
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
+		if (!level.isClientSide() && owner instanceof LivingEntity living) {
+			if (slot != null && slot.getType() == EquipmentSlot.Type.HAND && slot.getIndex() >= 0 && slot.getIndex() <= 8) {
+				living.addEffect(new MobEffectInstance(MobEffects.SPEED, 5, 0, false, false, false));
+				living.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, 5, 0, false, false, false));
 			}
-			if (player.isHolding(this)) {
-				player.addEffect(new MobEffectInstance(MobEffects.SPEED, 5, 0, false, false, false));
-				player.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, 5, 0, false, false, false));
-				player.addEffect(new MobEffectInstance(MobEffects.HASTE, 5, 0, false, false, false));
+
+			if (living.isHolding(this)) {
+				living.addEffect(new MobEffectInstance(MobEffects.HASTE, 5, 0, false, false, false));
 			}
 		}
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
 		builder.accept(TOOLTIP);
 	}
 }

@@ -57,7 +57,7 @@ public class LichTowerStructure extends ControlledSpawningStructure {
 					.add(new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 1, 2), 10)
 					.add(new MobSpawnSettings.SpawnerData(EntityType.CREEPER, 1, 1), 1)
 					.add(new MobSpawnSettings.SpawnerData(EntityType.ENDERMAN, 1, 2), 1)
-					.add(new MobSpawnSettings.SpawnerData(TFEntities.DEATH_TOME.get(), 2, 3), 10)
+					.add(new MobSpawnSettings.SpawnerData(TFEntities.DEATH_TOME.get(), 1, 2), 5)
 					.add(new MobSpawnSettings.SpawnerData(EntityType.WITCH, 1, 1), 1)
 					.build()
 			),

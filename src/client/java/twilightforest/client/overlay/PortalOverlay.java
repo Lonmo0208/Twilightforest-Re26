@@ -17,7 +17,7 @@ public class PortalOverlay {
 		Window window = minecraft.getWindow();
 		if (player != null) {
 			TFPortalAttachment portal = player.getAttached(TFDataAttachments.TF_PORTAL_COOLDOWN);
-			if (portal.getPortalTimer() > 0) {
+			if (portal != null && portal.getPortalTimer() > 0) {
 				float alpha = (float) portal.getPortalTimer() / (float) TFPortalAttachment.MAX_TICKS;
 				var model = minecraft.getModelManager().getBlockStateModelSet().get(TFBlocks.TWILIGHT_PORTAL.defaultBlockState());
 				var particleMaterial = model.particleMaterial();

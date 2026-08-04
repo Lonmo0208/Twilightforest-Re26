@@ -8,6 +8,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.joml.Vector3f;
 import twilightforest.components.entity.TravellersWingsAnimAttachment;
@@ -166,12 +167,30 @@ public class TravellersWingsModel extends HumanoidModel<HumanoidRenderState> {
 		);
 	}
 
-	// TODO: 26.1.2 - adapt to new render system - called separately from renderer with entity reference
+	// Overload for Fabric 26.1.2 rendering pipeline using HumanoidRenderState
+	public void setupModelAnimations(HumanoidRenderState state, float partialTick) {
+		this.bodyParts().forEach(modelPart -> modelPart.getAllParts().forEach(ModelPart::resetPose));
+		super.setupAnim(state);
+
+		// Try to get the entity from the current client player for animation data
+		Entity cameraEntity = Minecraft.getInstance().getCameraEntity();
+		LivingEntity entity = cameraEntity instanceof LivingEntity living ? living : null;
+		if (entity == null) {
+			entity = Minecraft.getInstance().player;
+		}
+		if (entity == null) return;
+
+		float ageInTicks = state.ageInTicks;
+		setupModelAnimations(entity, 0, 0, ageInTicks, 0, 0);
+	}
+
 	public void setupModelAnimations(LivingEntity entity, float f, float f1, double ageInTicks, float netHeadYaw, float headPitch) {
 		this.bodyParts().forEach(modelPart -> modelPart.getAllParts().forEach(ModelPart::resetPose));
 		super.setupAnim(new HumanoidRenderState() {}); // Dummy state, actual pose set below
 		TravellersWingsAnimAttachment animAttachment = entity.getAttached(TFDataAttachments.TRAVELLERS_WINGS_ANIM);
 		TravellersWingsAttachment attachment = entity.getAttached(TFDataAttachments.TRAVELLERS_WINGS);
+
+		if (animAttachment == null || attachment == null) return;
 
 		double dtInTicks = ageInTicks - animAttachment.oldAgeInTicks;
 

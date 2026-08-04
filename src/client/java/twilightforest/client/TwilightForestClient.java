@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.BabyModelTransform;
 import net.minecraft.client.model.HumanoidModel;
@@ -59,6 +60,7 @@ import twilightforest.client.properties.MoonwormQueenPulse;
 import twilightforest.client.properties.OreMeterFlash;
 import twilightforest.client.properties.PotionFlaskDamage;
 import twilightforest.client.properties.PotionFlaskDosage;
+import twilightforest.client.renderer.armor.TFArmorRenderer;
 import twilightforest.client.renderer.block.*;
 import twilightforest.client.renderer.entity.*;
 import twilightforest.client.renderer.special.*;
@@ -90,6 +92,13 @@ public class TwilightForestClient implements ClientModInitializer {
 		registerParticleFactories();
 		registerBlockColors();
 		registerItemColors();
+
+		// Register armor renderers
+		TFArmorRenderer.bootstrap();
+
+		// Register boat texture generator
+		ResourceLoader.get(net.minecraft.server.packs.PackType.CLIENT_RESOURCES)
+			.registerReloadListener(TwilightForestMod.prefix("texture_generator"), TextureGeneratorReloadListener.INSTANCE);
 
 		// Register client-side packet handlers (payload types already registered in TwilightForestMod)
 		registerClientHandlers();

@@ -519,6 +519,10 @@ public class Naga extends BaseTFBoss {
 		return true;
 	}
 
+	public boolean twilightforest$isMultipartEntity() {
+		return true;
+	}
+
 	@Override
 	public void setId(int id) {
 		super.setId(id);
@@ -537,6 +541,11 @@ public class Naga extends BaseTFBoss {
 
 	@Nullable
 	public Entity[] getParts() {
+		return this.bodySegments;
+	}
+
+	@Nullable
+	public Entity[] twilightforest$getParts() {
 		return this.bodySegments;
 	}
 

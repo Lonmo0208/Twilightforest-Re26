@@ -40,8 +40,10 @@ return planesMatch && source.getOpposite() == target;
 return planesMatch;
 }
 }
-public static List<StructureTemplate.StructureBlockInfo> readConnectableJigsaws(StructureTemplateManager manager, Identifier templateLocation, StructurePlaceSettings settings, @Nullable RandomSource random) {
-return readConnectableJigsaws(manager.getOrCreate(templateLocation), settings, random);
+public static List<StructureTemplate.StructureBlockInfo> readConnectableJigsaws(@Nullable StructureTemplateManager manager, Identifier templateLocation, StructurePlaceSettings settings, @Nullable RandomSource random) {
+	if (manager == null)
+		return List.of();
+	return readConnectableJigsaws(manager.getOrCreate(templateLocation), settings, random);
 }
 public static List<StructureTemplate.StructureBlockInfo> readConnectableJigsaws(@Nullable StructureTemplate template, StructurePlaceSettings settings, @Nullable RandomSource random) {
 if (template == null || BlockPos.ZERO.equals(template.getSize())) {

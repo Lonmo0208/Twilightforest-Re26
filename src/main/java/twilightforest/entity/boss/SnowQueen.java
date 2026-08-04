@@ -407,6 +407,10 @@ public class SnowQueen extends BaseTFBoss implements IBreathAttacker {
 		return true;
 	}
 
+	public boolean twilightforest$isMultipartEntity() {
+		return true;
+	}
+
 	@Override
 	public void recreateFromPacket(ClientboundAddEntityPacket packet) {
 		super.recreateFromPacket(packet);
@@ -418,6 +422,11 @@ public class SnowQueen extends BaseTFBoss implements IBreathAttacker {
 	 */
 	@Nullable
 	public Entity[] getParts() {
+		return this.iceArray;
+	}
+
+	@Nullable
+	public Entity[] twilightforest$getParts() {
 		return this.iceArray;
 	}
 

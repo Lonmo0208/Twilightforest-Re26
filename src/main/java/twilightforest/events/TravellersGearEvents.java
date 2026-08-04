@@ -29,6 +29,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 import twilightforest.beanification.Component;
 import twilightforest.beanification.PostConstruct;
@@ -57,29 +59,39 @@ public class TravellersGearEvents {
 
 	@PostConstruct
 	private void setup() {
-		// TODO: Port to Fabric event system
-		/*
-		NeoForge.EVENT_BUS.addListener(this::magnetizeArrows);
-		NeoForge.EVENT_BUS.addListener(this::performPerfectDodge);
-		NeoForge.EVENT_BUS.addListener(this::reduceSlimySolesFallDamage);
-		NeoForge.EVENT_BUS.addListener(this::tickMovementModifiers);
-		NeoForge.EVENT_BUS.addListener(this::performStealth);
-		NeoForge.EVENT_BUS.addListener(this::disableHighStepWhileSneaking);
-		NeoForge.EVENT_BUS.addListener(this::updateOtherModifiers);
-		NeoForge.EVENT_BUS.addListener(this::cancelSlimySolesJump);
-		NeoForge.EVENT_BUS.addListener(this::activateAndDeactivateTravellersModifiers);
-		NeoForge.EVENT_BUS.addListener(this::cancelCombiningTravellersGear);
-		NeoForge.EVENT_BUS.addListener(this::cancelPhantomSpawns);
-		NeoForge.EVENT_BUS.addListener(this::fireCraftingModifierTrigger);
-		NeoForge.EVENT_BUS.addListener(this::extractItemsFromSwapHotbarModifier);
-		NeoForge.EVENT_BUS.addListener(this::removeModifiersFromTravellersGear);
-		NeoForge.EVENT_BUS.addListener(this::stopDamagingTravellersGear);
-		NeoForge.EVENT_BUS.addListener(this::setLastDamageArmorTime);
-		NeoForge.EVENT_BUS.addListener(this::keepAttachmentsOnDeath);
-		*/
+		// Player tick (pre): movement modifiers, double jump state, step height, stealth, and per-entity modifier updates
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+				FabricEvents.PlayerTickEvent.Pre pre = new FabricEvents.PlayerTickEvent.Pre(player);
+				tickMovementModifiers(pre);
+				disableHighStepWhileSneaking(pre);
+
+				// Also run the post-tick and entity-tick logic for players
+				FabricEvents.PlayerTickEvent.Post post = new FabricEvents.PlayerTickEvent.Post(player);
+				performStealth(post);
+
+				// Run entity tick logic for this player (covers most travellers gear modifiers)
+				if (player.getItemBySlot(EquipmentSlot.CHEST).has(TFDataComponents.IS_TRAVELLERS_GEAR)
+					|| player.getItemBySlot(EquipmentSlot.FEET).has(TFDataComponents.IS_TRAVELLERS_GEAR)
+					|| player.getItemBySlot(EquipmentSlot.HEAD).has(TFDataComponents.IS_TRAVELLERS_GEAR)
+					|| player.getItemBySlot(EquipmentSlot.LEGS).has(TFDataComponents.IS_TRAVELLERS_GEAR)) {
+					FabricEvents.EntityTickEvent.Post entityPost = new FabricEvents.EntityTickEvent.Post(player);
+					updateOtherModifiers(entityPost);
+				}
+			}
+		});
+
+		// Projectile hit (for magnetize/perfect dodge): handled via AbstractArrowMixin
+		// Fall damage, jump, armor hurt, anvil, grindstone, crafting: handled via dedicated mixins
+
+		// Player data copy on death/respawn
+		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
+			FabricEvents.PlayerEvent.Clone clone = new FabricEvents.PlayerEvent.Clone(newPlayer, oldPlayer, !alive);
+			keepAttachmentsOnDeath(clone);
+		});
 	}
 
-	private void magnetizeArrows(FabricEvents.ProjectileImpactEvent event) {
+	public static void magnetizeArrows(FabricEvents.ProjectileImpactEvent event) {
 		Projectile projectile = (Projectile) event.getProjectile();
 		Entity entity = projectile.getOwner();
 		if (!(entity instanceof LivingEntity livingEntity) || !event.getRayTraceResult().getType().equals(HitResult.Type.BLOCK) || projectile.tickCount >= 200)
@@ -102,7 +114,7 @@ public class TravellersGearEvents {
 			projectile.discard();
 	}
 
-	private void performPerfectDodge(FabricEvents.ProjectileImpactEvent event) {
+	public static void performPerfectDodge(FabricEvents.ProjectileImpactEvent event) {
 		HitResult rayResult = event.getRayTraceResult();
 		if (!(rayResult instanceof EntityHitResult entityHitResult) || !(entityHitResult.getEntity() instanceof LivingEntity livingEntity))
 			return;

@@ -5,11 +5,13 @@
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:empty"
+          "type": "minecraft:empty",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:paper"
+          "name": "minecraft:paper",
+          "weight": 1
         }
       ],
       "rolls": 1.0
