@@ -1,10 +1,14 @@
 package twilightforest.events;
 
 
+import java.util.function.Consumer;
+import net.minecraft.world.level.block.Blocks;
 import twilightforest.beanification.Autowired;
 import twilightforest.beanification.Component;
 import twilightforest.beanification.PostConstruct;
 import twilightforest.command.TFCommand;
+import twilightforest.init.TFBlocks;
+import twilightforest.loot.modifiers.GiantToolGroupingModifier;
 import twilightforest.util.HolidayEvent;
 
 //import twilightforest.data.custom.stalactites.entry.StalactiteReloadListener;
@@ -21,31 +25,13 @@ public class RegistrationEvents {
 	// TODO: Port to Fabric - Replace NeoForge event bus with Fabric event callbacks
 	@PostConstruct
 	private void setup() {
-		// TODO: Port to Fabric - All event registrations need Fabric equivalents
-		/*
-		bus.addListener(this::init);
-		bus.addListener(this::sendIMCs);
-		bus.addListener(this::setupPackets);
-		bus.addListener(this::createDataMaps);
-		bus.addListener(this::registerExtraStuff);
-		bus.addListener(this::createNewRegistries);
-		bus.addListener(this::addBlockEntityTypes);
-		bus.addListener(this::setRegistriesForDatapack);
-		bus.addListener(this::registerGenericItemHandlers);
-		bus.addListener(this::addEntityAttributes);
-		bus.addListener(this::registerSpawnPlacements);
-
-
-		bus.addListener(ConfigSetup::loadConfigs);
-		bus.addListener(ConfigSetup::reloadConfigs);
-
-		NeoForge.EVENT_BUS.addListener(this::registerCommands);
-		NeoForge.EVENT_BUS.addListener(AddServerReloadListenersEvent.class, event -> event.addListener(TwilightForestMod.prefix("quests"), new QuestReloadListener()));
-		NeoForge.EVENT_BUS.addListener(AddServerReloadListenersEvent.class, event -> event.addListener(TwilightForestMod.prefix("travellers_modifiers"), TravellersModifiersManager.CacheInvalidationReloadListener.INSTANCE));
-		NeoForge.EVENT_BUS.addListener(AddServerReloadListenersEvent.class, event -> event.addListener(TwilightForestMod.prefix("stalactites"), StalactiteReloadListener.INSTANCE));
-		NeoForge.EVENT_BUS.addListener(AddServerReloadListenersEvent.class, event -> event.addListener(TwilightForestMod.prefix("structure_template_definitions"), StructureTemplateDefinitions.INSTANCE));
-		NeoForge.EVENT_BUS.addListener(ConfigSetup::syncUncraftingConfig);
-		*/
+		// Register GiantPickaxe 64-block grouping conversions
+		// This must run at mod init so GiantToolGroupingModifier can convert
+		// 64 cobblestone/obsidian/oak_log/oak_leaves → 1 giant block item.
+		GiantToolGroupingModifier.CONVERSIONS.put(Blocks.COBBLESTONE, TFBlocks.GIANT_COBBLESTONE.asItem());
+		GiantToolGroupingModifier.CONVERSIONS.put(Blocks.OAK_LOG, TFBlocks.GIANT_LOG.asItem());
+		GiantToolGroupingModifier.CONVERSIONS.put(Blocks.OAK_LEAVES, TFBlocks.GIANT_LEAVES.asItem());
+		GiantToolGroupingModifier.CONVERSIONS.put(Blocks.OBSIDIAN, TFBlocks.GIANT_OBSIDIAN.asItem());
 	}
 
 	// TODO: Port to Fabric - All methods below are NeoForge-specific and need Fabric equivalents
@@ -176,7 +162,8 @@ public class RegistrationEvents {
 		registrar.playToClient(SyncQuestsPacket.TYPE, SyncQuestsPacket.STREAM_CODEC, SyncQuestsPacket::handle);
 		registrar.playToClient(TravellersWingsStatePacket.TYPE, TravellersWingsStatePacket.STREAM_CODEC, TravellersWingsStatePacket::handle);
 	}
-
+	*/
+	/*
 	public void init(Object evt) {
 		evt.enqueueWork(() -> {
 			TFDispenserBehaviors.init();
@@ -468,6 +455,7 @@ public class RegistrationEvents {
 		});
 	}
 
+	/*
 	private void registerCommands(Object event) {
 		this.tfCommand.register(event.getDispatcher(), event.getBuildContext());
 	}

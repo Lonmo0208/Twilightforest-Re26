@@ -382,12 +382,6 @@ public class EntityEvents {
 
 		for (StructureStart start : structureStarts) {
 			if (start.getStructure() instanceof ControlledSpawns landmark) {
-				boolean isDarkTower = start.getStructure() instanceof DarkTowerStructure;
-
-				if (isDarkTower) {
-					TwilightForestMod.LOGGER.info("TF-DEBUG DarkTower start found pos={} isValid={} conquered={}", pos, start.isValid(), start instanceof TFStructureStart s && s.isConquered());
-				}
-
 				if (!start.isValid())
 					continue;
 
@@ -395,20 +389,13 @@ public class EntityEvents {
 					return landmark.getSpawnableList(classification);
 				}
 
-				if (start instanceof TFStructureStart s && s.isConquered()) {
-					if (isDarkTower) {
-						TwilightForestMod.LOGGER.info("TF-DEBUG DarkTower isConquered -> blocked");
-					}
+				if (start instanceof TFStructureStart s && s.isConquered())
 					return null;
-				}
 
 				if (landmark instanceof ValidatedSpawnLocations validator && !validator.canSpawnMob(pos, start.getBoundingBox()))
 					return null;
 
 				final int index = getSpawnListIndexAt(start, pos);
-				if (isDarkTower) {
-					TwilightForestMod.LOGGER.info("TF-DEBUG DarkTower spawn check pos={} index={} pieces={}", pos, index, start.getPieces().size());
-				}
 				if (index < 0)
 					return null;
 

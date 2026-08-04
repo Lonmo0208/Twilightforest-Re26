@@ -306,6 +306,7 @@ public class FabricEvents {
 		private final BlockPos pos;
 		private final BlockState state;
 		private final Player player;
+		private boolean canceled;
 
 		public BreakBlockEvent(Level level, BlockPos pos, BlockState state, Player player) {
 			this.level = level;
@@ -318,8 +319,8 @@ public class FabricEvents {
 		public BlockPos getPos() { return pos; }
 		public BlockState getState() { return state; }
 		public Player getPlayer() { return player; }
-		public boolean isCanceled() { return false; }
-		public void setCanceled(boolean canceled) {}
+		public boolean isCanceled() { return canceled; }
+		public void setCanceled(boolean canceled) { this.canceled = canceled; }
 	}
 
 	// --- ProjectileImpactEvent ---
