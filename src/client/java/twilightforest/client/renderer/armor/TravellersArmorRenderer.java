@@ -17,36 +17,84 @@ import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFKeyBinds;
 import twilightforest.init.custom.TravellersModifiersManager;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class TravellersArmorRenderer extends TFArmorRenderer {
 
 	@Override
 	protected HumanoidModel<HumanoidRenderState> createModel(HumanoidRenderState state, ItemStack stack, EquipmentSlot slot, HumanoidModel<HumanoidRenderState> contextModel) {
-		ModelPart root = switch (slot) {
+		ModelPart sharedRoot = switch (slot) {
 			case HEAD -> getModelPart(TFModelLayers.TRAVELLERS_ARMOR_HELMET);
-			case CHEST -> {
-				ModelPart chestLayer = getModelPart(TFModelLayers.TRAVELLERS_ARMOR_CHEST_GLOVES);
-				chestLayer.getAllParts().forEach(part -> part.skipDraw = true);
-				boolean hasChestplate = stack.has(TFDataComponents.TRAVELLERS_HAS_CHESTPLATE);
-				boolean hasGloves = stack.has(TFDataComponents.TRAVELLERS_HAS_GLOVES);
-				chestLayer.getChild("body").skipDraw = !hasChestplate;
-				chestLayer.getChild("left_arm").skipDraw = !hasGloves;
-				chestLayer.getChild("right_arm").skipDraw = !hasGloves;
-				yield chestLayer;
-			}
-			case LEGS -> {
-				ModelPart leggingsLayer = getModelPart(TFModelLayers.TRAVELLERS_ARMOR_LEGGINGS);
-				leggingsLayer.getAllParts().forEach(part -> part.skipDraw = true);
-				boolean hasWings = stack.has(TFDataComponents.TRAVELLERS_HAS_WINGS);
-				boolean hasBelt = stack.has(TFDataComponents.TRAVELLERS_HAS_BELT);
-				TravellersWingsModel.skipBelt(leggingsLayer, !hasBelt);
-				TravellersWingsModel.skipWings(leggingsLayer, !hasWings);
-				yield leggingsLayer;
-			}
+			case CHEST -> getModelPart(TFModelLayers.TRAVELLERS_ARMOR_CHEST_GLOVES);
+			case LEGS -> getModelPart(TFModelLayers.TRAVELLERS_ARMOR_LEGGINGS);
 			case FEET -> getModelPart(TFModelLayers.TRAVELLERS_ARMOR_BOOTS);
 			default -> throw new IllegalArgumentException("Unexpected armor slot: " + slot + ": " + stack);
 		};
 
-		return slot == EquipmentSlot.LEGS ? new TravellersWingsModel(root) : new TFArmorModel(root);
+		// Deep copy the entire ModelPart tree so we can safely modify visible/skipDraw
+		// without affecting the shared cached model (critical: submitModel is deferred!)
+		ModelPart copiedRoot = deepCopyModelPart(sharedRoot);
+
+		// Hide everything first (visible=false completely skips the part AND all its children)
+		copiedRoot.getAllParts().forEach(p -> p.visible = false);
+
+		// Show only the parts relevant to this equipment slot
+		switch (slot) {
+			case HEAD -> {
+				ModelPart head = copiedRoot.getChild("head");
+				head.getAllParts().forEach(p -> p.visible = true);
+				head.getChild("hat").getAllParts().forEach(p -> p.visible = true);
+			}
+			case CHEST -> {
+				boolean hasChestplate = stack.has(TFDataComponents.TRAVELLERS_HAS_CHESTPLATE);
+				boolean hasGloves = stack.has(TFDataComponents.TRAVELLERS_HAS_GLOVES);
+				if (hasChestplate) {
+					copiedRoot.getChild("body").getAllParts().forEach(p -> p.visible = true);
+				}
+				if (hasGloves) {
+					copiedRoot.getChild("left_arm").getAllParts().forEach(p -> p.visible = true);
+					copiedRoot.getChild("right_arm").getAllParts().forEach(p -> p.visible = true);
+				}
+			}
+			case LEGS -> {
+				boolean hasWings = stack.has(TFDataComponents.TRAVELLERS_HAS_WINGS);
+				boolean hasBelt = stack.has(TFDataComponents.TRAVELLERS_HAS_BELT);
+				// Always show the leg parts (they're the leggings base)
+				copiedRoot.getChild("right_leg").getAllParts().forEach(p -> p.visible = true);
+				copiedRoot.getChild("left_leg").getAllParts().forEach(p -> p.visible = true);
+				// Belt and wings are children of body; handle via skipDraw on the model
+				if (hasWings || hasBelt) {
+					// Show body for belt/wings
+					copiedRoot.getChild("body").visible = true;
+				}
+				// Use skipDraw to selectively hide belt/wings within the body
+				ModelPart body = copiedRoot.getChild("body");
+				if (hasBelt) {
+					TravellersWingsModel.skipBelt(body, false);
+				} else {
+					TravellersWingsModel.skipBelt(body, true);
+				}
+				if (hasWings) {
+					TravellersWingsModel.skipWings(body, false);
+				} else {
+					TravellersWingsModel.skipWings(body, true);
+				}
+			}
+			case FEET -> {
+				copiedRoot.getChild("right_leg").getAllParts().forEach(p -> p.visible = true);
+				copiedRoot.getChild("left_leg").getAllParts().forEach(p -> p.visible = true);
+			}
+			default -> { }
+		}
+
+		copiedRoot.visible = true;
+
+		return slot == EquipmentSlot.LEGS ? new TravellersWingsModel(copiedRoot) : new TFArmorModel(copiedRoot);
 	}
 
 	@Override
@@ -76,5 +124,46 @@ public class TravellersArmorRenderer extends TFArmorRenderer {
 		var headStack = player.getItemBySlot(EquipmentSlot.HEAD);
 		if (headStack.isEmpty()) return false;
 		return TravellersModifiersManager.isModifierActive(player, headStack, TravellersModifiersManager.ZOOM_ABILITY);
+	}
+
+	private static ModelPart deepCopyModelPart(ModelPart source) {
+		try {
+			Field cubesField = ModelPart.class.getDeclaredField("cubes");
+			Field childrenField = ModelPart.class.getDeclaredField("children");
+			cubesField.setAccessible(true);
+			childrenField.setAccessible(true);
+
+			@SuppressWarnings("unchecked")
+			List<ModelPart.Cube> cubes = (List<ModelPart.Cube>) cubesField.get(source);
+			@SuppressWarnings("unchecked")
+			Map<String, ModelPart> children = (Map<String, ModelPart>) childrenField.get(source);
+
+			List<ModelPart.Cube> newCubes = new ArrayList<>(cubes);
+			Map<String, ModelPart> newChildren = new HashMap<>();
+			for (Map.Entry<String, ModelPart> entry : children.entrySet()) {
+				newChildren.put(entry.getKey(), deepCopyModelPart(entry.getValue()));
+			}
+
+			Constructor<ModelPart> constructor = ModelPart.class.getDeclaredConstructor(List.class, Map.class);
+			constructor.setAccessible(true);
+			ModelPart copy = constructor.newInstance(newCubes, newChildren);
+
+			copy.x = source.x;
+			copy.y = source.y;
+			copy.z = source.z;
+			copy.xRot = source.xRot;
+			copy.yRot = source.yRot;
+			copy.zRot = source.zRot;
+			copy.xScale = source.xScale;
+			copy.yScale = source.yScale;
+			copy.zScale = source.zScale;
+			copy.visible = source.visible;
+			copy.skipDraw = source.skipDraw;
+			copy.setInitialPose(source.getInitialPose());
+
+			return copy;
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to deep copy ModelPart", e);
+		}
 	}
 }
