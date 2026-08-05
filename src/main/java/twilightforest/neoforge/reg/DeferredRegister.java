@@ -17,7 +17,7 @@ public class DeferredRegister<T> {
     private final String modId;
     private final List<Registration<T>> registrations = new ArrayList<>();
 
-    private record Registration<T>(String name, Supplier<? extends T> supplier, DeferredHolder<T, ?> holder) {}
+	private record Registration<T>(String name, Supplier<? extends T> supplier, DeferredHolder<T, ?> holder) {}
 
     private DeferredRegister(ResourceKey<? extends Registry<T>> registryKey, String modId) {
         this.registryKey = registryKey;
@@ -35,7 +35,7 @@ public class DeferredRegister<T> {
             var registry = RegistryUtil.getRegistry(registryKey);
             if (registry != null) {
                 var value = supplier.get();
-                return (I) Registry.register((Registry<? super I>) registry, id, value);
+                return Registry.register((Registry<? super I>) registry, id, value);
             }
             return (I) supplier.get();
         });

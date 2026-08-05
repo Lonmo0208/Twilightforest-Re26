@@ -78,6 +78,13 @@ import java.net.URI;
 import java.util.*;
 import java.util.function.Consumer;
 import twilightforest.network.PacketDistributor;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import twilightforest.components.entity.FortificationShieldAttachment;
 
 @twilightforest.beanification.Component
 public class EntityEvents {
@@ -87,31 +94,92 @@ public class EntityEvents {
 
 	@PostConstruct
 	private void setup() {
-		// TODO: Port to Fabric event system
-		/*
-		NeoForge.EVENT_BUS.addListener(this::ominousFireConversion);
-		NeoForge.EVENT_BUS.addListener(this::zombifiedPlayerAttacks);
-		NeoForge.EVENT_BUS.addListener(this::entityHurts);
-		NeoForge.EVENT_BUS.addListener(this::alertPlayerCastleIsWIP);
-		NeoForge.EVENT_BUS.addListener(this::attachLeadToWroughtFence);
-		NeoForge.EVENT_BUS.addListener(this::wipeOreMeterOnLeftClick);
-		NeoForge.EVENT_BUS.addListener(this::onCasketBreak);
-		NeoForge.EVENT_BUS.addListener(this::reduceFrostedEffectIfOnFire);
-		NeoForge.EVENT_BUS.addListener(this::onParryProjectile);
-		NeoForge.EVENT_BUS.addListener(this::createSkullCandle);
-		NeoForge.EVENT_BUS.addListener(this::addCloudJumpParticles);
-		NeoForge.EVENT_BUS.addListener(this::structureSpecialSpawns);
-		NeoForge.EVENT_BUS.addListener(this::removeCastleTextIfAttacked);
-		NeoForge.EVENT_BUS.addListener(this::adjustEntityHealthInMultiplayerFights);
-		NeoForge.EVENT_BUS.addListener(this::addQualifiedGroupPlayerIfNeeded);
-		NeoForge.EVENT_BUS.addListener(this::grantGroupAdvancementIfNeeded);
-		NeoForge.EVENT_BUS.addListener(this::lichBombsDontBlowUpItems);
-		NeoForge.EVENT_BUS.addListener(this::handleQuestSyncing);
-		NeoForge.EVENT_BUS.addListener(this::resetFlaskLogic);
-		NeoForge.EVENT_BUS.addListener(this::handleLeashPathingOverrides);
-		NeoForge.EVENT_BUS.addListener(this::stopEndermenFromGrabbingBlocksInTF);
-		*/
-	}
+		// === Handlers registered via Fabric events ===
+
+		// 1. Ominous fire conversion (AFTER_DEATH)
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			if (source.is(TFDamageTypes.OMINOUS_FIRE)) {
+				ominousFireConversion(new FabricEvents.LivingDeathEvent(entity, source));
+			}
+		});
+
+		// 2. Grant group advancement on death (AFTER_DEATH)
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			grantGroupAdvancementIfNeeded(new FabricEvents.LivingDeathEvent(entity, source));
+		});
+
+		// 3. Attach lead to wrought iron fence (UseBlockCallback)
+		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+			FabricEvents.PlayerInteractEvent.RightClickBlock event =
+				new FabricEvents.PlayerInteractEvent.RightClickBlock(player, hand, hitResult.getBlockPos(), hitResult);
+			attachLeadToWroughtFence(event);
+			return event.isCanceled() ? event.getCancellationResult() : InteractionResult.PASS;
+		});
+
+		// 4. Casket break protection (PlayerBlockBreakEvents.BEFORE)
+		PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
+			FabricEvents.BreakBlockEvent event = new FabricEvents.BreakBlockEvent(world, pos, state, player);
+			onCasketBreak(event);
+			return !event.isCanceled();
+		});
+
+		// 5. Create skull candle (UseBlockCallback)
+		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+			FabricEvents.PlayerInteractEvent.RightClickBlock event =
+				new FabricEvents.PlayerInteractEvent.RightClickBlock(player, hand, hitResult.getBlockPos(), hitResult);
+			createSkullCandle(event);
+			return event.isCanceled() ? event.getCancellationResult() : InteractionResult.PASS;
+		});
+
+		// 6. Quest syncing on datapack sync (ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS)
+		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
+			handleQuestSyncing(new FabricEvents.OnDatapackSyncEvent(player));
+		});
+
+		// 7. Entity hurts (equip counterattack + triple bow) via AFTER_DAMAGE
+		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damageTaken, blocked) -> {
+			if (damageTaken > 0.0F && !blocked) {
+				entityHurts(new FabricEvents.LivingDamageEvent.Post(entity, source, damageTaken));
+				addQualifiedGroupPlayerIfNeeded(new FabricEvents.LivingDamageEvent.Post(entity, source, damageTaken));
+			}
+		});
+
+		// 8. Remove castle text if attacked (AttackEntityCallback)
+		AttackEntityCallback.EVENT.register((player, level, hand, entity, hitResult) -> {
+			removeCastleTextIfAttacked(new FabricEvents.AttackEntityEvent(player, entity));
+			return InteractionResult.PASS;
+		});
+
+		// 9. Adjust entity health in multiplayer fights + entity join level handlers (ENTITY_LOAD)
+		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+			if (entity instanceof LivingEntity living && world instanceof ServerLevel serverLevel) {
+				adjustEntityHealthInMultiplayerFights(new FabricEvents.FinalizeSpawnEvent(living, serverLevel, living.getX(), living.getY(), living.getZ()));
+			}
+			FabricEvents.EntityJoinLevelEvent joinEvent = new FabricEvents.EntityJoinLevelEvent(entity, world);
+			stopEndermenFromGrabbingBlocksInTF(joinEvent);
+			handleLeashPathingOverrides(joinEvent);
+		});
+
+		// === Handlers implemented via mixins ===
+		// See mixin package for implementation:
+		// - modifyIncomingDamage            → LivingEntityMixin (ModifyVariable in hurt())
+		// - zombifiedPlayerAttacks          → LivingEntityMixin (Inject cancellable in hurt())
+		// - addCloudJumpParticles           → LivingEntityMixin (Inject in jumpFromGround)
+		// - structureSpecialSpawns          → NaturalSpawnerMixin (already existed)
+		// - onParryProjectile               → ProjectileMixin (Inject in onHit)
+		// - lichBombsDontBlowUpItems        → TODO: not implementable via vanilla Explosion API
+		// - alertPlayerCastleIsWIP          → PlayerAdvancementsMixin
+		// - resetFlaskLogic                 → PlayerAdvancementsMixin
+		// - preventMountDismount            → EntityStopRidingMixin
+		// - handleMountDamage               → LivingEntityMixin (Inject cancellable in hurt(), from HostileMountEvents)
+		// - preventTeleportingOffHostileMounts → EntityTeleportMixin
+		// - updateShields                   → LivingEntityMixin (Inject at TAIL of tick(), from CapabilityEvents)
+		// - updatePlayerCaps                → PlayerMixin (Inject at TAIL of tick(), from CapabilityEvents)
+		// - preventFatigueWithPocketWatch   → LivingEntityMixin (Inject cancellable in addEffect, from ToolEvents)
+		// - stopEndermenFromGrabbingBlocks  → EntityEvents setup() via ENTITY_LOAD
+		// - handleLeashPathingOverrides     → EntityEvents setup() via ENTITY_LOAD
+		// - wipeOreMeterOnLeftClick        → TODO: ClientMinecraftMixin (client-side, not yet implemented)
+	} // end setup()
 
 	private void ominousFireConversion(FabricEvents.LivingDeathEvent event) {
 		if (!event.isCanceled() && event.getSource().is(TFDamageTypes.OMINOUS_FIRE)) {
@@ -520,6 +588,124 @@ public class EntityEvents {
 					goalSelector.removeGoal(g.getGoal());
 					goalSelector.addGoal(g.getPriority(), new ExtendedEndermanTakeBlockGoal(g.getGoal(), enderMan));
 				});
+		}
+	}
+
+	// ===== Static methods called from mixins =====
+
+	/**
+	 * Called from LivingEntityMixin (ModifyVariable on hurt()).
+	 * Modifies incoming damage for frost/fire effects, fiery tool, knightmetal, minotaur axe.
+	 */
+	public static float modifyIncomingDamage(LivingEntity entity, DamageSource source, float amount) {
+		// reduceFrostedEffectIfOnFire - frost/fire damage interaction
+		var frosty = entity.getEffect(TFMobEffects.FROSTY);
+		if (frosty != null) {
+			if (source.is(DamageTypes.FREEZE)) {
+				amount += (float) (frosty.getAmplifier() / 2);
+			} else if (source.is(DamageTypeTags.IS_FIRE)) {
+				entity.removeEffect(TFMobEffects.FROSTY);
+			}
+		}
+
+		// fieryToolSetFire - from ToolEvents
+		if (source.getEntity() instanceof LivingEntity attacker && !entity.fireImmune()) {
+			var weapon = attacker.getMainHandItem();
+			if (weapon.is(TFItems.FIERY_SWORD) || weapon.is(TFItems.FIERY_PICKAXE)) {
+				entity.igniteForSeconds(1);
+			}
+		}
+
+		// doKnightmetalToolLogic - from ToolEvents
+		if (!entity.level().isClientSide() && source.getDirectEntity() instanceof LivingEntity attacker) {
+			var weapon = attacker.getMainHandItem();
+			if (!weapon.isEmpty()) {
+				if (entity.getArmorValue() > 0 && (weapon.is(TFItems.KNIGHTMETAL_PICKAXE) || weapon.is(TFItems.KNIGHTMETAL_SWORD))) {
+					if (entity.getArmorCoverPercentage() > 0) {
+						amount += (int) (2 * entity.getArmorCoverPercentage());
+					} else {
+						amount += 2;
+					}
+					if (entity.level() instanceof ServerLevel serverLevel)
+						serverLevel.getChunkSource().sendToTrackingPlayersAndSelf(entity, new net.minecraft.network.protocol.game.ClientboundAnimatePacket(entity, 5));
+				} else if (entity.getArmorValue() == 0 && weapon.is(TFItems.KNIGHTMETAL_AXE)) {
+					amount += 2;
+					if (entity.level() instanceof ServerLevel serverLevel)
+						serverLevel.getChunkSource().sendToTrackingPlayersAndSelf(entity, new net.minecraft.network.protocol.game.ClientboundAnimatePacket(entity, 5));
+				}
+			}
+		}
+
+		// addExtraAxeChargingDamage - from ToolEvents (MinotaurAxeItem)
+		if (!entity.level().isClientSide() && source.getDirectEntity() instanceof LivingEntity attacker && attacker.isSprinting()) {
+			var weapon = attacker.getMainHandItem();
+			if (!weapon.isEmpty() && weapon.getItem() instanceof twilightforest.item.MinotaurAxeItem) {
+				amount += 7;
+				if (entity.level() instanceof ServerLevel serverLevel)
+					serverLevel.getChunkSource().sendToTrackingPlayersAndSelf(entity, new net.minecraft.network.protocol.game.ClientboundAnimatePacket(entity, 5));
+			}
+		}
+
+		return amount;
+	}
+
+	/**
+	 * Called from LivingEntityMixin (Inject at HEAD of hurt(), cancellable).
+	 * Returns true if the damage event should be cancelled (zombified player attack converted to ominous fire).
+	 */
+	public static boolean handleZombifiedPlayerAttack(LivingEntity entity, DamageSource source, float amount) {
+		if (!(source instanceof OminousFireDamageSource) && source.getEntity() instanceof net.minecraft.world.entity.monster.zombie.Zombie zombie
+			&& ((TFEntityExtensions) zombie).twilightforest$hasData(TFDataAttachments.ZOMBIFIED_PLAYER)) {
+			entity.hurt(new OminousFireDamageSource(source), amount);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Called from LivingEntityMixin (Inject at HEAD of hurt(), cancellable).
+	 * Hostile mount damage handling: prevent suffocation damage when riding hostile mount,
+	 * convert fall damage to yeet damage.
+	 */
+	public static boolean handleMountDamage(LivingEntity entity, DamageSource source, float amount) {
+		if (entity instanceof net.minecraft.world.entity.player.Player
+			&& twilightforest.events.HostileMountEvents.isRidingUnfriendly(entity)
+			&& source.is(DamageTypes.IN_WALL)) {
+			return true; // cancel
+		}
+		if (source.is(DamageTypes.FALL) && ((TFEntityExtensions) entity).twilightforest$hasData(TFDataAttachments.YETI_THROWING)) {
+			var yetiData = ((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.YETI_THROWING);
+			if (yetiData.getThrown()) {
+				entity.hurt(TFDamageTypes.getEntityDamageSource(entity.level(), TFDamageTypes.YEETED, yetiData.getThrower()), amount);
+				return true; // cancel original fall damage
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Called from LivingEntityMixin (Inject at TAIL of tick()).
+	 * Updates shield attachments for entities with fortification shields.
+	 * Also prevents passengers of hostile mounts from crouching (prevents dismount).
+	 */
+	public static void tickShields(LivingEntity entity) {
+		if (!entity.level().isClientSide() && ((TFEntityExtensions) entity).twilightforest$hasData(TFDataAttachments.FORTIFICATION_SHIELDS)) {
+			((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.FORTIFICATION_SHIELDS).tick(entity);
+		}
+		// preventHostilMountCrouching: force passengers of hostile mounts to not be crouching
+		if (entity instanceof twilightforest.entity.IHostileMount) {
+			entity.getPassengers().forEach(e -> e.setShiftKeyDown(false));
+		}
+	}
+
+	/**
+	 * Called from LivingEntityMixin (Inject at HEAD of jumpFromGround()).
+	 * Adds cloud jump particles when jumping from a cloud block.
+	 */
+	public static void addCloudJumpParticles(LivingEntity entity) {
+		if (entity.level().isClientSide() && !entity.isSpectator() && entity.level().getBlockState(entity.getOnPos()).getBlock() instanceof twilightforest.block.CloudBlock) {
+			for (int i = 0; i < 12; i++)
+				twilightforest.block.CloudBlock.addEntityMovementParticles(entity.level(), entity.getOnPos(), entity, true);
 		}
 	}
 

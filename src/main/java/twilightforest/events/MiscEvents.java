@@ -40,13 +40,26 @@ public class MiscEvents {
 
 	@PostConstruct
 	private void setup() {
-		// TODO: Port to Fabric event system
-		/*
-		NeoForge.EVENT_BUS.addListener(this::addPrey);
-		NeoForge.EVENT_BUS.addListener(this::updateCicadaSoundsOnHead);
-		NeoForge.EVENT_BUS.addListener(this::addTomesToLecterns);
-		NeoForge.EVENT_BUS.addListener(this::washOffCloth);
-		*/
+		// 1. addPrey - Add prey targeting goals to cats/foxes/wolves when they spawn
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
+			if (level instanceof net.minecraft.server.level.ServerLevel) {
+				addPrey(new FabricEvents.EntityJoinLevelEvent(entity, level));
+			}
+		});
+
+		// 2. updateCicadaSoundsOnHead - NOT PORTED: No Fabric equipment change event available
+		// Would need a Mixin in LivingEntityMixin to detect equipment changes to the HEAD slot.
+		// Kept commented - low priority cosmetic feature.
+		// NeoForge.EVENT_BUS.addListener(this::updateCicadaSoundsOnHead);
+
+		// 3. addTomesToLecterns + washOffCloth - Right-click block interactions
+		net.fabricmc.fabric.api.event.player.UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
+			FabricEvents.PlayerInteractEvent.RightClickBlock event = new FabricEvents.PlayerInteractEvent.RightClickBlock(player, hand, hitResult.getBlockPos(), hitResult);
+			addTomesToLecterns(event);
+			if (event.isCanceled()) return event.getCancellationResult();
+			washOffCloth(event);
+			return event.isCanceled() ? event.getCancellationResult() : net.minecraft.world.InteractionResult.PASS;
+		});
 	}
 
 	private void addPrey(FabricEvents.EntityJoinLevelEvent event) {
@@ -99,6 +112,7 @@ public class MiscEvents {
 		BlockState state = level.getBlockState(pos);
 
 		if (state.getBlock() instanceof LecternBlock && !state.getValue(BlockStateProperties.HAS_BOOK)) {
+			event.setCancellationResult(InteractionResult.SUCCESS);
 			event.setCanceled(true);
 			level.playSound(null, pos, SoundEvents.BOOK_PUT, SoundSource.BLOCKS, 1.0F, 1.0F);
 

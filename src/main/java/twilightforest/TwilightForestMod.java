@@ -18,6 +18,7 @@ import twilightforest.beanification.BeanContext;
 import twilightforest.beanification.Configurable;
 import twilightforest.command.TFCommand;
 import twilightforest.entity.MagicPaintingVariant;
+import twilightforest.events.RegistrationEvents;
 import twilightforest.entity.passive.DwarfRabbitVariant;
 import twilightforest.entity.passive.TinyBirdVariant;
 import twilightforest.entity.passive.quest.QuestReloadListener;
@@ -65,6 +66,9 @@ public final class TwilightForestMod implements ModInitializer {
 		TFBlocks.init();
 		TFItems.init();
 		TFEntities.init();
+
+		// Vanilla-compatible init registrations (flower pots, flammability, jar lids, etc.)
+		BeanContext.inject(RegistrationEvents.class).init();
 
 		// Register entity attributes with Fabric
 		for (var entry : TFEntities.ATTRIBUTES.entrySet()) {

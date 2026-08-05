@@ -8,6 +8,8 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.LevelData;
+import twilightforest.beanification.Component;
+import twilightforest.beanification.PostConstruct;
 import twilightforest.config.TFConfig;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFDimension;
@@ -16,17 +18,35 @@ import twilightforest.world.TFTeleporter;
 import twilightforest.world.NoReturnTeleporter;
 import net.minecraft.util.Unit;
 import twilightforest.components.entity.FortificationShieldAttachment;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
-//TODO: Make sure all the events are properly registered in the main mod class
+@Component
 public class CapabilityEvents {
 
-	/*
-	private void markPlayerAsRespawned(FabricEvents.PlayerEvent.PlayerRespawnEvent event) {
-		if (event.getEntity() instanceof ServerPlayer player) {
-			((TFEntityExtensions) player).getPersistentData().putBoolean(Player.PERSISTED_NBT_TAG, true);
-		}
+	@PostConstruct
+	private void setup() {
+		// 3. Absorb shield hits (ALLOW_DAMAGE)
+		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+			FabricEvents.LivingIncomingDamageEvent event = new FabricEvents.LivingIncomingDamageEvent(entity, source, amount);
+			absorbShieldHits(event);
+			return !event.isCanceled();
+		});
+
+		// 4. Spawn in TF if necessary on respawn (AFTER_RESPAWN)
+		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			spawnInTFIfNecessary(new FabricEvents.PlayerEvent.PlayerRespawnEvent(newPlayer, alive));
+		});
+
+		// 5. Player login handling (JOIN)
+		ServerPlayerEvents.JOIN.register(player -> {
+			playerLogsIn(new FabricEvents.PlayerEvent.PlayerLoggedInEvent(player));
+		});
+
+		// === Handlers handled via mixins (LivingEntityMixin + PlayerMixin) ===
+		// 1. updateShields → LivingEntityMixin (tickShields at TAIL of tick())
+		// 2. updatePlayerCaps → PlayerMixin (tickPlayerCaps at TAIL of tick())
 	}
-	*/
 
 	private void updateShields(FabricEvents.EntityTickEvent.Post event) {
 		if (event.getEntity() instanceof LivingEntity living && !living.level().isClientSide() && ((TFEntityExtensions) living).twilightforest$hasData(TFDataAttachments.FORTIFICATION_SHIELDS)) {

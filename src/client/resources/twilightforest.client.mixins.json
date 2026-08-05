@@ -10,7 +10,8 @@
 		"MapRendererMixin",
 		"MapRenderStateMixin",
 		"ModelBlockRendererMixin",
-		"ModelBlockRendererAccessor"
+		"ModelBlockRendererAccessor",
+		"LevelRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

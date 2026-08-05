@@ -66,8 +66,8 @@ public class TrollRootBlock extends Block {
 	}
 
 	@Override
-	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbor, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
-		if (directionToNeighbor == Direction.UP) {
+	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+		if (direction == Direction.UP) {
 			return this.canSurvive(state, level, pos) ? state : Blocks.AIR.defaultBlockState();
 		}
 		return state;

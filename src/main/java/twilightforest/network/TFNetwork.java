@@ -37,6 +37,7 @@ public class TFNetwork {
 		s2c.register(SetMasonJarItemPacket.TYPE, SetMasonJarItemPacket.STREAM_CODEC);
 		s2c.register(SyncQuestsPacket.TYPE, SyncQuestsPacket.STREAM_CODEC);
 		s2c.register(TravellersWingsStatePacket.TYPE, TravellersWingsStatePacket.STREAM_CODEC);
+		s2c.register(SyncUncraftingCostsPacket.TYPE, SyncUncraftingCostsPacket.STREAM_CODEC);
 
 		// Bidirectional packets (S2C side)
 		s2c.register(GogglesZoomPacket.TYPE, GogglesZoomPacket.STREAM_CODEC);

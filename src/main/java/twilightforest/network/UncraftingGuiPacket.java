@@ -55,6 +55,9 @@ public record UncraftingGuiPacket(int operationType) implements CustomPacketPayl
 
 				if (message.operationType() >= 4)
 					uncrafting.slotsChanged(uncrafting.assemblyMatrix);
+
+				// Sync updated costs to the client
+				SyncUncraftingCostsPacket.send(context.player(), uncrafting.getUncraftingCost(), uncrafting.getRecraftingCost());
 			}
 		});
 	}

@@ -14,9 +14,14 @@
 - **原版 Minecraft 26.1.2 源码**（用于底层逻辑对照）：
   `E:\MC源码对比\26.1.2-base`
   *说明*：当需要深入理解某些原生类行为时，可查阅此路径，但不要直接复制原版代码到模组中。
+- **官方 Neofgre-MC1.21.1-暮色森林**(方法最正确，所以功能最完善的官方Neoforge版本)
+  `E:\MC源码对比\twilightforest-1.21.1`
+  *说明*：可以参考他的代码，结合我们的前置模组`Forge Config API Port`来进行一些缺失的方法修复
+- **官方 Fabric 移植版** (所有事件方法最正确，但是API过老，通过方法的参考思路)
+  `E:\MC源码对比\twilightforest-fabric-1.19.2`
 
-- **非官方 Fabric 移植版**（仅供参考思路,毕竟是老Fabric移植的，但是还是可以多看看！！！！）：
-  `E:\MC源码对比\twilightforest-fabric-1.21.1`[这个最接近，或许可以多多看！]
+- **非官方 Fabric 移植版**（仅供移植思路参考,毕竟是老Fabric移植的，但是还是可以多看看！！！！）：
+  `E:\MC源码对比\twilightforest-fabric-1.21.1`
   `E:\MC源码对比\twilightforest-unofficial-1.20.1-fabric`
  
   

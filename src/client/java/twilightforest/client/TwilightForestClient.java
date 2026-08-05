@@ -519,6 +519,7 @@ public class TwilightForestClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(SyncQuestsPacket.TYPE, SyncQuestsPacketClientHandler::handle);
 		ClientPlayNetworking.registerGlobalReceiver(TravellersWingsStatePacket.TYPE, TravellersWingsStatePacketClientHandler::handle);
 		ClientPlayNetworking.registerGlobalReceiver(UpdateTFMultipartPacket.TYPE, UpdateTFMultipartPacketClientHandler::handle);
+		ClientPlayNetworking.registerGlobalReceiver(SyncUncraftingCostsPacket.TYPE, SyncUncraftingCostsPacketClientHandler::handle);
 
 		// Bidirectional packets - client side
 		ClientPlayNetworking.registerGlobalReceiver(GogglesZoomPacket.TYPE, (packet, context) ->

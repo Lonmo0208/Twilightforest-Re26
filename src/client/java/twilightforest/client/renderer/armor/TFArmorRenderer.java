@@ -38,13 +38,13 @@ public abstract class TFArmorRenderer implements ArmorRenderer {
 	public static void bootstrap() {
 		ArmorRenderer.register(new ArcticArmorRenderer(),
 				(ItemLike) TFItems.ARCTIC_HELMET, (ItemLike) TFItems.ARCTIC_CHESTPLATE, (ItemLike) TFItems.ARCTIC_LEGGINGS, (ItemLike) TFItems.ARCTIC_BOOTS);
-		ArmorRenderer.register(new TFSimpleArmorRenderer(twilightforest.client.model.armor.FieryArmorModel::new, twilightforest.client.model.TFModelLayers.FIERY_ARMOR_INNER, twilightforest.client.model.TFModelLayers.FIERY_ARMOR_OUTER),
+		ArmorRenderer.register(new TFSimpleArmorRenderer(twilightforest.client.model.armor.FieryArmorModel::new, twilightforest.client.model.TFModelLayers.FIERY_ARMOR_INNER, twilightforest.client.model.TFModelLayers.FIERY_ARMOR_OUTER, "fiery"),
 				(ItemLike) TFItems.FIERY_HELMET, (ItemLike) TFItems.FIERY_CHESTPLATE, (ItemLike) TFItems.FIERY_LEGGINGS, (ItemLike) TFItems.FIERY_BOOTS);
-		ArmorRenderer.register(new TFSimpleArmorRenderer(twilightforest.client.model.armor.TFArmorModel::new, twilightforest.client.model.TFModelLayers.KNIGHTMETAL_ARMOR_INNER, twilightforest.client.model.TFModelLayers.KNIGHTMETAL_ARMOR_OUTER),
+		ArmorRenderer.register(new TFSimpleArmorRenderer(twilightforest.client.model.armor.TFArmorModel::new, twilightforest.client.model.TFModelLayers.KNIGHTMETAL_ARMOR_INNER, twilightforest.client.model.TFModelLayers.KNIGHTMETAL_ARMOR_OUTER, "knightmetal"),
 				(ItemLike) TFItems.KNIGHTMETAL_HELMET, (ItemLike) TFItems.KNIGHTMETAL_CHESTPLATE, (ItemLike) TFItems.KNIGHTMETAL_LEGGINGS, (ItemLike) TFItems.KNIGHTMETAL_BOOTS);
-		ArmorRenderer.register(new TFSimpleArmorRenderer(twilightforest.client.model.armor.TFArmorModel::new, twilightforest.client.model.TFModelLayers.PHANTOM_ARMOR_INNER, twilightforest.client.model.TFModelLayers.PHANTOM_ARMOR_OUTER),
-				(ItemLike) TFItems.PHANTOM_HELMET, (ItemLike) TFItems.PHANTOM_CHESTPLATE);
-		ArmorRenderer.register(new TFSimpleArmorRenderer(twilightforest.client.model.armor.YetiArmorModel::new, twilightforest.client.model.TFModelLayers.YETI_ARMOR_INNER, twilightforest.client.model.TFModelLayers.YETI_ARMOR_OUTER),
+		ArmorRenderer.register(new TFSimpleArmorRenderer(twilightforest.client.model.armor.TFArmorModel::new, twilightforest.client.model.TFModelLayers.PHANTOM_ARMOR_INNER, twilightforest.client.model.TFModelLayers.PHANTOM_ARMOR_OUTER, "phantom"),
+				(ItemLike) TFItems.PHANTOM_HELMET, (ItemLike) TFItems.PHANTOM_CHESTPLATE, (ItemLike) TFItems.PHANTOM_LEGGINGS, (ItemLike) TFItems.PHANTOM_BOOTS);
+		ArmorRenderer.register(new TFSimpleArmorRenderer(twilightforest.client.model.armor.YetiArmorModel::new, twilightforest.client.model.TFModelLayers.YETI_ARMOR_INNER, twilightforest.client.model.TFModelLayers.YETI_ARMOR_OUTER, "yeti"),
 				(ItemLike) TFItems.YETI_HELMET, (ItemLike) TFItems.YETI_CHESTPLATE, (ItemLike) TFItems.YETI_LEGGINGS, (ItemLike) TFItems.YETI_BOOTS);
 		ArmorRenderer.register(new TravellersArmorRenderer(),
 				(ItemLike) TFItems.TRAVELLERS_GOGGLES, (ItemLike) TFItems.TRAVELLERS_VEST, (ItemLike) TFItems.TRAVELLERS_GLOVES, (ItemLike) TFItems.TRAVELLERS_WINGS, (ItemLike) TFItems.TRAVELLERS_BELT, (ItemLike) TFItems.TRAVELLERS_BOOTS);
@@ -53,7 +53,6 @@ public abstract class TFArmorRenderer implements ArmorRenderer {
 	@Override
 	public final void render(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack stack, HumanoidRenderState humanoidRenderState, EquipmentSlot slot, int light, HumanoidModel<HumanoidRenderState> contextModel) {
 		HumanoidModel<HumanoidRenderState> model = this.createModel(humanoidRenderState, stack, slot, contextModel);
-		setSlotVisible(model, slot);
 		this.setupModelAnimations(humanoidRenderState, stack, slot, model);
 		this.renderModel(poseStack, submitNodeCollector, light, stack, slot, model, humanoidRenderState);
 	}
@@ -83,38 +82,6 @@ public abstract class TFArmorRenderer implements ArmorRenderer {
 		ArmorRenderer.submitTransformCopyingModel(model, state, model, state, false, orderedCollector, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, null);
 		if (stack.hasFoil()) {
 			ArmorRenderer.submitTransformCopyingModel(model, state, model, state, false, submitNodeCollector.order(1), poseStack, RenderTypes.armorEntityGlint(), light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, null);
-		}
-	}
-
-	protected static void setSlotVisible(HumanoidModel<?> model, EquipmentSlot slot) {
-		model.head.visible = false;
-		model.hat.visible = false;
-		model.body.visible = false;
-		model.rightArm.visible = false;
-		model.leftArm.visible = false;
-		model.rightLeg.visible = false;
-		model.leftLeg.visible = false;
-		switch (slot) {
-			case HEAD -> {
-				model.head.visible = true;
-				model.hat.visible = true;
-			}
-			case CHEST -> {
-				model.body.visible = true;
-				model.rightArm.visible = true;
-				model.leftArm.visible = true;
-			}
-			case LEGS -> {
-				model.body.visible = true;
-				model.rightLeg.visible = true;
-				model.leftLeg.visible = true;
-			}
-			case FEET -> {
-				model.rightLeg.visible = true;
-				model.leftLeg.visible = true;
-			}
-			default -> {
-			}
 		}
 	}
 }

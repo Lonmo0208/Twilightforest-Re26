@@ -22,6 +22,7 @@ public class TFEquipmentAssets {
 	public static final ResourceKey<EquipmentAsset> ARCTIC = createId("arctic");
 	public static final ResourceKey<EquipmentAsset> YETI = createId("yeti");
 	public static final ResourceKey<EquipmentAsset> TRAVELLERS = createId("travellers_gear");
+	public static final ResourceKey<EquipmentAsset> MYSTIC_CROWN = createId("mystic_crown");
 
 	static ResourceKey<EquipmentAsset> createId(String name) {
 		return ResourceKey.create(EquipmentAssets.ROOT_ID, TwilightForestMod.prefix(name));
@@ -33,7 +34,7 @@ public class TFEquipmentAssets {
 		consumer.accept(NAGA, EquipmentClientInfo.builder().addHumanoidLayers(TwilightForestMod.prefix("naga_scale"), false).build());
 		consumer.accept(FIERY, EquipmentClientInfo.builder().addHumanoidLayers(TwilightForestMod.prefix("fiery"), false).build());
 		consumer.accept(KNIGHTMETAL, EquipmentClientInfo.builder().addHumanoidLayers(TwilightForestMod.prefix("knightmetal"), false).build());
-		consumer.accept(PHANTOM, EquipmentClientInfo.builder().addMainHumanoidLayer(TwilightForestMod.prefix("phantom"), false).build());
+		consumer.accept(PHANTOM, EquipmentClientInfo.builder().addHumanoidLayers(TwilightForestMod.prefix("phantom"), false).build());
 		consumer.accept(ARCTIC, EquipmentClientInfo.builder()
 			.addLayers(EquipmentClientInfo.LayerType.HUMANOID, arcticDyeable(TwilightForestMod.prefix("arctic"), true))
 			.addLayers(EquipmentClientInfo.LayerType.HUMANOID, arcticDyeable(TwilightForestMod.prefix("arctic_overlay"), false))
@@ -42,6 +43,7 @@ public class TFEquipmentAssets {
 			.build());
 		consumer.accept(YETI, EquipmentClientInfo.builder().addHumanoidLayers(TwilightForestMod.prefix("yeti"), false).build());
 		consumer.accept(TRAVELLERS, EquipmentClientInfo.builder().addHumanoidLayers(TwilightForestMod.prefix("travellers"), false).build());
+		consumer.accept(MYSTIC_CROWN, EquipmentClientInfo.builder().addHumanoidLayers(TwilightForestMod.prefix("mystic_crown"), false).build());
 	}
 
 	public static EquipmentClientInfo.Layer arcticDyeable(Identifier textureId, boolean dyeable) {

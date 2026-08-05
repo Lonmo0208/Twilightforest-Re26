@@ -20,13 +20,11 @@ public class HostileMountEvents {
 
 	@PostConstruct
 	private void setup() {
-		// TODO: Port to Fabric event system
-		/*
-		NeoForge.EVENT_BUS.addListener(this::handleMountDamage);
-		NeoForge.EVENT_BUS.addListener(this::preventTeleportingOffHostileMounts);
-		NeoForge.EVENT_BUS.addListener(this::preventMountDismount);
-		NeoForge.EVENT_BUS.addListener(this::preventHostilMountCrouching);
-		*/
+		// All handlers are implemented via mixins:
+		// - handleMountDamage               → LivingEntityMixin → EntityEvents.handleMountDamage()
+		// - preventTeleportingOffHostileMounts → EntityTeleportMixin
+		// - preventMountDismount            → EntityStopRidingMixin
+		// - preventHostilMountCrouching     → LivingEntityMixin → EntityEvents.tickShields()
 	}
 
 

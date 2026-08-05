@@ -12,6 +12,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityEquipment;
@@ -59,12 +60,58 @@ public class CharmEvents {
 
 	@PostConstruct
 	private void setup() {
-		// TODO: Port to Fabric event system
-		/*
-		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, this::applyCharmOfLife);
-		NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::applyKeepingAndCasket);
-		NeoForge.EVENT_BUS.addListener(this::returnItemsOnRespawn);
-		*/
+		// 1. applyCharmOfLife - Check for charm of life before lethal damage kills the player
+		// Fabric doesn't have a cancellable death event, so we use ALLOW_DAMAGE to intercept lethal damage
+		net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+			if (entity instanceof Player player && !player.level().isClientSide() && !(entity instanceof FakePlayer) &&
+					!player.isCreative() && !player.isSpectator()) {
+				// If this damage would kill the player and they have a charm of life, cancel damage and heal
+				if (player.getHealth() - amount <= 0.0f && handleCharmOfLife(player)) {
+					return false;
+				}
+			}
+			return true;
+		});
+
+		// 2. applyKeepingAndCasket - NO LONGER REGISTERED via AFTER_DEATH event.
+		// Fabric's AFTER_DEATH fires AFTER dropAllDeathLoot(), so items are already dropped.
+		// Instead, handled via ServerPlayerMixin which injects into ServerPlayer.die()
+		// BEFORE super.die() calls dropAllDeathLoot().
+
+		// 3. COPY_FROM - Copy persistent data from old player to new player on respawn.
+		// This ensures charm inventory data saved in handleDeathSave() (called from mixin)
+		// gets transferred to the new player entity that is created on respawn.
+		net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
+			// Copy the persistent data (TFData) from the old player to the new player
+			CompoundTag oldData = ((TFEntityExtensions) oldPlayer).twilightforest$getPersistentData();
+			if (!oldData.isEmpty()) {
+				CompoundTag newData = ((TFEntityExtensions) newPlayer).twilightforest$getPersistentData();
+				newData.merge(oldData.copy());
+			}
+		});
+
+		// 4. returnItemsOnRespawn - Return stored items from charm of keeping when player respawns
+		net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			// alive=false means player died and respawned
+			// alive=true  means player used End portal (conquered end)
+			if (!alive) {
+				returnStoredItems(newPlayer);
+			}
+		});
+	}
+
+	/**
+	 * Called from ServerPlayerMixin before ServerPlayer.die() calls super.die().
+	 * This runs BEFORE dropAllDeathLoot() so we can save items to persistent data and clear the inventory.
+	 */
+	public static void handleDeathSave(ServerPlayer player) {
+		if (!player.level().isClientSide() && !(player instanceof FakePlayer) &&
+				!player.isCreative() && !player.isSpectator()) {
+			if (player.level() instanceof ServerLevel serverLevel && !serverLevel.getGameRules().get(GameRules.KEEP_INVENTORY)) {
+				handleCharmOfKeeping(player);
+				stockKeepsakeCasket(player);
+			}
+		}
 	}
 
 	// Check for charm of life first to stop a player from dying
@@ -86,7 +133,7 @@ public class CharmEvents {
 		if (event.isCanceled() || living.level().isClientSide() || !(living instanceof Player player) || living instanceof FakePlayer ||
 				player.isCreative() || player.isSpectator()) return;
 
-		if (!((net.minecraft.server.level.ServerLevel) living.level()).getGameRules().get(GameRules.KEEP_INVENTORY)) {
+		if (living.level() instanceof ServerLevel serverLevel && !serverLevel.getGameRules().get(GameRules.KEEP_INVENTORY)) {
 			// Did the player recover? No? Let's give them their stuff based on the keeping charms
 			handleCharmOfKeeping(player);
 

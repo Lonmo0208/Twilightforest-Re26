@@ -1,0 +1,24 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "twilightforest:phantom"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "twilightforest:phantom"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "twilightforest:phantom"
+      }
+    ],
+    "humanoid_leggings_baby": [
+      {
+        "texture": "twilightforest:phantom"
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "twilightforest:mystic_crown"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "twilightforest:mystic_crown"
+      }
+    ]
+  }
+}

@@ -166,6 +166,8 @@ public class TFItems {
 	public static final Item BLOCK_AND_CHAIN = register("block_and_chain", ChainBlockItem::new, () -> new Item.Properties().durability(99));
 	public static final Item PHANTOM_HELMET = register("phantom_helmet", PhantomArmorItem::new, () -> new Item.Properties().humanoidArmor(TFArmorMaterials.PHANTOM, ArmorType.HELMET).rarity(Rarity.UNCOMMON));
 	public static final Item PHANTOM_CHESTPLATE = register("phantom_chestplate", PhantomArmorItem::new, () -> new Item.Properties().humanoidArmor(TFArmorMaterials.PHANTOM, ArmorType.CHESTPLATE).rarity(Rarity.UNCOMMON));
+	public static final Item PHANTOM_LEGGINGS = register("phantom_leggings", PhantomArmorItem::new, () -> new Item.Properties().humanoidArmor(TFArmorMaterials.PHANTOM, ArmorType.LEGGINGS).rarity(Rarity.UNCOMMON));
+	public static final Item PHANTOM_BOOTS = register("phantom_boots", PhantomArmorItem::new, () -> new Item.Properties().humanoidArmor(TFArmorMaterials.PHANTOM, ArmorType.BOOTS).rarity(Rarity.UNCOMMON));
 	public static final Item ICE_BOMB = register("ice_bomb", IceBombItem::new, () -> new Item.Properties().stacksTo(16));
 	public static final Item ARCTIC_FUR = register("arctic_fur", Item::new, Item.Properties::new);
 	public static final Item ARCTIC_HELMET = register("arctic_helmet", ArcticArmorItem::new, () -> new Item.Properties().humanoidArmor(TFArmorMaterials.ARCTIC, ArmorType.HELMET));

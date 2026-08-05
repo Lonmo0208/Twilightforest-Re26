@@ -6,6 +6,8 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -49,7 +51,12 @@ public abstract class EntityMixin implements TFEntityExtensions {
 			return (T) value;
 		}
 		java.util.function.Supplier<T> initializer = type.initializer();
-		if (initializer != null) return initializer.get();
+		if (initializer != null) {
+			T newValue = initializer.get();
+			// Save the new instance to the map so it persists
+			tfAttachments.put(type, newValue);
+			return newValue;
+		}
 		return null;
 	}
 
@@ -71,10 +78,48 @@ public abstract class EntityMixin implements TFEntityExtensions {
 		tfAttachments.remove(type);
 	}
 
+	/**
+	 * Persistent data stored directly on the Entity instance.
+	 * This field is preserved across the Entity's lifetime (e.g. ServerPlayer across death/respawn).
+	 * It is also written to / read from the entity's NBT via
+	 * {@link #tf$writePersistentData(CompoundTag, CallbackInfo)} and
+	 * {@link #tf$readPersistentData(CompoundTag, CallbackInfo)} so that data survives
+	 * server restarts and log-out / log-in cycles.
+	 */
+	@Unique
+	private CompoundTag tfPersistentData = null;
+
 	@Override
 	@Unique
 	public @NonNull CompoundTag twilightforest$getPersistentData() {
-		return new CompoundTag();
+		if (this.tfPersistentData == null) {
+			this.tfPersistentData = new CompoundTag();
+		}
+		return this.tfPersistentData;
+	}
+
+	/**
+	 * Save {@link #tfPersistentData} into the entity's NBT under the key {@code "TFData"}.
+	 * Injects at RETURN of {@link Entity#saveWithoutId(ValueOutput)} so the custom
+	 * data is appended after all vanilla data (including addAdditionalSaveData).
+	 */
+	@Inject(method = "saveWithoutId", at = @At("RETURN"))
+	private void tf$writePersistentData(ValueOutput output, CallbackInfo ci) {
+		if (this.tfPersistentData != null && !this.tfPersistentData.isEmpty()) {
+			output.store("TFData", CompoundTag.CODEC, this.tfPersistentData.copy());
+		}
+	}
+
+	/**
+	 * Load {@link #tfPersistentData} from the entity's NBT under the key {@code "TFData"}.
+	 * Injects at RETURN of {@link Entity#load(ValueInput)} so the custom
+	 * data is restored after all vanilla data has been parsed (including readAdditionalSaveData).
+	 */
+	@Inject(method = "load", at = @At("RETURN"))
+	private void tf$readPersistentData(ValueInput input, CallbackInfo ci) {
+		input.read("TFData", CompoundTag.CODEC).ifPresent(tag -> {
+			this.tfPersistentData = tag;
+		});
 	}
 
 	@Override

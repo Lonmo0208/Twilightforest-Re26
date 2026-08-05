@@ -8,6 +8,6 @@ import twilightforest.item.ArcticArmorItem;
 
 public class ArcticArmorRenderer extends TFSimpleArmorRenderer {
 	public ArcticArmorRenderer() {
-		super(TFArmorModel::new, twilightforest.client.model.TFModelLayers.ARCTIC_ARMOR_INNER, twilightforest.client.model.TFModelLayers.ARCTIC_ARMOR_OUTER);
+		super(TFArmorModel::new, twilightforest.client.model.TFModelLayers.ARCTIC_ARMOR_INNER, twilightforest.client.model.TFModelLayers.ARCTIC_ARMOR_OUTER, "arctic");
 	}
 }

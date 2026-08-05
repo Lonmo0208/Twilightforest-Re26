@@ -89,6 +89,21 @@ public class TravellersGearEvents {
 			FabricEvents.PlayerEvent.Clone clone = new FabricEvents.PlayerEvent.Clone(newPlayer, oldPlayer, !alive);
 			keepAttachmentsOnDeath(clone);
 		});
+
+		// === Handlers NOT PORTED (no Fabric equivalent, would need Mixins) ===
+		// - reduceSlimySolesFallDamage    → No Fabric LivingFallEvent (need Mixin in LivingEntity)
+		// - cancelSlimySolesJump          → No Fabric LivingJumpEvent (need Mixin in LivingEntity)
+		// - activateAndDeactivateTravellersModifiers → No Fabric ItemAttributeModifierEvent
+		// - stopDamagingTravellersGear    → No Fabric ArmorHurtEvent
+		// - setLastDamageArmorTime        → No Fabric ArmorHurtEvent
+		// - cancelCombiningTravellersGear → No Fabric AnvilUpdateEvent
+		// - removeModifiersFromTravellersGear → No Fabric GrindstoneEvent.OnPlaceItem
+		// - extractItemsFromSwapHotbarModifier → No Fabric GrindstoneEvent.OnTakeItem
+		// - cancelPhantomSpawns           → No Fabric phantom spawn event
+		// - fireCraftingModifierTrigger   → No Fabric ItemCraftedEvent
+		//
+		// These methods are kept below as dead code for reference.
+		// TODO: Implement dedicated Mixins for each of these if needed.
 	}
 
 	public static void magnetizeArrows(FabricEvents.ProjectileImpactEvent event) {

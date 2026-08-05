@@ -19,16 +19,12 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.beanification.Component;
 import twilightforest.beanification.PostConstruct;
@@ -45,13 +41,17 @@ import twilightforest.tags.TFEntityTypeTags;
 
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 
-import java.util.List;
 
 @Component
 public class ToolEvents {
 
 	private static final int KNIGHTMETAL_BONUS_DAMAGE = 2;
 	private static final int MINOTAUR_AXE_BONUS_DAMAGE = 7;
+
+	// Static flag to prevent infinite recursion during giant pickaxe mining
+	// This is necessary because Fabric's PlayerBlockBreakEvents.BEFORE fires for every
+	// destroyBlock call, including the ones triggered from within this handler
+	private static boolean isBreakingWithGiantPick = false;
 
 	@PostConstruct
 	private void setup() {
@@ -60,7 +60,17 @@ public class ToolEvents {
 			OreMagnetItem.refreshOreCacheFromTags();
 		});
 
+		// Giant pickaxe mining: BEFORE handler handles the entire 4x4x4 break
+		// Matches original NeoForge handleGiantPickaxeMining flow:
+		// - check canHarvestWithGiantPick + shouldBreakGiantBlock
+		// - setCanceled(true) to prevent normal break
+		// - manually break all 4x4x4 blocks
 		PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
+			// Skip if we're already inside a giant pickaxe break loop
+			if (isBreakingWithGiantPick) {
+				return true; // Allow normal break to proceed
+			}
+			
 			FabricEvents.BreakBlockEvent event = new FabricEvents.BreakBlockEvent(world, pos, state, player);
 			handleGiantPickaxeMining(event);
 			return !event.isCanceled();
@@ -70,6 +80,16 @@ public class ToolEvents {
 			FabricEvents.BreakBlockEvent event = new FabricEvents.BreakBlockEvent(world, pos, state, player);
 			damageNonMazebreakerToolsMore(event);
 		});
+
+		// === Handlers already implemented via Mixin → EntityEvents.modifyIncomingDamage() ===
+		// - fieryToolSetFire       → LivingEntityMixin → EntityEvents.modifyIncomingDamage() lines 611-617
+		// - doKnightmetalToolLogic → LivingEntityMixin → EntityEvents.modifyIncomingDamage() lines 619-637
+		// - addExtraAxeChargingDamage → LivingEntityMixin → EntityEvents.modifyIncomingDamage() lines 639-647
+		// - preventFatigueWithPocketWatch → LivingEntityMixin → ToolEvents.shouldBlockEffect() lines 84-89
+		//
+		// The instance methods below (fieryToolSetFire, doKnightmetalToolLogic, addExtraAxeChargingDamage,
+		// preventFatigueWithPocketWatch) are kept as dead code for reference only.
+		// Their actual logic is in EntityEvents.modifyIncomingDamage() and ToolEvents.shouldBlockEffect().
 	}
 
 	private void onEnderBowHit(FabricEvents.ProjectileImpactEvent evt) {
@@ -207,49 +227,56 @@ public class ToolEvents {
 		}
 	}
 
-	private void handleGiantPickaxeMining(FabricEvents.BreakBlockEvent event) {
+	/**
+	 * Called from PlayerBlockBreakEvents.BEFORE (via FabricEvents.BreakBlockEvent wrapper).
+	 * Matches the original NeoForge handleGiantPickaxeMining flow exactly.
+	 * Uses static flag isBreakingWithGiantPick to prevent recursion during the 4x4x4 block break loop.
+	 */
+		private void handleGiantPickaxeMining(FabricEvents.BreakBlockEvent event) {
 		BlockPos pos = event.getPos();
 		BlockState state = event.getState();
 
 		if (event.getPlayer() instanceof ServerPlayer player && canHarvestWithGiantPick(player, state, pos)) {
 			var attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.GIANT_PICKAXE_MINING);
 
+			// Initialize mining time if not already set
+			if (attachment.getMining() != player.level().getGameTime()) {
+				attachment.setMining(player.level().getGameTime());
+				attachment.setBreaking(false);
+				attachment.setGiantBlockConversion(0);
+			}
+
 			if (shouldBreakGiantBlock(player, attachment)) {
-				attachment.setBreaking(true); // Tell the capability that a block breaking loop is happening, so it knows to fail the if check above. Otherwise, this would go on forever
-
-				LootParams.Builder builder = new LootParams.Builder(player.level())
-					.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-					.withParameter(LootContextParams.BLOCK_STATE, state)
-					.withOptionalParameter(LootContextParams.THIS_ENTITY, player)
-					.withParameter(LootContextParams.TOOL, player.getMainHandItem());
-
-				List<ItemStack> drops = state.getDrops(builder);
-
-				if (!drops.isEmpty() && drops.getFirst().getItem() instanceof BlockItem block) {
-					boolean allTheSame = GiantToolGroupingModifier.CONVERSIONS.containsKey(block.getBlock()); //check if the block drops can be converted instead of the block itself so things like stone can make giant cobble
-					if (allTheSame) {
+				isBreakingWithGiantPick = true;
+				
+				try {
+					// First, determine if this block can form a giant block (check 4x4x4 area and conversion map)
+					boolean canFormGiantBlock = false;
+					if (GiantToolGroupingModifier.CONVERSIONS.containsKey(state.getBlock())) {
+						canFormGiantBlock = true;
 						for (BlockPos offsetPos : GiantBlock.getVolume(pos)) {
 							if (!player.level().getBlockState(offsetPos).is(state.getBlock())) {
-								allTheSame = false;
-								break; //end early: we have determined we arent getting a giant block from this. No need to keep checking positions
+								canFormGiantBlock = false;
+								break;
 							}
 						}
 					}
-					attachment.setGiantBlockConversion(allTheSame ? 64 : 0); // NO IN-BETWEEN! Either the whole 64 get converted, or none do
-				}
-				event.setCanceled(true); // We cancel this event, since we want to break the block we're looking at first
-				player.level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
-				player.gameMode.destroyBlock(pos); // Break the block we broke, for real this time
+					attachment.setGiantBlockConversion(canFormGiantBlock ? 64 : 0);
+					
+					event.setCanceled(true);
+					player.level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+					player.gameMode.destroyBlock(pos);
 
-				// Break all the other blocks, if they're the same type
-				for (BlockPos offsetPos : GiantBlock.getVolume(pos)) {
-					if (!offsetPos.equals(pos) && player.level().getBlockState(offsetPos).is(state.getBlock())) {
-						BlockPos newPos = new BlockPos(offsetPos); // This feels dumb, but without it, the client thinks the last block in the iterator is broken too
-						player.level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, newPos, Block.getId(player.level().getBlockState(newPos)));
-						player.gameMode.destroyBlock(newPos);
+					for (BlockPos offsetPos : GiantBlock.getVolume(pos)) {
+						if (!offsetPos.equals(pos) && player.level().getBlockState(offsetPos).is(state.getBlock())) {
+							BlockPos newPos = new BlockPos(offsetPos);
+							player.level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, newPos, Block.getId(player.level().getBlockState(newPos)));
+							player.gameMode.destroyBlock(newPos);
+						}
 					}
+				} finally {
+					isBreakingWithGiantPick = false;
 				}
-				attachment.setBreaking(false); // Tell the capability that the loop is over, and all is good in the world
 			}
 		}
 	}
@@ -298,5 +325,13 @@ public class ToolEvents {
 		if (!Blocks.ANCIENT_DEBRIS.defaultBlockState().is(TFBlockTags.MINING_CORE_EXCLUDED) && !OreMagnetItem.TREE_ORE_TO_BLOCK_REPLACEMENTS.containsKey(Blocks.ANCIENT_DEBRIS)) {
 			OreMagnetItem.TREE_ORE_TO_BLOCK_REPLACEMENTS.put(Blocks.ANCIENT_DEBRIS, Blocks.NETHERRACK);
 		}
+	}
+
+	/**
+	 * Called from LivingEntityMixin (Inject at HEAD of addEffect).
+	 * Returns true if the effect should be blocked (pocket watch prevents mining fatigue).
+	 */
+	public static boolean shouldBlockEffect(LivingEntity entity, net.minecraft.world.effect.MobEffectInstance effectInstance) {
+		return effectInstance.is(MobEffects.MINING_FATIGUE) && entity.isHolding(TFItems.POCKET_WATCH);
 	}
 }

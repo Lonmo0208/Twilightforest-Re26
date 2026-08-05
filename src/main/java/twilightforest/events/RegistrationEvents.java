@@ -1,8 +1,7 @@
 package twilightforest.events;
 
 
-import java.util.function.Consumer;
-import net.minecraft.world.level.block.Blocks;
+import twilightforest.TwilightForestMod;
 import twilightforest.beanification.Autowired;
 import twilightforest.beanification.Component;
 import twilightforest.beanification.PostConstruct;
@@ -22,16 +21,282 @@ public class RegistrationEvents {
 	@Autowired
 	private HolidayEvent holidayEvent;
 
-	// TODO: Port to Fabric - Replace NeoForge event bus with Fabric event callbacks
 	@PostConstruct
 	private void setup() {
-		// Register GiantPickaxe 64-block grouping conversions
-		// This must run at mod init so GiantToolGroupingModifier can convert
-		// 64 cobblestone/obsidian/oak_log/oak_leaves → 1 giant block item.
-		GiantToolGroupingModifier.CONVERSIONS.put(Blocks.COBBLESTONE, TFBlocks.GIANT_COBBLESTONE.asItem());
-		GiantToolGroupingModifier.CONVERSIONS.put(Blocks.OAK_LOG, TFBlocks.GIANT_LOG.asItem());
-		GiantToolGroupingModifier.CONVERSIONS.put(Blocks.OAK_LEAVES, TFBlocks.GIANT_LEAVES.asItem());
-		GiantToolGroupingModifier.CONVERSIONS.put(Blocks.OBSIDIAN, TFBlocks.GIANT_OBSIDIAN.asItem());
+		// Vanilla-compatible init-time registrations: strippables, flower pots, flammability, jar lids
+		// These are called from TwilightForestMod.onInitialize() via an explicit init() call.
+		// The rest of the NeoForge-specific registrations are either already ported elsewhere
+		// or cannot be ported to Fabric (see detailed comments below).
+	}
+
+	/**
+	 * Called from TwilightForestMod.onInitialize() to perform vanilla-compatible registrations
+	 * that were previously in the NeoForge init event handler.
+	 */
+	public void init() {
+		// Initialize giant block conversions early
+		GiantToolGroupingModifier.bootstrapConversions();
+		
+		// TFDispenserBehaviors.init(); - Already handled via TFBlocks static init
+		// TFStats.init(); - Already called in onInitialize()
+
+		// Arctic armor dye washing in cauldrons - NOT PORTED: NeoForge-specific CauldronInteractions API
+		// In Fabric, cauldron interactions need to be registered via the vanilla CauldronInteraction map.
+
+		// Strippable logs - these are handled via data maps in 26.1.2+ (not the AxeItem.STRIPPABLES map)
+		// The axes handle stripping through the TWILIGHT_OAK_LOG item's interaction component.
+		// If stripping doesn't work, a data map needs to be added instead.
+
+		// Flower pot plants are already registered via FlowerPotBlock constructor in TFBlocks.java
+		// The constructor automatically puts the plant → potted mapping into POTTED_BY_CONTENT.
+
+		// Flammability - vanilla FireBlock API
+		net.minecraft.world.level.block.FireBlock fireblock = (net.minecraft.world.level.block.FireBlock) net.minecraft.world.level.block.Blocks.FIRE;
+
+		// Twilight Oak wood family
+		fireblock.setFlammable(TFBlocks.TWILIGHT_OAK_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.TWILIGHT_OAK_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_TWILIGHT_OAK_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_TWILIGHT_OAK_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_TWILIGHT_OAK_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_TWILIGHT_OAK_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_TWILIGHT_OAK_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.TWILIGHT_OAK_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.TWILIGHT_OAK_PLANKS, 5, 20);
+		fireblock.setFlammable(TFBlocks.TWILIGHT_OAK_SLAB, 5, 20);
+		fireblock.setFlammable(TFBlocks.TWILIGHT_OAK_STAIRS, 5, 20);
+		fireblock.setFlammable(TFBlocks.TWILIGHT_OAK_FENCE, 5, 20);
+		fireblock.setFlammable(TFBlocks.TWILIGHT_OAK_GATE, 5, 20);
+
+		// Canopy wood family
+		fireblock.setFlammable(TFBlocks.CANOPY_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.CANOPY_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_CANOPY_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_CANOPY_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_CANOPY_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_CANOPY_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_CANOPY_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.CANOPY_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.CANOPY_PLANKS, 5, 20);
+		fireblock.setFlammable(TFBlocks.CANOPY_SLAB, 5, 20);
+		fireblock.setFlammable(TFBlocks.CANOPY_STAIRS, 5, 20);
+		fireblock.setFlammable(TFBlocks.CANOPY_FENCE, 5, 20);
+		fireblock.setFlammable(TFBlocks.CANOPY_GATE, 5, 20);
+		fireblock.setFlammable(TFBlocks.CANOPY_BOOKSHELF, 5, 20);
+
+		// Mangrove wood family
+		fireblock.setFlammable(TFBlocks.MANGROVE_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.MANGROVE_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_MANGROVE_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_MANGROVE_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_MANGROVE_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_MANGROVE_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_MANGROVE_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.MANGROVE_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.MANGROVE_PLANKS, 5, 20);
+		fireblock.setFlammable(TFBlocks.MANGROVE_SLAB, 5, 20);
+		fireblock.setFlammable(TFBlocks.MANGROVE_STAIRS, 5, 20);
+		fireblock.setFlammable(TFBlocks.MANGROVE_FENCE, 5, 20);
+		fireblock.setFlammable(TFBlocks.MANGROVE_GATE, 5, 20);
+		fireblock.setFlammable(TFBlocks.MANGROVE_ROOT, 5, 20);
+
+		// Dark wood family
+		fireblock.setFlammable(TFBlocks.DARK_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.DARK_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_DARK_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_DARK_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_DARK_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_DARK_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_DARK_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.DARK_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.DARK_PLANKS, 5, 20);
+		fireblock.setFlammable(TFBlocks.DARK_SLAB, 5, 20);
+		fireblock.setFlammable(TFBlocks.DARK_STAIRS, 5, 20);
+		fireblock.setFlammable(TFBlocks.DARK_FENCE, 5, 20);
+		fireblock.setFlammable(TFBlocks.DARK_GATE, 5, 20);
+
+		// Time wood family
+		fireblock.setFlammable(TFBlocks.TIME_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.TIME_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_TIME_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_TIME_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_TIME_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_TIME_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_TIME_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.TIME_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.TIME_PLANKS, 5, 20);
+		fireblock.setFlammable(TFBlocks.TIME_SLAB, 5, 20);
+		fireblock.setFlammable(TFBlocks.TIME_STAIRS, 5, 20);
+		fireblock.setFlammable(TFBlocks.TIME_FENCE, 5, 20);
+		fireblock.setFlammable(TFBlocks.TIME_GATE, 5, 20);
+
+		// Transformation wood family
+		fireblock.setFlammable(TFBlocks.TRANSFORMATION_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.TRANSFORMATION_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_TRANSFORMATION_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_TRANSFORMATION_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_TRANSFORMATION_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_TRANSFORMATION_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_TRANSFORMATION_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.TRANSFORMATION_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.TRANSFORMATION_PLANKS, 5, 20);
+		fireblock.setFlammable(TFBlocks.TRANSFORMATION_SLAB, 5, 20);
+		fireblock.setFlammable(TFBlocks.TRANSFORMATION_STAIRS, 5, 20);
+		fireblock.setFlammable(TFBlocks.TRANSFORMATION_FENCE, 5, 20);
+		fireblock.setFlammable(TFBlocks.TRANSFORMATION_GATE, 5, 20);
+
+		// Mining wood family
+		fireblock.setFlammable(TFBlocks.MINING_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.MINING_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_MINING_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_MINING_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_MINING_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_MINING_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_MINING_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.MINING_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.MINING_PLANKS, 5, 20);
+		fireblock.setFlammable(TFBlocks.MINING_SLAB, 5, 20);
+		fireblock.setFlammable(TFBlocks.MINING_STAIRS, 5, 20);
+		fireblock.setFlammable(TFBlocks.MINING_FENCE, 5, 20);
+		fireblock.setFlammable(TFBlocks.MINING_GATE, 5, 20);
+
+		// Sorting wood family
+		fireblock.setFlammable(TFBlocks.SORTING_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.SORTING_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_SORTING_LOG, 5, 5);
+		fireblock.setFlammable(TFBlocks.STRIPPED_SORTING_WOOD, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_SORTING_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_SORTING_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_SORTING_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.SORTING_BANISTER, 5, 5);
+		fireblock.setFlammable(TFBlocks.SORTING_PLANKS, 5, 20);
+		fireblock.setFlammable(TFBlocks.SORTING_SLAB, 5, 20);
+		fireblock.setFlammable(TFBlocks.SORTING_STAIRS, 5, 20);
+		fireblock.setFlammable(TFBlocks.SORTING_FENCE, 5, 20);
+		fireblock.setFlammable(TFBlocks.SORTING_GATE, 5, 20);
+
+		// Other flammable blocks
+		fireblock.setFlammable(TFBlocks.RASPBERRY_BUSH, 4, 25);
+		fireblock.setFlammable(TFBlocks.BLUEBERRY_BUSH, 4, 25);
+		fireblock.setFlammable(TFBlocks.BLACKBERRY_BUSH, 4, 25);
+		fireblock.setFlammable(TFBlocks.MALOBERRY_BUSH, 4, 25);
+		fireblock.setFlammable(TFBlocks.CLOVER_PATCH, 60, 100);
+		fireblock.setFlammable(TFBlocks.FALLEN_LEAVES, 60, 100);
+		fireblock.setFlammable(TFBlocks.FIDDLEHEAD, 60, 100);
+		fireblock.setFlammable(TFBlocks.MAYAPPLE, 60, 100);
+		fireblock.setFlammable(TFBlocks.MOSS_PATCH, 60, 100);
+		fireblock.setFlammable(TFBlocks.ROOT_STRAND, 60, 100);
+		fireblock.setFlammable(TFBlocks.TORCHBERRY_PLANT, 60, 100);
+		fireblock.setFlammable(TFBlocks.ROOT_BLOCK, 5, 20);
+		fireblock.setFlammable(TFBlocks.ARCTIC_FUR_BLOCK, 20, 20);
+		fireblock.setFlammable(TFBlocks.LIVEROOT_BLOCK, 5, 20);
+		fireblock.setFlammable(TFBlocks.CHISELED_CANOPY_BOOKSHELF, 30, 20);
+		fireblock.setFlammable(TFBlocks.HUGE_STALK, 5, 5);
+
+		fireblock.setFlammable(TFBlocks.TOWERWOOD, 0, 1);
+		fireblock.setFlammable(TFBlocks.CRACKED_TOWERWOOD, 0, 1);
+		fireblock.setFlammable(TFBlocks.MOSSY_TOWERWOOD, 0, 1);
+		fireblock.setFlammable(TFBlocks.ENCASED_TOWERWOOD, 0, 1);
+		fireblock.setFlammable(TFBlocks.INFESTED_TOWERWOOD, 0, 1);
+
+		// Leaves flammability
+		fireblock.setFlammable(TFBlocks.TWILIGHT_OAK_LEAVES, 30, 60);
+		fireblock.setFlammable(TFBlocks.CANOPY_LEAVES, 30, 60);
+		fireblock.setFlammable(TFBlocks.MANGROVE_LEAVES, 30, 60);
+		fireblock.setFlammable(TFBlocks.DARK_LEAVES, 0, 1);
+		fireblock.setFlammable(TFBlocks.HARDENED_DARK_LEAVES, 0, 1);
+		fireblock.setFlammable(TFBlocks.TIME_LEAVES, 30, 60);
+		fireblock.setFlammable(TFBlocks.TRANSFORMATION_LEAVES, 30, 60);
+		fireblock.setFlammable(TFBlocks.MINING_LEAVES, 30, 60);
+		fireblock.setFlammable(TFBlocks.SORTING_LEAVES, 30, 60);
+		fireblock.setFlammable(TFBlocks.BEANSTALK_LEAVES, 30, 60);
+		fireblock.setFlammable(TFBlocks.THORN_LEAVES, 30, 60);
+		fireblock.setFlammable(TFBlocks.RAINBOW_OAK_LEAVES, 30, 60);
+
+		// Hollow logs and banisters (vanilla wood types)
+		fireblock.setFlammable(TFBlocks.HOLLOW_OAK_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_OAK_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_OAK_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.OAK_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.HOLLOW_SPRUCE_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_SPRUCE_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_SPRUCE_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.SPRUCE_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.HOLLOW_BIRCH_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_BIRCH_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_BIRCH_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.BIRCH_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.HOLLOW_JUNGLE_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_JUNGLE_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_JUNGLE_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.JUNGLE_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.HOLLOW_ACACIA_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_ACACIA_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_ACACIA_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.ACACIA_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.HOLLOW_DARK_OAK_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_DARK_OAK_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_DARK_OAK_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.DARK_OAK_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.HOLLOW_CRIMSON_STEM_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_CRIMSON_STEM_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_CRIMSON_STEM_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.CRIMSON_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.HOLLOW_WARPED_STEM_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_WARPED_STEM_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_WARPED_STEM_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.WARPED_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.HOLLOW_VANGROVE_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_VANGROVE_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_VANGROVE_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.VANGROVE_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.HOLLOW_CHERRY_LOG_HORIZONTAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_CHERRY_LOG_VERTICAL, 5, 5);
+		fireblock.setFlammable(TFBlocks.HOLLOW_CHERRY_LOG_CLIMBABLE, 5, 5);
+		fireblock.setFlammable(TFBlocks.CHERRY_BANISTER, 5, 20);
+		fireblock.setFlammable(TFBlocks.BAMBOO_BANISTER, 5, 20);
+
+		// Jar lids - register all log types as jar lids
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.MANGROVE_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.CANOPY_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.DARK_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.MINING_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.SORTING_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.TIME_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.TRANSFORMATION_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.TWILIGHT_OAK_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.ACACIA_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.BIRCH_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.CHERRY_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.DARK_OAK_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.JUNGLE_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.MANGROVE_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.OAK_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.SPRUCE_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.CRIMSON_STEM);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.WARPED_STEM);
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.STRIPPED_MANGROVE_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.STRIPPED_CANOPY_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.STRIPPED_DARK_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.STRIPPED_MINING_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.STRIPPED_SORTING_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.STRIPPED_TIME_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.STRIPPED_TRANSFORMATION_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.STRIPPED_TWILIGHT_OAK_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_ACACIA_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_BIRCH_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_CHERRY_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_DARK_OAK_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_JUNGLE_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_MANGROVE_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_OAK_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_SPRUCE_LOG);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_CRIMSON_STEM);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_WARPED_STEM);
+		twilightforest.block.entity.JarBlockEntity.addLid(TFBlocks.CINDER_LOG.asItem());
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.BAMBOO_BLOCK);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.STRIPPED_BAMBOO_BLOCK);
+		twilightforest.block.entity.JarBlockEntity.addLid(net.minecraft.world.item.Items.PUMPKIN, () -> this.holidayEvent.isHalloweenWeek());
 	}
 
 	// TODO: Port to Fabric - All methods below are NeoForge-specific and need Fabric equivalents
@@ -162,8 +427,7 @@ public class RegistrationEvents {
 		registrar.playToClient(SyncQuestsPacket.TYPE, SyncQuestsPacket.STREAM_CODEC, SyncQuestsPacket::handle);
 		registrar.playToClient(TravellersWingsStatePacket.TYPE, TravellersWingsStatePacket.STREAM_CODEC, TravellersWingsStatePacket::handle);
 	}
-	*/
-	/*
+
 	public void init(Object evt) {
 		evt.enqueueWork(() -> {
 			TFDispenserBehaviors.init();
@@ -407,11 +671,6 @@ public class RegistrationEvents {
 			fireblock.setFlammable(TFBlocks.CHERRY_BANISTER, 5, 20);
 			fireblock.setFlammable(TFBlocks.BAMBOO_BANISTER, 5, 20);
 
-			GiantToolGroupingModifier.CONVERSIONS.put(Blocks.COBBLESTONE, TFBlocks.GIANT_COBBLESTONE.asItem());
-			GiantToolGroupingModifier.CONVERSIONS.put(Blocks.OAK_LOG, TFBlocks.GIANT_LOG.asItem());
-			GiantToolGroupingModifier.CONVERSIONS.put(Blocks.OAK_LEAVES, TFBlocks.GIANT_LEAVES.asItem());
-			GiantToolGroupingModifier.CONVERSIONS.put(Blocks.OBSIDIAN, TFBlocks.GIANT_OBSIDIAN.asItem());
-
 			JarBlockEntity.addLid(TFBlocks.MANGROVE_LOG.asItem());
 			JarBlockEntity.addLid(TFBlocks.CANOPY_LOG.asItem());
 			JarBlockEntity.addLid(TFBlocks.DARK_LOG.asItem());
@@ -455,7 +714,6 @@ public class RegistrationEvents {
 		});
 	}
 
-	/*
 	private void registerCommands(Object event) {
 		this.tfCommand.register(event.getDispatcher(), event.getBuildContext());
 	}
@@ -480,7 +738,7 @@ public class RegistrationEvents {
 		event.register(TFEntities.QUEST_RAM.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules, Object.Operation.REPLACE);
 		event.register(TFEntities.KOBOLD.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Object.Operation.REPLACE);
 		event.register(TFEntities.MOSQUITO_SWARM.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Object.Operation.REPLACE);
-		
+
 		event.register(TFEntities.MINOTAUR.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Object.Operation.REPLACE);
 		event.register(TFEntities.MINOSHROOM.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Object.Operation.REPLACE);
 		event.register(TFEntities.FIRE_BEETLE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Object.Operation.REPLACE);

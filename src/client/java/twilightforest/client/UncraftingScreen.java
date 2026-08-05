@@ -19,9 +19,7 @@ import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
-// TODO: Port to Fabric - ClientPacketDistributor is NeoForge-specific
-// TODO: Port to Fabric - ClientPacketDistributor is NeoForge-specific
-// import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import twilightforest.TwilightForestMod;
 import twilightforest.config.TFConfig;
 import twilightforest.inventory.UncraftingMenu;
@@ -53,44 +51,32 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 		this.setInitialFocus(this.recipeBookComponent);
 
 		this.addRenderableWidget(new CycleButton(this.leftPos + 40, this.topPos + 22, true, button -> {
-			// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-			// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(0));
+			ClientPlayNetworking.send(new UncraftingGuiPacket(0));
 			this.menu.unrecipeInCycle++;
-			this.menu.slotsChanged(this.menu.tinkerInput);
 		}, Component.translatable("container.twilightforest.uncrafting_table.cycle_next_uncraft")));
 		this.addRenderableWidget(new CycleButton(this.leftPos + 40, this.topPos + 55, false, button -> {
-			// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-			// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(1));
+			ClientPlayNetworking.send(new UncraftingGuiPacket(1));
 			this.menu.unrecipeInCycle--;
-			this.menu.slotsChanged(this.menu.tinkerInput);
 		}, Component.translatable("container.twilightforest.uncrafting_table.cycle_back_uncraft")));
 
 		if (!TFConfig.disableIngredientSwitching) {
 			this.addRenderableWidget(new CycleButtonMini(this.leftPos + 27, this.topPos + 56, true, button -> {
-				// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-				// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(2));
+				ClientPlayNetworking.send(new UncraftingGuiPacket(2));
 				this.menu.ingredientsInCycle++;
-				this.menu.slotsChanged(this.menu.tinkerInput);
 			}, Component.translatable("container.twilightforest.uncrafting_table.cycle_next_ingredient")));
 			this.addRenderableWidget(new CycleButtonMini(this.leftPos + 27, this.topPos + 63, false, button -> {
-				// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-				// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(3));
+				ClientPlayNetworking.send(new UncraftingGuiPacket(3));
 				this.menu.ingredientsInCycle--;
-				this.menu.slotsChanged(this.menu.tinkerInput);
 			}, Component.translatable("container.twilightforest.uncrafting_table.cycle_back_ingredient")));
 		}
 
 		this.addRenderableWidget(new CycleButton(this.leftPos + 121, this.topPos + 22, true, button -> {
-			// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-			// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(4));
+			ClientPlayNetworking.send(new UncraftingGuiPacket(4));
 			this.menu.recipeInCycle++;
-			this.menu.slotsChanged(this.menu.assemblyMatrix);
 		}, Component.translatable("container.twilightforest.uncrafting_table.cycle_next_recipe")));
 		this.addRenderableWidget(new CycleButton(this.leftPos + 121, this.topPos + 55, false, button -> {
-			// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-			// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(5));
+			ClientPlayNetworking.send(new UncraftingGuiPacket(5));
 			this.menu.recipeInCycle--;
-			this.menu.slotsChanged(this.menu.assemblyMatrix);
 		}, Component.translatable("container.twilightforest.uncrafting_table.cycle_back_recipe")));
 	}
 
@@ -108,12 +94,10 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 		if (!TFConfig.disableIngredientSwitching) {
 			if (x > this.leftPos + 27 && x < this.leftPos + 33 && y > this.topPos + 56 && y < this.topPos + 69) {
 				if (vertScroll > 0) {
-					// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-					// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(2));
+					ClientPlayNetworking.send(new UncraftingGuiPacket(2));
 					this.menu.ingredientsInCycle++;
 				} else {
-					// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-					// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(3));
+					ClientPlayNetworking.send(new UncraftingGuiPacket(3));
 					this.menu.ingredientsInCycle--;
 				}
 				this.menu.slotsChanged(this.menu.tinkerInput);
@@ -123,12 +107,10 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 		//uncrafting recipe buttons
 		if (x > this.leftPos + 40 && x < this.leftPos + 54 && y > this.topPos + 22 && y < this.topPos + 64) {
 			if (vertScroll > 0) {
-				// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-				// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(0));
+				ClientPlayNetworking.send(new UncraftingGuiPacket(0));
 				this.menu.unrecipeInCycle++;
 			} else {
-				// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-				// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(1));
+				ClientPlayNetworking.send(new UncraftingGuiPacket(1));
 				this.menu.unrecipeInCycle--;
 			}
 			this.menu.slotsChanged(this.menu.tinkerInput);
@@ -137,12 +119,10 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 		//recrafting recipe buttons
 		if (x > this.leftPos + 121 && x < this.leftPos + 135 && y > this.topPos + 22 && y < this.topPos + 64) {
 			if (vertScroll > 0) {
-				// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-				// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(4));
+				ClientPlayNetworking.send(new UncraftingGuiPacket(4));
 				this.menu.recipeInCycle++;
 			} else {
-				// TODO: Port to Fabric - ClientPacketDistributor.sendToServer is NeoForge-specific; use Fabric networking API
-				// ClientPacketDistributor.sendToServer(new UncraftingGuiPacket(5));
+				ClientPlayNetworking.send(new UncraftingGuiPacket(5));
 				this.menu.recipeInCycle--;
 			}
 			this.menu.slotsChanged(this.menu.assemblyMatrix);
@@ -272,7 +252,7 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 		UncraftingMenu container = this.menu;
 
 		for (int i = 0; i < 9; i++) {
-			if (container.getCarried().isEmpty() && container.slots.get(2 + i).hasItem() && this.hoveredSlot == container.slots.get(11 + i) && !container.slots.get(11 + i).hasItem()) {
+			if (container.getCarried().isEmpty() && container.slots.get(2 + i).hasItem() && UncraftingMenu.isMarked(container.slots.get(2 + i).getItem()) && this.hoveredSlot == container.slots.get(11 + i) && !container.slots.get(11 + i).hasItem()) {
 				graphics.setTooltipForNextFrame(this.font, java.util.List.of(Component.translatable("container.twilightforest.uncrafting_table.disabled_item").withStyle(ChatFormatting.RED)), java.util.Optional.empty(), pX, pY);
 			}
 		}

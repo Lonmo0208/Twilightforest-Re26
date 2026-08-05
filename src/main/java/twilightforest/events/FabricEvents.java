@@ -53,7 +53,7 @@ public class FabricEvents {
 		public InteractionResult getCancellationResult() { return cancellationResult; }
 		public void setCancellationResult(InteractionResult result) { this.cancellationResult = result; }
 		public boolean isCanceled() { return cancellationResult != InteractionResult.PASS; }
-		public void setCanceled(boolean canceled) { if (canceled) this.cancellationResult = InteractionResult.FAIL; }
+		public void setCanceled(boolean canceled) { if (canceled && this.cancellationResult == InteractionResult.PASS) this.cancellationResult = InteractionResult.FAIL; }
 
 		public static class RightClickBlock extends PlayerInteractEvent {
 			public RightClickBlock(Player player, InteractionHand hand, BlockPos pos, BlockHitResult hitVec) {

@@ -78,6 +78,20 @@ public class ProgressionEvents {
 			preventLockedAreaBlockInteracting(event);
 			return event.isCanceled() ? InteractionResult.FAIL : InteractionResult.PASS;
 		});
+
+		// preventLockedAreaEntityDamage - Cancel damage to enemies in protected areas
+		net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+			if (entity instanceof net.minecraft.world.entity.monster.Enemy && !(entity instanceof twilightforest.entity.monster.Kobold)
+					&& source.getEntity() instanceof Player player && entity.level() instanceof ServerLevel serverLevel
+					&& isAreaProtected(serverLevel, player, new net.minecraft.core.BlockPos(entity.blockPosition()))) {
+				return false;
+			}
+			return true;
+		});
+
+		// preventLockedAreaMultiblocks - NOT PORTED: No Fabric equivalent for multi-place block events
+		// Would need a Mixin in BlockItem to intercept multi-block placement in protected areas.
+		// NeoForge.EVENT_BUS.addListener(this::preventLockedAreaMultiblocks);
 	}
 
 	/**

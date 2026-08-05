@@ -109,6 +109,11 @@ public class UncraftingMenu extends RecipeBookMenu {
 
 		this.slotsChanged(this.assemblyMatrix);
 
+		// Sync initial costs to client (server-side only)
+		if (!this.level.isClientSide() && this.player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+			twilightforest.network.SyncUncraftingCostsPacket.send(serverPlayer, this.uncraftingMatrix.uncraftingCost, this.uncraftingMatrix.recraftingCost);
+		}
+
 		if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
 			// Debug slot listing
 			NonNullList<Slot> slots = this.slots;
@@ -202,7 +207,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 			}
 		}
 		// Now we've got the uncrafting logic set in, currently we don't modify the uncraftingMatrix. That's fine.
-		if (inventory == this.assemblyMatrix || inventory == this.tinkerInput) {
+		if (inventory == this.assemblyMatrix) {
 			if (this.tinkerInput.isEmpty()) {
 				// display the output
 				this.chooseRecipe(this.assemblyMatrix.asCraftInput());
@@ -256,6 +261,11 @@ public class UncraftingMenu extends RecipeBookMenu {
 				this.uncraftingMatrix.uncraftingCost = 0;
 				this.uncraftingMatrix.recraftingCost = this.calculateRecraftingCost();
 			}
+		}
+
+		// Sync costs to client if on server side
+		if (!this.level.isClientSide() && this.player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+			twilightforest.network.SyncUncraftingCostsPacket.send(serverPlayer, this.uncraftingMatrix.uncraftingCost, this.uncraftingMatrix.recraftingCost);
 		}
 	}
 
@@ -400,6 +410,14 @@ public class UncraftingMenu extends RecipeBookMenu {
 
 	public int getRecraftingCost() {
 		return this.uncraftingMatrix.recraftingCost;
+	}
+
+	/**
+	 * Called from client-side network handler to sync cost values from server.
+	 */
+	public void setClientCosts(int uncraftingCost, int recraftingCost) {
+		this.uncraftingMatrix.uncraftingCost = uncraftingCost;
+		this.uncraftingMatrix.recraftingCost = recraftingCost;
 	}
 
 	/**
