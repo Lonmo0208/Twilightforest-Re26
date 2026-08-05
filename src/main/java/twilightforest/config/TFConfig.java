@@ -9,14 +9,12 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
-import twilightforest.network.SyncUncraftingTableConfigPacket;
 import twilightforest.util.PlayerHelper;
 
 import java.net.Proxy;
@@ -33,7 +31,6 @@ public class TFConfig {
 	private static final List<Holder<Biome>> VALID_AURORA_BIOMES = new ArrayList<>();
 	public static final List<GameProfile> GAME_PROFILES = new ArrayList<>();
 
-	// --- CLIENT ---
 	public static boolean silentCicadas = false;
 	public static boolean silentCicadasOnHead = false;
 	public static boolean firstPersonEffects = true;
@@ -49,13 +46,11 @@ public class TFConfig {
 	public static boolean manualTravellersWingsGradualGlideDefault = true;
 	public static boolean firstPersonGloveOverlay = true;
 
-	// --- Item Display ---
 	public static int itemDisplayXOffs = 4;
 	public static int itemDisplayYOffs = 4;
 	public static double itemDisplayScale = 1.0D;
 	public static boolean clock24HourFormat = use24HourTimeDefault();
 
-	// --- COMMON ---
 	public static boolean casketUUIDLocking = false;
 	public static boolean disableSkullCandles = false;
 	public static boolean defaultItemEnchants = true;
@@ -110,15 +105,16 @@ public class TFConfig {
 	@Nullable
 	public static Identifier getPortalLockingAdvancement(Player player) {
 		//only run assigning logic if the config has an advancement set and the RL is null
-		if (portalLockingAdvancement == null && !ConfigSetup.COMMON_CONFIG.PORTAL.portalAdvancementLock.get().isEmpty()) {
+		var commonConfig = ConfigSetup.getCommonConfig();
+		if (portalLockingAdvancement == null && commonConfig != null && !commonConfig.PORTAL.portalAdvancementLock.get().isEmpty()) {
 
-			Identifier lock = Identifier.tryParse(ConfigSetup.COMMON_CONFIG.PORTAL.portalAdvancementLock.get());
+			Identifier lock = Identifier.tryParse(commonConfig.PORTAL.portalAdvancementLock.get());
 			if (lock == null || PlayerHelper.getAdvancement(player, lock) == null) {
 				//if the RL is not a valid advancement fail us
 				TwilightForestMod.LOGGER.error("The portal locking advancement is not a valid advancement! Setting to null!");
-				ConfigSetup.COMMON_CONFIG.PORTAL.portalAdvancementLock.set("");
+				commonConfig.PORTAL.portalAdvancementLock.set("");
 			} else {
-				portalLockingAdvancement = Identifier.tryParse(ConfigSetup.COMMON_CONFIG.PORTAL.portalAdvancementLock.get());
+				portalLockingAdvancement = Identifier.tryParse(commonConfig.PORTAL.portalAdvancementLock.get());
 				TwilightForestMod.LOGGER.debug("Portal locking advancement reloaded. Current advancement to check for is: {}", portalLockingAdvancement);
 			}
 		}
@@ -128,8 +124,9 @@ public class TFConfig {
 
 	//Forge's biome registry doesn't contain biomes done via datapacks, so we have to use registryaccess
 	public static List<Holder<Biome>> getValidAuroraBiomes(RegistryAccess access) {
-		if (VALID_AURORA_BIOMES.isEmpty() && !ConfigSetup.CLIENT_CONFIG.auroraBiomes.get().isEmpty()) {
-			ConfigSetup.CLIENT_CONFIG.auroraBiomes.get().forEach(s -> {
+		var clientConfig = ConfigSetup.getClientConfig();
+		if (VALID_AURORA_BIOMES.isEmpty() && clientConfig != null && !clientConfig.auroraBiomes.get().isEmpty()) {
+			clientConfig.auroraBiomes.get().forEach(s -> {
 				Optional<Holder<Biome>> holder = Optional.ofNullable(Identifier.tryParse(s)).flatMap(key -> access.lookupOrThrow(Registries.BIOME).get(key));
 				if (holder.isEmpty()) {
 					TwilightForestMod.LOGGER.warn("Biome {} in Twilight Forest's validAuroraBiomes config option is not a valid biome. Skipping!", s);
@@ -189,13 +186,6 @@ public class TFConfig {
 		parryNonTwilightAttacks = config.SHIELD_INTERACTIONS.parryNonTwilightAttacks.get();
 		shieldParryTicks = config.SHIELD_INTERACTIONS.shieldParryTicks.get();
 
-		//resends uncrafting settings to all players when the config is reloaded. This ensures all players have matching configs so things don't desync.
-		MinecraftServer server = null; // Will be set when config is loaded from server context
-		if (server != null && server.isDedicatedServer()) {
-			for (var player : server.getPlayerList().getPlayers()) {
-				ConfigSetup.syncUncraftingConfig(player);
-			}
-		}
 		//sets cached portal locking advancement to null just in case it changed
 		portalLockingAdvancement = null;
 	}

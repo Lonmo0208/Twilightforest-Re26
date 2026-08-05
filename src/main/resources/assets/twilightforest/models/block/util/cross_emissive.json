@@ -29,7 +29,8 @@
         "north": {"uv": [0, 0, 16, 16], "texture": "#cross_emissive"},
         "south": {"uv": [0, 0, 16, 16], "texture": "#cross_emissive"}
       },
-      "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8], "rescale": true}
+      "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+      "light_emission": 15
     },
     {
       "from": [8, 0, 0.8],
@@ -38,7 +39,8 @@
         "west": {"uv": [0, 0, 16, 16], "texture": "#cross_emissive"},
         "east": {"uv": [0, 0, 16, 16], "texture": "#cross_emissive"}
       },
-      "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8], "rescale": true}
+      "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+      "light_emission": 15
     }
   ]
 }

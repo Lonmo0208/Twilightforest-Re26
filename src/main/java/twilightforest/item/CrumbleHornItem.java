@@ -90,10 +90,6 @@ public class CrumbleHornItem extends Item {
 
 		if (state.isAir() || crumbleMap == null) return false;
 
-		if (living instanceof Player) {
-			// TODO: Port to Fabric - Block break event handling
-		}
-
 		if (crumbleMap.result() == Blocks.AIR) {
 			if (serverLevel.getRandom().nextFloat() < crumbleMap.chanceToCrumble()) {
 				if (living instanceof Player player) {

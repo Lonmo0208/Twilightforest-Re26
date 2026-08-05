@@ -25,9 +25,9 @@ public enum BossVariant implements StringRepresentable {
 	public static final EnumCodec<BossVariant> CODEC = StringRepresentable.fromEnum(BossVariant::values);
 	private final TrophyType trophyType;
 	@Nullable
-	private final Supplier<BlockEntityType<? extends BossSpawnerBlockEntity>> blockEntityType;
+	private final Supplier<BlockEntityType<? extends BossSpawnerBlockEntity<?>>> blockEntityType;
 
-	BossVariant(TrophyType trophyType, @Nullable Supplier<BlockEntityType<? extends BossSpawnerBlockEntity>> blockEntityType) {
+	BossVariant(TrophyType trophyType, @Nullable Supplier<BlockEntityType<? extends BossSpawnerBlockEntity<?>>> blockEntityType) {
 		this.trophyType = trophyType;
 		this.blockEntityType = blockEntityType;
 	}
@@ -43,7 +43,7 @@ public enum BossVariant implements StringRepresentable {
 
 
 	@Nullable
-	public BlockEntityType<? extends BossSpawnerBlockEntity> getType() {
+	public BlockEntityType<? extends BossSpawnerBlockEntity<?>> getType() {
 		return blockEntityType != null ? blockEntityType.get() : null;
 	}
 

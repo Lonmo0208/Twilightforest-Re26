@@ -60,7 +60,7 @@ public class TFDimensionData {
 			32 + 256, // Height + Min Y = Max Y
 			32 + 256, // Logical Height
 			BlockTags.INFINIBURN_OVERWORLD, //infiburn tag
-			0.01F, //ambient light
+			0.01F, //ambient light - keep original TF value so outdoors doesn't look over-bright
 			new DimensionType.MonsterSettings(UniformInt.of(0, 7), 7), //monster settings
 			DimensionType.Skybox.OVERWORLD, //skybox
 			CardinalLighting.Type.DEFAULT, //cardinal lighting

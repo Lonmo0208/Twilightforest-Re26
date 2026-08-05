@@ -69,17 +69,62 @@ public abstract class LandmarkStructure extends Structure implements DecorationC
 		startingPiece.addChildren(startingPiece, structurePiecesBuilder, context.random());
 	}
 
+	/**
+	 * Calculates the block-level spawn position for a given chunk, anchored to the
+	 * center of the biome-grid tile so that the structure spawns exactly where
+	 * the biome was validated in {@link #findValidGenerationPoint}.
+	 * Prevents off-center generation in key biomes like FINAL_PLATEAU / HIGHLANDS.
+	 */
+	protected static int[] tileCenterBlockPos(ChunkPos chunkPos) {
+		int biomeX = (Math.round(chunkPos.x() / 16F) << 6) + 2;
+		int biomeZ = (Math.round(chunkPos.z() / 16F) << 6) + 2;
+		return new int[]{ biomeX * 4, biomeZ * 4 };
+	}
+
+	/**
+	 * Generates the structure at a specific block position, used by subclasses and
+	 * wrappers that need to control the spawn coordinates independently of the chunk.
+	 */
+	protected Optional<GenerationStub> generateAt(GenerationContext context, ChunkPos chunkPos, int x, int y, int z) {
+		return Optional
+			.ofNullable(this.makeFirstPiece(context, chunkPos, x, y, z))
+			.map(piece -> this.getStructurePieceGenerationStubFunction(piece, context, x, y, z));
+	}
+
+	/**
+	 * Delegating helper for subclasses that wrap another structure's first piece logic.
+	 * Calls {@link #getFirstPiece} with the correct random seed.
+	 */
+	@Nullable
+	public StructurePiece makeFirstPiece(GenerationContext context, ChunkPos chunkPos, int x, int y, int z) {
+		return this.getFirstPiece(context, RandomSource.create(context.seed() + chunkPos.x() * 25117L + chunkPos.z() * 151121L), chunkPos, x, y, z);
+	}
+
 	// TODO Refactor findGenerationPoint to merge usecases for getFirstPiece and getStructurePieceGenerationStubFunction
 	@Override
 	public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
 		ChunkPos chunkPos = context.chunkPos();
-		int x = (chunkPos.x() << 4) + (this.centerInChunk ? 7 : 0);
-		int z = (chunkPos.z() << 4) + (this.centerInChunk ? 7 : 0);
+		int[] pos = tileCenterBlockPos(chunkPos);
+		int x = pos[0];
+		int z = pos[1];
 		int y = this.adjustForTerrain(context, x, z);
 
-		return Optional
-			.ofNullable(this.getFirstPiece(context, RandomSource.create(context.seed() + chunkPos.x() * 25117L + chunkPos.z() * 151121L), chunkPos, x, y, z))
-			.map(piece -> this.getStructurePieceGenerationStubFunction(piece, context, x, y, z));
+		return this.generateAt(context, chunkPos, x, y, z);
+	}
+
+	/**
+	 * Public entry point for tile-based generation, used by wrapped structures
+	 * that need to delegate to another structure's generation logic while keeping
+	 * the biome-validation-aligned spawn position.
+	 */
+	public Optional<GenerationStub> generateAtTileCenter(GenerationContext context) {
+		ChunkPos chunkPos = context.chunkPos();
+		int[] pos = tileCenterBlockPos(chunkPos);
+		int x = pos[0];
+		int z = pos[1];
+		int y = this.adjustForTerrain(context, x, z);
+
+		return this.generateAt(context, chunkPos, x, y, z);
 	}
 
 	public final Optional<Holder<MapDecorationType>> getMapIcon() {
@@ -116,19 +161,18 @@ public abstract class LandmarkStructure extends Structure implements DecorationC
 
 	@Override
 	public Optional<GenerationStub> findValidGenerationPoint(GenerationContext context) {
-		if (!(context.biomeSource() instanceof TFBiomeProvider twilightBiomeProvider)) {
+		if (!(context.biomeSource() instanceof TFBiomeProvider twilightBiomeProvider))
 			return super.findValidGenerationPoint(context);
-		}
 
 		ChunkPos chunkPos = context.chunkPos();
 		// set biomeX and biomeZ to center of the biome-grid tile.
 		// Otherwise some tightly-fitting biomes like Highlands vs Thornlands may fail the Troll-Clouds structure generation
-		int biomeX = (Math.round(chunkPos.x() / 16F) << 6) + 2;
-		int biomeZ = (Math.round(chunkPos.z() / 16F) << 6) + 2;
+		int[] pos = tileCenterBlockPos(chunkPos);
+		int biomeX = pos[0] / 4;
+		int biomeZ = pos[1] / 4;
 
 		Holder<Biome> biomeAt = twilightBiomeProvider.getMainBiome(biomeX, biomeZ);
-		boolean validBiome = context.validBiome().test(biomeAt);
 
-		return validBiome ? this.findGenerationPoint(context) : Optional.empty();
+		return context.validBiome().test(biomeAt) ? this.findGenerationPoint(context) : Optional.empty();
 	}
 }

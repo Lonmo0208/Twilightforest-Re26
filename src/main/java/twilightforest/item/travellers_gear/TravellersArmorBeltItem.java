@@ -44,7 +44,7 @@ public class TravellersArmorBeltItem extends TravellersArmorItem {
 		return false;
 	}
 
-	public boolean canFitInsideContainerItems(ItemStack stack) {
+	public static boolean canFitInsideContainerItems(ItemStack stack) {
 		return !stack.has(DataComponents.CONTAINER);
 	}
 
@@ -63,7 +63,7 @@ public class TravellersArmorBeltItem extends TravellersArmorItem {
 		for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
 			ItemStack inventoryStack = inventory.getItem(slotIndex);
 			ItemStack beltStack = beltItems.get(slotIndex);
-			if (true /* TODO: Port - canFitInsideContainerItems */ && !inventoryStack.is(TFItemTags.TRAVELLERS_BELT_BLACKLISTED) && (isSwapHotbarActive || inventoryStack.isEmpty())) {
+			if (canFitInsideContainerItems(inventoryStack) && !inventoryStack.is(TFItemTags.TRAVELLERS_BELT_BLACKLISTED) && (isSwapHotbarActive || inventoryStack.isEmpty())) {
 				hotbarStacks.set(slotIndex, inventoryStack);
 				inventory.setItem(slotIndex, beltStack);
 				if (!beltStack.equals(inventoryStack))

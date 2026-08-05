@@ -132,7 +132,9 @@ public record ColorUtil(Function<DyeColor, Block> function) {
 	}
 
 	private static int rgb(float r, float g, float b) {
-		return (((int) ((r * 255F) + 0.5F) & 0xFF) << 16) | (((int) ((g * 255F) + 0.5F) & 0xFF) << 8) | ((int) ((b * 255F) + 0.5F) & 0xFF);
+		// Alpha must be kept opaque (0xFF) - in the 26.1.2 renderer, tint colors are ARGB and
+		// multiplied by the vertex alpha, so a zero alpha would make the block fully transparent.
+		return 0xFF000000 | (((int) ((r * 255F) + 0.5F) & 0xFF) << 16) | (((int) ((g * 255F) + 0.5F) & 0xFF) << 8) | ((int) ((b * 255F) + 0.5F) & 0xFF);
 	}
 
 	public static int argbToABGR(int argbColor) {

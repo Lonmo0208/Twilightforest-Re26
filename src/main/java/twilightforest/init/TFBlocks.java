@@ -28,6 +28,7 @@ import twilightforest.util.woods.TFWoodTypes;
 import twilightforest.world.components.feature.trees.growers.TFTreeGrowers;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public class TFBlocks {
 
@@ -2884,7 +2885,7 @@ public static final FlowerPotBlock POTTED_DEAD_THORN = Registry.register(
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("cherry_banister"), new BlockItem(CHERRY_BANISTER, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("cherry_banister")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("cherry_drying_rack"), new BlockItem(CHERRY_DRYING_RACK, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("cherry_drying_rack")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("chiseled_canopy_bookshelf"), new BlockItem(CHISELED_CANOPY_BOOKSHELF, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("chiseled_canopy_bookshelf")))));
-		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("cicada"), new BlockItem(CICADA, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("cicada")))));
+		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("cicada"), new BlockItem(CICADA, new Item.Properties().useBlockDescriptionPrefix().equippable(EquipmentSlot.HEAD).setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("cicada")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("cinder_furnace"), new BlockItem(CINDER_FURNACE, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("cinder_furnace")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("cinder_log"), new BlockItem(CINDER_LOG, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("cinder_log")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("cinder_wood"), new BlockItem(CINDER_WOOD, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("cinder_wood")))));
@@ -2939,7 +2940,7 @@ public static final FlowerPotBlock POTTED_DEAD_THORN = Registry.register(
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("fiery_block"), new BlockItem(FIERY_BLOCK, new Item.Properties().fireResistant().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("fiery_block")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("final_boss_boss_spawner"), new BlockItem(FINAL_BOSS_BOSS_SPAWNER, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("final_boss_boss_spawner")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("final_castle_miniature_structure"), new BlockItem(FINAL_CASTLE_MINIATURE_STRUCTURE, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("final_castle_miniature_structure")))));
-		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("firefly"), new BlockItem(FIREFLY, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("firefly")))));
+		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("firefly"), new BlockItem(FIREFLY, new Item.Properties().useBlockDescriptionPrefix().equippable(EquipmentSlot.HEAD).setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("firefly")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("firefly_spawner"), new BlockItem(FIREFLY_SPAWNER, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("firefly_spawner")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("fire_jet"), new BlockItem(FIRE_JET, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("fire_jet")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("fluffy_cloud"), new BlockItem(FLUFFY_CLOUD, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("fluffy_cloud")))));

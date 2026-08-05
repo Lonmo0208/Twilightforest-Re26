@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import twilightforest.init.TFBlockEntities;
 import twilightforest.init.TFBlocks;
+import twilightforest.tags.TFItemTags;
 
 public class CinderFurnaceBlockEntity extends FurnaceBlockEntity {
 	private static final int SMELT_LOG_FACTOR = 10;
@@ -226,7 +227,7 @@ public class CinderFurnaceBlockEntity extends FurnaceBlockEntity {
 	}
 
 	private boolean canMultiply(ItemStack input) {
-		return input.is(ItemTags.LOGS) || input.is(ItemTags.COAL_ORES); // TODO: Port - was Tags.Items.ORES, ItemTags.ORES doesn't exist, using COAL_ORES as fallback
+		return input.is(ItemTags.LOGS) || input.is(TFItemTags.TF_ORES);
 	}
 
 	/**

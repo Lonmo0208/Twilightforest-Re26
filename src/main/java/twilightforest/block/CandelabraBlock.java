@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.ItemInstance;
@@ -163,7 +164,7 @@ public class CandelabraBlock extends BaseEntityBlock implements LightableBlock, 
 				}
 				return InteractionResult.CONSUME;
 			}
-		} else if (stack.is(net.minecraft.world.item.Items.REDSTONE) && state.getValue(LIGHTING) == Lighting.NORMAL) { // TODO: Port - was Tags.Items.DUSTS_REDSTONE, using hardcoded REDSTONE
+		} else if (stack.is(Items.REDSTONE) && state.getValue(LIGHTING) == Lighting.NORMAL) {
 			level.setBlockAndUpdate(pos, state.setValue(LIGHTING, Lighting.DIM));
 			stack.consume(1, player);
 			level.playSound(null, pos, TFSounds.CANDELABRA_LIGHT, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);

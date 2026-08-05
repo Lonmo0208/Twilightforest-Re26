@@ -12,10 +12,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
-// TODO: Port to Fabric - Tags is NeoForge-specific; use Fabric convention tags or custom tag
-// TODO: Port to Fabric - NeoForge Tags need Fabric equivalent
-// import net.neoforged.neoforge.common.Tags;
 import org.jspecify.annotations.Nullable;
 import twilightforest.block.DryingRackBlock;
 import twilightforest.block.entity.DryingRackBlockEntity;
@@ -59,9 +57,8 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackBlockEn
 		if (blockEntity.getTheItem().is(ItemTags.BANNERS)) {
 			state.renderOffset -= 0.4F;
 		}
-		// TODO: Port to Fabric - Tags.Items.TOOLS_SHIELD is NeoForge-specific; use Fabric convention tag
-		// if (blockEntity.getTheItem().is(Tags.Items.TOOLS_SHIELD)) {
-		if (false) {
+		// Shield item check - use vanilla item directly since Fabric doesn't have a TOOLS_SHIELD tag
+		if (blockEntity.getTheItem().is(Items.SHIELD)) {
 			state.renderOffset -= 0.1F;
 		}
 	}

@@ -1,4 +1,5 @@
 {
+  "render_type": "minecraft:cutout",
   "fabric:type": "twilightforest:patch",
   "shaggify": true,
   "textures": {

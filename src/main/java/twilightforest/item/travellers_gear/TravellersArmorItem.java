@@ -160,4 +160,8 @@ public class TravellersArmorItem extends Item implements TravellersModifiable {
 	public boolean makesPiglinsNeutral(ItemStack stack, LivingEntity wearer) {
 		return this == TFItems.TRAVELLERS_GOGGLES || stack.has(TFDataComponents.TRAVELLERS_HAS_WINGS);
 	}
+
+	public static boolean canFitInsideContainerItems(ItemStack stack) {
+		return !stack.has(DataComponents.CONTAINER);
+	}
 }

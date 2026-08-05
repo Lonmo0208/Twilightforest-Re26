@@ -1,5 +1,6 @@
 package twilightforest.client.event;
 
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
@@ -24,6 +25,7 @@ import twilightforest.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
 import twilightforest.block.entity.GrowingBeanstalkBlockEntity;
 import twilightforest.client.BugModelAnimationHelper;
+import twilightforest.client.TFShaders;
 import twilightforest.client.renderer.entity.MagicPaintingRenderer;
 import twilightforest.config.TFConfig;
 import twilightforest.events.HostileMountEvents;
@@ -48,8 +50,17 @@ public class ClientGameEvents {
 	private int aurora = 0;
 	private int lastAurora = 0;
 
-	@Autowired
-	private HolderMatcher holderMatcher;
+	private final HolderMatcher holderMatcher;
+
+	// Default constructor for Beanification
+	public ClientGameEvents(HolderMatcher holderMatcher) {
+		this.holderMatcher = holderMatcher;
+	}
+
+	// Convenience constructor
+	public ClientGameEvents() {
+		this.holderMatcher = new HolderMatcher();
+	}
 
 	// TODO: Port to Fabric - NeoForge.EVENT_BUS and all NeoForge event types need Fabric equivalents
 	@PostConstruct
@@ -112,8 +123,24 @@ public class ClientGameEvents {
 	}
 	*/
 
-	// TODO: Port to Fabric - RenderLevelStageEvent is NeoForge-specific
-	private void renderAurora() {
+	// Fabric version of aurora rendering - called from TwilightForestClient via LevelRenderEvents.END_MAIN
+	public void renderAurora(LevelRenderContext context) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.level == null) return;
+
+		if ((aurora > 0 || lastAurora > 0) && TFShaders.AURORA != null) {
+			Vec3 pos = context.levelState().cameraRenderState.pos;
+			float intensity = (Mth.lerp(0F, lastAurora, aurora)) / 60F * 0.5F;
+			int seed = Mth.abs((int) mc.level.getBiomeManager().biomeZoomSeed);
+
+			// Use the new render pipeline with proper uniform passing
+			TFShaders.AURORA.renderAurora(context, seed, (float) pos.x, (float) pos.y, (float) pos.z, intensity);
+		}
+	}
+
+	// Public getter for aurora intensity
+	public int getAuroraIntensity() {
+		return aurora;
 	}
 
 	// TODO: Port to Fabric - RenderFrameEvent.Pre is NeoForge-specific
@@ -129,8 +156,8 @@ public class ClientGameEvents {
 		}
 	}
 
-	// TODO: Port to Fabric - ClientTickEvent.Post is NeoForge-specific
-	private void clientTick() {
+	// Fabric version - called from TwilightForestClient via ClientTickEvents.END_CLIENT_TICK
+	public void clientTick() {
 		Minecraft mc = Minecraft.getInstance();
 
 		if (!mc.isPaused()) {

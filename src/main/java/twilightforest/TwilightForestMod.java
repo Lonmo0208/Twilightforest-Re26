@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twilightforest.beanification.BeanContext;
 import twilightforest.beanification.Configurable;
+import twilightforest.config.ConfigSetup;
 import twilightforest.command.TFCommand;
 import twilightforest.entity.MagicPaintingVariant;
 import twilightforest.events.RegistrationEvents;
@@ -58,6 +59,9 @@ public final class TwilightForestMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+
+		// Initialize config system with ForgeConfigAPIPort
+		ConfigSetup.init();
 
 		// Register server lifecycle listener early to ensure WorldUtil.currentServer is always set
 		WorldUtil.registerServerLifecycle();

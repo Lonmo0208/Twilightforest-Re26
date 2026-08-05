@@ -92,7 +92,7 @@ public class ForceFieldModel implements BlockStateModel, LevelAwareBlockStateMod
         // TODO: Port to Fabric - level-aware collectParts was from NeoForge DynamicBlockStateModel
 	@Override
 	public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
-                System.out.println("[TF-DEBUG] ForceFieldModel.collectParts(level) pos=" + pos + " entries=" + this.entries.size() + " state=" + state);
+                //System.out.println("[TF-DEBUG] ForceFieldModel.collectParts(level) pos=" + pos + " entries=" + this.entries.size() + " state=" + state);
                 @SuppressWarnings({"unchecked", "rawtypes"})
 				List<BakedQuad>[] quadsByDirection = new List[6];
                 for (int i = 0; i < 6; i++) quadsByDirection[i] = new ArrayList<>();

@@ -77,6 +77,8 @@ public class TFItemTags {
 	public static final TagKey<Item> REPAIRS_ICE_TOOLS = create("repairs_ice_tools");
 	public static final TagKey<Item> REPAIRS_GLASS_TOOLS = create("repairs_glass_tools");
 
+	public static final TagKey<Item> TF_ORES = create("ores");
+
 	public static final TagKey<Item> REPAIRS_IRONWOOD_ARMOR = create("repairs_ironwood_armor");
 	public static final TagKey<Item> REPAIRS_STEELEAF_ARMOR = create("repairs_steeleaf_armor");
 	public static final TagKey<Item> REPAIRS_NAGA_ARMOR = create("repairs_naga_armor");

@@ -32,6 +32,7 @@ import org.jspecify.annotations.Nullable;
 import twilightforest.init.TFDataMaps;
 import twilightforest.init.TFItems;
 import twilightforest.item.mapdata.TFMazeMapData;
+import twilightforest.tags.TFBlockTags;
 import twilightforest.util.datamaps.OreMapOreColor;
 import twilightforest.util.datamaps.DataMapType;
 
@@ -175,7 +176,7 @@ public class MazeMapItem extends MapItem {
 										OreMapOreColor color = DataMapType.getData(state.getBlock().builtInRegistryHolder(), TFDataMaps.ORE_MAP_ORE_COLOR);
 										if (color != null) {
 											multiset.add(color.color(), 1000);
-										} else if (!state.isAir()) { // TODO: Port - was Tags.Blocks.ORES, BlockTags.ORES doesn't exist in MC 26.1.2, find equivalent
+										} else if (!state.isAir() && state.is(TFBlockTags.TF_ORES)) {
 											multiset.add(MapColor.COLOR_PINK, 1000);
 										}
 									}

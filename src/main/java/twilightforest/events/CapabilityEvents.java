@@ -69,6 +69,14 @@ public class CapabilityEvents {
 
 	private void absorbShieldHits(FabricEvents.LivingIncomingDamageEvent event) {
 		LivingEntity living = event.getEntity();
+		// The Lich has its OWN shield management system via the EntityData SHIELD_STRENGTH field,
+		// handled directly inside Lich#hurtServer (breaks shields via TFDamageTypeTags.BREAKS_LICH_SHIELDS).
+		// If we also run the generic FortificationShieldAttachment logic here, the two systems fight —
+		// most commonly, the permanent attachment shields never get decremented by Lich's shield-break
+		// logic, so ALL non-BYPASSES_ARMOR damage (including twilight scepter bolts) stays canceled even
+		// after the Lich's own visible shields have been fully stripped. Skip Lich entirely here.
+		if (living instanceof twilightforest.entity.boss.Lich) return;
+
 		// shields
 		if (!living.level().isClientSide() && !event.getSource().is(DamageTypeTags.BYPASSES_ARMOR)) {
             FortificationShieldAttachment attachment = ((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.FORTIFICATION_SHIELDS);

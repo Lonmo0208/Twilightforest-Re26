@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.AtlasRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
@@ -39,6 +40,7 @@ import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.world.entity.Entity;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.event.ColorHandler;
+import twilightforest.client.event.ClientGameEvents;
 import twilightforest.client.model.TFModelLayers;
 import twilightforest.client.model.armor.*;
 import twilightforest.client.model.block.BrazierModel;
@@ -75,13 +77,28 @@ import twilightforest.network.*;
 import twilightforest.network.client.*;
 import twilightforest.network.UpdateTFMultipartPacket;
 import twilightforest.util.TFEntityExtensions;
+import fuzs.forgeconfigapiport.fabric.api.v5.client.ConfigScreenFactoryRegistry;
 
 import java.util.Set;
 
 public class TwilightForestClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		// Inform Forge Config API Port that our mod should display its config button
+		// in Mod Menu. ConfigScreenFactoryRegistry is queried by FCAP's ModMenuApiImpl
+		// via getProvidedConfigScreenFactories(). For each mod id, FCAP will provide
+		// a single tabbed config screen containing CLIENT / COMMON / SERVER sub-tabs
+		// for every ModConfig registered to that mod id. We register empty factories
+		// for each known config file name, so the ModMenuApiImpl sees our mod id
+		// when iterating registered factories and includes us in the returned map.
+		// NOTE: The BiFunction is intentionally a no-op returning null, which
+		// triggers FCAP's fallback (building the standard tabbed screen automatically).
+		ConfigScreenFactoryRegistry.INSTANCE.register(TwilightForestMod.ID + "-client",
+			(fileName, parent) -> null);
+		ConfigScreenFactoryRegistry.INSTANCE.register(TwilightForestMod.ID + "-common",
+			(fileName, parent) -> null);
 		ClientProxyInitializer.init();
+		TFShaders.registerRenderPipelines();
 		registerCustomModelTypes();
 		registerAtlases();
 		registerTooltipComponents();
@@ -115,6 +132,16 @@ public class TwilightForestClient implements ClientModInitializer {
 				}
 			}
 		});
+
+		// Register aurora rendering for glacier biomes.
+		// BEFORE_TRANSLUCENT_TERRAIN fires after the opaque terrain pass (which writes the
+		// depth buffer), so the aurora can be depth-tested against solid geometry and
+		// correctly appear behind buildings / terrain. Equivalent to NeoForge AFTER_WEATHER.
+		ClientGameEvents clientGameEvents = new ClientGameEvents();
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			clientGameEvents.clientTick();
+		});
+		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(clientGameEvents::renderAurora);
 	}
 
 	private void registerAtlases() {

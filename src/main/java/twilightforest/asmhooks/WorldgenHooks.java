@@ -69,7 +69,19 @@ public class WorldgenHooks {
 			TerrainAdjustment structureAdjustment = start.getStructure().terrainAdaptation();
 			for (StructurePiece piece : start.getPieces()) {
 				if (piece instanceof PieceBeardifierModifier modifier && piece.isCloseToChunk(chunkPos, 12)) {
-					// Remove the vanilla rigid that was added for this piece (if any)
+					BoundingBox pieceBox = piece.getBoundingBox();
+					boolean isAirborne = pieceBox.minY() >= 100;
+
+					if (isAirborne) {
+						// Classification: this piece belongs to an airborne tower structure
+						// (Lich Tower, Dark Tower, Final Castle). Keep vanilla rigids and do
+						// NOT insert custom PieceBeardifierModifier rigids. The custom rigid
+						// boxes assume ground-level placement and produce floating terrain
+						// discs when placed in mid-air.
+						continue;
+					}
+
+					// Surface piece: remove vanilla rigid and replace with piece's custom one
 					changed |= removeVanillaRigidForPiece(pieces, piece, structureAdjustment);
 
 					TerrainAdjustment pieceAdjustment = modifier.getTerrainAdjustment();

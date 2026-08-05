@@ -8,16 +8,16 @@
         "probability": 2.5E-4
       }
     ],
-    "minecraft:visual/fog_color": "#3a4e42",
+    "minecraft:visual/fog_color": "#c0fff8",
     "minecraft:visual/sky_color": "#20224a",
     "minecraft:visual/water_fog_color": "#050533"
   },
   "carvers": "twilightforest:tf_caves",
   "creature_spawn_probability": 0.15,
-  "downfall": 0.0,
+  "downfall": 0.5,
   "effects": {
-    "foliage_color": "#00ffff",
-    "grass_color": "#00ffff",
+    "foliage_color": "#00ff80",
+    "grass_color": "#00ff80",
     "water_color": "#3f76e4"
   },
   "features": [

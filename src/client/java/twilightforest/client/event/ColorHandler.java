@@ -23,7 +23,6 @@ import java.util.List;
 
 public class ColorHandler {
 
-	// --- Aurora helpers ---
 
 	private static int auroraColor(BlockPos pos) {
 		return ColorUtil.hsvToRGB(
@@ -41,7 +40,6 @@ public class ColorHandler {
 		return ColorUtil.hsvToRGB(hsb[0], hsb[1] * 0.5F, Math.min(hsb[2] + 0.4F, 0.9F));
 	}
 
-	// --- Foliage helpers ---
 
 	private static int averageFoliageColor(BlockAndTintGetter level, BlockPos pos) {
 		int red = 0, green = 0, blue = 0;
@@ -64,7 +62,6 @@ public class ColorHandler {
 		return 0xFF000000 | (((normalColor & 0xFEFEFE) + 0xC0E694) / 2);
 	}
 
-	// --- Spring/fall color transition helpers ---
 
 	private static int timeLeafColor(BlockPos pos) {
 		int fade = pos.getX() * 16 + pos.getY() * 16 + pos.getZ() * 16;
@@ -127,7 +124,6 @@ public class ColorHandler {
 		return 0xFF000000 | red << 16 | green << 8 | blue;
 	}
 
-	// --- Castle door color helpers ---
 
 	private static int castleDoorColor(int baseColor, BlockState state) {
 		if (state.getBlock() instanceof CastleDoorBlock && state.getValue(CastleDoorBlock.ACTIVE) && !state.getValue(CastleDoorBlock.VANISHED))
@@ -135,7 +131,6 @@ public class ColorHandler {
 		return baseColor;
 	}
 
-	// --- Tint source factories ---
 
 	private static BlockTintSource simpleTint(int defaultColor, java.util.function.BiFunction<BlockAndTintGetter, BlockPos, Integer> worldColor) {
 		return new BlockTintSource() {
@@ -161,7 +156,9 @@ public class ColorHandler {
 	}
 
 	private static BlockTintSource whiteTint() {
-		return simpleTint(0xFFFFFF);
+		// 0xFFFFFFFF (opaque white) - tint colors are ARGB in 26.1.2 and get multiplied with the
+		// vertex alpha; a bare 0xFFFFFF would have zero alpha and render the block fully transparent.
+		return simpleTint(0xFFFFFFFF);
 	}
 
 	// ======================================================================
@@ -169,11 +166,10 @@ public class ColorHandler {
 	// ======================================================================
 
 	public static void registerBlockColors() {
-		// --- Aurora block ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
-				return 0xFFFFFF;
+				return 0xFFFFFFFF;
 			}
 
 			@Override
@@ -182,11 +178,10 @@ public class ColorHandler {
 			}
 		}), TFBlocks.AURORA_BLOCK);
 
-		// --- Aurora pillar, slab, glass ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
-				return 0xFFFFFF;
+				return 0xFFFFFFFF;
 			}
 
 			@Override
@@ -195,11 +190,10 @@ public class ColorHandler {
 			}
 		}), TFBlocks.AURORA_PILLAR, TFBlocks.AURORA_SLAB, TFBlocks.AURORALIZED_GLASS);
 
-		// --- Dark leaves, hardened dark leaves, giant leaves ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
-				return FoliageColor.FOLIAGE_DEFAULT;
+				return 0xFF000000 | FoliageColor.FOLIAGE_DEFAULT;
 			}
 
 			@Override
@@ -208,7 +202,6 @@ public class ColorHandler {
 			}
 		}), TFBlocks.DARK_LEAVES, TFBlocks.HARDENED_DARK_LEAVES, TFBlocks.GIANT_LEAVES);
 
-		// --- Twilight oak leaves ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -221,7 +214,6 @@ public class ColorHandler {
 			}
 		}), TFBlocks.TWILIGHT_OAK_LEAVES);
 
-		// --- Canopy leaves ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -234,7 +226,6 @@ public class ColorHandler {
 			}
 		}), TFBlocks.CANOPY_LEAVES);
 
-		// --- Mangrove leaves ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -247,7 +238,6 @@ public class ColorHandler {
 			}
 		}), TFBlocks.MANGROVE_LEAVES);
 
-		// --- Time leaves ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -260,7 +250,6 @@ public class ColorHandler {
 			}
 		}), TFBlocks.TIME_LEAVES);
 
-		// --- Transformation leaves ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -273,7 +262,6 @@ public class ColorHandler {
 			}
 		}), TFBlocks.TRANSFORMATION_LEAVES);
 
-		// --- Mining leaves ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -286,7 +274,6 @@ public class ColorHandler {
 			}
 		}), TFBlocks.MINING_LEAVES);
 
-		// --- Sorting leaves ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -299,7 +286,6 @@ public class ColorHandler {
 			}
 		}), TFBlocks.SORTING_LEAVES);
 
-		// --- Rainbow oak leaves ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -312,11 +298,12 @@ public class ColorHandler {
 			}
 		}), TFBlocks.RAINBOW_OAK_LEAVES);
 
-		// --- Beanstalk leaves, thorn leaves (evergreen) ---
 		BlockColorRegistry.register(List.of(simpleTint(FoliageColor.FOLIAGE_EVERGREEN)),
 			TFBlocks.BEANSTALK_LEAVES, TFBlocks.THORN_LEAVES);
 
-		// --- Fallen leaves ---
+		// Note: FoliageColor has no getDefaultColor() method (unlike GrassColor). The vanilla
+		// foliage() source uses FOLIAGE_DEFAULT (= -12012264 = 0xFF48B518) which has full
+		// alpha already baked in, so this is the correct constant fallback.
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -329,27 +316,30 @@ public class ColorHandler {
 			}
 		}), TFBlocks.FALLEN_LEAVES);
 
-		// --- Fiddlehead, potted fiddlehead (tintIndex 0 = white, tintIndex 1 = grass) ---
-		BlockColorRegistry.register(List.of(
-			whiteTint(),
-			new BlockTintSource() {
-				@Override
-				public int color(BlockState state) {
-					return GrassColor.get(0.5D, 1.0D);
-				}
-
-				@Override
-				public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-					return BiomeColors.getAverageGrassColor(level, pos);
-				}
+		// In 26.1.2, GrassColor.getDefaultColor() / BiomeColors.getAverageGrassColor() already
+		// return proper ARGB values with alpha set (colormap PNG pixels are stored as ARGB with
+		// alpha = 0xFF; fallback default = -65281 = 0xFFFF00FF which also has full alpha).
+		// Explicitly OR-ing with 0xFF000000 is redundant and can mask misbehavior, so match
+		// the vanilla grass() implementation exactly.
+		BlockTintSource fiddleheadTint = new BlockTintSource() {
+			@Override
+			public int color(BlockState state) {
+				return GrassColor.getDefaultColor();
 			}
-		), TFBlocks.FIDDLEHEAD, TFBlocks.POTTED_FIDDLEHEAD);
 
-		// --- Hollow log horizontal blocks (tintIndex 0 = white, tintIndex 1 = grass) ---
+			@Override
+			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+				return BiomeColors.getAverageGrassColor(level, pos);
+			}
+		};
+		BlockColorRegistry.register(List.of(fiddleheadTint),
+			TFBlocks.FIDDLEHEAD, TFBlocks.POTTED_FIDDLEHEAD);
+
+		// Same grass tint as above, shared with many foliage-derived blocks. Use vanilla form.
 		BlockTintSource grassTintSource = new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
-				return GrassColor.get(0.5D, 1.0D);
+				return GrassColor.getDefaultColor();
 			}
 
 			@Override
@@ -368,19 +358,18 @@ public class ColorHandler {
 			TFBlocks.HOLLOW_TIME_LOG_HORIZONTAL, TFBlocks.HOLLOW_TRANSFORMATION_LOG_HORIZONTAL,
 			TFBlocks.HOLLOW_MINING_LOG_HORIZONTAL, TFBlocks.HOLLOW_SORTING_LOG_HORIZONTAL);
 
-		// --- Hollow log climbable blocks (tintIndex 0 = white, tintIndex 1 = grass for vine variant) ---
 		BlockTintSource climbableGrassTintSource = new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
-				return GrassColor.get(0.5D, 1.0D);
+				return 0xFF000000 | GrassColor.get(0.5D, 1.0D);
 			}
 
 			@Override
 			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
 				if (state.hasProperty(ClimbableHollowLogBlock.VARIANT) && state.getValue(ClimbableHollowLogBlock.VARIANT) == HollowLogVariants.Climbable.VINE) {
-					return BiomeColors.getAverageFoliageColor(level, pos);
+					return 0xFF000000 | BiomeColors.getAverageFoliageColor(level, pos);
 				}
-				return 0xFFFFFF;
+				return 0xFFFFFFFF;
 			}
 		};
 		BlockColorRegistry.register(List.of(whiteTint(), climbableGrassTintSource),
@@ -394,11 +383,9 @@ public class ColorHandler {
 			TFBlocks.HOLLOW_TIME_LOG_CLIMBABLE, TFBlocks.HOLLOW_TRANSFORMATION_LOG_CLIMBABLE,
 			TFBlocks.HOLLOW_MINING_LOG_CLIMBABLE, TFBlocks.HOLLOW_SORTING_LOG_CLIMBABLE);
 
-		// --- Smoker, fire jet (grass color) ---
 		BlockColorRegistry.register(List.of(grassTintSource),
 			TFBlocks.SMOKER, TFBlocks.FIRE_JET);
 
-		// --- Huge lily pad ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -411,7 +398,6 @@ public class ColorHandler {
 			}
 		}), TFBlocks.HUGE_LILY_PAD);
 
-		// --- Towerwood variants ---
 		BlockColorRegistry.register(List.of(new BlockTintSource() {
 			@Override
 			public int color(BlockState state) {
@@ -425,7 +411,6 @@ public class ColorHandler {
 			}
 		}), TFBlocks.TOWERWOOD, TFBlocks.CRACKED_TOWERWOOD, TFBlocks.INFESTED_TOWERWOOD, TFBlocks.MOSSY_TOWERWOOD);
 
-		// --- Castle rune bricks and doors ---
 		// Note: the ARGB tint must keep an opaque alpha (0xFF000000), otherwise
 		// ModelBlockRenderer.multiplyColor() would multiply by a zero alpha and
 		// render the rune layer fully transparent.
@@ -477,14 +462,12 @@ public class ColorHandler {
 			}
 		}), TFBlocks.VIOLET_CASTLE_RUNE_BRICK, TFBlocks.VIOLET_CASTLE_DOOR);
 
-		// --- Force fields ---
 		BlockColorRegistry.register(List.of(simpleTint(0xFF5C1074)), TFBlocks.VIOLET_FORCE_FIELD);
 		BlockColorRegistry.register(List.of(simpleTint(0xFFFA057E)), TFBlocks.PINK_FORCE_FIELD);
 		BlockColorRegistry.register(List.of(simpleTint(0xFFFF5B02)), TFBlocks.ORANGE_FORCE_FIELD);
 		BlockColorRegistry.register(List.of(simpleTint(0xFF89E701)), TFBlocks.GREEN_FORCE_FIELD);
 		BlockColorRegistry.register(List.of(simpleTint(0xFF0DDEFF)), TFBlocks.BLUE_FORCE_FIELD);
 
-		// --- Miniature structure blocks ---
 		BlockColorRegistry.register(List.of(grassTintSource),
 			TFBlocks.TWILIGHT_PORTAL_MINIATURE_STRUCTURE, TFBlocks.NAGA_COURTYARD_MINIATURE_STRUCTURE,
 			TFBlocks.LICH_TOWER_MINIATURE_STRUCTURE);

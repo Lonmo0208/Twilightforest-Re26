@@ -28,7 +28,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) { this.canceled = canceled; }
 	}
 
-	// --- PlayerInteractEvent ---
 	public static class PlayerInteractEvent {
 		private final Player player;
 		private final InteractionHand hand;
@@ -74,7 +73,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- PlayerTickEvent ---
 	public static class PlayerTickEvent {
 		private final Player player;
 
@@ -93,7 +91,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- EntityTickEvent ---
 	public static class EntityTickEvent {
 		private final Entity entity;
 
@@ -108,7 +105,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- LivingDamageEvent ---
 	public static class LivingDamageEvent {
 		private final LivingEntity entity;
 		private final DamageSource source;
@@ -135,7 +131,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- GrindstoneEvent ---
 	public static class GrindstoneEvent {
 		private final ItemStack top;
 		private final ItemStack bottom;
@@ -175,7 +170,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- AdvancementEvent ---
 	public static class AdvancementEvent {
 		private final AdvancementHolder advancement;
 		private final Player player;
@@ -197,7 +191,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- LivingEvent ---
 	public static class LivingEvent {
 		private final LivingEntity entity;
 
@@ -214,7 +207,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- PlayerEvent ---
 	public static class PlayerEvent {
 		private final Player player;
 
@@ -264,7 +256,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- LivingIncomingDamageEvent ---
 	public static class LivingIncomingDamageEvent {
 		private final LivingEntity entity;
 		private final DamageSource source;
@@ -284,7 +275,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- LivingDeathEvent ---
 	public static class LivingDeathEvent {
 		private final LivingEntity entity;
 		private final DamageSource source;
@@ -300,7 +290,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- BreakBlockEvent ---
 	public static class BreakBlockEvent {
 		private final Level level;
 		private final BlockPos pos;
@@ -323,7 +312,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) { this.canceled = canceled; }
 	}
 
-	// --- ProjectileImpactEvent ---
 	public static class ProjectileImpactEvent {
 		private final Entity projectile;
 		private final net.minecraft.world.phys.HitResult hitResult;
@@ -339,7 +327,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- AttackEntityEvent ---
 	public static class AttackEntityEvent {
 		private final Player player;
 		private final Entity target;
@@ -355,7 +342,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- FinalizeSpawnEvent ---
 	public static class FinalizeSpawnEvent {
 		private final LivingEntity entity;
 		private final Level level;
@@ -381,7 +367,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- PlayerSpawnPhantomsEvent ---
 	public static class PlayerSpawnPhantomsEvent {
 		private final Player player;
 		private int phantomsToSpawn;
@@ -407,7 +392,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- OnDatapackSyncEvent ---
 	public static class OnDatapackSyncEvent {
 		private final Player player;
 		private final net.minecraft.server.players.PlayerList playerList;
@@ -429,7 +413,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- EntityJoinLevelEvent ---
 	public static class EntityJoinLevelEvent {
 		private final Entity entity;
 		private final Level level;
@@ -445,7 +428,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- EntityTeleportEvent ---
 	public static class EntityTeleportEvent {
 		private final LivingEntity entity;
 		private double targetX, targetY, targetZ;
@@ -468,7 +450,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- EntityMountEvent ---
 	public static class EntityMountEvent {
 		private final Entity entityMounting;
 		private final Entity entityBeingMounted;
@@ -491,7 +472,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- LivingEquipmentChangeEvent ---
 	public static class LivingEquipmentChangeEvent {
 		private final LivingEntity entity;
 		private final net.minecraft.world.entity.EquipmentSlot slot;
@@ -513,7 +493,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- LivingFallEvent ---
 	public static class LivingFallEvent {
 		private final LivingEntity entity;
 		private float distance;
@@ -534,7 +513,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- ItemAttributeModifierEvent ---
 	public static class ItemAttributeModifierEvent {
 		private final ItemStack itemStack;
 		private final java.util.List<net.minecraft.world.item.component.ItemAttributeModifiers.Entry> modifiers = new java.util.ArrayList<>();
@@ -555,7 +533,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- ArmorHurtEvent ---
 	public static class ArmorHurtEvent {
 		private final LivingEntity entity;
 		private final DamageSource source;
@@ -579,7 +556,6 @@ public class FabricEvents {
 		public void setNewDamage(EquipmentSlot slot, int damage) { damageMap.put(slot, damage); }
 	}
 
-	// --- AnvilUpdateEvent ---
 	public static class AnvilUpdateEvent {
 		private final ItemStack left;
 		private final ItemStack right;
@@ -607,7 +583,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- TagsUpdatedEvent ---
 	public static class TagsUpdatedEvent {
 		private final net.minecraft.core.RegistryAccess registryAccess;
 		private final boolean fromClientPacket;
@@ -622,7 +597,6 @@ public class FabricEvents {
 		public void setCanceled(boolean canceled) {}
 	}
 
-	// --- LevelEvent ---
 	public static class LevelEvent {
 		private final Level level;
 
@@ -656,7 +630,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- ExplosionEvent ---
 	public static class ExplosionEvent {
 		private final Level level;
 		private final net.minecraft.world.level.Explosion explosion;
@@ -685,7 +658,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- BlockEvent ---
 	public static class BlockEvent {
 		private final Level level;
 		private final BlockPos pos;
@@ -726,7 +698,6 @@ public class FabricEvents {
 		}
 	}
 
-	// --- MobEffectEvent ---
 	public static class MobEffectEvent {
 		private final LivingEntity entity;
 		private final net.minecraft.world.effect.MobEffectInstance effectInstance;

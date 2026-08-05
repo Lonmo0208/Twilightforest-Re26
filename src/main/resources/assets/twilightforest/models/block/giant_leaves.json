@@ -1,4 +1,5 @@
 {
+  "render_type": "minecraft:cutout_mipped",
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "minecraft:block/oak_leaves",

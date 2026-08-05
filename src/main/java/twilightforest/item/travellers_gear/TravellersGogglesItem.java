@@ -54,7 +54,7 @@ public class TravellersGogglesItem extends TravellersArmorItem {
 				slot.safeInsert(removedStack);
 				this.playRemoveOneSound(player);
 			}
-		} else if (true /* TODO: Port - canFitInsideContainerItems */) {
+		} else if (canFitInsideContainerItems(itemstack)) {
 			if (mutableContents.trySwap(SlotAccess.of(slot::getItem, slot::set), player))
 				this.playInsertSound(player);
 		}

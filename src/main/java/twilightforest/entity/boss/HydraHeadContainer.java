@@ -662,6 +662,69 @@ public class HydraHeadContainer {
 		this.headEntity.setMouthOpen(getCurrentMouthOpen());
 	}
 
+	/**
+	 * Returns the authoritative world-space endpoint of this head (the exact same point
+	 * that setHeadPosition() writes into headEntity.setPos() this tick). Used by Hydra's
+	 * "passive bite" proximity check on the server: we only start a BITE_BEGINNING sequence
+	 * when the target is within ~1 block of this head endpoint, otherwise we fall back to
+	 * ranged attacks only.
+	 * <p>
+	 * Matches setHeadPosition() math byte-for-byte except it returns a Vec3 instead of
+	 * writing to the synced entity fields. partialTick is accepted for API symmetry with
+	 * the client-side animation path but is intentionally unused here — the server runs
+	 * this on integer tick boundaries when evaluating AI decisions.
+	 */
+	public Vec3 computeHeadPosition(float partialTick) {
+		float[] idleYRot = {0.0F, 60.0F, -60.0F, 90.0F, -90.0F, 90.0F, -90.0F};
+		float[] idleXRot = {60.0F, 10.0F, 10.0F, 50.0F, 50.0F, -10.0F, -10.0F};
+		float[] idleNeck = {7.0F, 9.0F, 9.0F, 8.0F, 8.0F, 9.0F, 9.0F};
+		int idx = Math.min(this.headNum, idleNeck.length - 1);
+
+		float neckLength = idleNeck[idx];
+		float xRotation = idleXRot[idx];
+		float yRotation = idleYRot[idx];
+
+		State curState = this.currentState;
+		if (curState != State.IDLE && curState != State.ATTACK_COOLDOWN && curState != State.DEAD && curState != State.DYING) {
+			neckLength += 0.5F;
+		}
+
+		float periodX = (this.headNum == 0 || this.headNum == 3) ? 20F : ((this.headNum == 1 || this.headNum == 4) ? 5.0f : 7.0F);
+		float periodY = (this.headNum == 0 || this.headNum == 4) ? 10F : ((this.headNum == 1 || this.headNum == 6) ? 6.0f : 5.0F);
+		float xSwing  = Mth.sin(this.hydra.tickCount / periodX) * 3.0F;
+		float ySwing  = Mth.sin(this.hydra.tickCount / periodY) * 5.0F;
+		if (this.isDead()) {
+			xSwing = ySwing = 0;
+		}
+
+		Vec3 vector = new Vec3(0, 0, neckLength);
+		vector = vector.xRot((xRotation * Mth.PI + xSwing) / 180.0F);
+		vector = vector.yRot((-(this.hydra.yBodyRot + yRotation + ySwing) * Mth.PI) / 180.0F);
+
+		return new Vec3(this.hydra.getX() + vector.x(), this.hydra.getY() + vector.y() + 3, this.hydra.getZ() + vector.z());
+	}
+
+	/**
+	 * Linear-interpolated position for a single neck segment along this head's neck.
+	 * idx=0 = body root, idx=4 = head endpoint (≈ computeHeadPosition). Mirrors the
+	 * server-side applyNeckInterpolations math. Only exposed for completeness; the
+	 * passive bite check uses computeHeadPosition() directly.
+	 */
+	public Vec3 computeNeckPosition(int idx, float partialTick) {
+		Vec3 headPos = computeHeadPosition(partialTick);
+		double factor = Math.max(0, Math.min(4, idx)) * 0.25D;
+		// Body root is taken as the hydra body origin + 3 block vertical offset that all
+		// neck math uses internally (matches computeHeadPosition's `+ 3` on Y).
+		double baseX = this.hydra.getX();
+		double baseY = this.hydra.getY() + 3;
+		double baseZ = this.hydra.getZ();
+		return new Vec3(
+				baseX + (headPos.x - baseX) * factor,
+				baseY + (headPos.y - baseY) * factor,
+				baseZ + (headPos.z - baseZ) * factor
+		);
+	}
+
 	private void executeAttacks() {
 		if (this.currentState == State.MORTAR_SHOOTING && this.ticksProgress % 10 == 0) {
 			HydraMortar mortar = new HydraMortar(TFEntities.HYDRA_MORTAR.get(), this.headEntity.level(), this.headEntity);

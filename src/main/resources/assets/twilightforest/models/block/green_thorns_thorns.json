@@ -1,4 +1,5 @@
 {
+  "render_type": "minecraft:cutout",
   "parent": "twilightforest:block/thorns",
   "textures": {
     "end": "twilightforest:block/green_thorns_top",

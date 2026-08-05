@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -50,6 +51,33 @@ public class LifedrainScepterItem extends ScepterItem {
 		return InteractionResult.SUCCESS;
 	}
 
+	// The lifedrain scepter is "wall-piercing": it ignores blocks between the player's eye and the
+	// target entity entirely (see getPlayerLookTarget below: no level.clip() / block raycast is done,
+	// we only AABB-clip against entities). For this wall-pierce to actually trigger in play, the
+	// player has to start using the item even when their crosshair is on a block — because the
+	// typical "I'm targeting the mob behind this wall" scenario means the crosshair IS pointing at
+	// the wall, not at air. Without this override, Block#useWithoutItem / Block#useItemOn runs
+	// first and consumes the right-click, so Item#use (performScepterAction) is never called and
+	// the scepter never enters its onUseTick loop. Hook useOn here so right-clicking a block with
+	// the scepter also starts the drain sequence, matching official behavior.
+	@Override
+	public InteractionResult useOn(UseOnContext context) {
+		Player player = context.getPlayer();
+		if (player == null) return InteractionResult.PASS;
+		Level level = context.getLevel();
+		ItemStack stack = context.getItemInHand();
+		InteractionHand hand = context.getHand();
+
+		if (stack.nextDamageWillBreak() && !player.isCreative()) {
+			return InteractionResult.FAIL;
+		}
+
+		player.startUsingItem(hand);
+		// return SUCCESS from both sides so the block interaction (opening doors etc.) is
+		// suppressed — we're firing a scepter, not interacting with the wall.
+		return InteractionResult.SUCCESS;
+	}
+
 	/**
 	 * Animates the target falling apart into a rain of shatter particles
 	 */
@@ -79,6 +107,14 @@ public class LifedrainScepterItem extends ScepterItem {
 
 	/**
 	 * What, if anything, is the player currently looking at?
+	 *
+	 * <p><b>IMPORTANT — Do NOT add a level.clip() / block raycast in here!</b></p>
+	 *
+	 * This scepter is intentionally wall-piercing: a target is selected purely based on whether
+	 * its AABB intersects the eye→look ray, regardless of any blocks in between. Any block-based
+	 * occlusion test here would break the "wall-piercing" feature that the lifedrain scepter is
+	 * known for in official TF. Matching behavior of
+	 * twilightforest-1.21.1 twilightforest.item.LifedrainScepterItem#getPlayerLookTarget.
 	 */
 	@Nullable
 	private Entity getPlayerLookTarget(Level level, LivingEntity living) {

@@ -1,48 +1,99 @@
 package twilightforest.config;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.loader.api.FabricLoader;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import twilightforest.TwilightForestMod;
 import twilightforest.network.SyncUncraftingTableConfigPacket;
 
 public final class ConfigSetup {
 
-	static final FabricModConfigSpec CLIENT_SPEC;
-	static final FabricModConfigSpec COMMON_SPEC;
-	static final TFClientConfig CLIENT_CONFIG;
-	static final TFCommonConfig COMMON_CONFIG;
+	private static TFCommonConfig COMMON_CONFIG;
+	private static TFClientConfig CLIENT_CONFIG;
+	private static ModConfigSpec COMMON_SPEC;
+	private static ModConfigSpec CLIENT_SPEC;
+	private static MinecraftServer currentServer;
 
-	static {
+	public static void init() {
+		// Build config specs
 		{
-			FabricModConfigSpec spec = new FabricModConfigSpec("twilightforest-common");
-			COMMON_CONFIG = new TFCommonConfig(new FabricModConfigSpec.Builder(spec));
-			COMMON_SPEC = spec;
+			ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+			COMMON_CONFIG = new TFCommonConfig(builder);
+			COMMON_SPEC = builder.build();
 		}
 		{
-			FabricModConfigSpec spec = new FabricModConfigSpec("twilightforest-client");
-			CLIENT_CONFIG = new TFClientConfig(new FabricModConfigSpec.Builder(spec));
-			CLIENT_SPEC = spec;
+			ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+			CLIENT_CONFIG = new TFClientConfig(builder);
+			CLIENT_SPEC = builder.build();
 		}
+
+		// Register configs with ForgeConfigAPIPort (auto-loads config files)
+		ConfigRegistry.INSTANCE.register(TwilightForestMod.ID, ModConfig.Type.COMMON, COMMON_SPEC);
+		ConfigRegistry.INSTANCE.register(TwilightForestMod.ID, ModConfig.Type.CLIENT, CLIENT_SPEC);
+
+		// Track server instance for config sync
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> currentServer = server);
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> currentServer = null);
+
+		// Register config load/reload event handlers
+		ModConfigEvents.loading(TwilightForestMod.ID).register(config -> {
+			if (config.getSpec() == COMMON_SPEC) {
+				TwilightForestMod.LOGGER.info("Loading common config");
+				TFConfig.rebakeCommonOptions(COMMON_CONFIG);
+			} else if (config.getSpec() == CLIENT_SPEC) {
+				TwilightForestMod.LOGGER.info("Loading client config");
+				TFConfig.rebakeClientOptions(CLIENT_CONFIG);
+			}
+		});
+
+		ModConfigEvents.reloading(TwilightForestMod.ID).register(config -> {
+			if (config.getSpec() == COMMON_SPEC) {
+				TwilightForestMod.LOGGER.info("Reloading common config");
+				TFConfig.rebakeCommonOptions(COMMON_CONFIG);
+				// Sync updated config to all online players
+				if (currentServer != null) {
+					for (var player : currentServer.getPlayerList().getPlayers()) {
+						syncUncraftingConfig(player);
+					}
+				}
+			} else if (config.getSpec() == CLIENT_SPEC) {
+				TwilightForestMod.LOGGER.info("Reloading client config");
+				TFConfig.rebakeClientOptions(CLIENT_CONFIG);
+			}
+		});
+
+		ModConfigEvents.unloading(TwilightForestMod.ID).register(config -> {
+			TwilightForestMod.LOGGER.info("Unloading config: {}", config.getFileName());
+		});
+
+		// Register uncrafting config sync on player login
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			syncUncraftingConfig(handler.getPlayer());
+		});
 	}
 
-	public static void loadConfigs() {
-		COMMON_SPEC.load(FabricLoader.getInstance().getConfigDir());
-		TFConfig.rebakeCommonOptions(COMMON_CONFIG);
-		CLIENT_SPEC.load(FabricLoader.getInstance().getConfigDir());
-		TFConfig.rebakeClientOptions(CLIENT_CONFIG);
+	public static TFCommonConfig getCommonConfig() {
+		return COMMON_CONFIG;
 	}
 
-	public static void reloadConfigs() {
-		COMMON_SPEC.load(FabricLoader.getInstance().getConfigDir());
-		TFConfig.rebakeCommonOptions(COMMON_CONFIG);
-		CLIENT_SPEC.load(FabricLoader.getInstance().getConfigDir());
-		TFConfig.rebakeClientOptions(CLIENT_CONFIG);
+	public static TFClientConfig getClientConfig() {
+		return CLIENT_CONFIG;
 	}
 
-	//sends uncrafting settings to a player on a server when they log in. This prevents desyncs when the configs dont match up between the player and the server.
+	public static ModConfigSpec getCommonSpec() {
+		return COMMON_SPEC;
+	}
+
+	public static ModConfigSpec getClientSpec() {
+		return CLIENT_SPEC;
+	}
+
 	public static void syncUncraftingConfig(ServerPlayer player) {
 		MinecraftServer server = player.level().getServer();
 		if (server != null && server.isDedicatedServer()) {

@@ -173,7 +173,6 @@ public abstract class StructureMazeGenerator extends TFStructureComponent {
 			for (int y = 0; y < heightInCellCount - 1; y++) {
 				final boolean xCenter = x == (widthInCellCount / 2) - 1;
 				final boolean yCenter = y == (heightInCellCount / 2) - 1;
-				// -------- HEDGE
 				if ((!(xCenter || yCenter)) && (maze[x][y] & 0b10000) == 0b10000) continue;
 
 				int rotation = 0;
@@ -253,7 +252,6 @@ public abstract class StructureMazeGenerator extends TFStructureComponent {
 					structure.addChildren(structureComponent, list, random);
 				}
 
-				// -------- Hedge Connectors
 
 				xBB = this.sizeConstraints.minX() + (x * 12) + offset;
 				zBB = this.sizeConstraints.minZ() + (y * 12) + offset;
@@ -332,7 +330,6 @@ public abstract class StructureMazeGenerator extends TFStructureComponent {
 				final boolean eastNorthHasNoTerraceOrIsSafe = /*(!(westOfCenter && southOfCenter)) &&*/ ((x >= widthInCellCount - 2 || y == 0 || maze[x + 1][y - 1] != 0));
 				final boolean eastSouthHasNoTerraceOrIsSafe = /*(!(westOfCenter && northOfCenter)) &&*/ ((x >= widthInCellCount - 2 || y >= heightInCellCount - 2 || maze[x + 1][y + 1] != 0));
 
-				// -------- PATHS - cardinal
 
 				if (xCenter && yCenter) {
 					CourtyardPathPiece path = new CourtyardPathPiece(maze[x][y], xBB - 1, yBB - 1, zBB - 1, structureManager);
@@ -364,7 +361,6 @@ public abstract class StructureMazeGenerator extends TFStructureComponent {
 					path2.addChildren(structureComponent, list, random);
 				}
 
-				// -------- PATHS - Diagonal
 
 				if (hasNoTerrace && westHasNoTerraceOrIsSafe && northHasNoTerraceOrIsSafe && westNorthHasNoTerraceOrIsSafe) {
 					CourtyardPathPiece path2 = new CourtyardPathPiece(maze[x][y], xBB - 7, yBB - 1, zBB - 7, structureManager);
@@ -394,7 +390,6 @@ public abstract class StructureMazeGenerator extends TFStructureComponent {
 	}
 
 	private void processOuterWalls(StructurePiece structureComponent, StructurePieceAccessor list, RandomSource random, final int offset, final Rotation[] rotations) {
-		// -------- WALLS
 		for (Diagonals diagonal : Diagonals.values()) {
 			// Walls at corner notches going with X Axis, crossing Z Axis. Sideways.
 

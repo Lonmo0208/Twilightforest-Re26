@@ -65,6 +65,8 @@ public class TFBlockTags {
 	public static final TagKey<Block> DARK_TOWER_BERRY_BUSHES_DIE = create("dark_tower_berry_bushes_die");
 	public static final TagKey<Block> HUGE_MUSHGLOOM_PLACEABLE = create("huge_mushgloom_placeable");
 
+	public static final TagKey<Block> TF_ORES = create("ores");
+
 	public static final TagKey<Block> ORE_MAGNET_SAFE_REPLACE_BLOCK = create("ore_magnet/ore_safe_replace_block");
 	public static final TagKey<Block> ORE_MAGNET_IGNORE = create("ore_magnet/ignored_ores");
 

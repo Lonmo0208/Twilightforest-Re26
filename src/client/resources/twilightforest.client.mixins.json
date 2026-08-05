@@ -3,6 +3,7 @@
 	"package": "twilightforest.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
+		"BossHealthOverlayMixin",
 		"CameraMixin",
 		"MouseHandlerMixin",
 		"ClientLevelMixin",
@@ -11,7 +12,9 @@
 		"MapRenderStateMixin",
 		"ModelBlockRendererMixin",
 		"ModelBlockRendererAccessor",
-		"LevelRendererMixin"
+		"LevelRendererMixin",
+		"TFLightmapStateMixin",
+		"TFLightmapMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

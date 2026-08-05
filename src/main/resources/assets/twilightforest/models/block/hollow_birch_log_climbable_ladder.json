@@ -1,4 +1,5 @@
-﻿{
+{
+  "render_type": "minecraft:cutout",
   "parent": "twilightforest:block/climbable_hollow_log",
   "textures": {
     "climbable": "minecraft:block/ladder",

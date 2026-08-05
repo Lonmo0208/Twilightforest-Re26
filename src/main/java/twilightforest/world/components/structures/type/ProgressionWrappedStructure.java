@@ -13,6 +13,7 @@ import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.init.TFStructureTypes;
+import twilightforest.world.components.structures.util.LandmarkStructure;
 import twilightforest.world.components.structures.util.ProgressionStructure;
 
 import java.util.Map;
@@ -35,7 +36,13 @@ public class ProgressionWrappedStructure extends ProgressionStructure {
 
 	@Override
 	public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
-		return this.wrappedStructure.findGenerationPoint(context);
+		// Use the same tile-based position as findValidGenerationPoint for biome validation,
+		// so the structure spawns exactly where the biome was validated.
+		if (this.wrappedStructure instanceof LandmarkStructure landmark) {
+			return landmark.generateAtTileCenter(context);
+		} else {
+			return this.wrappedStructure.findGenerationPoint(context);
+		}
 	}
 
 	//not used since we override findGenerationPoint

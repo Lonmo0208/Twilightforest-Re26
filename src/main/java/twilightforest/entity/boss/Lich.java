@@ -418,10 +418,6 @@ public class Lich extends BaseTFBoss {
 		}
 	}
 
-	//-----------------------------------------//
-	//    PROJECTILES, CLONES, AND MINIONS     //
-	//-----------------------------------------//
-
 	public void launchProjectileAt(ThrowableProjectile projectile) {
 		if (this.getTarget() == null) return;
 
@@ -541,11 +537,6 @@ public class Lich extends BaseTFBoss {
 			.count();
 	}
 
-	//-----------------------------------------//
-	//              TELEPORTATION              //
-	//-----------------------------------------//
-
-
 	@Override
 	public boolean isInvisible() {
 		return super.isInvisible() || this.getTeleportInvisibility() > 0 || (this.isShadowClone() && this.tickCount <= 10);
@@ -662,10 +653,6 @@ public class Lich extends BaseTFBoss {
 		this.clearFire();
 	}
 
-	//-----------------------------------------//
-	//                PARTICLES                //
-	//-----------------------------------------//
-
 	@Override
 	public void handleEntityEvent(byte b) {
 		if (b == 46) return;
@@ -767,10 +754,6 @@ public class Lich extends BaseTFBoss {
 		return this.getRestrictionPoint() == null ? this.blockPosition() : this.getRestrictionPoint().pos();
 	}
 
-	//-----------------------------------------//
-	//       METHOD GETTERS AND SETTERS        //
-	//-----------------------------------------//
-
 	public void setExtinguishTimer() {
 		this.spawnTime = 40;
 	}
@@ -831,6 +814,19 @@ public class Lich extends BaseTFBoss {
 
 	public void setShieldStrength(int shieldStrength) {
 		this.getEntityData().set(SHIELD_STRENGTH, shieldStrength);
+		// Keep the generic FortificationShieldAttachment in sync so the two shield systems
+		// (Lich's EntityData SHIELD_STRENGTH handled in hurtServer, vs the global ALLOW_DAMAGE
+		// FortificationShieldAttachment absorbShieldHits hook) don't fight each other. The
+		// attachment system is generic for the Fortification enchant/fortress wand shields,
+		// but the Lich uses its own shield-break animation/sound progression in hurtServer
+		// and was previously getting stuck with attachment.permanentShields != 0 even after
+		// its own shield count dropped to 0, which silently canceled all further non-
+		// BYPASSES_ARMOR damage (e.g. twilight scepter bolts). Mirroring the value here keeps
+		// the systems consistent for any 3rd-party code reading the attachment as well.
+		if (!this.level().isClientSide()) {
+			((twilightforest.util.TFEntityExtensions) this).twilightforest$getData(twilightforest.init.TFDataAttachments.FORTIFICATION_SHIELDS)
+				.setShields(this, shieldStrength, false);
+		}
 	}
 
 	public int getMinionsToSummon() {
@@ -864,11 +860,6 @@ public class Lich extends BaseTFBoss {
 	public void setBabyMinionsSummoned(int babyMinionsSummoned) {
 		this.babyMinionsSummoned = babyMinionsSummoned;
 	}
-
-
-	//-----------------------------------------//
-	//                OVERRIDES                //
-	//-----------------------------------------//
 
 	@Nullable
 	@Override
@@ -952,14 +943,10 @@ public class Lich extends BaseTFBoss {
 
 			if (done) {
 				SoundEvent soundevent = this.getDeathSound();
-				if (soundevent != null) {
-					this.level().playLocalSound(this, soundevent, SoundSource.HOSTILE, this.getSoundVolume(), this.getVoicePitch());
-				}
+				this.level().playLocalSound(this, soundevent, SoundSource.HOSTILE, this.getSoundVolume(), this.getVoicePitch());
 			} else if (hurt) {
 				SoundEvent soundevent = this.getHurtSound(this.damageSources().generic());
-				if (soundevent != null) {
-					this.level().playLocalSound(this, soundevent, SoundSource.HOSTILE, this.getSoundVolume(), this.getVoicePitch());
-				}
+				this.level().playLocalSound(this, soundevent, SoundSource.HOSTILE, this.getSoundVolume(), this.getVoicePitch());
 			}
 
 			Vec3 pos = this.position();

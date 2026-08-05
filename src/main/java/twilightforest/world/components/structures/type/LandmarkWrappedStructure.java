@@ -35,7 +35,13 @@ public class LandmarkWrappedStructure extends LandmarkStructure {
 
 	@Override
 	public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
-		return this.wrappedStructure.findGenerationPoint(context);
+		// Use the same tile-based position as findValidGenerationPoint for biome validation,
+		// so the structure spawns exactly where the biome was validated.
+		if (this.wrappedStructure instanceof LandmarkStructure landmark) {
+			return landmark.generateAtTileCenter(context);
+		} else {
+			return this.wrappedStructure.findGenerationPoint(context);
+		}
 	}
 
 	//not used since we override findGenerationPoint

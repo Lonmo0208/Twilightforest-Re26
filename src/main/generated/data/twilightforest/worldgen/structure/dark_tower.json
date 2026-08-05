@@ -9,12 +9,6 @@
     "labelled_monster_spawns": {
       "0": [
         {
-          "type": "twilightforest:carminite_golem",
-          "maxCount": 2,
-          "minCount": 1,
-          "weight": 10
-        },
-        {
           "type": "minecraft:skeleton",
           "maxCount": 2,
           "minCount": 1,
@@ -156,5 +150,5 @@
   },
   "step": "surface_structures",
   "structure_icon": "twilightforest:dark_tower",
-  "terrain_adaptation": "beard_box"
+  "terrain_adaptation": "beard_thin"
 }

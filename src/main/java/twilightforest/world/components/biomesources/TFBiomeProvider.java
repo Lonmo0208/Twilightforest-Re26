@@ -58,6 +58,18 @@ public class TFBiomeProvider extends BiomeSource {
 		return this.biomeTerrainDataHolder.value().getBiomeColumnKey(biomeX, biomeZ);
 	}
 
+	/**
+	 * Returns the actual 3D biome at the given block coordinates, accounting for
+	 * height-based biome variants (e.g. underground, peak, sky layers).
+	 * Block coordinates are converted to biome/quartile units internally.
+	 */
+	public Holder<Biome> getBiomeAtBlock(int blockX, int blockY, int blockZ) {
+		int biomeX = blockX >> 2;
+		int biomeY = blockY >> 2;
+		int biomeZ = blockZ >> 2;
+		return this.biomeTerrainDataHolder.value().getNoiseBiome(biomeX, biomeY, biomeZ);
+	}
+
 	@Deprecated
 	public BiomeDensitySource getBiomeTerrain() {
 		return this.biomeTerrainDataHolder.value();

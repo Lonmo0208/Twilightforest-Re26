@@ -34,9 +34,9 @@
         },
         {
           "type": "twilightforest:death_tome",
-          "maxCount": 3,
-          "minCount": 2,
-          "weight": 10
+          "maxCount": 2,
+          "minCount": 1,
+          "weight": 5
         },
         {
           "type": "minecraft:witch",
@@ -134,5 +134,5 @@
   },
   "step": "surface_structures",
   "structure_icon": "twilightforest:lich_tower",
-  "terrain_adaptation": "beard_box"
+  "terrain_adaptation": "beard_thin"
 }

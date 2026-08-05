@@ -1,4 +1,5 @@
 {
+  "render_type": "minecraft:cutout",
   "parent": "twilightforest:block/util/fullbright_cube",
   "textures": {
     "all": "twilightforest:block/towerdev_built_off"

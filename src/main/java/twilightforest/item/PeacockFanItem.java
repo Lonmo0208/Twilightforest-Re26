@@ -156,7 +156,6 @@ public class PeacockFanItem extends Item {
 		BlockState state = level.getBlockState(pos);
 		if (state.getBlock() instanceof FlowerBlock) {
 			if (level.getRandom().nextInt(3) == 0) {
-				// TODO: Port to Fabric - Block break event handling
 				level.destroyBlock(pos, true);
 				cost++;
 			}

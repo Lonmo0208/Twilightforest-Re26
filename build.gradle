@@ -117,7 +117,6 @@ dependencies {
 	//implementation "tamaized:beanification:${project.beanification_version}"
 
 	// Forge Config API Port (provides NeoForge-compatible config API)
-	implementation files('libs/forgeconfigapiport/forgeconfigapiport-fabric-26.1.5.jar')
 	implementation 'curse.maven:forge-config-api-port-547434:8218664'
 	// Transitive dependencies for ForgeConfigAPIPort
 	implementation 'com.electronwill.night-config:core:3.8.3'
@@ -168,7 +167,6 @@ tasks.withType(Jar).configureEach { task ->
 
 sourcesJar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
-	// sources jar 与主 jar 命名保持一致，追加 -sources
 	archiveFileName = "${project.mod_id}.re26-${project.minecraft_version}-${project.mod_version}-fabric-sources.jar"
 }
 

@@ -1,4 +1,5 @@
 {
+  "render_type": "minecraft:cutout",
   "parent": "twilightforest:block/util/large_bush",
   "textures": {
     "all": "twilightforest:block/blackberry_bush_ripe"

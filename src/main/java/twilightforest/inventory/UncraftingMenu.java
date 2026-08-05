@@ -1,6 +1,7 @@
 package twilightforest.inventory;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import java.util.Optional;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -34,10 +35,8 @@ import twilightforest.item.recipe.UncraftingRecipe;
 import twilightforest.tags.TFItemTags;
 import twilightforest.util.TFItemStackUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UncraftingMenu extends RecipeBookMenu {
 
@@ -382,15 +381,15 @@ public class UncraftingMenu extends RecipeBookMenu {
 		if (inputStack.is(ItemTags.SWORDS) && resultStack.is(ItemTags.SWORDS)) {
 			return true;
 		}
-		// TODO: Port - find equivalent tag for TOOLS_BOW (was Tags.Items.TOOLS_BOW)
+		// Bows - use vanilla Items check (no generic BOW tag exists in Fabric/MC)
 		if (inputStack.is(Items.BOW) && resultStack.is(Items.BOW)) {
 			return true;
 		}
-		// TODO: Port - find equivalent tag for TOOLS_CROSSBOW (was Tags.Items.TOOLS_CROSSBOW)
+		// Crossbows - use vanilla Items check
 		if (inputStack.is(Items.CROSSBOW) && resultStack.is(Items.CROSSBOW)) {
 			return true;
 		}
-		// TODO: Port - find equivalent tag for TOOLS_FISHING_ROD (was Tags.Items.TOOLS_FISHING_ROD)
+		// Fishing rods - use vanilla Items check
 		if (inputStack.is(Items.FISHING_ROD) && resultStack.is(Items.FISHING_ROD)) {
 			return true;
 		}
@@ -635,12 +634,28 @@ public class UncraftingMenu extends RecipeBookMenu {
 	}
 
 	private ItemStack[] getIngredients(Recipe<?> recipe) {
-		List<Ingredient> ingredients = recipe.placementInfo().ingredients();
-		ItemStack[] stacks = new ItemStack[ingredients.size()];
+		List<Optional<Ingredient>> optionalIngredients;
+		if (recipe instanceof ShapedRecipe shapedRecipe) {
+			// 26.1: ShapedRecipe ingredients are List<Optional<Ingredient>> — empty slot = Optional.empty()
+			// Never construct Ingredient.of() with no args, that throws "Ingredients can't be empty"
+			optionalIngredients = shapedRecipe.getIngredients();
+		} else {
+			// Shapeless / other recipes return Ingredient list — wrap every entry as Optional.present
+			optionalIngredients = recipe.placementInfo().ingredients().stream()
+					.map(Optional::of)
+					.collect(Collectors.<Optional<Ingredient>>toList());
+		}
+		ItemStack[] stacks = new ItemStack[optionalIngredients.size()];
 
-		for (int i = 0; i < ingredients.size(); i++) {
-			ItemStack[] matchingStacks = ingredients.get(i).items().map(h -> new ItemStack(h.value())).filter(s -> !s.is(TFItemTags.BANNED_UNCRAFTING_INGREDIENTS)).toArray(ItemStack[]::new);
-			stacks[i] = matchingStacks.length > 0 ? matchingStacks[Math.floorMod(this.ingredientsInCycle, matchingStacks.length)] : ItemStack.EMPTY;
+		for (int i = 0; i < optionalIngredients.size(); i++) {
+			Optional<Ingredient> opt = optionalIngredients.get(i);
+			if (opt.isEmpty()) {
+				// shaped recipe "empty" slot — nothing to uncraft / display here
+				stacks[i] = ItemStack.EMPTY;
+			} else {
+				ItemStack[] matchingStacks = opt.get().items().map(h -> new ItemStack(h.value())).filter(s -> !s.is(TFItemTags.BANNED_UNCRAFTING_INGREDIENTS)).toArray(ItemStack[]::new);
+				stacks[i] = matchingStacks.length > 0 ? matchingStacks[Math.floorMod(this.ingredientsInCycle, matchingStacks.length)] : ItemStack.EMPTY;
+			}
 		}
 
 		return stacks;
