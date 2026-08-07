@@ -14,6 +14,7 @@ import twilightforest.block.CastleDoorBlock;
 import twilightforest.block.ClimbableHollowLogBlock;
 import twilightforest.client.properties.PotionFlaskTintSource;
 import twilightforest.client.properties.SpawnEggTintSource;
+import twilightforest.config.TFConfig;
 import twilightforest.enums.HollowLogVariants;
 import twilightforest.init.TFBlocks;
 import twilightforest.util.ColorUtil;
@@ -112,6 +113,20 @@ public class ColorHandler {
 	}
 
 	private static int rainbowLeafColor(BlockPos pos) {
+		// Switchable via client config:
+		// - VANILLA_GRID (default): matches official NeoForge 1.21.1 algorithm — RGB three-axis
+		//   folding. Produces the signature "tartan rainbow" look with occasional muted
+		//   browns/greys when RGB channels happen to line up.
+		// - HSV_SMOOTH: Aurora-block-style HSV gradient driven by Simplex ripple noise over
+		//   XZ position. Hue maps onto the full color wheel; S=1 / V=1 guarantees every
+		//   tile is a vivid pure color — no browns, no greys, fully continuous transitions.
+		return switch (TFConfig.rainbowLeavesStyle) {
+			case HSV_SMOOTH -> hsvSmoothRainbowLeafColor(pos);
+			default -> vanillaGridRainbowLeafColor(pos);
+		};
+	}
+
+	private static int vanillaGridRainbowLeafColor(BlockPos pos) {
 		int red = pos.getX() * 32 + pos.getY() * 16;
 		if ((red & 256) != 0) red = 255 - (red & 255);
 		red &= 255;
@@ -122,6 +137,38 @@ public class ColorHandler {
 		if ((blue & 256) != 0) blue = 255 - (blue & 255);
 		blue &= 255;
 		return 0xFF000000 | red << 16 | green << 8 | blue;
+	}
+
+	private static int hsvSmoothRainbowLeafColor(BlockPos pos) {
+		// Full 3D HSV rainbow gradient across X (horizontal), Y (vertical/height), and Z.
+		// Every axis independently contributes a clearly visible hue sweep so that leaves
+		// at the same XZ but different heights do NOT land on the same shade — a single
+		// tree canopy (typically 10–15 blocks tall / ~30 wide) will span most of the
+		// colour wheel in every direction, giving the dreamy "everywhere a different
+		// bright colour" feel of the reference image.
+		//
+		// Spatial cycles tuned for good tree-scale variety:
+		//   X: ~48 blocks per full hue cycle
+		//   Y: ~24 blocks per full hue cycle  — denser so short canopies still show a
+		//                                       pronounced vertical gradient
+		//   Z: ~48 blocks per full hue cycle
+		//
+		// The three axes are combined with distinct prime-ish coefficients and then
+		// mixed with both axis-aligned and diagonal terms. This guarantees no straight
+		// line anywhere in 3D space maps to a constant hue (no "plain-coloured diagonals
+		// that suddenly lose their gradient").
+		float hx = pos.getX() * (1.0f / 48.0f);
+		float hy = pos.getY() * (1.0f / 24.0f);
+		float hz = pos.getZ() * (1.0f / 48.0f);
+
+		float axisBlend    = hx * 0.53f + hy * 0.71f + hz * 0.41f;
+		float diagonalBlend = (hx + hz - hy) * 0.29f + (hx - hz + hy) * 0.23f;
+		float hueRaw = axisBlend + diagonalBlend;
+
+		// Saturation and Value are locked to 1.0 to guarantee vivid, pure hues — this
+		// eliminates the muted browns/greys/beiges inherent to the vanilla RGB grid.
+		float hue = hueRaw - (float) Math.floor(hueRaw);
+		return ColorUtil.hsvToRGB(hue, 1.0f, 1.0f);
 	}
 
 

@@ -37,6 +37,8 @@ import net.minecraft.client.renderer.item.properties.conditional.ConditionalItem
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
 import net.minecraft.client.renderer.item.properties.select.SelectItemModelProperties;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.world.entity.Entity;
 import twilightforest.TwilightForestMod;
@@ -74,6 +76,7 @@ import twilightforest.init.*;
 import twilightforest.item.PotionFlaskItem;
 import twilightforest.item.travellers_gear.TravellersArmorBeltItem;
 import twilightforest.item.travellers_gear.TravellersGogglesItem;
+import twilightforest.config.ConfigSetup;
 import twilightforest.network.*;
 import twilightforest.network.client.*;
 import twilightforest.network.UpdateTFMultipartPacket;
@@ -84,7 +87,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegist
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import twilightforest.client.overlay.ShieldOverlay;
 import twilightforest.client.renderer.entity.layers.FirstPersonShieldRenderer;
 import twilightforest.client.renderer.entity.layers.IceLayer;
@@ -102,6 +104,31 @@ public class TwilightForestClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// Register model loading plugin for jar lid models
 		ModelLoadingPlugin.register(new TFModelLoadingPlugin());
+
+		// After the user edits and saves a CLIENT config in the ModMenu config GUI,
+		// TFConfig fields are already re-baked on the loading thread, but MC still
+		// holds cached tint results and stale chunk build lists, so leaves / other
+		// coloured blocks won't visually update until the player leaves and re-enters
+		// the save. Install a hook to force an on-thread purge of those caches so
+		// changes (e.g. rainbow leaf style) appear immediately.
+		ConfigSetup.setClientConfigChangedHook(() -> {
+			Minecraft mc = Minecraft.getInstance();
+			// Schedule on the main client / render thread so we safely touch
+			// LevelRenderer, ClientLevel and other client-only state.
+			mc.execute(() -> {
+				// Mark every loaded chunk section dirty so the rebuild threads
+				// re-tesselate terrain using the freshly re-baked colours.
+				mc.levelRenderer.allChanged();
+				ClientLevel level = mc.level;
+				if (level != null) {
+					// Clear per-BlockTintSource position → colour caches; this alone
+					// is required for re-tesselated geometry to actually pick up the
+					// new hue (otherwise the cached 0xRRGGBB value from the old
+					// style is re-used indefinitely).
+					level.clearTintCaches();
+				}
+			});
+		});
 
 		// Inform Forge Config API Port that our mod should display its config button
 		// in Mod Menu. ConfigScreenFactoryRegistry is queried by FCAP's ModMenuApiImpl
@@ -137,6 +164,9 @@ public class TwilightForestClient implements ClientModInitializer {
 		// Register boat texture generator
 		ResourceLoader.get(net.minecraft.server.packs.PackType.CLIENT_RESOURCES)
 			.registerReloadListener(TwilightForestMod.prefix("texture_generator"), TextureGeneratorReloadListener.INSTANCE);
+
+		// Register jar lid model cache reload listener
+		JarRenderer.registerReloadListener();
 
 		// Register client-side packet handlers (payload types already registered in TwilightForestMod)
 		registerClientHandlers();
@@ -183,8 +213,8 @@ public class TwilightForestClient implements ClientModInitializer {
 		ItemModels.ID_MAPPER.put(TwilightForestMod.prefix("travellers_gear"), TravellersGearItemModel.Unbaked.MAP_CODEC);
 
 		// UnbakedModel deserializers (Fabric equivalent of NeoForge's ModelEvent.RegisterLoaders)
-		UnbakedModelDeserializer.register(TwilightForestMod.prefix("force_field"), (json, context) -> ForceFieldModelLoader.INSTANCE.read(json, context));
-		UnbakedModelDeserializer.register(TwilightForestMod.prefix("patch"), (json, context) -> PatchModelLoader.INSTANCE.read(json, context));
+		UnbakedModelDeserializer.register(TwilightForestMod.prefix("force_field"), ForceFieldModelLoader.INSTANCE::read);
+		UnbakedModelDeserializer.register(TwilightForestMod.prefix("patch"), PatchModelLoader.INSTANCE::read);
 
 		// CustomUnbakedBlockStateModel types (Fabric equivalent of NeoForge's RegisterBlockStateModels)
 		CustomUnbakedBlockStateModel.register(TwilightForestMod.prefix("noise_varying"), UnbakedNoiseVaryingBlockStateModel.MAP_CODEC);
@@ -223,20 +253,15 @@ public class TwilightForestClient implements ClientModInitializer {
 
 	private void registerTooltipComponents() {
 		ClientTooltipComponentCallback.EVENT.register(data -> {
-			if (data instanceof TravellersGogglesItem.Tooltip tooltip) {
-				return new ItemDisplayTooltipComponent(tooltip);
-			}
-			if (data instanceof TravellersArmorBeltItem.Tooltip tooltip) {
-				return new TravellersBeltTooltipComponent(tooltip);
-			}
-			if (data instanceof PotionFlaskItem.Tooltip tooltip) {
-				return new PotionFlaskTooltipComponent(tooltip);
-			}
-			return null;
+			return switch (data) {
+				case TravellersGogglesItem.Tooltip tooltip -> new ItemDisplayTooltipComponent(tooltip);
+				case TravellersArmorBeltItem.Tooltip tooltip -> new TravellersBeltTooltipComponent(tooltip);
+				case PotionFlaskItem.Tooltip tooltip -> new PotionFlaskTooltipComponent(tooltip);
+				default -> null;
+			};
 		});
 	}
 
-	@SuppressWarnings("unchecked")
 	private void registerModelLayers() {
 		// Armor
 		ModelLayerRegistry.registerModelLayer(TFModelLayers.ARCTIC_ARMOR_INNER, () -> LayerDefinition.create(ArcticArmorModel.addPieces(LayerDefinitions.INNER_ARMOR_DEFORMATION), 64, 32));
@@ -576,16 +601,12 @@ public class TwilightForestClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(GogglesZoomPacket.TYPE, (packet, context) ->
 			context.client().execute(() -> {
 				var player = context.player();
-				if (player != null) {
-					player.setAttached(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER, packet.isUsingZoom());
-				}
+				player.setAttached(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER, packet.isUsingZoom());
 			}));
 		ClientPlayNetworking.registerGlobalReceiver(GradualGlidePacket.TYPE, (packet, context) ->
 			context.client().execute(() -> {
 				var player = context.player();
-				if (player != null) {
-					player.setAttached(TFDataAttachments.IS_GRADUALLY_GLIDING, packet.isGraduallyGliding());
-				}
+				player.setAttached(TFDataAttachments.IS_GRADUALLY_GLIDING, packet.isGraduallyGliding());
 			}));
 	}
 

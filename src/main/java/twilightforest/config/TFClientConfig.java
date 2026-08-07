@@ -25,6 +25,7 @@ public class TFClientConfig {
 	final ModConfigSpec.BooleanValue manualTravellersWingsGradualGlide;
 	final ModConfigSpec.BooleanValue firstPersonGloveOverlay;
 	final ModConfigSpec.BooleanValue firstPersonShieldScepterRenderer;
+	final ModConfigSpec.EnumValue<TFConfig.RainbowLeavesStyle> rainbowLeavesStyle;
 
 	final ItemDisplay ITEM_DISPLAY = new ItemDisplay();
 
@@ -109,6 +110,10 @@ public class TFClientConfig {
 		firstPersonShieldScepterRenderer = builder.translation(TFConfig.CONFIG_ID + "first_person_shield_scepter")
 			.comment(ConfigComments.FIRST_PERSON_SHIELD_SCEPTER)
 			.define("firstPersonShieldScepterRenderer", false);
+
+		rainbowLeavesStyle = builder.translation(TFConfig.CONFIG_ID + "rainbow_leaves_style")
+			.comment(ConfigComments.RAINBOW_LEAVES_STYLE)
+			.defineEnum("rainbowLeavesStyle", TFConfig.RainbowLeavesStyle.VANILLA_GRID);
 
 		builder.comment(ConfigComments.ITEM_DISPLAY).translation(TFConfig.CONFIG_ID + "item_display").push("Item Display Modifier Settings");
 		{

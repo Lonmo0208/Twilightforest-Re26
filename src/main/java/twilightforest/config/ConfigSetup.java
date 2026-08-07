@@ -9,6 +9,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 import twilightforest.network.SyncUncraftingTableConfigPacket;
 
@@ -19,6 +20,18 @@ public final class ConfigSetup {
 	private static ModConfigSpec COMMON_SPEC;
 	private static ModConfigSpec CLIENT_SPEC;
 	private static MinecraftServer currentServer;
+	/**
+	 * Client-side hook invoked on the main client thread after a client config file
+	 * has been reloaded (i.e. saved in the config GUI / edited on disk). Typically
+	 * used to invalidate per-frame render caches (block tint cache, chunk meshes)
+	 * so that config-driven visual changes (e.g. rainbow leaf style) appear
+	 * immediately without the player having to leave and rejoin the world.
+	 * <p>
+	 * Installed from {@code TwilightForestClient.onInitializeClient()}; left null
+	 * on dedicated servers where client-side classes do not exist.
+	 */
+	@Nullable
+	private static Runnable clientConfigChangedHook;
 
 	public static void init() {
 		// Build config specs
@@ -65,6 +78,16 @@ public final class ConfigSetup {
 				}
 			} else if (config.getSpec() == CLIENT_SPEC) {
 				TFConfig.rebakeClientOptions(CLIENT_CONFIG);
+				// Notify client render layer to tear down any cached visuals (tint
+				// caches, chunk build lists) so newly chosen styles / colours appear
+				// immediately without re-entering the save.
+				if (clientConfigChangedHook != null) {
+					try {
+						clientConfigChangedHook.run();
+					} catch (Throwable t) {
+						TwilightForestMod.LOGGER.error("Client config changed hook failed:", t);
+					}
+				}
 			}
 		});
 
@@ -91,6 +114,20 @@ public final class ConfigSetup {
 
 	public static ModConfigSpec getClientSpec() {
 		return CLIENT_SPEC;
+	}
+
+	/**
+	 * Registers a client-side callback to run immediately after a client config
+	 * reload event has been processed and {@link TFConfig} static fields have been
+	 * re-baked. The callback runs on whatever thread FCAP fires the reload event
+	 * from, so implementations should schedule render-thread work themselves if
+	 * needed (e.g. via {@code Minecraft.getInstance().tell(Runnable)}).
+	 * <p>
+	 * Intended for {@code TwilightForestClient} only; should never be called on a
+	 * dedicated server.
+	 */
+	public static void setClientConfigChangedHook(@Nullable Runnable hook) {
+		clientConfigChangedHook = hook;
 	}
 
 	public static void syncUncraftingConfig(ServerPlayer player) {

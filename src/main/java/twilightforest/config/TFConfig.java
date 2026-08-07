@@ -46,6 +46,7 @@ public class TFConfig {
 	public static boolean manualTravellersWingsGradualGlideDefault = true;
 	public static boolean firstPersonGloveOverlay = true;
 	public static boolean firstPersonShieldScepterRenderer = false;
+	public static RainbowLeavesStyle rainbowLeavesStyle = RainbowLeavesStyle.VANILLA_GRID;
 
 	public static int itemDisplayXOffs = 4;
 	public static int itemDisplayYOffs = 4;
@@ -213,6 +214,7 @@ public class TFConfig {
 		itemDisplayYOffs = config.ITEM_DISPLAY.screenOffsetY.get();
 		itemDisplayScale = config.ITEM_DISPLAY.screenScale.get();
 		clock24HourFormat = config.ITEM_DISPLAY.twentyFourHourFormat.get();
+		rainbowLeavesStyle = config.rainbowLeavesStyle.get();
 	}
 
 	private static void reloadGiantSkins(TFClientConfig config) {
@@ -263,6 +265,15 @@ public class TFConfig {
 
 		public Component getTranslatedName() {
 			return Component.translatable(CONFIG_ID + "multiplayer_fight_adjuster." + this.name().toLowerCase(Locale.ROOT));
+		}
+	}
+
+	public enum RainbowLeavesStyle {
+		VANILLA_GRID,
+		HSV_SMOOTH;
+
+		public Component getTranslatedName() {
+			return Component.translatable(CONFIG_ID + "rainbow_leaves_style." + this.name().toLowerCase(Locale.ROOT));
 		}
 	}
 
