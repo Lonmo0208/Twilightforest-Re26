@@ -199,7 +199,6 @@ public class TFRemapper {
 	}
 
 	private static void logRemap(String oldId, String newId) {
-		TwilightForestMod.LOGGER.debug("TFRemapper: {} -> {}", oldId, newId);
 	}
 
 	private static void logRemapItem(String oldId, String newId) {

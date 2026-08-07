@@ -182,7 +182,6 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 		final float radiusInner = radius - 8;
 
 		final BoundingBox structureBox = structurePieceSource.getBoundingBox();
-		final int width = Math.min(structureBox.getXSpan(), structureBox.getZSpan());
 		final int yCeilingFocus = structureBox.minY();
 		final BlockPos hillCenter = structureBox.getCenter();
 
@@ -213,7 +212,11 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 		// This min() function combines these two surfaces formed by said zeros
 		DensityFunction hollowHill = DensityFunctions.min(hillMound, interiorMasked);
 
-		DensityFunction maskingSphere = FocusedDensityFunction.fromPos(hillCenter.below(Mth.ceil(radius * 0.1)), width * 0.5f + 5, width * 0.25f, 0).clamp(0, 1);
+		// Use the actual hill radius for the masking sphere so terrain smoothly fades in across the
+		// full extent of the mound (and a bit beyond) instead of being clipped at the much smaller
+		// piece bounding-box width. This prevents a steep, cube-shaped cliff where the mound
+		// suddenly stops blending with the natural terrain.
+		DensityFunction maskingSphere = FocusedDensityFunction.fromPos(hillCenter.below(Mth.ceil(radius * 0.1)), radius * 0.55f, radius * 0.25f, 0).clamp(0, 1);
 
 		return DensityFunctions.mul(maskingSphere, DensityFunctions.mul(DensityFunctions.constant(8), hollowHill));
 	}

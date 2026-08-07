@@ -1,4 +1,4 @@
 {
-  "type": "minecraft:entity",
-  "random_sequence": "twilightforest:entities/pinch_beetle"
+    "type": "minecraft:entity",
+    "random_sequence": "twilightforest:entities/pinch_beetle"
 }

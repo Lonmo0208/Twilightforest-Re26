@@ -37,6 +37,10 @@ public final class ConfigSetup {
 		ConfigRegistry.INSTANCE.register(TwilightForestMod.ID, ModConfig.Type.COMMON, COMMON_SPEC);
 		ConfigRegistry.INSTANCE.register(TwilightForestMod.ID, ModConfig.Type.CLIENT, CLIENT_SPEC);
 
+		// Immediately rebake config values after registration in case loading events already fired
+		TFConfig.rebakeCommonOptions(COMMON_CONFIG);
+		TFConfig.rebakeClientOptions(CLIENT_CONFIG);
+
 		// Track server instance for config sync
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> currentServer = server);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> currentServer = null);
@@ -44,17 +48,14 @@ public final class ConfigSetup {
 		// Register config load/reload event handlers
 		ModConfigEvents.loading(TwilightForestMod.ID).register(config -> {
 			if (config.getSpec() == COMMON_SPEC) {
-				TwilightForestMod.LOGGER.info("Loading common config");
 				TFConfig.rebakeCommonOptions(COMMON_CONFIG);
 			} else if (config.getSpec() == CLIENT_SPEC) {
-				TwilightForestMod.LOGGER.info("Loading client config");
 				TFConfig.rebakeClientOptions(CLIENT_CONFIG);
 			}
 		});
 
 		ModConfigEvents.reloading(TwilightForestMod.ID).register(config -> {
 			if (config.getSpec() == COMMON_SPEC) {
-				TwilightForestMod.LOGGER.info("Reloading common config");
 				TFConfig.rebakeCommonOptions(COMMON_CONFIG);
 				// Sync updated config to all online players
 				if (currentServer != null) {
@@ -63,13 +64,11 @@ public final class ConfigSetup {
 					}
 				}
 			} else if (config.getSpec() == CLIENT_SPEC) {
-				TwilightForestMod.LOGGER.info("Reloading client config");
 				TFConfig.rebakeClientOptions(CLIENT_CONFIG);
 			}
 		});
 
 		ModConfigEvents.unloading(TwilightForestMod.ID).register(config -> {
-			TwilightForestMod.LOGGER.info("Unloading config: {}", config.getFileName());
 		});
 
 		// Register uncrafting config sync on player login

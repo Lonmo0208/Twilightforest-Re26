@@ -1,22 +1,22 @@
 {
-  "type": "minecraft:entity",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
+    "type": "minecraft:entity",
+    "pools": [
         {
-          "condition": "twilightforest:is_minion",
-          "inverse": true
+            "bonus_rolls": 0.0,
+            "conditions": [
+                {
+                    "condition": "twilightforest:is_minion",
+                    "inverse": true
+                }
+            ],
+            "entries": [
+                {
+                    "type": "minecraft:loot_table",
+                    "value": "minecraft:entities/ghast"
+                }
+            ],
+            "rolls": 1.0
         }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:loot_table",
-          "value": "minecraft:entities/ghast"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:entities/carminite_ghastling"
+    ],
+    "random_sequence": "twilightforest:entities/carminite_ghastling"
 }

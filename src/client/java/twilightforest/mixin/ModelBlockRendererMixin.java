@@ -43,7 +43,6 @@ public class ModelBlockRendererMixin {
 		CallbackInfo ci
 	) {
 		if (model instanceof LevelAwareBlockStateModel levelAwareModel) {
-			System.out.println("[TF-DEBUG] mixin intercepting collectParts for " + model.getClass().getName() + " at " + pos);
 			// Use level-aware variant selection based on BlockPos / surroundings
 			levelAwareModel.collectParts(level, pos, blockState, RandomSource.create(seed), ((ModelBlockRendererAccessor) this).getParts());
 			// Cancel vanilla collectParts call since we handled it

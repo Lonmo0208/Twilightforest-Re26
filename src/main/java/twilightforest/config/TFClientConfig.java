@@ -24,6 +24,7 @@ public class TFClientConfig {
 	final ModConfigSpec.BooleanValue spawnCharmAnimationAsTotem;
 	final ModConfigSpec.BooleanValue manualTravellersWingsGradualGlide;
 	final ModConfigSpec.BooleanValue firstPersonGloveOverlay;
+	final ModConfigSpec.BooleanValue firstPersonShieldScepterRenderer;
 
 	final ItemDisplay ITEM_DISPLAY = new ItemDisplay();
 
@@ -104,6 +105,10 @@ public class TFClientConfig {
 		firstPersonGloveOverlay = builder.translation(TFConfig.CONFIG_ID + "first_person_glove_overlay")
 			.comment(ConfigComments.FIRST_PERSON_GLOVE_OVERLAY)
 			.define("firstPersonGloveOverlay", true);
+
+		firstPersonShieldScepterRenderer = builder.translation(TFConfig.CONFIG_ID + "first_person_shield_scepter")
+			.comment(ConfigComments.FIRST_PERSON_SHIELD_SCEPTER)
+			.define("firstPersonShieldScepterRenderer", false);
 
 		builder.comment(ConfigComments.ITEM_DISPLAY).translation(TFConfig.CONFIG_ID + "item_display").push("Item Display Modifier Settings");
 		{

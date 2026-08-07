@@ -2,6 +2,7 @@ package twilightforest.entity.projectile;
 
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -18,7 +19,6 @@ import net.minecraft.world.phys.Vec3;
 import twilightforest.init.TFDamageTypes;
 import twilightforest.init.TFEntities;
 import twilightforest.init.TFParticleType;
-import twilightforest.init.TFSounds;
 
 public class TwilightWandBolt extends TFThrowable {
 
@@ -84,7 +84,7 @@ public class TwilightWandBolt extends TFThrowable {
 			if (hit instanceof LivingEntity) {
 				hit.hurt(TFDamageTypes.getIndirectEntityDamageSource(this.level(), TFDamageTypes.TWILIGHT_SCEPTER, this, this.getOwner()), 6);
 			}
-			this.level().playSound(null, hit.blockPosition(), TFSounds.TWILIGHT_SCEPTER_HIT, this.getOwner() != null ? this.getOwner().getSoundSource() : SoundSource.PLAYERS);
+			this.level().playSound(null, hit.blockPosition(), SoundEvents.ENDER_PEARL_THROW, this.getOwner() != null ? this.getOwner().getSoundSource() : SoundSource.PLAYERS);
 			this.level().broadcastEntityEvent(this, (byte) 3);
 			this.discard();
 		}

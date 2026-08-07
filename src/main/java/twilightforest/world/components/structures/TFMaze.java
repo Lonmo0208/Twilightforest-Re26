@@ -129,8 +129,6 @@ public class TFMaze {
 			return getRaw(sx * 2 + 1, sz * 2);
 		}
 
-		TwilightForestMod.LOGGER.info("Wall check out of bounds; s = {}, {}; d = {}, {}", sx, sz, dx, dz);
-
 		return OUT_OF_BOUNDS;
 	}
 

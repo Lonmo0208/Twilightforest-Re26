@@ -260,6 +260,7 @@ public class FabricEvents {
 		private final LivingEntity entity;
 		private final DamageSource source;
 		private float amount;
+		private boolean canceled;
 
 		public LivingIncomingDamageEvent(LivingEntity entity, DamageSource source, float amount) {
 			this.entity = entity;
@@ -271,8 +272,8 @@ public class FabricEvents {
 		public DamageSource getSource() { return source; }
 		public float getAmount() { return amount; }
 		public void setAmount(float amount) { this.amount = amount; }
-		public boolean isCanceled() { return false; }
-		public void setCanceled(boolean canceled) {}
+		public boolean isCanceled() { return canceled; }
+		public void setCanceled(boolean canceled) { this.canceled = canceled; }
 	}
 
 	public static class LivingDeathEvent {

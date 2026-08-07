@@ -3,6 +3,7 @@ package twilightforest.block;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -74,6 +75,7 @@ public class Experiment115Block extends Block {
 				return InteractionResult.SUCCESS;
 			} else if (!state.getValue(REGENERATE) && bitesTaken == 0 && stack.is(Items.REDSTONE)) {
 				level.setBlockAndUpdate(pos, state.setValue(REGENERATE, true));
+				level.updateNeighborsAt(pos, this);
 				level.playSound(null, pos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
 				stack.consume(1, player);
 				if (player instanceof ServerPlayer) {
@@ -117,6 +119,7 @@ public class Experiment115Block extends Block {
 		}
 		player.getFoodData().eat(4, 0.3F);
 		int i = state.getValue(BITES_TAKEN);
+		player.playSound(SoundEvents.GENERIC_EAT.value(), 0.5F, 0.9F + level.getRandom().nextFloat() * 0.1F);
 		if (i < 7) {
 			level.setBlock(pos, state.setValue(BITES_TAKEN, i + 1), Block.UPDATE_ALL);
 		} else {
@@ -124,6 +127,8 @@ public class Experiment115Block extends Block {
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			serverPlayer.awardStat(TFStats.E115_SLICES_EATEN);
+			CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, new ItemStack(TFItems.EXPERIMENT_115, 8 - i));
+			serverPlayer.awardStat(Stats.ITEM_USED.get(TFItems.EXPERIMENT_115));
 		}
 		return InteractionResult.SUCCESS;
 	}
@@ -132,6 +137,30 @@ public class Experiment115Block extends Block {
 	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
 		if (state.getValue(REGENERATE) && state.getValue(BITES_TAKEN) != 0) {
 			level.setBlockAndUpdate(pos, state.setValue(BITES_TAKEN, state.getValue(BITES_TAKEN) - 1));
+			level.updateNeighborsAt(pos, this);
+		}
+	}
+
+	@Override
+	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+		if (state.getValue(REGENERATE)) {
+			this.sparkle(level, pos);
+		}
+	}
+
+	// [VanillaCopy] Based on RedstoneOreBlock.spawnParticles
+	private void sparkle(Level level, BlockPos pos) {
+		RandomSource random = level.getRandom();
+
+		for (Direction direction : Direction.values()) {
+			BlockPos blockpos = pos.relative(direction);
+			if (!level.getBlockState(blockpos).isSolidRender()) {
+				Direction.Axis axis = direction.getAxis();
+				double d1 = axis == Direction.Axis.X ? 0.5 + 0.5625 * (double) direction.getStepX() : (double) random.nextFloat();
+				double d2 = axis == Direction.Axis.Y ? 0.5 + 0.5625 * (double) direction.getStepY() : (double) random.nextFloat();
+				double d3 = axis == Direction.Axis.Z ? 0.5 + 0.5625 * (double) direction.getStepZ() : (double) random.nextFloat();
+				level.addParticle(DustParticleOptions.REDSTONE, (double) pos.getX() + d1, (double) pos.getY() + d2, (double) pos.getZ() + d3, 0.0, 0.0, 0.0);
+			}
 		}
 	}
 

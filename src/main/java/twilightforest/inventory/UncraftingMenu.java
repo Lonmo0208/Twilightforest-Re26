@@ -68,6 +68,9 @@ public class UncraftingMenu extends RecipeBookMenu {
 	@Nullable
 	public Recipe<?> storedGhostRecipe = null;
 
+	// Prevent infinite recursion when updating combineMatrix
+	private boolean isUpdatingCombineMatrix = false;
+
 	public static UncraftingMenu fromNetwork(int id, Inventory inventory) {
 		return new UncraftingMenu(id, inventory, inventory.player.level(), ContainerLevelAccess.NULL);
 	}
@@ -129,143 +132,342 @@ public class UncraftingMenu extends RecipeBookMenu {
 
 	@Override
 	public void slotsChanged(Container inventory) {
-		// we need to see what inventory is calling this, and update appropriately
+		// Prevent infinite recursion when updating combineMatrix
+		if (this.isUpdatingCombineMatrix) {
+			return;
+		}
+
 		if (inventory == this.tinkerInput) {
+			if (!this.level.isClientSide()) {
+				// Empty whole grid to start with
+				this.uncraftingMatrix.clearContent();
 
-			// empty whole grid to start with
-			this.uncraftingMatrix.clearContent();
+				// See if there is a recipe for the input
+				ItemStack inputStack = tinkerInput.getItem(0);
+				Recipe<?>[] recipes = getRecipesFor(inputStack, this.level);
 
-			// see if there is a recipe for the input
-			ItemStack inputStack = tinkerInput.getItem(0);
-			Recipe<?>[] recipes = getRecipesFor(inputStack, this.level);
+				int size = recipes.length;
 
-			int size = recipes.length;
+				if (size > 0 && !inputStack.is(TFItemTags.BANNED_UNCRAFTABLES)) {
+					Recipe<?> recipe = recipes[Math.floorMod(this.unrecipeInCycle, size)];
+					this.storedGhostRecipe = recipe;
+					ItemStack[] recipeItems = this.getIngredients(recipe);
 
-			if (size > 0 && !inputStack.is(TFItemTags.BANNED_UNCRAFTABLES)) {
+					if (recipe instanceof ShapedRecipe rec) {
+						int recipeWidth = rec.getWidth();
+						int recipeHeight = rec.getHeight();
 
-				Recipe<?> recipe = recipes[Math.floorMod(this.unrecipeInCycle, size)];
-				this.storedGhostRecipe = recipe;
-				ItemStack[] recipeItems = this.getIngredients(recipe);
+						// Set uncrafting grid
+						for (int invY = 0; invY < recipeHeight; invY++) {
+							for (int invX = 0; invX < recipeWidth; invX++) {
+								int index = invX + invY * recipeWidth;
+								if (index >= recipeItems.length) continue;
 
-				if (recipe instanceof ShapedRecipe rec) {
-
-					int recipeWidth = rec.getWidth();
-					int recipeHeight = rec.getHeight();
-
-					// set uncrafting grid
-					for (int invY = 0; invY < recipeHeight; invY++) {
-						for (int invX = 0; invX < recipeWidth; invX++) {
-
-							int index = invX + invY * recipeWidth;
-							if (index >= recipeItems.length) continue;
-
-							ItemStack ingredient = normalizeIngredient(recipeItems[index].copy());
-							this.uncraftingMatrix.setItem(invX + invY * 3, ingredient);
+								ItemStack ingredient = normalizeIngredient(recipeItems[index].copy());
+								this.uncraftingMatrix.setItem(invX + invY * 3, ingredient);
+							}
 						}
+					} else {
+						for (int i = 0; i < this.uncraftingMatrix.getContainerSize(); i++) {
+							if (i < recipeItems.length) {
+								ItemStack ingredient = normalizeIngredient(recipeItems[i].copy());
+								this.uncraftingMatrix.setItem(i, ingredient);
+							}
+						}
+					}
+
+					// Mark the appropriate number of damaged components
+					if (inputStack.isDamaged()) {
+						int damagedParts = this.countDamagedParts(inputStack);
+
+						for (int i = 0; i < 9 && damagedParts > 0; i++) {
+							ItemStack stack = this.uncraftingMatrix.getItem(i);
+							if (isDamageableComponent(stack)) {
+								markStack(stack);
+								damagedParts--;
+							}
+						}
+					}
+
+					// Mark banned items
+					for (int i = 0; i < 9; i++) {
+						ItemStack ingredient = this.uncraftingMatrix.getItem(i);
+						if (isIngredientProblematic(ingredient)) {
+							markStack(ingredient);
+						}
+					}
+
+					// Store number of items this recipe produces
+					this.uncraftingMatrix.numberOfInputItems = recipe instanceof UncraftingRecipe uncraftingRecipe ? uncraftingRecipe.getCount() : ((CraftingRecipe)recipe).assemble(CraftingInput.EMPTY).getCount();
+
+					// Only set uncraftingCost if assemblyMatrix is empty (pure uncrafting mode)
+					if (this.assemblyMatrix.isEmpty()) {
+						this.uncraftingMatrix.uncraftingCost = this.calculateUncraftingCost();
+					}
+					// Do NOT reset recraftingCost here - it will be recalculated in Phase 2 if needed
+
+					if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+						TwilightForestMod.LOGGER.info("[UncraftingMenu] tinkerInput changed: uncraftingCost={}, recraftingCost={}, recipeType={}, assemblyEmpty={}",
+							this.uncraftingMatrix.uncraftingCost, this.uncraftingMatrix.recraftingCost, recipe.getType(), this.assemblyMatrix.isEmpty());
 					}
 				} else {
-					for (int i = 0; i < this.uncraftingMatrix.getContainerSize(); i++) {
-						if (i < recipeItems.length) {
-							ItemStack ingredient = normalizeIngredient(recipeItems[i].copy());
-							this.uncraftingMatrix.setItem(i, ingredient);
-						}
+					// No valid recipe found or item is banned
+					this.storedGhostRecipe = null;
+					this.uncraftingMatrix.numberOfInputItems = 0;
+					
+					// Always clear the result and costs when tinkerInput becomes empty
+					// This prevents enchanted items from appearing after the input is removed
+					this.tinkerResult.setItem(0, ItemStack.EMPTY);
+					this.uncraftingMatrix.uncraftingCost = 0;
+					this.uncraftingMatrix.recraftingCost = 0;
+					
+					// If assemblyMatrix still has items, recalculate as pure crafting mode
+					if (!this.assemblyMatrix.isEmpty()) {
+						this.chooseRecipe(this.assemblyMatrix.asCraftInput());
 					}
 				}
-
-
-				// mark the appropriate number of damaged components
-				if (inputStack.isDamaged()) {
-					int damagedParts = this.countDamagedParts(inputStack);
-
-					for (int i = 0; i < 9 && damagedParts > 0; i++) {
-						ItemStack stack = this.uncraftingMatrix.getItem(i);
-						if (isDamageableComponent(stack)) {
-							markStack(stack);
-							damagedParts--;
-						}
-					}
-				}
-
-				// mark banned items
-				for (int i = 0; i < 9; i++) {
-					ItemStack ingredient = this.uncraftingMatrix.getItem(i);
-					if (isIngredientProblematic(ingredient)) {
-						markStack(ingredient);
-					}
-				}
-
-				// store number of items this recipe produces (and thus how many input items are required for uncrafting)
-				this.uncraftingMatrix.numberOfInputItems = recipe instanceof UncraftingRecipe uncraftingRecipe ? uncraftingRecipe.getCount() : ((CraftingRecipe)recipe).assemble(CraftingInput.EMPTY).getCount();
-				this.uncraftingMatrix.uncraftingCost = this.calculateUncraftingCost();
-				this.uncraftingMatrix.recraftingCost = 0;
-
 			} else {
+				// Client-side: clear recipe-dependent state
 				this.storedGhostRecipe = null;
 				this.uncraftingMatrix.numberOfInputItems = 0;
-				this.uncraftingMatrix.uncraftingCost = 0;
 			}
 		}
-		// Now we've got the uncrafting logic set in, currently we don't modify the uncraftingMatrix. That's fine.
-		if (inventory == this.assemblyMatrix) {
-			if (this.tinkerInput.isEmpty()) {
-				// display the output
-				this.chooseRecipe(this.assemblyMatrix.asCraftInput());
-			} else {
-				// we placed an item in the assembly matrix, the next step will re-initialize these with correct values
+
+		// Phase 2: Recrafting logic - triggered when BOTH matrices have items
+		// The key fix: recrafting must work regardless of WHICH container changed first
+		boolean bothMatricesHaveItems = !this.tinkerInput.isEmpty() && !this.assemblyMatrix.isEmpty();
+		
+		if (bothMatricesHaveItems) {
+			if (!this.level.isClientSide()) {
+				// Recrafting mode: clear previous result
 				this.tinkerResult.setItem(0, ItemStack.EMPTY);
-				this.uncraftingMatrix.uncraftingCost = this.calculateUncraftingCost();
-			}
-			this.uncraftingMatrix.recraftingCost = 0;
-		}
+				this.uncraftingMatrix.recraftingCost = 0;
 
-		// repairing / recrafting: if there is an input item, and items in both grids, can we combine them to produce an output item that is the same type as the input item?
-		if (inventory != this.combineMatrix && !this.uncraftingMatrix.isEmpty() && !this.assemblyMatrix.isEmpty()) {
-			// combine the two matrices
-			for (int i = 0; i < 9; i++) {
+				// Both matrices have items - merge them and try recrafting
+				if (!this.uncraftingMatrix.isEmpty()) {
+					// Set flag to prevent infinite recursion
+					this.isUpdatingCombineMatrix = true;
+					try {
+						// Merge assemblyMatrix and uncraftingMatrix into combineMatrix
+						for (int i = 0; i < 9; i++) {
+							ItemStack assembly = this.assemblyMatrix.getItem(i);
+							ItemStack uncrafting = this.uncraftingMatrix.getItem(i);
 
-				ItemStack assembly = this.assemblyMatrix.getItem(i);
-				ItemStack uncrafting = this.uncraftingMatrix.getItem(i);
-
-				if (!assembly.isEmpty()) {
-					this.combineMatrix.setItem(i, assembly);
-				} else if (!uncrafting.isEmpty() && !isMarked(uncrafting)) {
-					this.combineMatrix.setItem(i, uncrafting);
-				} else {
-					this.combineMatrix.setItem(i, ItemStack.EMPTY);
-				}
-			}
-			// is there a result from this combined thing?
-			this.chooseRecipe(this.combineMatrix.asCraftInput());
-
-			ItemStack input = this.tinkerInput.getItem(0);
-			ItemStack result = this.tinkerResult.getItem(0);
-
-			if (!result.isEmpty() && isValidMatchForInput(input, result)) {
-				if (result.isEnchantable()) {
-					//store copy of input enchants
-					ItemEnchantments.Mutable enchants = new ItemEnchantments.Mutable(input.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY));
-					//add all resulting item enchants to the list. This allows pre-enchanted gear to keep its enchants
-					if (result.has(DataComponents.ENCHANTMENTS)) {
-						Objects.requireNonNull(result.get(DataComponents.ENCHANTMENTS)).entrySet().forEach(enchantment -> enchants.set(enchantment.getKey(), enchantment.getIntValue()));
+							if (!assembly.isEmpty()) {
+								this.combineMatrix.setItem(i, assembly);
+							} else if (!uncrafting.isEmpty() && !isMarked(uncrafting)) {
+								this.combineMatrix.setItem(i, uncrafting);
+							} else {
+								this.combineMatrix.setItem(i, ItemStack.EMPTY);
+							}
+						}
+					} finally {
+						this.isUpdatingCombineMatrix = false;
 					}
-					//remove any incompatible enchants
-					enchants.removeIf(holder -> !holder.value().isSupportedItem(result));
 
-					//remove enchantments and replace with filtered list
-					result.remove(DataComponents.ENCHANTMENTS);
-					EnchantmentHelper.setEnchantments(result, enchants.toImmutable());
+					// Use combined matrix to find the crafting recipe
+					this.chooseRecipe(this.combineMatrix.asCraftInput());
+
+					ItemStack input = this.tinkerInput.getItem(0);
+					ItemStack result = this.tinkerResult.getItem(0);
+
+					if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+						TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting check: input={}, result={}, isEmpty={}, triggeredBy={}",
+							input.getItem(), result.getItem(), result.isEmpty(), inventory == this.tinkerInput ? "tinkerInput" : "assemblyMatrix");
+					}
+
+					if (!result.isEmpty() && isValidMatchForInput(input, result)) {
+						// Transfer enchantments from input to result
+						if (result.isEnchantable()) {
+							// Store copy of input enchants
+							ItemEnchantments.Mutable enchants = new ItemEnchantments.Mutable(input.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY));
+							// Add all resulting item enchants to the list (preserves pre-existing enchants on new item)
+							if (result.has(DataComponents.ENCHANTMENTS)) {
+								Objects.requireNonNull(result.get(DataComponents.ENCHANTMENTS)).entrySet().forEach(enchantment -> enchants.set(enchantment.getKey(), enchantment.getIntValue()));
+							}
+							// Remove any incompatible enchants
+							enchants.removeIf(holder -> !holder.value().isSupportedItem(result));
+
+							// Remove enchantments and replace with filtered list
+							result.remove(DataComponents.ENCHANTMENTS);
+							EnchantmentHelper.setEnchantments(result, enchants.toImmutable());
+						}
+
+						this.tinkerResult.setItem(0, result);
+						this.uncraftingMatrix.uncraftingCost = 0;
+						this.uncraftingMatrix.recraftingCost = this.calculateRecraftingCost();
+
+						if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+							TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting success: recraftingCost={}, inputEnchants={}, outputEnchants={}", 
+								this.uncraftingMatrix.recraftingCost, 
+								input.getEnchantments().size(), 
+								result.getEnchantments().size());
+						}
+					} else if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+						if (result.isEmpty()) {
+							TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting failed: no matching recipe found for combined matrix");
+						} else {
+							TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting failed: isValidMatchForInput returned false for input={}, result={}",
+								input.getItem(), result.getItem());
+						}
+						// Recrafting failed, show uncrafting cost instead
+						this.uncraftingMatrix.uncraftingCost = this.calculateUncraftingCost();
+					}
 				}
+			} else {
+				// Client-side: calculate costs locally for instant UI feedback
+				ItemStack input = this.tinkerInput.getItem(0);
+				ItemStack result = this.tinkerResult.getItem(0);
 
-				this.tinkerResult.setItem(0, result);
-				this.uncraftingMatrix.uncraftingCost = 0;
-				this.uncraftingMatrix.recraftingCost = this.calculateRecraftingCost();
+				if (!input.isEmpty() && !this.assemblyMatrix.isEmpty()) {
+					if (!result.isEmpty()) {
+						this.uncraftingMatrix.recraftingCost = this.calculateRecraftingCost();
+						this.uncraftingMatrix.uncraftingCost = 0;
+					}
+				}
 			}
 		}
 
-		// Sync costs to client if on server side
+		// Phase 3: Handle pure crafting (assemblyMatrix changes when tinkerInput is empty)
+		if (inventory == this.assemblyMatrix && this.tinkerInput.isEmpty()) {
+			if (!this.level.isClientSide()) {
+				// Pure crafting mode: display the output
+				this.chooseRecipe(this.assemblyMatrix.asCraftInput());
+				this.uncraftingMatrix.uncraftingCost = 0;
+				this.uncraftingMatrix.recraftingCost = 0;
+			}
+		}
+
+		// Phase 4: Handle pure uncrafting (tinkerInput changes when assemblyMatrix is empty)
+		if (inventory == this.tinkerInput && this.assemblyMatrix.isEmpty() && !this.tinkerInput.isEmpty()) {
+			if (!this.level.isClientSide()) {
+				this.uncraftingMatrix.uncraftingCost = this.calculateUncraftingCost();
+				this.uncraftingMatrix.recraftingCost = 0;
+			}
+		}
+
+		// Old code removed - see new Phase 2-4 logic above
+		if (false) {
+		if (inventory == this.assemblyMatrix) {
+			if (!this.level.isClientSide()) {
+				if (this.tinkerInput.isEmpty()) {
+					// Pure crafting mode: display the output
+					this.chooseRecipe(this.assemblyMatrix.asCraftInput());
+					this.uncraftingMatrix.uncraftingCost = 0;
+					this.uncraftingMatrix.recraftingCost = 0;
+				} else {
+					// Recrafting mode: clear previous result
+					this.tinkerResult.setItem(0, ItemStack.EMPTY);
+					this.uncraftingMatrix.recraftingCost = 0;
+
+					// Both matrices have items - merge them and try recrafting
+					if (!this.uncraftingMatrix.isEmpty() && !this.assemblyMatrix.isEmpty()) {
+						// Merge assemblyMatrix and uncraftingMatrix into combineMatrix
+						// This combines new materials (assemblyMatrix) with old equipment materials (uncraftingMatrix)
+						for (int i = 0; i < 9; i++) {
+							ItemStack assembly = this.assemblyMatrix.getItem(i);
+							ItemStack uncrafting = this.uncraftingMatrix.getItem(i);
+
+							if (!assembly.isEmpty()) {
+								this.combineMatrix.setItem(i, assembly);
+							} else if (!uncrafting.isEmpty() && !isMarked(uncrafting)) {
+								this.combineMatrix.setItem(i, uncrafting);
+							} else {
+								this.combineMatrix.setItem(i, ItemStack.EMPTY);
+							}
+						}
+
+						// Use combined matrix to find the crafting recipe
+						this.chooseRecipe(this.combineMatrix.asCraftInput());
+
+						ItemStack input = this.tinkerInput.getItem(0);
+						ItemStack result = this.tinkerResult.getItem(0);
+
+						if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+							TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting check: input={}, result={}, isEmpty={}",
+								input.getItem(), result.getItem(), result.isEmpty());
+						}
+
+						if (!result.isEmpty() && isValidMatchForInput(input, result)) {
+							// Transfer enchantments from input to result
+							if (result.isEnchantable()) {
+								// Store copy of input enchants
+								ItemEnchantments.Mutable enchants = new ItemEnchantments.Mutable(input.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY));
+								// Add all resulting item enchants to the list (preserves pre-existing enchants on new item)
+								if (result.has(DataComponents.ENCHANTMENTS)) {
+									Objects.requireNonNull(result.get(DataComponents.ENCHANTMENTS)).entrySet().forEach(enchantment -> enchants.set(enchantment.getKey(), enchantment.getIntValue()));
+								}
+								// Remove any incompatible enchants
+								enchants.removeIf(holder -> !holder.value().isSupportedItem(result));
+
+								// Remove enchantments and replace with filtered list
+								result.remove(DataComponents.ENCHANTMENTS);
+								EnchantmentHelper.setEnchantments(result, enchants.toImmutable());
+							}
+
+							this.tinkerResult.setItem(0, result);
+							this.uncraftingMatrix.uncraftingCost = 0;
+							this.uncraftingMatrix.recraftingCost = this.calculateRecraftingCost();
+
+							if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+								TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting success: recraftingCost={}, inputEnchants={}, outputEnchants={}",
+									this.uncraftingMatrix.recraftingCost,
+									input.getEnchantments().size(),
+									result.getEnchantments().size());
+							}
+						} else if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+							if (result.isEmpty()) {
+								TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting failed: no matching recipe found for combined matrix");
+							} else {
+								TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting failed: isValidMatchForInput returned false for input={}, result={}",
+									input.getItem(), result.getItem());
+							}
+							// Recrafting failed, show uncrafting cost instead
+							this.uncraftingMatrix.uncraftingCost = this.calculateUncraftingCost();
+						}
+					} else if (this.assemblyMatrix.isEmpty()) {
+						// Only uncraftingMatrix has items (pure uncrafting mode)
+						this.uncraftingMatrix.uncraftingCost = this.calculateUncraftingCost();
+						this.uncraftingMatrix.recraftingCost = 0;
+					}
+				}
+			} else {
+				// Client-side: calculate costs locally for instant UI feedback
+				ItemStack input = this.tinkerInput.getItem(0);
+				ItemStack result = this.tinkerResult.getItem(0);
+
+				if (!input.isEmpty() && !this.assemblyMatrix.isEmpty()) {
+					// Attempt local calculation
+					if (!result.isEmpty()) {
+						this.uncraftingMatrix.recraftingCost = this.calculateRecraftingCost();
+						this.uncraftingMatrix.uncraftingCost = 0;
+					}
+				} else if (input.isEmpty()) {
+					// Pure crafting mode
+					this.uncraftingMatrix.uncraftingCost = 0;
+					this.uncraftingMatrix.recraftingCost = 0;
+				}
+			}
+		}
+		} // Close if(false) block for old code
+
 		if (!this.level.isClientSide() && this.player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+			if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+				TwilightForestMod.LOGGER.info("[UncraftingMenu] Syncing costs to client: uncraftingCost={}, recraftingCost={}",
+					this.uncraftingMatrix.uncraftingCost, this.uncraftingMatrix.recraftingCost);
+			}
 			twilightforest.network.SyncUncraftingCostsPacket.send(serverPlayer, this.uncraftingMatrix.uncraftingCost, this.uncraftingMatrix.recraftingCost);
 		}
+	}
+
+	private static int countNonEmpty(Container container) {
+		int count = 0;
+		for (int i = 0; i < container.getContainerSize(); i++) {
+			if (!container.getItem(i).isEmpty()) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	public static void markStack(ItemStack stack) {
@@ -300,20 +502,41 @@ public class UncraftingMenu extends RecipeBookMenu {
 		if (!inputStack.isEmpty()) {
 			if (world instanceof ServerLevel serverLevel) {
 				RecipeManager recipeManager = serverLevel.recipeAccess();
+
+				// First pass: find UncraftingRecipe matches (using isItemStackAnIngredient)
 				for (RecipeHolder<?> recipe : recipeManager.getRecipes()) {
-					if (isRecipeSupported(recipe.value()) &&
-						!recipe.value().placementInfo().ingredients().isEmpty() &&
-						matches(inputStack, recipe.value() instanceof CraftingRecipe craftingRecipe ? craftingRecipe.assemble(CraftingInput.EMPTY) : ItemStack.EMPTY) &&
-						TFConfig.reverseRecipeBlacklist == TFConfig.disableUncraftingRecipes.contains(recipe.id().toString())) {
-						if (TFConfig.flipUncraftingModIdList == TFConfig.blacklistedUncraftingModIds.contains(recipe.id().identifier().getNamespace())) {
-							recipes.add(recipe.value());
+					if (recipe.value() instanceof UncraftingRecipe uncraftingRecipe
+							&& recipe.value().getType() == TFRecipes.UNCRAFTING_RECIPE
+							&& uncraftingRecipe.isItemStackAnIngredient(inputStack)) {
+						if (TFConfig.reverseRecipeBlacklist == TFConfig.disableUncraftingRecipes.contains(recipe.id().toString())) {
+							if (TFConfig.flipUncraftingModIdList == TFConfig.blacklistedUncraftingModIds.contains(recipe.id().identifier().getNamespace())) {
+								recipes.add(uncraftingRecipe);
+							}
 						}
 					}
 				}
+
+				// Second pass: find regular crafting recipe matches
 				for (RecipeHolder<?> recipe : recipeManager.getRecipes()) {
-					if (recipe.value() instanceof UncraftingRecipe uncraftingRecipe && recipe.value().getType() == TFRecipes.UNCRAFTING_RECIPE) {
-						if (uncraftingRecipe.isItemStackAnIngredient(inputStack)) {
-							recipes.add(uncraftingRecipe);
+					if (!(recipe.value() instanceof CraftingRecipe craftingRecipe)) continue;
+					if (!isRecipeSupported(craftingRecipe)) continue;
+					if (craftingRecipe instanceof UncraftingRecipe) continue; // Already handled above
+
+					// Check dimensions
+					if (craftingRecipe instanceof ShapedRecipe shapedRecipe) {
+						if (shapedRecipe.getWidth() > 3 || shapedRecipe.getHeight() > 3) continue;
+					}
+
+					// Check ingredients are not empty
+					if (craftingRecipe.placementInfo().ingredients().isEmpty()) continue;
+
+					// Get the output item and match against input
+					ItemStack output = craftingRecipe.assemble(CraftingInput.EMPTY);
+					if (!matches(inputStack, output)) continue;
+
+					if (TFConfig.reverseRecipeBlacklist == TFConfig.disableUncraftingRecipes.contains(recipe.id().toString())) {
+						if (TFConfig.flipUncraftingModIdList == TFConfig.blacklistedUncraftingModIds.contains(recipe.id().identifier().getNamespace())) {
+							recipes.add(craftingRecipe);
 						}
 					}
 				}
@@ -335,10 +558,16 @@ public class UncraftingMenu extends RecipeBookMenu {
 	private static RecipeHolder<CraftingRecipe>[] getRecipesFor(CraftingInput input, Level level) {
 		if (level instanceof ServerLevel serverLevel) {
 			RecipeManager recipeManager = serverLevel.recipeAccess();
-			return recipeManager.getRecipes().stream()
-				.filter(holder -> holder.value() instanceof CraftingRecipe craftingRecipe && craftingRecipe.matches(input, level))
-				.map(holder -> (RecipeHolder<CraftingRecipe>) (Object) holder)
-				.toArray(RecipeHolder[]::new);
+			List<RecipeHolder<CraftingRecipe>> result = new ArrayList<>();
+			for (RecipeHolder<?> holder : recipeManager.getRecipes()) {
+				if (holder.value() instanceof CraftingRecipe craftingRecipe && craftingRecipe.matches(input, level)) {
+					result.add((RecipeHolder<CraftingRecipe>) holder);
+				}
+			}
+			if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+				TwilightForestMod.LOGGER.info("[UncraftingMenu] getRecipesFor input={}, found={} recipes", input, result.size());
+			}
+			return result.toArray(new RecipeHolder[0]);
 		}
 		return new RecipeHolder[0];
 	}
@@ -366,6 +595,18 @@ public class UncraftingMenu extends RecipeBookMenu {
 	 * Checks if the result is a valid match for the input. Currently, only accepts armor or tools that are the same type as the input
 	 */
 	private static boolean isValidMatchForInput(ItemStack inputStack, ItemStack resultStack) {
+		// Check by equipment slot using EQUIPPABLE component
+		Equippable inputEquip = inputStack.get(DataComponents.EQUIPPABLE);
+		Equippable resultEquip = resultStack.get(DataComponents.EQUIPPABLE);
+		if (inputEquip != null && resultEquip != null) {
+			// Both are in the same equipment slot - allow transfer
+			// This covers all tools (MAINHAND), all armor (HEAD/CHEST/LEGS/FEET), etc.
+			if (inputEquip.slot() == resultEquip.slot()) {
+				return true;
+			}
+		}
+
+		// Fallback: check specific item tags for items that may not have EQUIPPABLE component
 		if (inputStack.is(ItemTags.PICKAXES) && resultStack.is(ItemTags.PICKAXES)) {
 			return true;
 		}
@@ -381,23 +622,37 @@ public class UncraftingMenu extends RecipeBookMenu {
 		if (inputStack.is(ItemTags.SWORDS) && resultStack.is(ItemTags.SWORDS)) {
 			return true;
 		}
-		// Bows - use vanilla Items check (no generic BOW tag exists in Fabric/MC)
+		if (inputStack.is(ItemTags.SPEARS) && resultStack.is(ItemTags.SPEARS)) {
+			return true;
+		}
+		// Armor tags
+		if (inputStack.is(ItemTags.FOOT_ARMOR) && resultStack.is(ItemTags.FOOT_ARMOR)) {
+			return true;
+		}
+		if (inputStack.is(ItemTags.LEG_ARMOR) && resultStack.is(ItemTags.LEG_ARMOR)) {
+			return true;
+		}
+		if (inputStack.is(ItemTags.CHEST_ARMOR) && resultStack.is(ItemTags.CHEST_ARMOR)) {
+			return true;
+		}
+		if (inputStack.is(ItemTags.HEAD_ARMOR) && resultStack.is(ItemTags.HEAD_ARMOR)) {
+			return true;
+		}
+		// Bows
 		if (inputStack.is(Items.BOW) && resultStack.is(Items.BOW)) {
 			return true;
 		}
-		// Crossbows - use vanilla Items check
+		// Crossbows
 		if (inputStack.is(Items.CROSSBOW) && resultStack.is(Items.CROSSBOW)) {
 			return true;
 		}
-		// Fishing rods - use vanilla Items check
+		// Fishing rods
 		if (inputStack.is(Items.FISHING_ROD) && resultStack.is(Items.FISHING_ROD)) {
 			return true;
 		}
-
-		Equippable inputEquip = inputStack.get(DataComponents.EQUIPPABLE);
-		Equippable resultEquip = resultStack.get(DataComponents.EQUIPPABLE);
-		if (inputEquip != null && resultEquip != null) {
-			return inputEquip.slot() == resultEquip.slot();
+		// Mace
+		if (inputStack.is(Items.MACE) && resultStack.is(Items.MACE)) {
+			return true;
 		}
 
 		return false;
@@ -424,10 +679,17 @@ public class UncraftingMenu extends RecipeBookMenu {
 	 */
 	private int calculateUncraftingCost() {
 		// we don't want to display anything if there is anything in the assembly grid
+		int cost;
 		if ((!TFConfig.disableUncraftingOnly || this.storedGhostRecipe instanceof UncraftingRecipe) && this.assemblyMatrix.isEmpty()) {
-			return this.storedGhostRecipe instanceof UncraftingRecipe recipe ? recipe.getCost() : (int) Math.round(countDamageableParts(this.uncraftingMatrix) * TFConfig.uncraftingXpCostMultiplier);
+			cost = this.storedGhostRecipe instanceof UncraftingRecipe recipe ? recipe.getCost() : (int) Math.round(countDamageableParts(this.uncraftingMatrix) * TFConfig.uncraftingXpCostMultiplier);
+		} else {
+			cost = 0;
 		}
-		return 0;
+		if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+			TwilightForestMod.LOGGER.info("[UncraftingMenu] calculateUncraftingCost: storedGhostRecipe={}, assemblyMatrix.isEmpty={}, cost={}",
+				this.storedGhostRecipe, this.assemblyMatrix.isEmpty(), cost);
+		}
+		return cost;
 	}
 
 	/**
@@ -438,11 +700,11 @@ public class UncraftingMenu extends RecipeBookMenu {
 		ItemStack output = this.tinkerResult.getItem(0);
 
 		if (input.isEmpty() || output.isEmpty()) {
+			if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+				TwilightForestMod.LOGGER.info("[UncraftingMenu] calculateRecraftingCost: input or output empty, returning 0");
+			}
 			return 0;
 		}
-
-		// okay, if we're here the input item must be enchanted, and we are repairing or recrafting it
-		if (!output.isEnchantable()) return 0; // Assuming the above comment is correct, we check this here and return 0 if true
 
 		int cost = 0;
 
@@ -462,7 +724,15 @@ public class UncraftingMenu extends RecipeBookMenu {
 		// minimum cost of 1 if we're even calling this part
 		cost = Math.max(1, cost);
 
-		return (int) Math.round(cost * TFConfig.repairingXpCostMultiplier);
+		int finalCost = (int) Math.round(cost * TFConfig.repairingXpCostMultiplier);
+
+		if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+			TwilightForestMod.LOGGER.info("[UncraftingMenu] calculateRecraftingCost: enchantCost={}, damagedCost={}, baseCost={}, multiplier={}, finalCost={}, inputEnchants={}, outputEnchants={}",
+				enchantCost, damagedCost, cost, TFConfig.repairingXpCostMultiplier, finalCost,
+				input.getEnchantments().size(), output.getEnchantments().size());
+		}
+
+		return finalCost;
 	}
 
 	private static int countTotalEnchantmentCost(ItemStack stack) {
@@ -531,7 +801,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 		super.clicked(slotNum, mouseButton, containerInput, player);
 
 		// just trigger this event whenever the input slot is clicked for any reason
-		if (slotNum > 0 && this.getSlotContainer(slotNum) == this.tinkerInput) {
+		if (slotNum == 0 && this.getSlotContainer(slotNum) == this.tinkerInput) {
 			this.slotsChanged(this.tinkerInput);
 		}
 	}

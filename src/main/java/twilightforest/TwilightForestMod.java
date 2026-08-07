@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twilightforest.beanification.BeanContext;
 import twilightforest.beanification.Configurable;
+import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.config.ConfigSetup;
 import twilightforest.command.TFCommand;
 import twilightforest.entity.MagicPaintingVariant;
@@ -28,6 +29,7 @@ import twilightforest.init.custom.*;
 import twilightforest.loot.TFLootTables;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
 import twilightforest.network.TFNetwork;
+import twilightforest.util.HolidayEvent;
 import twilightforest.util.Restriction;
 import twilightforest.util.TFRemapper;
 import twilightforest.util.WorldUtil;
@@ -70,6 +72,9 @@ public final class TwilightForestMod implements ModInitializer {
 		TFBlocks.init();
 		TFItems.init();
 		TFEntities.init();
+
+		// Ensure jar lid registrations are populated (100% deterministic, does not depend on bean wiring)
+		JarBlockEntity.ensureLidsRegistered(BeanContext.inject(HolidayEvent.class));
 
 		// Vanilla-compatible init registrations (flower pots, flammability, jar lids, etc.)
 		BeanContext.inject(RegistrationEvents.class).init();

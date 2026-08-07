@@ -3,6 +3,7 @@ package twilightforest.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
@@ -79,11 +80,29 @@ import twilightforest.network.UpdateTFMultipartPacket;
 import twilightforest.util.TFEntityExtensions;
 import fuzs.forgeconfigapiport.fabric.api.v5.client.ConfigScreenFactoryRegistry;
 
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import twilightforest.client.overlay.ShieldOverlay;
+import twilightforest.client.renderer.entity.layers.FirstPersonShieldRenderer;
+import twilightforest.client.renderer.entity.layers.IceLayer;
+import twilightforest.client.renderer.entity.layers.ShieldLayer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Set;
 
 public class TwilightForestClient implements ClientModInitializer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger("twilightforest");
 	@Override
 	public void onInitializeClient() {
+		// Register model loading plugin for jar lid models
+		ModelLoadingPlugin.register(new TFModelLoadingPlugin());
+
 		// Inform Forge Config API Port that our mod should display its config button
 		// in Mod Menu. ConfigScreenFactoryRegistry is queried by FCAP's ModMenuApiImpl
 		// via getProvidedConfigScreenFactories(). For each mod id, FCAP will provide
@@ -109,6 +128,8 @@ public class TwilightForestClient implements ClientModInitializer {
 		registerParticleFactories();
 		registerBlockColors();
 		registerItemColors();
+		registerRenderLayers();
+		registerHudElements();
 
 		// Register armor renderers
 		TFArmorRenderer.bootstrap();
@@ -142,6 +163,9 @@ public class TwilightForestClient implements ClientModInitializer {
 			clientGameEvents.clientTick();
 		});
 		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(clientGameEvents::renderAurora);
+
+		// Register first-person shield renderer
+		LevelRenderEvents.COLLECT_SUBMITS.register(FirstPersonShieldRenderer::render);
 	}
 
 	private void registerAtlases() {
@@ -571,5 +595,19 @@ public class TwilightForestClient implements ClientModInitializer {
 
 	private void registerItemColors() {
 		ColorHandler.registerItemColors();
+	}
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private void registerRenderLayers() {
+		LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+			if (entityRenderer instanceof LivingEntityRenderer living) {
+				registrationHelper.register(new ShieldLayer(living));
+				registrationHelper.register(new IceLayer(living));
+			}
+		});
+	}
+
+	private void registerHudElements() {
+		HudElementRegistry.attachElementAfter(VanillaHudElements.ARMOR_BAR, TwilightForestMod.prefix("fortification_shield"), new ShieldOverlay());
 	}
 }

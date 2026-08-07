@@ -8,10 +8,10 @@ import net.minecraft.util.ARGB;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.model.TFModelLayers;
 import twilightforest.client.model.entity.MistWolfModel;
-import twilightforest.client.state.entity.MistWolfRenderState;
+import twilightforest.client.state.entity.HostileWolfRenderState;
 import twilightforest.entity.monster.MistWolf;
 
-public class MistWolfRenderer extends MobRenderer<MistWolf, MistWolfRenderState, MistWolfModel> {
+public class MistWolfRenderer extends MobRenderer<MistWolf, HostileWolfRenderState, MistWolfModel> {
 
 	private static final Identifier TEXTURE = TwilightForestMod.getModelTexture("mistwolf.png");
 
@@ -20,31 +20,33 @@ public class MistWolfRenderer extends MobRenderer<MistWolf, MistWolfRenderState,
 	}
 
 	@Override
-	protected void scale(MistWolfRenderState state, PoseStack stack) {
+	protected void scale(HostileWolfRenderState state, PoseStack stack) {
 		float wolfScale = 1.9F;
 		stack.scale(wolfScale, wolfScale, wolfScale);
 	}
 
 	@Override
-	protected int getModelTint(MistWolfRenderState state) {
+	protected int getModelTint(HostileWolfRenderState state) {
 		float misty = Math.min(1.0F, state.brightness * 3.0F + 0.25F);
 		float smoky = Math.min(1.0F, state.brightness * 2.0F + 0.6F);
 		return ARGB.colorFromFloat(smoky, misty, misty, misty);
 	}
 
 	@Override
-	public MistWolfRenderState createRenderState() {
-		return new MistWolfRenderState();
+	public HostileWolfRenderState createRenderState() {
+		return new HostileWolfRenderState();
 	}
 
 	@Override
-	public void extractRenderState(MistWolf entity, MistWolfRenderState state, float partialTick) {
+	public void extractRenderState(MistWolf entity, HostileWolfRenderState state, float partialTick) {
 		super.extractRenderState(entity, state, partialTick);
 		state.brightness = entity.level().getMaxLocalRawBrightness(entity.blockPosition());
+		state.tailAngle = entity.getTailAngle();
+		state.healthPercent = entity.getHealth() / entity.getMaxHealth();
 	}
 
 	@Override
-	public Identifier getTextureLocation(MistWolfRenderState state) {
+	public Identifier getTextureLocation(HostileWolfRenderState state) {
 		return TEXTURE;
 	}
 }

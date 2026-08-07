@@ -285,9 +285,18 @@ public class Naga extends BaseTFBoss {
 			BlockPos max = new BlockPos(maxx, maxy, maxz);
 
 			if (this.level().hasChunksAt(min, max)) {
+				// Naga must NOT destroy the Naga Courtyard itself (its home area): the surrounding
+				// maze-stone walls and brick terraces are part of the structure. Official TF behavior
+				// (1.19.2 fabric port: only Material.LEAVES is destroyed; 1.20.1 fabric port:
+				// LivingEntity can never pass canDestroyBlock) is that the Naga only ever breaks
+				// hedge leaves while inside its home. Using isCharging() here (the 1.21.1
+				// shouldDestroyAllBlocks shortcut) made the Naga demolish courtyard walls/bricks
+				// during its normal circle-and-charge combat loop. Only allow breaking non-leaf
+				// blocks once the Naga has actually been lured OUTSIDE its home area.
+				boolean outsideHomeArea = !this.isMobWithinHomeArea(this);
 				for (BlockPos pos : BlockPos.betweenClosed(min, max)) {
 					BlockState state = this.level().getBlockState(pos);
-					if (state.is(BlockTags.LEAVES) || (this.shouldDestroyAllBlocks() && EntityUtil.canDestroyBlock(this.level(), pos, this))) {
+					if (state.is(BlockTags.LEAVES) || (outsideHomeArea && EntityUtil.canDestroyBlock(this.level(), pos, this))) {
 						this.level().destroyBlock(pos, !state.is(BlockTags.LEAVES));
 					}
 				}

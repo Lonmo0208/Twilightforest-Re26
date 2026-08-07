@@ -85,6 +85,7 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import twilightforest.components.entity.FortificationShieldAttachment;
+import twilightforest.init.TFDataAttachments;
 
 @twilightforest.beanification.Component
 public class EntityEvents {
@@ -689,10 +690,12 @@ public class EntityEvents {
 	 * Also prevents passengers of hostile mounts from crouching (prevents dismount).
 	 */
 	public static void tickShields(LivingEntity entity) {
-		if (!entity.level().isClientSide() && ((TFEntityExtensions) entity).twilightforest$hasData(TFDataAttachments.FORTIFICATION_SHIELDS)) {
-			((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.FORTIFICATION_SHIELDS).tick(entity);
+		if (!entity.level().isClientSide()) {
+			FortificationShieldAttachment attachment = entity.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
+			if (attachment != null) {
+				attachment.tick(entity);
+			}
 		}
-		// preventHostilMountCrouching: force passengers of hostile mounts to not be crouching
 		if (entity instanceof twilightforest.entity.IHostileMount) {
 			entity.getPassengers().forEach(e -> e.setShiftKeyDown(false));
 		}

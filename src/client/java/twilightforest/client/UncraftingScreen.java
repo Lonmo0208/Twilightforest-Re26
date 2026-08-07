@@ -166,16 +166,14 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 
 	@Override
 	public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
-		int frameX = this.leftPos;
-		int frameY = (this.height - this.imageHeight) / 2;
 		super.extractContents(graphics, mouseX, mouseY, partialTicks);
 
 		UncraftingMenu tfContainer = this.menu;
 
-		// show uncrafting ingredients as background
 		graphics.pose().pushMatrix();
 		graphics.pose().translate(this.leftPos, this.topPos);
 
+		// show uncrafting ingredients as background
 		for (int i = 0; i < 9; i++) {
 			Slot uncrafting = tfContainer.getSlot(2 + i);
 			Slot assembly = tfContainer.getSlot(11 + i);
@@ -184,31 +182,48 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 				this.drawSlotAsBackground(graphics, uncrafting, assembly);
 			}
 		}
+
+		// Read cost values every frame (screen repaints every frame)
+		int uncraftCost = tfContainer.getUncraftingCost();
+		int recraftCost = tfContainer.getRecraftingCost();
+
+		// show uncrafting cost (display next to the left arrow buttons)
+		if (uncraftCost > 0) {
+			int color;
+			String cost = "" + uncraftCost;
+			if (this.minecraft.player.experienceLevel < uncraftCost && !this.minecraft.player.getAbilities().instabuild) {
+				color = 0xFFFF0000;
+			} else {
+				color = 0xFF00FF00;
+			}
+			// Position: centered between left arrows (x=40+7=47), vertically centered (y=38)
+			graphics.text(this.font, cost, 47 - this.font.width(cost) / 2, 38, color);
+		}
+
+		// show recrafting cost (display next to the right arrow buttons)
+		if (recraftCost > 0) {
+			int color;
+			String cost = "" + recraftCost;
+			if (this.minecraft.player.experienceLevel < recraftCost && !this.minecraft.player.getAbilities().instabuild) {
+				color = 0xFFFF0000;
+			} else {
+				color = 0xFF00FF00;
+			}
+			// Position: centered between right arrows (x=121+7=128), vertically centered (y=38)
+			graphics.text(this.font, cost, 128 - this.font.width(cost) / 2, 38, color);
+		}
+
 		graphics.pose().popMatrix();
+	}
 
-		int costVal = tfContainer.getUncraftingCost();
-		if (costVal > 0) {
-			int color;
-			String cost = "" + costVal;
-			if (this.minecraft.player.experienceLevel < costVal && !this.minecraft.player.getAbilities().instabuild) {
-				color = 0xA00000;
-			} else {
-				color = 0x80FF20;
-			}
-			graphics.text(this.font, cost, frameX + 48 - this.font.width(cost), frameY + 38, color);
-		}
-
-		costVal = tfContainer.getRecraftingCost();
-		if (costVal > 0) {
-			int color;
-			String cost = "" + costVal;
-			if (this.minecraft.player.experienceLevel < costVal && !this.minecraft.player.getAbilities().instabuild) {
-				color = 0xA00000;
-			} else {
-				color = 0x80FF20;
-			}
-			graphics.text(this.font, cost, frameX + 130 - this.font.width(cost), frameY + 38, color);
-		}
+	/**
+	 * Called from the network handler when SyncUncraftingCostsPacket is received.
+	 * The screen repaints every frame via extractRenderState/extractContents,
+	 * so we just need to ensure any cached state is invalidated.
+	 */
+	public void refreshCostDisplay() {
+		// Screen renders every frame via extractContents, which reads getUncraftingCost()/getRecraftingCost().
+		// No explicit repaint trigger needed - the values are read fresh each frame.
 	}
 
 	@Override

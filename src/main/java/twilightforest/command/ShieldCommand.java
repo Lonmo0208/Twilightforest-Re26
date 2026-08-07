@@ -10,8 +10,8 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import twilightforest.beanification.Component;
+import twilightforest.components.entity.FortificationShieldAttachment;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.util.TFEntityExtensions;
 
 @Component
 public class ShieldCommand {
@@ -32,16 +32,25 @@ public class ShieldCommand {
 							.executes(ctx -> add(EntityArgument.getEntity(ctx, "target"), IntegerArgumentType.getInteger(ctx, "amount"), BoolArgumentType.getBool(ctx, "temp")))))));
 	}
 
+	private FortificationShieldAttachment getOrCreateAttachment(LivingEntity living) {
+		FortificationShieldAttachment attachment = living.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
+		if (attachment == null) {
+			attachment = new FortificationShieldAttachment();
+			living.setAttached(TFDataAttachments.FORTIFICATION_SHIELDS, attachment);
+		}
+		return attachment;
+	}
+
 	private int add(Entity e, int num, boolean temporary) {
 		if (e instanceof LivingEntity living) {
-			((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.FORTIFICATION_SHIELDS).addShields(living, num, temporary);
+			getOrCreateAttachment(living).addShields(living, num, temporary);
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private int set(Entity e, int num, boolean temporary) {
 		if (e instanceof LivingEntity living) {
-			((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.FORTIFICATION_SHIELDS).setShields(living, num, temporary);
+			getOrCreateAttachment(living).setShields(living, num, temporary);
 		}
 		return Command.SINGLE_SUCCESS;
 	}

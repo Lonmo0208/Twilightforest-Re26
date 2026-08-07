@@ -35,28 +35,47 @@ public class UncraftingResultSlot extends ResultSlot {
 
 	@Override
 	public void onTake(Player player, ItemStack stack) {
-		// let's see, if the assembly matrix can produce this item, then it's a normal recipe, if not, it's combined.  Will that work?
-		boolean combined = true;
-
 		//clear the temp map, just in case
 		this.tempRemainderMap.clear();
 
-		if (player.level() instanceof ServerLevel serverLevel) {
-			RecipeManager recipeManager = serverLevel.recipeAccess();
-			for (RecipeHolder<?> recipe : recipeManager.getRecipes()) {
-				if (recipe.value() instanceof CraftingRecipe craftingRecipe && craftingRecipe.matches(this.assemblyMatrix.asCraftInput(), player.level())) {
-					if (ItemStack.isSameItemSameComponents(craftingRecipe.assemble(this.assemblyMatrix.asCraftInput()), stack)) {
-						combined = false;
-						break;
+		boolean combined;
+
+		// If the input slot has an item, this is always a TF uncrafting-table specific operation
+		// (enchantment transfer / recrafting), regardless of whether assembly matches a recipe.
+		// In this case combined=true so XP is charged and input item is consumed.
+		if (!this.inputSlot.getItem(0).isEmpty()) {
+			combined = true;
+		} else {
+			// Input is empty - assembly matrix used as a standalone crafting grid.
+			// Check if assembly alone can produce the item (regular crafting, no XP cost).
+			combined = true;
+			if (player.level() instanceof ServerLevel serverLevel) {
+				RecipeManager recipeManager = serverLevel.recipeAccess();
+				for (RecipeHolder<?> recipe : recipeManager.getRecipes()) {
+					if (recipe.value() instanceof CraftingRecipe craftingRecipe && craftingRecipe.matches(this.assemblyMatrix.asCraftInput(), player.level())) {
+						if (ItemStack.isSameItemSameComponents(craftingRecipe.assemble(this.assemblyMatrix.asCraftInput()), stack)) {
+							combined = false;
+							break;
+						}
 					}
 				}
 			}
+		}
+		
+		if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+			twilightforest.TwilightForestMod.LOGGER.info("[UncraftingResultSlot] onTake: combined={}, recraftingCost={}, inputSlot={}", 
+				combined, this.uncraftingMatrix.recraftingCost, !this.inputSlot.getItem(0).isEmpty());
 		}
 
 		if (combined) {
 			// charge the player before the stacks empty
 			if (this.uncraftingMatrix.recraftingCost > 0) {
+				if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+					twilightforest.TwilightForestMod.LOGGER.info("[UncraftingResultSlot] Charging {} XP for recrafting", this.uncraftingMatrix.recraftingCost);
+				}
 				this.player.giveExperienceLevels(-this.uncraftingMatrix.recraftingCost);
+			} else if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+				twilightforest.TwilightForestMod.LOGGER.info("[UncraftingResultSlot] recraftingCost is 0, no XP charged");
 			}
 
 			// if we are using a combined recipe, wipe the uncrafting matrix and decrement the input appropriately

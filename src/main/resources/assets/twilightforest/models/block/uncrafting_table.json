@@ -1,8 +1,31 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down": { "cullface": "down", "texture": "#bottom" },
+        "east": { "cullface": "east", "texture": "#side" },
+        "north": { "cullface": "north", "texture": "#side" },
+        "south": { "cullface": "south", "texture": "#side" },
+        "up": { "cullface": "up", "texture": "#top" },
+        "west": { "cullface": "west", "texture": "#side" }
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": { "cullface": "up", "texture": "#glow_top", "emissive": true }
+      }
+    }
+  ],
   "textures": {
+    "particle": "twilightforest:block/uncrafting_top",
     "bottom": "minecraft:block/jungle_planks",
     "side": "twilightforest:block/uncrafting_side",
-    "top": "twilightforest:block/uncrafting_top"
+    "top": "twilightforest:block/uncrafting_top",
+    "glow_top": "twilightforest:block/uncrafting_glow"
   }
 }

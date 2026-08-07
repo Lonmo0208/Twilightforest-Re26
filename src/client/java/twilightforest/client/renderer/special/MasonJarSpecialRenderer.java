@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -41,14 +42,13 @@ public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolv
 			Item testLid = jarLid == null ? this.defaultLid().orElse(null) : jarLid.lid();
 			Item lid = testLid == null || !JarRenderer.LID_KEYS.containsKey(testLid) ? null : testLid;
 			if (lid != null) {
-				// TODO: Port to Fabric - StandaloneModelKey is NeoForge-specific
-				// StandaloneModelKey<BlockModel> key = JarRenderer.LID_KEYS.get(lid);
-				// BlockModel lidModel = Minecraft.getInstance().getModelManager().getStandaloneModel(key);
-				// if (lidModel != null) {
-				// 	BlockModelRenderState lidState = new BlockModelRenderState();
-				// 	lidModel.update(lidState, TFBlocks.MASON_JAR.get().defaultBlockState(), BlockDisplayContext.create(), 42L);
-				// 	lidState.submit(stack, collector, light, overlay, outlineColor);
-				// }
+				JarRenderer.populateLidKeys();
+				BlockModel lidModel = JarRenderer.getLidModel(lid);
+				if (lidModel != null) {
+					BlockModelRenderState lidState = new BlockModelRenderState();
+					lidModel.update(lidState, TFBlocks.MASON_JAR.defaultBlockState(), BlockDisplayContext.create(), 42L);
+					lidState.submit(stack, collector, light, overlay, outlineColor);
+				}
 			}
 
 			ItemContainerContents contents = map.get(DataComponents.CONTAINER);

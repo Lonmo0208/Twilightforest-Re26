@@ -1,19 +1,24 @@
-﻿{
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        { "condition": "minecraft:match_tool", "predicate": { "items": "minecraft:shears" } }
-      ],
-      "entries": [
+{
+    "type": "minecraft:block",
+    "pools": [
         {
-          "type": "minecraft:item",
-          "name": "twilightforest:trollvidr"
+            "bonus_rolls": 0.0,
+            "conditions": [
+                {
+                    "condition": "minecraft:match_tool",
+                    "predicate": {
+                        "items": "minecraft:shears"
+                    }
+                }
+            ],
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "twilightforest:trollvidr"
+                }
+            ],
+            "rolls": 1.0
         }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:blocks/trollvidr"
+    ],
+    "random_sequence": "twilightforest:blocks/trollvidr"
 }

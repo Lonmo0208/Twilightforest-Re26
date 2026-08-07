@@ -45,6 +45,7 @@ public class TFConfig {
 	public static boolean spawnCharmAnimationAsTotem = false;
 	public static boolean manualTravellersWingsGradualGlideDefault = true;
 	public static boolean firstPersonGloveOverlay = true;
+	public static boolean firstPersonShieldScepterRenderer = false;
 
 	public static int itemDisplayXOffs = 4;
 	public static int itemDisplayYOffs = 4;
@@ -115,7 +116,6 @@ public class TFConfig {
 				commonConfig.PORTAL.portalAdvancementLock.set("");
 			} else {
 				portalLockingAdvancement = Identifier.tryParse(commonConfig.PORTAL.portalAdvancementLock.get());
-				TwilightForestMod.LOGGER.debug("Portal locking advancement reloaded. Current advancement to check for is: {}", portalLockingAdvancement);
 			}
 		}
 		//always return the RL, even if its null. We can use this to run logic less often
@@ -207,6 +207,7 @@ public class TFConfig {
 		spawnCharmAnimationAsTotem = config.spawnCharmAnimationAsTotem.get();
 		manualTravellersWingsGradualGlideDefault = config.manualTravellersWingsGradualGlide.get();
 		firstPersonGloveOverlay = config.firstPersonGloveOverlay.get();
+		firstPersonShieldScepterRenderer = config.firstPersonShieldScepterRenderer.get();
 
 		itemDisplayXOffs = config.ITEM_DISPLAY.screenOffsetX.get();
 		itemDisplayYOffs = config.ITEM_DISPLAY.screenOffsetY.get();

@@ -1,4 +1,4 @@
 {
-  "type": "minecraft:entity",
-  "random_sequence": "twilightforest:entities/mosquito_swarm"
+    "type": "minecraft:entity",
+    "random_sequence": "twilightforest:entities/mosquito_swarm"
 }

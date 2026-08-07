@@ -1,4 +1,4 @@
 {
-  "type": "minecraft:entity",
-  "random_sequence": "twilightforest:entities/loyal_zombie"
+    "type": "minecraft:entity",
+    "random_sequence": "twilightforest:entities/loyal_zombie"
 }

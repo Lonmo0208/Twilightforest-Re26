@@ -1,33 +1,33 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
+    "type": "minecraft:block",
+    "pools": [
         {
-          "condition": "minecraft:match_tool",
-          "predicate": {
-            "predicates": {
-              "minecraft:enchantments": [
+            "bonus_rolls": 0.0,
+            "conditions": [
                 {
-                  "enchantments": "minecraft:silk_touch",
-                  "levels": {
-                    "min": 1
-                  }
+                    "condition": "minecraft:match_tool",
+                    "predicate": {
+                        "predicates": {
+                            "minecraft:enchantments": [
+                                {
+                                    "enchantments": "minecraft:silk_touch",
+                                    "levels": {
+                                        "min": 1
+                                    }
+                                }
+                            ]
+                        }
+                    }
                 }
-              ]
-            }
-          }
+            ],
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "twilightforest:canopy_window"
+                }
+            ],
+            "rolls": 1.0
         }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:canopy_window"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:blocks/canopy_window"
+    ],
+    "random_sequence": "twilightforest:blocks/canopy_window"
 }

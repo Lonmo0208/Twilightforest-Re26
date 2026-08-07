@@ -1035,6 +1035,16 @@ public class HydraHeadContainer {
 			|| this.currentState == State.BITING || this.nextState == State.BITE_BEGINNING;
 	}
 
+	public boolean isMortar() {
+		return this.currentState == State.MORTAR_BEGINNING || this.currentState == State.MORTAR_SHOOTING
+			|| this.currentState == State.MORTAR_ENDING || this.nextState == State.MORTAR_BEGINNING;
+	}
+
+	public boolean isFlame() {
+		return this.currentState == State.FLAME_BEGINNING || this.currentState == State.FLAMING
+			|| this.currentState == State.FLAME_ENDING || this.nextState == State.FLAME_BEGINNING;
+	}
+
 	/**
 	 * Add to our damage taken counter
 	 */

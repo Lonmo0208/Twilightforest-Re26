@@ -49,14 +49,10 @@ public class HydraMortar extends ThrowableProjectile {
 		// these were being set to extreme numbers when we got here, why?
 		head.setDeltaMovement(Vec3.ZERO);
 		this.setOwner(head);
-		// Official NeoForge fires mortars at velocity=0.5F (pitch compensated -20°) which
-		// in practice is only ~5..8 blocks of horizontal range on a ballistic arc, and
-		// since our MORTAR attack fires up to 32/40 blocks away, most shells fall well
-		// short and land on the ground directly under the hydra — which is exactly how
-		// the hydra kept blowing itself up. Doubling the launch velocity to 1.0F keeps
-		// the same ballistic shape and gravity curve but quadruples peak range, giving
-		// reliable reach out to ~25..30+ blocks and no more self-detonations at our feet.
-		this.shootFromRotation(head, head.getXRot(), head.getYRot(), -20.0F, 1.0F, 1F);
+
+
+
+		this.shootFromRotation(head, head.getXRot(), head.getYRot(), -20.0F, 0.84F, 1F);
 
 		//TwilightForestMod.LOGGER.debug("Launching mortar! Current head motion is {}, {}", head.getDeltaMovement().x(), head.getDeltaMovement().z());
 	}
@@ -179,7 +175,8 @@ public class HydraMortar extends ThrowableProjectile {
 
 	private void detonate() {
 		float explosionPower = megaBlast ? 4.0F : 0.1F;
-		boolean flag = this.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.MOB_GRIEFING);
+
+		boolean flag = this.megaBlast && this.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.MOB_GRIEFING);
 		this.level().explode(this, this.getX(), this.getY(), this.getZ(), explosionPower, flag, Level.ExplosionInteraction.MOB);
 
 		if (this.level() instanceof ServerLevel serverLevel) {

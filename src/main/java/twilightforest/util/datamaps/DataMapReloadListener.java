@@ -50,8 +50,6 @@ public class DataMapReloadListener implements IdentifiableResourceReloadListener
 	 * before world generation and during resource reloads.
 	 */
 	public static void loadFromResourceManager(ResourceManager manager) {
-		TwilightForestMod.LOGGER.info("DataMapReloadListener: Loading data maps from resource manager...");
-
 		// Clear all existing data maps before reloading
 		for (DataMapType<?, ?> dataMapType : TFDataMaps.ALL_DATA_MAPS) {
 			clearDataMap(dataMapType);
@@ -70,14 +68,9 @@ public class DataMapReloadListener implements IdentifiableResourceReloadListener
 			}
 		}
 
-		TwilightForestMod.LOGGER.info("DataMapReloadListener: Found {} data map entries. Keys: {}", entries.size(), entries.keySet());
-
 		for (DataMapType<?, ?> dataMapType : TFDataMaps.ALL_DATA_MAPS) {
 			loadDataMap(dataMapType, entries);
 		}
-
-		// Biome colors are now stored in a static Map<ResourceKey<Biome>, MagicMapBiomeColor>
-		// in TFDataMaps, populated at class initialization time. No need for runtime fallback registration.
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
@@ -89,9 +82,6 @@ public class DataMapReloadListener implements IdentifiableResourceReloadListener
 	private static <R, T> void loadDataMap(DataMapType<R, T> dataMapType, Map<Identifier, JsonElement> allEntries) {
 		// Build the expected path key: data_maps/<registry_path>/<data_map_name>
 		ResourceKey<Registry<R>> registryKey = dataMapType.registryKey();
-		// registryKey is a ResourceKey<Registry<R>> (e.g. Registries.BIOME).
-		// identifier() returns the registry's own identifier (e.g. minecraft:worldgen/biome).
-		// registry() returns the PARENT registry (e.g. minecraft:root), not what we want.
 		String registryPath = registryKey.identifier().getPath();
 		Identifier dataMapId = dataMapType.id();
 
@@ -99,15 +89,10 @@ public class DataMapReloadListener implements IdentifiableResourceReloadListener
 		String keyPath = registryPath + "/" + dataMapId.getPath();
 		Identifier fullKey = Identifier.fromNamespaceAndPath(dataMapId.getNamespace(), keyPath);
 
-		TwilightForestMod.LOGGER.info("DataMapReloadListener: Looking for key {} in {} total entries", fullKey, allEntries.size());
-
 		JsonElement json = allEntries.get(fullKey);
 		if (json == null) {
-			TwilightForestMod.LOGGER.warn("DataMapReloadListener: Key {} NOT FOUND in entries. Available keys: {}", fullKey, allEntries.keySet());
 			return;
 		}
-
-		TwilightForestMod.LOGGER.info("DataMapReloadListener: Found data for {}, loading values...", dataMapId);
 
 		if (!json.isJsonObject()) {
 			TwilightForestMod.LOGGER.error("DataMapReloadListener: Invalid JSON for {} - expected object", dataMapId);
@@ -121,7 +106,6 @@ public class DataMapReloadListener implements IdentifiableResourceReloadListener
 		}
 
 		JsonObject values = root.getAsJsonObject("values");
-		int[] count = {0};
 
 		for (Map.Entry<String, JsonElement> entry : values.entrySet()) {
 			String key = entry.getKey();
@@ -140,10 +124,7 @@ public class DataMapReloadListener implements IdentifiableResourceReloadListener
 				TwilightForestMod.LOGGER.warn("DataMapReloadListener: Failed to parse {} entry '{}': {}", dataMapId, key, error);
 			}).ifPresent(parsed -> {
 				((DataMapType) dataMapType).add(resourceKey, parsed);
-				count[0]++;
 			});
 		}
-
-		TwilightForestMod.LOGGER.info("DataMapReloadListener: Loaded {} entries for {}", count[0], dataMapId);
 	}
 }

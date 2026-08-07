@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.client.state.entity.PartEntityState;
 import twilightforest.entity.TFPart;
@@ -106,7 +107,14 @@ public abstract class TFPartRenderer<T extends TFPart<?>, S extends PartEntitySt
 		}
 
 		state.isInWater = entity.isInWater()/* || entity.isInFluidType((fluidType, height) -> entity.canSwimInFluidType(fluidType))*/;
+		// A TFPart (e.g. NagaSegment) forwards all damage to its parent (e.g. Naga) and is NOT a
+		// LivingEntity, so its own hurtTime stays 0 forever. Official TF (1.21.1) checks the PARENT's
+		// hurtTime/deathTime here so that hitting any body part flashes the red hurt overlay on the
+		// whole body (all segments + head) at once. Mirror that behavior.
 		state.hasRedOverlay = entity.hurtTime > 0 || entity.deathTime > 0;
+		if (entity.getParent() instanceof LivingEntity living) {
+			state.hasRedOverlay |= living.hurtTime > 0 || living.deathTime > 0;
+		}
 		state.deathTime = entity.deathTime > 0 ? (float) entity.deathTime + partialTick : 0.0F;
 		Minecraft minecraft = Minecraft.getInstance();
 		state.isInvisibleToPlayer = state.isInvisible && entity.isInvisibleTo(minecraft.player);

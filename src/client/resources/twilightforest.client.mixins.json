@@ -8,6 +8,7 @@
 		"MouseHandlerMixin",
 		"ClientLevelMixin",
 		"EntityRenderDispatcherMixin",
+		"LivingEntityRendererMixin",
 		"MapRendererMixin",
 		"MapRenderStateMixin",
 		"ModelBlockRendererMixin",

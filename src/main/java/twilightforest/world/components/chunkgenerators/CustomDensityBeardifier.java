@@ -8,7 +8,7 @@ import net.minecraft.world.level.levelgen.DensityFunctions;
 /**
  * A Beardifier wrapper that also applies custom density functions from CustomDensitySource structures.
  * This allows structures like Hollow Hill, Hydra Lair, and Aurora Palace to shape terrain
- * using their own density functions (弧形山, glacier, etc.) on top of the standard beardifier carving.
+ * using their own density functions on top of the standard beardifier carving.
  */
 public class CustomDensityBeardifier implements DensityFunctions.BeardifierOrMarker {
 	private final Beardifier delegate;

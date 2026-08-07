@@ -2,9 +2,9 @@ package twilightforest.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.WolfRenderState;
 import net.minecraft.resources.Identifier;
 import twilightforest.TwilightForestMod;
+import twilightforest.client.state.entity.HostileWolfRenderState;
 
 public class WinterWolfRenderer extends HostileWolfRenderer {
 
@@ -16,12 +16,12 @@ public class WinterWolfRenderer extends HostileWolfRenderer {
 	}
 
 	@Override
-	protected void scale(WolfRenderState state, PoseStack stack) {
+	protected void scale(HostileWolfRenderState state, PoseStack stack) {
 		stack.scale(1.9F, 1.9F, 1.9F);
 	}
 
 	@Override
-	public Identifier getTextureLocation(WolfRenderState state) {
+	public Identifier getTextureLocation(HostileWolfRenderState state) {
 		return TEXTURE;
 	}
 }

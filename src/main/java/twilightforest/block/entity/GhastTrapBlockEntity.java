@@ -179,7 +179,7 @@ public class GhastTrapBlockEntity extends BlockEntity {
 
 			}
 
-			// 陷阱激活期间，在陷阱附近生成砷铅铁恶灵守卫（确保打暮初恶魂时陷阱房间内有坤铅铁恶灵）
+
 			if (te.counter % 20 == 0) {
 				te.spawnCarminiteGhastling((ServerLevel) level, pos);
 			}
@@ -200,7 +200,7 @@ public class GhastTrapBlockEntity extends BlockEntity {
 			return;
 
 		for (int i = 0; i < 6; i++) {
-			// 在陷阱上方寻找开阔空间（恶灵 4x4 体型需要约 5x4x5 空间）
+
 			BlockPos spawnPos = pos.offset(this.rand.nextInt(9) - 4, 2 + this.rand.nextInt(4), this.rand.nextInt(9) - 4);
 			if (isValidGhastlingSpawn(level, spawnPos)) {
 				CarminiteGhastling ghastling = TFEntities.CARMINITE_GHASTLING.get().create(level, EntitySpawnReason.TRIGGERED);

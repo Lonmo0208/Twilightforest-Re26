@@ -11,13 +11,12 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.LivingEntity;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.state.entity.LichRenderState;
+import twilightforest.components.entity.FortificationShieldAttachment;
 import twilightforest.entity.boss.Lich;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.util.TFEntityExtensions;
 
 public class ShieldLayer<S extends LivingEntityRenderState, M extends EntityModel<S>> extends RenderLayer<S, M> {
 
@@ -25,8 +24,6 @@ public class ShieldLayer<S extends LivingEntityRenderState, M extends EntityMode
 	private static final Identifier SHIELD_FILL = TwilightForestMod.prefix("textures/item/lich_shield_fill.png");
 	private static final net.minecraft.client.renderer.rendertype.RenderType FRAME_RENDER_TYPE = RenderTypes.entityCutout(SHIELD_FRAME);
 	private static final net.minecraft.client.renderer.rendertype.RenderType FILL_RENDER_TYPE = RenderTypes.entityTranslucent(SHIELD_FILL);
-
-	public static ContextKey<Integer> SHIELD_COUNT_KEY = new ContextKey<>(TwilightForestMod.prefix("shield_count"));
 
 	public ShieldLayer(RenderLayerParent<S, M> renderer) {
 		super(renderer);
@@ -44,20 +41,22 @@ public class ShieldLayer<S extends LivingEntityRenderState, M extends EntityMode
 		if (state instanceof LichRenderState lichState) {
 			return lichState.shieldCount;
 		}
-		return 0;
+		return TFShieldState.getShieldCount(state);
 	}
 
 	public static int getShieldCount(LivingEntity entity) {
-		return entity instanceof Lich lich
-			? (lich.getTeleportInvisibility() > 0 ? 0 : lich.getShieldStrength())
-			: ((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.FORTIFICATION_SHIELDS).shieldsLeft();
+		if (entity instanceof Lich lich) {
+			return lich.getTeleportInvisibility() > 0 ? 0 : lich.getShieldStrength();
+		}
+		FortificationShieldAttachment attachment = entity.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
+		return attachment != null ? attachment.shieldsLeft() : 0;
 	}
 
 	private void renderShields(PoseStack stack, SubmitNodeCollector submitNodeCollector, S state, int count, int light) {
 		float age = state.ageInTicks;
-		float rotateAngleY = age / -5.0F;
-		float rotateAngleX = Mth.sin(age / 5.0F) / 4.0F;
-		float rotateAngleZ = Mth.cos(age / 5.0F) / 4.0F;
+		float rotateAngleY = age / -5.5F;
+		float rotateAngleX = Mth.sin(age / 5.5F) / 4.0F;
+		float rotateAngleZ = Mth.cos(age / 5.5F) / 4.0F;
 
 		for (int c = 0; c < count; c++) {
 			stack.pushPose();

@@ -8,16 +8,15 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -51,39 +50,11 @@ public class LifedrainScepterItem extends ScepterItem {
 		return InteractionResult.SUCCESS;
 	}
 
-	// The lifedrain scepter is "wall-piercing": it ignores blocks between the player's eye and the
-	// target entity entirely (see getPlayerLookTarget below: no level.clip() / block raycast is done,
-	// we only AABB-clip against entities). For this wall-pierce to actually trigger in play, the
-	// player has to start using the item even when their crosshair is on a block — because the
-	// typical "I'm targeting the mob behind this wall" scenario means the crosshair IS pointing at
-	// the wall, not at air. Without this override, Block#useWithoutItem / Block#useItemOn runs
-	// first and consumes the right-click, so Item#use (performScepterAction) is never called and
-	// the scepter never enters its onUseTick loop. Hook useOn here so right-clicking a block with
-	// the scepter also starts the drain sequence, matching official behavior.
-	@Override
-	public InteractionResult useOn(UseOnContext context) {
-		Player player = context.getPlayer();
-		if (player == null) return InteractionResult.PASS;
-		Level level = context.getLevel();
-		ItemStack stack = context.getItemInHand();
-		InteractionHand hand = context.getHand();
-
-		if (stack.nextDamageWillBreak() && !player.isCreative()) {
-			return InteractionResult.FAIL;
-		}
-
-		player.startUsingItem(hand);
-		// return SUCCESS from both sides so the block interaction (opening doors etc.) is
-		// suppressed — we're firing a scepter, not interacting with the wall.
-		return InteractionResult.SUCCESS;
-	}
-
 	/**
 	 * Animates the target falling apart into a rain of shatter particles
 	 */
 	public static void animateTargetShatter(ServerLevel level, LivingEntity target) {
 		ParticleOptions options = new ItemParticleOption(ParticleTypes.ITEM, Items.ROTTEN_FLESH);
-		// 1 in 100 chance of a big pop, you're welcome KD
 		boolean big = level.getRandom().nextInt(100) == 0;
 		double explosionPower = big ? 1.0D : 0.3D;
 
@@ -107,14 +78,6 @@ public class LifedrainScepterItem extends ScepterItem {
 
 	/**
 	 * What, if anything, is the player currently looking at?
-	 *
-	 * <p><b>IMPORTANT — Do NOT add a level.clip() / block raycast in here!</b></p>
-	 *
-	 * This scepter is intentionally wall-piercing: a target is selected purely based on whether
-	 * its AABB intersects the eye→look ray, regardless of any blocks in between. Any block-based
-	 * occlusion test here would break the "wall-piercing" feature that the lifedrain scepter is
-	 * known for in official TF. Matching behavior of
-	 * twilightforest-1.21.1 twilightforest.item.LifedrainScepterItem#getPlayerLookTarget.
 	 */
 	@Nullable
 	private Entity getPlayerLookTarget(Level level, LivingEntity living) {
@@ -155,25 +118,22 @@ public class LifedrainScepterItem extends ScepterItem {
 	@Override
 	public void onUseTick(Level level, LivingEntity living, ItemStack stack, int count) {
 		if (stack.nextDamageWillBreak()) {
-			// do not use
 			living.stopUsingItem();
 			return;
 		}
 
 		if (count % 5 == 0 && level instanceof ServerLevel serverLevel) {
-			// is the player looking at an entity
 			Entity pointedEntity = this.getPlayerLookTarget(level, living);
 
 			if (pointedEntity instanceof LivingEntity target && !(target instanceof ArmorStand) && target.isPickable()) {
-				if (!target.isDeadOrDying()) {
-					PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, new LifedrainParticlePacket(living.getId(), target.getEyePosition()));
-					level.playSound(null, living.blockPosition(), TFSounds.LIFE_SCEPTER_DRAIN, SoundSource.PLAYERS);
-				}
+					if (!target.isDeadOrDying()) {
+						PacketDistributor.sendToPlayersTrackingEntityAndSelf(living, new LifedrainParticlePacket(living.getId(), target.getEyePosition()));
+
+					}
 
 				DamageSource damageSource = TFDamageTypes.getEntityDamageSource(level, TFDamageTypes.LIFEDRAIN, living);
 				if (target.hurtServer(serverLevel, damageSource, 1)) {
-					// make it explode
-					if (target.getHealth() <= 1 && !target.is(TFEntityTypeTags.BOSSES)) { // TODO: Port - verify BOSSES tag exists in TFEntityTypeTags
+					if (target.getHealth() <= 1 && !target.is(TFEntityTypeTags.BOSSES)) {
 						if (!target.is(TFEntityTypeTags.LIFEDRAIN_DROPS_NO_FLESH) && living instanceof Player player) {
 							LootParams ctx = new LootParams.Builder(serverLevel)
 								.withParameter(LootContextParams.THIS_ENTITY, target)
@@ -204,9 +164,7 @@ public class LifedrainScepterItem extends ScepterItem {
 					} else {
 						target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 2));
 						if (count % 10 == 0) {
-							// heal the player
 							living.heal(1.0F);
-							// and give foods
 							if (living instanceof Player player)
 								player.getFoodData().eat(1, 0.1F);
 						}
@@ -218,7 +176,6 @@ public class LifedrainScepterItem extends ScepterItem {
 				}
 
 				if (!level.isClientSide() && target.getHealth() <= living.getHealth()) {
-					// only do lifting effect on creatures weaker than the player
 					target.setDeltaMovement(0, 0.15D, 0);
 				}
 			}
@@ -234,6 +191,4 @@ public class LifedrainScepterItem extends ScepterItem {
 	public ItemUseAnimation getUseAnimation(ItemStack stack) {
 		return ItemUseAnimation.BOW;
 	}
-
-
 }

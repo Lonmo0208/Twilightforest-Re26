@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.LevelData;
 import twilightforest.beanification.Component;
@@ -49,8 +50,11 @@ public class CapabilityEvents {
 	}
 
 	private void updateShields(FabricEvents.EntityTickEvent.Post event) {
-		if (event.getEntity() instanceof LivingEntity living && !living.level().isClientSide() && ((TFEntityExtensions) living).twilightforest$hasData(TFDataAttachments.FORTIFICATION_SHIELDS)) {
-			((TFEntityExtensions) event.getEntity()).twilightforest$getData(TFDataAttachments.FORTIFICATION_SHIELDS).tick(living);
+		if (event.getEntity() instanceof LivingEntity living && !living.level().isClientSide()) {
+			FortificationShieldAttachment attachment = living.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
+			if (attachment != null) {
+				attachment.tick(living);
+			}
 		}
 	}
 
@@ -69,19 +73,13 @@ public class CapabilityEvents {
 
 	private void absorbShieldHits(FabricEvents.LivingIncomingDamageEvent event) {
 		LivingEntity living = event.getEntity();
-		// The Lich has its OWN shield management system via the EntityData SHIELD_STRENGTH field,
-		// handled directly inside Lich#hurtServer (breaks shields via TFDamageTypeTags.BREAKS_LICH_SHIELDS).
-		// If we also run the generic FortificationShieldAttachment logic here, the two systems fight —
-		// most commonly, the permanent attachment shields never get decremented by Lich's shield-break
-		// logic, so ALL non-BYPASSES_ARMOR damage (including twilight scepter bolts) stays canceled even
-		// after the Lich's own visible shields have been fully stripped. Skip Lich entirely here.
 		if (living instanceof twilightforest.entity.boss.Lich) return;
 
-		// shields
 		if (!living.level().isClientSide() && !event.getSource().is(DamageTypeTags.BYPASSES_ARMOR)) {
-            FortificationShieldAttachment attachment = ((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.FORTIFICATION_SHIELDS);
-			if (attachment.shieldsLeft() > 0) {
-				if (living.invulnerableTime <= 0) {
+			FortificationShieldAttachment attachment = living.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
+			if (attachment != null && attachment.shieldsLeft() > 0) {
+				boolean isCreativePlayer = living instanceof Player player && player.getAbilities().invulnerable;
+				if (!isCreativePlayer && living.invulnerableTime <= 0) {
 					attachment.breakShield(living, false);
 					FortificationShieldAttachment.addShieldBreakParticles(event.getSource(), living);
 					living.invulnerableTime = 20;

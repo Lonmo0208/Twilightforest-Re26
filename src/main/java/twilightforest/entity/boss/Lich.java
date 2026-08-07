@@ -123,7 +123,7 @@ public class Lich extends BaseTFBoss {
 		SpawnGroupData data = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
 		if (!this.isShadowClone()) {
 			this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(TFItems.FORTIFICATION_SCEPTER));
-			this.playSound(TFSounds.SHIELD_ADD, 1.5F, this.getVoicePitch());
+			this.playSound(SoundEvents.GENERIC_EAT.value(), 1.5F, this.getVoicePitch());
 			this.swing(InteractionHand.MAIN_HAND);
 		}
 		return data;
@@ -382,7 +382,7 @@ public class Lich extends BaseTFBoss {
 					if (!this.level().isClientSide()) FortificationShieldAttachment.addShieldBreakParticles(src, this);
 					if (newShieldStrength < 6) volume += 0.25F * (6 - newShieldStrength);
 					if (newShieldStrength == 0) volume += 0.5F;
-					this.playSound(TFSounds.SHIELD_BREAK, volume, this.getVoicePitch() * 1.25F);
+					this.playSound(SoundEvents.ITEM_BREAK.value(), volume, this.getVoicePitch() * 1.25F);
 					this.gameEvent(GameEvent.ENTITY_DAMAGE);
 				}
 			} else {
@@ -413,7 +413,7 @@ public class Lich extends BaseTFBoss {
 			this.despawnClones();
 			if (this.getShieldStrength() > 0) {
 				this.setShieldStrength(0);
-				this.playSound(TFSounds.SHIELD_BREAK, 1.2F, this.getVoicePitch() * 2.0F);
+				this.playSound(SoundEvents.ITEM_BREAK.value(), 1.2F, this.getVoicePitch() * 2.0F);
 			}
 		}
 	}
@@ -726,9 +726,12 @@ public class Lich extends BaseTFBoss {
 		for (BlockPos pos : BlockPos.betweenClosed(this.homeOrElseCurrent().offset(-range, -3, -range), this.homeOrElseCurrent().offset(range, yRange, range))) {
 			if (this.random.nextInt(Math.max(40 - tick, 2)) == 1 || done) {
 				BlockState state = this.level().getBlockState(pos);
-				if (state.getBlock() instanceof AbstractCandleBlock candleBlock && OminousCandleBlock.CANDLE_MAP.containsKey(candleBlock) && state.getValue(CandleBlock.LIT)) {
-					this.level().setBlockAndUpdate(pos, OminousCandleBlock.CANDLE_MAP.get(candleBlock).defaultBlockState().setValue(OminousCandleBlock.CANDLES, state.getValue(CandleBlock.CANDLES)));
-					this.level().playSound(null, pos, TFSounds.OMINOUS_FIRE, SoundSource.BLOCKS, 0.5F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.75F);
+				if (state.getBlock() instanceof AbstractCandleBlock candleBlock && state.getValue(CandleBlock.LIT)) {
+					Block ominous = OminousCandleBlock.CANDLE_MAP.get(candleBlock);
+					if (ominous != null) {
+						this.level().setBlockAndUpdate(pos, ominous.defaultBlockState().setValue(OminousCandleBlock.CANDLES, state.getValue(CandleBlock.CANDLES)));
+						this.level().playSound(null, pos, TFSounds.OMINOUS_FIRE, SoundSource.BLOCKS, 0.5F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.75F);
+					}
 				} else if (state.getBlock() instanceof LightableBlock && state.getValue(LightableBlock.LIGHTING) == LightableBlock.Lighting.NORMAL) {
 					this.level().setBlockAndUpdate(pos, state.setValue(LightableBlock.LIGHTING, LightableBlock.Lighting.OMINOUS));
 					this.level().playSound(null, pos, TFSounds.CANDELABRA_OMINOUS, SoundSource.BLOCKS, 0.5F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.75F);
@@ -824,8 +827,12 @@ public class Lich extends BaseTFBoss {
 		// BYPASSES_ARMOR damage (e.g. twilight scepter bolts). Mirroring the value here keeps
 		// the systems consistent for any 3rd-party code reading the attachment as well.
 		if (!this.level().isClientSide()) {
-			((twilightforest.util.TFEntityExtensions) this).twilightforest$getData(twilightforest.init.TFDataAttachments.FORTIFICATION_SHIELDS)
-				.setShields(this, shieldStrength, false);
+			var attachment = this.getAttached(twilightforest.init.TFDataAttachments.FORTIFICATION_SHIELDS);
+			if (attachment == null) {
+				attachment = new twilightforest.components.entity.FortificationShieldAttachment();
+				this.setAttached(twilightforest.init.TFDataAttachments.FORTIFICATION_SHIELDS, attachment);
+			}
+			attachment.setShields(this, shieldStrength, false);
 		}
 	}
 

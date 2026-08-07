@@ -53,7 +53,6 @@ public class TFTeleporter {
 		TeleportTransition transition = placeInExistingPortal(cache, dest, entity, pos);
 
 		if (transition == null) {
-			LOGGER.debug("Did not find existing portal, making a new one.");
 			transition = createPosition(dest, entity, pos, cache, forcedEntry);
 		}
 
@@ -82,10 +81,8 @@ public class TFTeleporter {
 			portalPosition.lastUpdateTime = destDim.getGameTime();
 			flag = false;
 			// Validate that the Portal still exists
-			LOGGER.debug("Using cache, validating. {}", blockpos);
 			if (blockpos == null || !destDim.getBlockState(blockpos).is(TFBlocks.TWILIGHT_PORTAL)) {
 				// Portal was broken, we need to recreate it.
-				LOGGER.debug("Portal Invalid, recreating.");
 				blockpos = null;
 				cache.removeInvalidPos(destDim.dimension().identifier(), columnPos);
 			}
@@ -97,14 +94,12 @@ public class TFTeleporter {
 			return null;
 		} else {
 			if (flag) {
-				LOGGER.debug("Caching Src Portal Blocks to {}", blockpos);
 				Map<BlockPos, Boolean> portalBlocks = new HashMap<>();
 				portalBlocks.put(entity.blockPosition(), true);
 				TFPortalBlock.recursivelyValidatePortal(entity.level(), entity.blockPosition(), portalBlocks, new MutableInt(0), entity.level().getBlockState(entity.blockPosition()));
 				BlockPos finalBlockpos = blockpos;
 				portalBlocks.forEach((blockPos, b) -> {
 					if (b) {
-						LOGGER.debug("Caching {}", blockPos);
 						cache.addBlockToCache(destDim.dimension(), new ColumnPos(blockPos.getX(), blockPos.getZ()), new PortalPosition(finalBlockpos, destDim.getGameTime()));
 					}
 				});
@@ -236,19 +231,13 @@ public class TFTeleporter {
 		boolean checkProgression = LandmarkUtil.isProgressionEnforced(level);
 
 		if (isSafeAround(level, pos, entity, checkProgression)) {
-			LOGGER.debug("Portal destination looks safe!");
 			return safePosInColumn(level, entity, Vec3.atCenterOf(pos));
 		}
 
-		LOGGER.debug("Portal destination looks unsafe, rerouting!");
-
 		BlockPos newPos = scanIntoSafeBiomes(level, pos, entity, checkProgression);
 		if (newPos != null) {
-			LOGGER.debug("Successfully found safe biome");
 			return safePosInColumn(level, entity, Vec3.atCenterOf(newPos));
 		}
-
-		LOGGER.warn("Did not find a safe portal spot.");
 
 		return safePosInColumn(level, entity, Vec3.atCenterOf(pos));
 	}
@@ -267,7 +256,6 @@ public class TFTeleporter {
 			Iterable<BlockPos> gridAroundLandmark = new XZQuadrantIterator<>(biomeCenter.getX(), biomeCenter.getZ(), true, 128, 16, (x, z) -> new BlockPos(x, 4, z));
 			for (BlockPos posInBiome : gridAroundLandmark) {
 				if (isSafeAround(level, posInBiome, entity, checkProgression)) {
-					LOGGER.debug("Found {} in biome-scanning for safe portal placement", posInBiome.toShortString());
 					return posInBiome;
 				}
 			}
@@ -339,10 +327,8 @@ public class TFTeleporter {
 		loadSurroundingArea(world, pos);
 
 		BlockPos spot = findPortalCoords(world, pos, blockPos -> isPortalAt(world, blockPos));
-		String name = entity.getName().getString();
 
 		if (spot != null) {
-			LOGGER.debug("Found existing portal for {} at {}", name, spot);
 			cacheNewPortalCoords(cache, src, spot, entity.blockPosition());
 			return spot;
 		}
@@ -350,31 +336,22 @@ public class TFTeleporter {
 		spot = findPortalCoords(world, pos, blockpos -> isIdealForPortal(world, blockpos));
 
 		if (spot != null) {
-			LOGGER.debug("Found ideal portal spot for {} at {}", name, spot);
 			cacheNewPortalCoords(cache, src, makePortalAt(world, spot, locked), entity.blockPosition());
 			return spot;
 		}
 
-		LOGGER.debug("Did not find ideal portal spot, shooting for okay one for {}", name);
 		spot = findPortalCoords(world, pos, blockPos -> isOkayForPortal(world, blockPos));
 
 		if (spot != null) {
-			LOGGER.debug("Found okay portal spot for {} at {}", name, spot);
 			cacheNewPortalCoords(cache, src, makePortalAt(world, spot, locked), entity.blockPosition());
 			return spot;
 		}
-
-		LOGGER.debug("Did not even find an okay portal spot, just making a fallback one for {}", name);
 
 		spot = findPortalCoords(world, pos, blockpos -> isOkayForFallbackPortal(world, blockpos), true);
 		if (spot != null) {
-			LOGGER.debug("Found fallback portal spot for {} at {}", name, spot);
 			cacheNewPortalCoords(cache, src, makePortalAt(world, spot, locked), entity.blockPosition());
 			return spot;
 		}
-
-		// well I don't think we can actually just return and fail here
-		LOGGER.debug("Did not even find a fallback portal spot, just making a random one for {}", name);
 
 		BlockPos horizontallyScaled = BlockPos.containing(entity.getX() * getHorizontalScale(world), entity.getY(), entity.getZ() * getHorizontalScale(world));
 		spot = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, horizontallyScaled);
@@ -474,7 +451,6 @@ public class TFTeleporter {
 		BlockPos exitPos = getPortalPosition(srcDim, srcPos);
 		if (exitPos == null)
 			return;
-		LOGGER.debug("Caching Dest Portal Blocks to {}", exitPos);
 		cache.addBlockToCache(srcDim.dimension(), new ColumnPos(pos.getX(), pos.getZ()), new TFTeleporter.PortalPosition(exitPos, srcDim.getGameTime()));
 		cache.addBlockToCache(srcDim.dimension(), new ColumnPos(pos.south().getX(), pos.south().getZ()), new TFTeleporter.PortalPosition(exitPos, srcDim.getGameTime()));
 		cache.addBlockToCache(srcDim.dimension(), new ColumnPos(pos.east().getX(), pos.east().getZ()), new TFTeleporter.PortalPosition(exitPos, srcDim.getGameTime()));

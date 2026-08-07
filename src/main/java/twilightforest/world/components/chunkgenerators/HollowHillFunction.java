@@ -34,13 +34,14 @@ public record HollowHillFunction(float centerX, float bottomY, float centerZ, fl
 
 	public double compute(float dX, float dY, float dZ) {
 		float dist = Mth.sqrt(dX * dX + dZ * dZ);
-		float radiusAbs = Mth.abs(this.radius);
+		// Because cosine is an even function, the radius multiplying cosine's result is the only variable that can affect this DensityFunction using a negative value.
+		float height = Mth.cos(dist / this.radius * Mth.PI) * this.radius * 0.3333333334f;
 
-		if (dist >= radiusAbs) {
+		float normalizedDist = Mth.clamp(dist / Mth.abs(this.radius), 0, 1);
+
+		if (normalizedDist >= 1) {
 			return 0;
 		}
-
-		float height = Mth.cos(dist / this.radius * Mth.PI) * this.radius * 0.3333333334f;
 
 		return Mth.clamp((height * this.heightScale - dY), -1, 1);
 	}

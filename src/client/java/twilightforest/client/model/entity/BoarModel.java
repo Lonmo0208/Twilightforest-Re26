@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class BoarModel extends PigModel {
 
-	// 与原版 PigModel.BABY_TRANSFORMER 一致: (false, 4.0F, 4.0F, Set.of("head"))
+
 	public static final MeshTransformer BABY_TRANSFORMER = new BabyModelTransform(false, 4.0F, 4.0F, Set.of("head"));
 
 	public BoarModel(ModelPart root) {

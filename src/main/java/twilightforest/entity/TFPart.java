@@ -149,13 +149,18 @@ public abstract class TFPart<T extends Entity> extends Entity {
 
 	public void readData(UpdateTFMultipartPacket.PartDataHolder data) {
 		Vec3 vec = new Vec3(data.x(), data.y(), data.z());
-		// Directly set position and rotation instead of using setPositionAndRotationDirect().
-		// TFPart entities are not in the client world's entity list (they're only injected
-		// via MultipartEntityIteratorWrapper for rendering), so tick() is never called on them.
-		// setPositionAndRotationDirect() relies on tick() for interpolation, which never happens.
+		// CRITICAL: setOldPosAndRot() MUST be called BEFORE setPos()/setRot().
+		// Minecraft's render pipeline does a linear interpolation between
+		// (xOld,yOld,zOld) [setOldPosAndRot saves the CURRENT x/y/z here]
+		// and (x,y,z) [setPos writes the NEW packet x/y/z here] using
+		// partialTick. If we call setOldPosAndRot AFTER setPos, then
+		// xOld == x, yOld == y, zOld == z, the lerp factor collapses to 0,
+		// and every 50ms packet teleports the part instead of smoothly
+		// gliding — exactly the "jittery/shaking" bug reported for the
+		// Naga body, Hydra neck/head, and Snow Queen ice shields.
+		this.setOldPosAndRot();
 		this.setPos(vec.x(), vec.y(), vec.z());
 		this.setRot(data.yRot(), data.xRot());
-		this.setOldPosAndRot();
 		final float w = data.width();
 		final float h = data.height();
 		this.setSize(data.fixed() ? EntityDimensions.fixed(w, h) : EntityDimensions.scalable(w, h));

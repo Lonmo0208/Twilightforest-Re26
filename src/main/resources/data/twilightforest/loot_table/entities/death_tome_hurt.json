@@ -1,21 +1,20 @@
 {
-  "type": "minecraft:entity",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
+    "type": "minecraft:entity",
+    "pools": [
         {
-          "type": "minecraft:empty",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:paper",
-          "weight": 1
+            "bonus_rolls": 0.0,
+            "entries": [
+                {
+                    "type": "minecraft:loot_table",
+                    "value": "minecraft:empty"
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:paper"
+                }
+            ],
+            "rolls": 1.0
         }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:entities/death_tome_hurt"
+    ],
+    "random_sequence": "twilightforest:entities/death_tome_hurt"
 }

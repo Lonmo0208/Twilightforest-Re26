@@ -54,11 +54,10 @@ public class Hydra extends BaseTFBoss {
 	private static float HEADS_ACTIVITY_FACTOR = 0.3F;
 	public static final int MAX_HEADS = 7;
 
-	// Secondary-target attack chances, boosted in line with the main-target ranged chances
-	// so the hydra doesn't go quiet when a second mob/player walks in range.
-	// Original: FLAME 1/10 -> 1/5; MORTAR 1/16 -> 1/8
+	// Secondary-target attack chances. Distance bands match main target (FLAME 3~23, MORTAR 4~20).
+	// MORTAR is 15% less likely than FLAME: FLAME = 1/5 (20%)  →  MORTAR = 1/6 (~16.7%, ≈ 20% × 0.85)
 	private static final int SECONDARY_FLAME_CHANCE = 5;
-	private static final int SECONDARY_MORTAR_CHANCE = 8;
+	private static final int SECONDARY_MORTAR_CHANCE = 6;
 
 	private static final EntityDataAccessor<List<String>> HEAD_NAMES = SynchedEntityData.defineId(Hydra.class, TFDataSerializers.STRING_LIST);
 	public final HydraHeadContainer[] hc = new HydraHeadContainer[MAX_HEADS];
@@ -435,58 +434,46 @@ public class Hydra extends BaseTFBoss {
 		// → mortar" and the flame path would almost always consume the chance before the
 		// mortar roll even got a chance to execute. Swap order + boost mortar so the
 		// ballistic attack actually happens at reasonable frequency.
-		int FLAME_CHANCE  = 25;   // ~4% per tick per head
-		int MORTAR_CHANCE = 20;   // ~5% per tick per head (slightly higher than flame)
-		// Ranged max distances. User specifically asked for MORTAR max 6 blocks so the
-		// fight stays close-range and personal; flame stays relevant out to 24 for the
-		// medium-range pressure attack. Mortar velocity matches this (official 0.5F =
-		// 5..8 blocks peak ballistic range) so no shots fall short and self-detonate.
-		int FLAME_MAX_DIST  = 24;
-		int MORTAR_MAX_DIST = 6;
-		// Passive bite trigger radius in blocks. 1.5 (square = 2.25) accounts for the
-		// player AABB width (~0.6) so standing "right next to the mouth" (the user's
-		// "around 1 block near the head" wording) reliably fires the sequence.
-		double BITE_RADIUS_SQ = 1.5D * 1.5D;
+		int FLAME_CHANCE  = 20;   // 5.0% per tick per head
+		int MORTAR_CHANCE = 23;
+
+		int FLAME_MIN_DIST  = 3;
+		int FLAME_MAX_DIST  = 23;
+		int MORTAR_MIN_DIST = 4;
+		int MORTAR_MAX_DIST = 20;
+
+		double BITE_RADIUS_SQ = 2.5D * 2.5D;
+
+		int BITE_CHANCE_DENOM = 4;  // nextInt(4) < 3 → 75%
 
 		boolean targetAbove = target.getBoundingBox().minY > this.getBoundingBox().maxY;
 
 		for (int i = 0; i < 3; i++) {
 			if (!this.hc[i].isIdle() || this.areTooManyHeadsAttacking(i)) continue;
 
-			// 1) PASSIVE BITE TRIGGER (100% if proximity matches):
-			//    Compute the authoritative animation endpoint of the head via the state
-			//    machine — this is the actual tip of the extended neck, not the parent
-			//    hydra body origin. If the target is right on top of that point AND we
-			//    still have enough living heads AND no other head is mid-bite (biting
-			//    heads consume 3 attack slots each in the budget calc), bite.
+
 			Vec3 headEndPos = this.hc[i].computeHeadPosition(1.0F);
 			if (headEndPos.distanceToSqr(target.position()) < BITE_RADIUS_SQ
 					&& this.countActiveHeads() > 2
-					&& !this.areOtherHeadsBiting(i)) {
+					&& !this.areOtherHeadsBiting(i)
+					&& this.getRandom().nextInt(BITE_CHANCE_DENOM) < 3) {
 				this.hc[i].setNextState(HydraHeadContainer.State.BITE_BEGINNING);
 				continue;
 			}
 
-			// 2) Otherwise: RANGED ONLY (never consider bite).
-			// CRITICAL: MORTAR roll MUST come before FLAME here (and did not in the
-			// previous edit). Since FLAME's 0..FLAME_MAX_DIST distance band always
-			// overlaps and completely contains MORTAR's narrow 4..6 band, the original
-			// if/else-if always hit the FLAME branch in the valid distance range before
-			// MORTAR was even rolled — hence "it kept spewing fire and never threw a
-			// fireball". Checking MORTAR first means the two attacks compete on a fair
-			// per-head per-tick random draw.
-			if (distance > 2 && distance < MORTAR_MAX_DIST && !targetAbove && this.getRandom().nextInt(MORTAR_CHANCE) == 0) {
+
+			if (distance > MORTAR_MIN_DIST && distance < MORTAR_MAX_DIST && !targetAbove && this.countMortarHeads() < 2 && this.getRandom().nextInt(MORTAR_CHANCE) == 0) {
 				this.hc[i].setNextState(HydraHeadContainer.State.MORTAR_BEGINNING);
-			} else if (distance > 0 && distance < FLAME_MAX_DIST && this.getRandom().nextInt(FLAME_CHANCE) == 0) {
+			} else if (distance > FLAME_MIN_DIST && distance < FLAME_MAX_DIST && this.countFlameHeads() < 2 && this.getRandom().nextInt(FLAME_CHANCE) == 0) {
 				this.hc[i].setNextState(HydraHeadContainer.State.FLAME_BEGINNING);
 			}
 		}
 
 		for (int i = 3; i < MAX_HEADS; i++) {
 			if (!this.hc[i].isIdle() || this.areTooManyHeadsAttacking(i)) continue;
-			if (distance > 2 && distance < MORTAR_MAX_DIST && !targetAbove && this.getRandom().nextInt(MORTAR_CHANCE) == 0) {
+			if (distance > MORTAR_MIN_DIST && distance < MORTAR_MAX_DIST && !targetAbove && this.countMortarHeads() < 2 && this.getRandom().nextInt(MORTAR_CHANCE) == 0) {
 				this.hc[i].setNextState(HydraHeadContainer.State.MORTAR_BEGINNING);
-			} else if (distance > 0 && distance < FLAME_MAX_DIST && this.getRandom().nextInt(FLAME_CHANCE) == 0) {
+			} else if (distance > FLAME_MIN_DIST && distance < FLAME_MAX_DIST && this.countFlameHeads() < 2 && this.getRandom().nextInt(FLAME_CHANCE) == 0) {
 				this.hc[i].setNextState(HydraHeadContainer.State.FLAME_BEGINNING);
 			}
 		}
@@ -507,6 +494,26 @@ public class Hydra extends BaseTFBoss {
 		}
 
 		return otherAttacks >= 1 + (this.countActiveHeads() * HEADS_ACTIVITY_FACTOR);
+	}
+
+	private int countMortarHeads() {
+		int count = 0;
+		for (int i = 0; i < MAX_HEADS; i++) {
+			if (this.hc[i].isMortar()) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	private int countFlameHeads() {
+		int count = 0;
+		for (int i = 0; i < MAX_HEADS; i++) {
+			if (this.hc[i].isFlame()) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	private int countActiveHeads() {
@@ -543,11 +550,11 @@ public class Hydra extends BaseTFBoss {
 
 			for (int i = 1; i < MAX_HEADS; i++) {
 				if (!this.hc[i].isDead() && this.hc[i].isIdle() && isTargetOnThisSide(i, secondaryTarget)) {
-					if (distance > 0 && distance < 20 && this.getRandom().nextInt(SECONDARY_FLAME_CHANCE) == 0) {
+					if (distance > 3 && distance < 20 && this.countFlameHeads() < 2 && this.getRandom().nextInt(SECONDARY_FLAME_CHANCE) == 0) {
 						this.hc[i].setTargetEntity(secondaryTarget);
 						this.hc[i].isSecondaryAttacking = true;
 						this.hc[i].setNextState(HydraHeadContainer.State.FLAME_BEGINNING);
-					} else if (distance > 8 && distance < 32 && this.getRandom().nextInt(SECONDARY_MORTAR_CHANCE) == 0) {
+					} else if (distance > 4 && distance < 20 && this.countMortarHeads() < 2 && this.getRandom().nextInt(SECONDARY_MORTAR_CHANCE) == 0) {
 						this.hc[i].setTargetEntity(secondaryTarget);
 						this.hc[i].isSecondaryAttacking = true;
 						this.hc[i].setNextState(HydraHeadContainer.State.MORTAR_BEGINNING);

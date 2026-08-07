@@ -8,11 +8,6 @@ tasks.withType(JavaCompile).configureEach {
 	options.encoding = 'UTF-8'
 	options.release = 25
 }
-configurations {
-	testImplementation {
-		exclude module: 'tf-asm'
-	}
-}
 
 version = project.mod_version
 group = project.maven_group
@@ -117,6 +112,7 @@ dependencies {
 	//implementation "tamaized:beanification:${project.beanification_version}"
 
 	// Forge Config API Port (provides NeoForge-compatible config API)
+	implementation files('libs/forgeconfigapiport/forgeconfigapiport-fabric-26.1.5.jar')
 	implementation 'curse.maven:forge-config-api-port-547434:8218664'
 	// Transitive dependencies for ForgeConfigAPIPort
 	implementation 'com.electronwill.night-config:core:3.8.3'

@@ -35,13 +35,7 @@ public class TFBiomeProvider extends BiomeSource {
 
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
-		Stream<Holder<Biome>> biomes = this.biomeTerrainDataHolder.value().collectPossibleBiomes();
-		List<Holder<Biome>> biomeList = biomes.toList();
-		LOGGER.info("[TF-BIOME] collectPossibleBiomes() returned {} biomes:", biomeList.size());
-		for (Holder<Biome> biome : biomeList) {
-			biome.unwrapKey().ifPresent(key -> LOGGER.info("[TF-BIOME]   - {} (type: {})", key.identifier(), biome.kind()));
-		}
-		return biomeList.stream();
+		return this.biomeTerrainDataHolder.value().collectPossibleBiomes();
 	}
 
 	@Override

@@ -1,4 +1,6 @@
-﻿{
+{
+  "type": "twilightforest:block/mason_jar",
+  "default_lid": "twilightforest:twilight_oak_log",
   "parent": "minecraft:block/block",
   "textures": {
     "particle": "twilightforest:block/jar_side"

@@ -1,9 +1,15 @@
 {
   "variants": {
-    "active=false": {
+    "active=false,locked=false": {
+      "model": "twilightforest:block/vanishing_block"
+    },
+    "active=false,locked=true": {
       "model": "twilightforest:block/locked_vanishing_block"
     },
-    "active=true": {
+    "active=true,locked=false": {
+      "model": "twilightforest:block/vanishing_block_on"
+    },
+    "active=true,locked=true": {
       "model": "twilightforest:block/locked_vanishing_block_on"
     }
   }
