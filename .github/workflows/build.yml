@@ -7,57 +7,112 @@ on:
   pull_request:
     branches:
       - '**'
+  workflow_dispatch:
+
+concurrency:
+  # Cancel any currently-running builds for the same ref so we don't waste CI
+  # minutes on outdated pushes. For the default branch we let every build
+  # complete in order to preserve a complete history.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != format('refs/heads/{0}', github.event.repository.default_branch) }}
 
 jobs:
   build:
     if: ${{ !startsWith(github.ref_name, 'no-build/') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate Gradle wrapper integrity
+        uses: gradle/actions/wrapper-validation@v4
 
       - name: Setup JDK 25
         uses: actions/setup-java@v4
         with:
           java-version: '25'
           distribution: 'zulu'
+          # Let actions/setup-java handle the standard Gradle-home cache
+          # (~/.gradle/caches, ~/.gradle/wrapper) across runs - this does a
+          # better & safer job than hand-written cache entries, including
+          # automatic save/restore with proper GHA cache compression.
+          cache: 'gradle'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Restore Gradle Cache
+      # The *project-local* .gradle/ directory (build-cache outputs, loom
+      # mappings, Minecraft jars, remapped MC sources etc.) is *not* covered
+      # by setup-java's cache. Cache it separately; use restore-keys so PRs
+      # and new branches still fall back to similar caches from the default
+      # branch instead of starting cold every single time.
+      - name: Restore project-local Gradle build cache
         uses: actions/cache@v4
         with:
-          key: gradle-${{ runner.os }}-${{ hashFiles('build.gradle', 'settings.gradle', 'gradle.properties', 'src/main/resources/META-INF/accesstransformer.cfg') }}
-          path: ~/.gradle
-
-      - name: Restore Project Level Gradle Cache
-        uses: actions/cache@v4
-        with:
-          key: gradleLocal-${{ runner.os }}-${{ hashFiles('build.gradle', 'settings.gradle', 'gradle.properties', 'src/main/resources/META-INF/accesstransformer.cfg') }}
+          key: gradle-project-local-${{ runner.os }}-${{ hashFiles('build.gradle', 'settings.gradle', 'gradle.properties', 'src/main/resources/META-INF/accesstransformer.cfg') }}
+          restore-keys: |
+            gradle-project-local-${{ runner.os }}-${{ hashFiles('build.gradle', 'settings.gradle', 'gradle.properties') }}
+            gradle-project-local-${{ runner.os }}-
           path: .gradle
 
-      - name: Restore build/tmp Cache
-        uses: actions/cache@v4
-        with:
-          key: gradleBuildTmp-${{ runner.os }}-${{ hashFiles('build.gradle', 'settings.gradle', 'gradle.properties', 'src/main/resources/META-INF/accesstransformer.cfg') }}
-          path: build/tmp
-
-      - name: Build
+      - name: Resolve mod version
+        id: version
+        shell: bash
         run: |
-          ./gradlew build -x test --build-cache --max-workers=1 \
-            -PCIRevision=$(grep 'mod_version=' gradle.properties | cut -d'=' -f2).${{ github.run_number }} \
-            -PCIType=RELEASE
-        env:
-          GRADLE_OPTS: '-Xmx3072m'
+          MOD_VERSION=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          CI_BUILD_NO="${{ github.run_number }}"
+          echo "mod_version=${MOD_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "ci_revision=${MOD_VERSION}.${CI_BUILD_NO}" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: ${MOD_VERSION} (CI revision ${MOD_VERSION}.${CI_BUILD_NO})"
 
-      - name: Upload built JARs to Artifacts
+      - name: Build (clean first, then assemble with --build-cache)
+        id: build
+        shell: bash
+        env:
+          GRADLE_OPTS: '-Xmx3584m -Dorg.gradle.vfs.watch=false -Dorg.gradle.daemon=false'
+        run: |
+          set -o pipefail
+          ./gradlew --version
+          # `clean build` forces re-compilation from source so stale .class
+          # files (which cause the "method X not found" style of phantom
+          # compile errors) can never poison the build. We pipe through `tee`
+          # to also persist a full raw log on disk for the upload step below.
+          ./gradlew clean build -x test --build-cache --no-daemon \
+            -PCIRevision="${{ steps.version.outputs.ci_revision }}" \
+            -PCIType=RELEASE 2>&1 | tee build-gradle.log
+        # --max-workers is intentionally omitted so Gradle uses the default
+        # auto-detected worker count for the GitHub runner (2 CPU → usually 2
+        # workers + 1 compile daemon = good balance between speed and memory).
+
+      - name: Upload built JARs to artifacts
+        if: success() || failure()
         uses: actions/upload-artifact@v4
         with:
-          name: twilightforest-artifacts
-          path: build/libs/
+          name: twilightforest-artifacts-${{ steps.version.outputs.ci_revision }}
+          path: |
+            build/libs/
+            !build/libs/*-sources.jar
+            !build/libs/*-dev.jar
+          if-no-files-found: warn
+          compression-level: 6
+
+      - name: Upload build logs & reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-failure-reports-${{ steps.version.outputs.ci_revision }}
+          path: |
+            build-gradle.log
+            build/reports/
+            build/tmp/*/compile*/
+          if-no-files-found: ignore
+          compression-level: 9
+          retention-days: 14
 
       - name: Stop Gradle daemon
         if: always()
-        run: ./gradlew --stop
+        run: ./gradlew --no-daemon --stop 2>/dev/null || true
