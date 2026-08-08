@@ -36,65 +36,76 @@ public class TravellersArmorRenderer extends TFArmorRenderer {
 			default -> throw new IllegalArgumentException("Unexpected armor slot: " + slot + ": " + stack);
 		};
 
-		// Deep copy the entire ModelPart tree so we can safely modify visible/skipDraw
+		// Deep copy the entire ModelPart tree so we can safely modify skipDraw
 		// without affecting the shared cached model (critical: submitModel is deferred!)
 		ModelPart copiedRoot = deepCopyModelPart(sharedRoot);
 
-		// Hide everything first (visible=false completely skips the part AND all its children)
-		copiedRoot.getAllParts().forEach(p -> p.visible = false);
-
-		// Show only the parts relevant to this equipment slot
+		// Match the NeoForge reference 1:1 — control visibility through skipDraw
+		// only, never touch `visible`. Using `visible = false` on the parent would
+		// prevent Minecraft's ModelPart.visit() from ever descending into children,
+		// which means belt buckle / wing cubes (grandchildren of copiedRoot under
+		// body → buckle/wingBaseLeft etc.) would be silently skipped no matter
+		// what skipDraw says on the individual child nodes.
 		switch (slot) {
 			case HEAD -> {
-				ModelPart head = copiedRoot.getChild("head");
-				head.getAllParts().forEach(p -> p.visible = true);
-				head.getChild("hat").getAllParts().forEach(p -> p.visible = true);
+				// Helmet only exposes head + hat; every other child is hidden via
+				// skipDraw. Head is always drawn here.
+				copiedRoot.getAllParts().forEach(p -> p.skipDraw = true);
+				setSkipDrawTree(copiedRoot, false, "head");
+				setSkipDrawTree(copiedRoot, false, "head", "hat");
 			}
 			case CHEST -> {
+				copiedRoot.getAllParts().forEach(p -> p.skipDraw = true);
 				boolean hasChestplate = stack.has(TFDataComponents.TRAVELLERS_HAS_CHESTPLATE);
 				boolean hasGloves = stack.has(TFDataComponents.TRAVELLERS_HAS_GLOVES);
-				if (hasChestplate) {
-					copiedRoot.getChild("body").getAllParts().forEach(p -> p.visible = true);
-				}
-				if (hasGloves) {
-					copiedRoot.getChild("left_arm").getAllParts().forEach(p -> p.visible = true);
-					copiedRoot.getChild("right_arm").getAllParts().forEach(p -> p.visible = true);
-				}
+				copiedRoot.getChild("body").skipDraw = !hasChestplate;
+				copiedRoot.getChild("left_arm").skipDraw = !hasGloves;
+				copiedRoot.getChild("right_arm").skipDraw = !hasGloves;
 			}
 			case LEGS -> {
+				copiedRoot.getAllParts().forEach(p -> p.skipDraw = true);
 				boolean hasWings = stack.has(TFDataComponents.TRAVELLERS_HAS_WINGS);
-				boolean hasBelt = stack.has(TFDataComponents.TRAVELLERS_HAS_BELT);
-				// Always show the leg parts (they're the leggings base)
-				copiedRoot.getChild("right_leg").getAllParts().forEach(p -> p.visible = true);
-				copiedRoot.getChild("left_leg").getAllParts().forEach(p -> p.visible = true);
-				// Belt and wings are children of body; handle via skipDraw on the model
-				if (hasWings || hasBelt) {
-					// Show body for belt/wings
-					copiedRoot.getChild("body").visible = true;
-				}
-				// Use skipDraw to selectively hide belt/wings within the body
-				ModelPart body = copiedRoot.getChild("body");
-				if (hasBelt) {
-					TravellersWingsModel.skipBelt(body, false);
-				} else {
-					TravellersWingsModel.skipBelt(body, true);
-				}
-				if (hasWings) {
-					TravellersWingsModel.skipWings(body, false);
-				} else {
-					TravellersWingsModel.skipWings(body, true);
-				}
+				boolean hasBelt = stack.has(TFDataComponents.TRAVELLERS_HAS_BELT)
+					|| stack.has(TFDataComponents.SWAP_HOTBAR_MODIFIER);
+
+				// Legs are the base leggings cylinders, always shown.
+				copiedRoot.getChild("right_leg").skipDraw = false;
+				copiedRoot.getChild("left_leg").skipDraw = false;
+
+				// Belt and wings live inside copiedRoot.body. Skip helpers expect
+				// the leggings ROOT as the first argument and internally resolve
+				// body → buckle/wingBaseLeft themselves (so we mirror NeoForge's
+				// exact layout).
+				TravellersWingsModel.skipBelt(copiedRoot, !hasBelt);
+				TravellersWingsModel.skipWings(copiedRoot, !hasWings);
 			}
-			case FEET -> {
-				copiedRoot.getChild("right_leg").getAllParts().forEach(p -> p.visible = true);
-				copiedRoot.getChild("left_leg").getAllParts().forEach(p -> p.visible = true);
-			}
+			case FEET -> copiedRoot.getAllParts().forEach(p -> p.skipDraw = false);
 			default -> { }
 		}
 
+		// `visible` on the root must stay true — otherwise nothing is traversed.
 		copiedRoot.visible = true;
 
 		return slot == EquipmentSlot.LEGS ? new TravellersWingsModel(copiedRoot) : new TFArmorModel(copiedRoot);
+	}
+
+	/**
+	 * Shorthand helper: set skipDraw on every part of a chain of named children
+	 * (e.g. {@code setSkipDrawTree(root, false, "head", "hat")} makes head visible
+	 * and also every part under head.hat). If any name in the chain doesn't exist
+	 * the call is silently a no-op so GUI / PIP render states with incomplete
+	 * ModelPart trees don't throw.
+	 */
+	private static void setSkipDrawTree(ModelPart root, boolean skip, String firstChild, String... restChildren) {
+		ModelPart cur = root;
+		if (!cur.hasChild(firstChild)) return;
+		cur = cur.getChild(firstChild);
+		cur.getAllParts().forEach(p -> p.skipDraw = skip);
+		for (String name : restChildren) {
+			if (!cur.hasChild(name)) return;
+			cur = cur.getChild(name);
+			cur.getAllParts().forEach(p -> p.skipDraw = skip);
+		}
 	}
 
 	@Override

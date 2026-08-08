@@ -268,33 +268,45 @@ public class TravellersWingsModel extends HumanoidModel<HumanoidRenderState> {
 	}
 
 	public static void skipWings(ModelPart leggingsLayer, boolean skip) {
+		if (!leggingsLayer.hasChild("body")) return;
 		ModelPart body = leggingsLayer.getChild("body");
 
-		ModelPart wbl = body.getChild("wingBaseLeft");
-		wbl.skipDraw = skip;
-		wbl.getChild("wingEdgeLeft").skipDraw = skip;
-		wbl.getChild("wingInsetLeft").skipDraw = skip;
-		wbl.getChild("wingCenterLeft").skipDraw = skip;
-		wbl.getChild("wingFlangeLeft").skipDraw = skip;
-		wbl.getChild("wingAuxLeft").skipDraw = skip;
+		if (body.hasChild("wingBaseLeft")) {
+			ModelPart wbl = body.getChild("wingBaseLeft");
+			wbl.skipDraw = skip;
+			safeSkip(wbl, "wingEdgeLeft", skip);
+			safeSkip(wbl, "wingInsetLeft", skip);
+			safeSkip(wbl, "wingCenterLeft", skip);
+			safeSkip(wbl, "wingFlangeLeft", skip);
+			safeSkip(wbl, "wingAuxLeft", skip);
+		}
 
-		ModelPart wbr = body.getChild("wingBaseRight");
-		wbr.skipDraw = skip;
-		wbr.getChild("wingEdgeRight").skipDraw = skip;
-		wbr.getChild("wingInsetRight").skipDraw = skip;
-		wbr.getChild("wingCenterRight").skipDraw = skip;
-		wbr.getChild("wingFlangeRight").skipDraw = skip;
-		wbr.getChild("wingAuxRight").skipDraw = skip;
+		if (body.hasChild("wingBaseRight")) {
+			ModelPart wbr = body.getChild("wingBaseRight");
+			wbr.skipDraw = skip;
+			safeSkip(wbr, "wingEdgeRight", skip);
+			safeSkip(wbr, "wingInsetRight", skip);
+			safeSkip(wbr, "wingCenterRight", skip);
+			safeSkip(wbr, "wingFlangeRight", skip);
+			safeSkip(wbr, "wingAuxRight", skip);
+		}
 	}
 
 	public static void skipBelt(ModelPart leggingsLayer, boolean skip) {
+		if (!leggingsLayer.hasChild("body")) return;
 		ModelPart body = leggingsLayer.getChild("body");
 
-		body.getChild("buckle").skipDraw = skip;
-		body.getChild("frontRight").skipDraw = skip;
-		body.getChild("frontLeft").skipDraw = skip;
-		body.getChild("sideRight").skipDraw = skip;
-		body.getChild("sideLeft").skipDraw = skip;
-		body.getChild("back").skipDraw = skip;
+		safeSkip(body, "buckle", skip);
+		safeSkip(body, "frontRight", skip);
+		safeSkip(body, "frontLeft", skip);
+		safeSkip(body, "sideRight", skip);
+		safeSkip(body, "sideLeft", skip);
+		safeSkip(body, "back", skip);
+	}
+
+	private static void safeSkip(ModelPart parent, String childName, boolean skip) {
+		if (parent.hasChild(childName)) {
+			parent.getChild(childName).skipDraw = skip;
+		}
 	}
 }
