@@ -5,8 +5,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SaplingBlock;
@@ -17,6 +21,8 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
+import twilightforest.TwilightForestMod;
+import twilightforest.init.TFBlocks;
 import twilightforest.init.TFStructures;
 import twilightforest.world.components.structures.TreeGrowerStartable;
 
@@ -29,27 +35,75 @@ public class HollowOakSaplingBlock extends SaplingBlock {
 	}
 
 	@Override
+	protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
+		return state.is(BlockTags.SUPPORTS_VEGETATION) || state.is(TFBlocks.UBEROUS_SOIL);
+	}
+
+	@Override
+	public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
+		return true;
+	}
+
+	@Override
+	public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
+		return level.getRandom().nextFloat() < 0.45F;
+	}
+
+	@Override
+	public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+		TwilightForestMod.LOGGER.debug("[HollowOak] performBonemeal @ pos={} stage={}", pos, state.getValue(STAGE));
+		this.advanceTree(level, pos, state, random);
+	}
+
+	@Override
 	public void advanceTree(ServerLevel level, BlockPos pos, BlockState state, RandomSource random) {
-		if (state.getValue(STAGE) == 0) {
-			level.setBlock(pos, state.cycle(STAGE), 260);
+		int stage = state.getValue(STAGE);
+		TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree entered @ pos={} current stage={}", pos, stage);
+		if (stage == 0) {
+			BlockState newState = state.cycle(STAGE);
+			boolean updated = level.setBlock(pos, newState, 260);
+			TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree stage 0->1 @ pos={} setBlock ok={} newStage={}",
+				pos, updated, newState.getValue(STAGE));
 		} else {
 			ChunkGenerator generator = level.getChunkSource().getGenerator();
-			Holder.Reference<Structure> structure = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(TFStructures.HOLLOW_TREE);
+			Holder.Reference<Structure> structureHolder = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(TFStructures.HOLLOW_TREE);
+			Structure structure = structureHolder.value();
+			TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree @ pos={} unwrapped Structure class={}",
+				pos, structure.getClass().getName());
 
-			if (!(structure instanceof TreeGrowerStartable treeGrowerStartable) || !treeGrowerStartable.checkSaplingClearance(level, pos))
+			if (!(structure instanceof TreeGrowerStartable treeGrowerStartable)) {
+				TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree @ pos={} aborted: Structure is not TreeGrowerStartable (actual={})",
+					pos, structure.getClass().getName());
 				return;
+			}
+
+			if (!treeGrowerStartable.checkSaplingClearance(level, pos)) {
+				TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree @ pos={} aborted: checkSaplingClearance returned false (see DEBUG logs above for blocking block)",
+					pos);
+				return;
+			}
+			TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree @ pos={} checkSaplingClearance passed, generating structure...", pos);
 
 			StructureStart structurestart = treeGrowerStartable.generateFromSapling(level.registryAccess(), generator, generator.getBiomeSource(), level.getChunkSource().randomState(), level.getStructureManager(), level.getSeed(), pos, level);
 
-			if (!structurestart.isValid())
+			if (!structurestart.isValid()) {
+				TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree @ pos={} aborted: structurestart.isValid()=false StructureStart={}",
+					pos, structurestart);
 				return;
+			}
 
 			BoundingBox boundingbox = structurestart.getBoundingBox();
 			ChunkPos start = new ChunkPos(SectionPos.blockToSectionCoord(boundingbox.minX()), SectionPos.blockToSectionCoord(boundingbox.minZ()));
 			ChunkPos end = new ChunkPos(SectionPos.blockToSectionCoord(boundingbox.maxX()), SectionPos.blockToSectionCoord(boundingbox.maxZ()));
 
-			if (ChunkPos.rangeClosed(start, end).noneMatch(currentChunkPos -> level.isLoaded(currentChunkPos.getWorldPosition())))
+			if (ChunkPos.rangeClosed(start, end).noneMatch(currentChunkPos -> level.isLoaded(currentChunkPos.getWorldPosition()))) {
+				TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree @ pos={} aborted: chunks in range not all loaded startChunk={} endChunk={} BoundingBox={}",
+					pos, start, end, boundingbox);
 				return;
+			}
+
+			TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree @ pos={} all checks passed, placing HollowTree! BoundingBox={}",
+				pos, boundingbox);
 
 			level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 
@@ -70,6 +124,8 @@ public class HollowOakSaplingBlock extends SaplingBlock {
 					chunkPos
 				)
 			);
+
+			TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree @ pos={} HollowTree placement done!", pos);
 		}
 	}
 }

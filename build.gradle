@@ -54,12 +54,10 @@ repositories {
 
 sourceSets {
 	main {
+		java {
+			exclude 'twilightforest/disabled/**'
+		}
 		resources {
-			// src/main/resources must take precedence over src/generated/resources.
-			// Generated castle block models use NeoForge "loader" format which Fabric
-			// cannot parse. The src/main/resources versions are hand-crafted for Fabric.
-			// src/main/generated contains NeoForge-generated structure_set JSON files
-			// needed for /locate command to find TF structures.
 			srcDirs = ['src/main/resources', 'src/generated/resources', 'src/main/generated']
 		}
 	}
@@ -67,6 +65,7 @@ sourceSets {
 		compileClasspath += main.compileClasspath + main.output
 		java {
 			srcDirs = ['src/main/java', 'src/data/java']
+			exclude 'twilightforest/disabled/**'
 		}
 		resources {
 			srcDirs = ['src/main/resources', 'src/generated/resources', 'src/main/generated']
@@ -112,7 +111,7 @@ dependencies {
 	//implementation "tamaized:beanification:${project.beanification_version}"
 
 	// Forge Config API Port (provides NeoForge-compatible config API)
-	implementation files('libs/forgeconfigapiport/forgeconfigapiport-fabric-26.1.5.jar')
+	//implementation files('libs/forgeconfigapiport/forgeconfigapiport-fabric-26.1.5.jar')
 	implementation 'curse.maven:forge-config-api-port-547434:8218664'
 	// Transitive dependencies for ForgeConfigAPIPort
 	implementation 'com.electronwill.night-config:core:3.8.3'

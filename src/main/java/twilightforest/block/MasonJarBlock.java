@@ -80,6 +80,8 @@ public class MasonJarBlock extends JarBlock implements SimpleWaterloggedBlock {
 		handler.setItem(ItemStack.EMPTY);
 		server.playSound(null, pos, TFSounds.JAR_REMOVE, SoundSource.BLOCKS, 1.0F, 1.0F);
 		server.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+		jar.setChanged();
+		server.sendBlockUpdated(pos, jar.getBlockState(), jar.getBlockState(), net.minecraft.world.level.block.Block.UPDATE_ALL_IMMEDIATE);
 	}
 
 	private static void handleInsert(ServerLevel server, BlockPos pos, Player player, InteractionHand hand, MasonJarBlockEntity jar, MasonJarBlockEntity.MasonJarItemStackHandler handler, ItemStack stack) {
@@ -111,6 +113,8 @@ public class MasonJarBlock extends JarBlock implements SimpleWaterloggedBlock {
 		float filledRatio = (float) canInsert / (float) before.getMaxStackSize();
 		server.playSound(null, pos, TFSounds.JAR_INSERT, SoundSource.BLOCKS, 1.0F, 0.7F + 0.5F * filledRatio);
 		server.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+		jar.setChanged();
+		server.sendBlockUpdated(pos, jar.getBlockState(), jar.getBlockState(), net.minecraft.world.level.block.Block.UPDATE_ALL_IMMEDIATE);
 	}
 
 	private static void wiggle(ServerLevel server, BlockPos pos, MasonJarBlockEntity jar) {

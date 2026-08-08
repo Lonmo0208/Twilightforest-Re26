@@ -80,6 +80,7 @@ public class JarBlockEntity extends BlockEntity {
 		addLid(net.minecraft.world.item.Items.SPRUCE_LOG);
 		addLid(net.minecraft.world.item.Items.CRIMSON_STEM);
 		addLid(net.minecraft.world.item.Items.WARPED_STEM);
+		addLid(net.minecraft.world.item.Items.PALE_OAK_LOG);
 
 		// Stripped TF logs
 		addLid(TFBlocks.STRIPPED_MANGROVE_LOG.asItem());
@@ -102,6 +103,7 @@ public class JarBlockEntity extends BlockEntity {
 		addLid(net.minecraft.world.item.Items.STRIPPED_SPRUCE_LOG);
 		addLid(net.minecraft.world.item.Items.STRIPPED_CRIMSON_STEM);
 		addLid(net.minecraft.world.item.Items.STRIPPED_WARPED_STEM);
+		addLid(net.minecraft.world.item.Items.STRIPPED_PALE_OAK_LOG);
 
 		// Cinder log + bamboo variants
 		addLid(TFBlocks.CINDER_LOG.asItem());

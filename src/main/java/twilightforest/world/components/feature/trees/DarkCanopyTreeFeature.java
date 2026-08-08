@@ -43,8 +43,6 @@ import java.util.function.BiConsumer;
 //Lots of things from TreeFeature, but we're checking for dirt to place on
 public class DarkCanopyTreeFeature extends Feature<TreeConfiguration> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DarkCanopyTreeFeature.class);
-
 	public DarkCanopyTreeFeature(Codec<TreeConfiguration> config) {
 		super(config);
 	}
@@ -63,17 +61,13 @@ public class DarkCanopyTreeFeature extends Feature<TreeConfiguration> {
 				// yes!
 				foundDirt = true;
 				pos = new BlockPos(pos.getX(), dy, pos.getZ());
-				LOGGER.trace("[TF-DarkForest] Found dirt at {} for tree placement (origin was {})", pos, ctx.origin());
 				break;
 			} else if (state.is(BlockTags.BASE_STONE_OVERWORLD) || state.is(BlockTags.SAND)) {
-				// nope
-				LOGGER.trace("[TF-DarkForest] Hit stone/sand at y={}, stopping dirt search (origin={})", dy - 1, ctx.origin());
 				break;
 			}
 		}
 
 		if (!foundDirt) {
-			LOGGER.warn("[TF-DarkForest] No dirt found for tree at origin={}", ctx.origin());
 			return false;
 		}
 
@@ -88,7 +82,6 @@ public class DarkCanopyTreeFeature extends Feature<TreeConfiguration> {
 			//We check against the TreeFeature's validTreePos method, to see if the tree can grow here, cuz the trunk placer uses this as well
 			//If we don't, some trees end up growing only one or two blocks tall
 			if (!FeaturePlacers.validTreePos(reader, pos.relative(Direction.UP, i))) {
-				LOGGER.trace("[TF-DarkForest] Invalid tree pos at {} offset +{}", pos, i);
 				return false;
 			}
 		}
@@ -96,12 +89,9 @@ public class DarkCanopyTreeFeature extends Feature<TreeConfiguration> {
 		// do not grow next to another tree
 		for (Direction e : Direction.Plane.HORIZONTAL) {
 			if (reader.getBlockState(pos.relative(e)).is(BlockTags.LOGS)) {
-				LOGGER.trace("[TF-DarkForest] Adjacent log found at {}, skipping", pos.relative(e));
 				return false;
 			}
 		}
-
-		LOGGER.trace("[TF-DarkForest] Placing tree at {}", pos);
 
 		//Taken from TreeFeature.generate, adjusting our BoundingBox to fit where the dirt is
 		TreeConfiguration treeconfiguration = ctx.config();

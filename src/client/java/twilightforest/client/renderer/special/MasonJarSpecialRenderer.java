@@ -27,6 +27,11 @@ import twilightforest.enums.extensions.TFItemDisplayContextEnumExtension;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFDataComponents;
 
+import net.minecraft.client.renderer.block.model.BlockStateModelWrapper;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import org.joml.Matrix4f;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -43,8 +48,9 @@ public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolv
 			Item lid = testLid == null || !JarRenderer.LID_KEYS.containsKey(testLid) ? null : testLid;
 			if (lid != null) {
 				JarRenderer.populateLidKeys();
-				BlockModel lidModel = JarRenderer.getLidModel(lid);
-				if (lidModel != null) {
+				BlockStateModel lidBsm = JarRenderer.getLidModel(lid);
+				if (lidBsm != null) {
+					BlockModel lidModel = new BlockStateModelWrapper(lidBsm, List.of(), new Matrix4f().identity());
 					BlockModelRenderState lidState = new BlockModelRenderState();
 					lidModel.update(lidState, TFBlocks.MASON_JAR.defaultBlockState(), BlockDisplayContext.create(), 42L);
 					lidState.submit(stack, collector, light, overlay, outlineColor);

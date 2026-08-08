@@ -3,6 +3,7 @@ package twilightforest.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import twilightforest.init.TFBlocks;
 
 public class MangroveSaplingBlock extends SaplingBlock implements SimpleWaterloggedBlock {
 
@@ -29,6 +31,11 @@ public class MangroveSaplingBlock extends SaplingBlock implements SimpleWaterlog
 	public MangroveSaplingBlock(TreeGrower tree, BlockBehaviour.Properties properties) {
 		super(tree, properties);
 		this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false));
+	}
+
+	@Override
+	protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
+		return state.is(BlockTags.SUPPORTS_VEGETATION) || state.is(TFBlocks.UBEROUS_SOIL);
 	}
 
 	//[VanillaCopy] of BaseCoralPlantTypeBlock.scanForWater

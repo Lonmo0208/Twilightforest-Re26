@@ -95,12 +95,24 @@ public class MasonJarBlockEntity extends JarBlockEntity {
 	@Override
 	protected void collectImplicitComponents(DataComponentMap.Builder builder) {
 		super.collectImplicitComponents(builder);
-		builder.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(this.item.getItem())));
+		// Do not encode an empty slot into the CONTAINER component.
+		// ItemContainerContents Codec rejects ItemStack.EMPTY
+		// ("count must be [1;99], item must not be air") and spams a
+		// "Serialization errors: Failed to encode '0 minecraft:air' to field 'item'"
+		// warning to the log every time the mason jar is saved/synced.
+		if (!this.item.isEmpty()) {
+			builder.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(this.item.getItem())));
+		}
 	}
 
 	@Override
 	protected void applyImplicitComponents(DataComponentGetter components) {
 		super.applyImplicitComponents(components);
+		// Safe to use getOrDefault here: ItemContainerContents.EMPTY.copyOne()
+		// returns ItemStack.EMPTY, which matches "no item stored". If the NBT
+		// data (loaded in loadAdditional via saveAdditional NBT) has a real item,
+		// this runs BEFORE loadAdditional, so loadAdditional will overwrite the
+		// EMPTY value with the correct stored stack.
 		this.item.setItem(components.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).copyOne());
 	}
 

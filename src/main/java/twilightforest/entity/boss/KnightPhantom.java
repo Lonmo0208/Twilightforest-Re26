@@ -182,6 +182,19 @@ public class KnightPhantom extends BaseTFBoss {
 	@Override
 	protected void customServerAiStep(ServerLevel server) {
 		super.customServerAiStep(server);
+		if (this.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty() || this.getItemBySlot(EquipmentSlot.CHEST).isEmpty() || this.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
+			DifficultyInstance difficulty = server.getCurrentDifficultyAt(this.blockPosition());
+			this.populateDefaultEquipmentSlots(server.getRandom(), difficulty);
+			this.populateDefaultEquipmentEnchantments(server, server.getRandom(), difficulty);
+			switch (this.number % 3) {
+				case 0 -> this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_SWORD));
+				case 1 -> this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_AXE));
+				case 2 -> this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TFItems.KNIGHTMETAL_PICKAXE));
+			}
+		}
+		if (!this.getAttribute(Attributes.ARMOR).hasModifier(NON_CHARGING_ARMOR_MODIFIER.id())) {
+			this.getAttribute(Attributes.ARMOR).addTransientModifier(NON_CHARGING_ARMOR_MODIFIER);
+		}
 		if (this.totalKnownKnights == Integer.MIN_VALUE) this.updateMyNumber();
 		float health = 0F;
 		float maxHealth = 0F;

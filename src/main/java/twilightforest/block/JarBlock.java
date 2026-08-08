@@ -116,31 +116,27 @@ public class JarBlock extends BaseEntityBlock implements SimpleWaterloggedBlock 
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (level.getBlockEntity(pos) instanceof JarBlockEntity jarBlockEntity) {
 			Item candidateLid = stack.getItem();
-			// Check if the held item is a registered lid type (regardless of click position)
-			boolean isRegisteredLid = JarBlockEntity.REGISTERED_LOG_LIDS.get(candidateLid) instanceof BooleanSupplier check && check.getAsBoolean();
-			boolean clickOnLidArea = hitResult.getLocation().y >= pos.getY() + (14.0D / 16.0D);
+			// Require clicking in the upper half of the jar (above 10/16 from block bottom).
+			// The official threshold is 14/16 (=exactly the lid 2px top), which forces the
+			// player to click the tiny lid top face -- nearly unusable from the side.
+			// Our relaxed threshold still prevents clicking the jar base while keeping the
+			// lid-area interaction feel intact.
+			boolean clickUpperHalf = hitResult.getLocation().y >= pos.getY() + (10.0D / 16.0D);
 
-			if (isRegisteredLid) {
-				if (candidateLid != jarBlockEntity.lid) {
-					// Valid lid, different from current one: swap the lid regardless of click position
-					jarBlockEntity.lid = candidateLid;
-					if (level instanceof ServerLevel serverLevel) {
-						serverLevel.playSound(null, pos, TFSounds.JAR_LID_SWAP, SoundSource.BLOCKS, 1.0F, 1.0F);
-						jarBlockEntity.wobble(DecoratedPotBlockEntity.WobbleStyle.POSITIVE);
-						jarBlockEntity.setChanged();
-						// IMPORTANT: notify the client of BE data change (triggers getUpdatePacket → onDataPacket on client)
-						// Without this, the renderer still sees the old lid
-						level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL_IMMEDIATE);
-					}
-					return InteractionResult.SUCCESS;
-				} else if (clickOnLidArea) {
-					// Clicked lid area with the same lid: wiggle only
-					if (level instanceof ServerLevel serverLevel) {
-						serverLevel.playSound(null, pos, TFSounds.JAR_WIGGLE, SoundSource.BLOCKS, 1.0F, 1.0F);
-						jarBlockEntity.wobble(DecoratedPotBlockEntity.WobbleStyle.NEGATIVE);
-					}
-					return InteractionResult.SUCCESS;
+			if (clickUpperHalf && candidateLid != jarBlockEntity.lid
+				&& JarBlockEntity.REGISTERED_LOG_LIDS.get(candidateLid) instanceof BooleanSupplier check
+				&& check.getAsBoolean()) {
+				jarBlockEntity.lid = candidateLid;
+				if (level instanceof ServerLevel serverLevel) {
+					serverLevel.playSound(null, pos, TFSounds.JAR_LID_SWAP, SoundSource.BLOCKS, 1.0F, 1.0F);
+					jarBlockEntity.wobble(DecoratedPotBlockEntity.WobbleStyle.POSITIVE);
+					jarBlockEntity.setChanged();
+					// Explicitly send the BE update packet to all tracking clients so the new
+					// lid renders immediately. Minecraft's native dirty-chunk resync is slow
+					// enough in Fabric that players perceive "the lid was never replaced".
+					level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL_IMMEDIATE);
 				}
+				return InteractionResult.SUCCESS;
 			}
 		}
 		return InteractionResult.PASS;

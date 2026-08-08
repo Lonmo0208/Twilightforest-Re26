@@ -442,7 +442,7 @@ public class Hydra extends BaseTFBoss {
 		int MORTAR_MIN_DIST = 4;
 		int MORTAR_MAX_DIST = 20;
 
-		double BITE_RADIUS_SQ = 2.5D * 2.5D;
+		double BITE_RADIUS_SQ = 3.5D * 3.5D;
 
 		int BITE_CHANCE_DENOM = 4;  // nextInt(4) < 3 → 75%
 

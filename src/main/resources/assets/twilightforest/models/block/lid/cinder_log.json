@@ -1,7 +1,7 @@
-{
+﻿{
   "parent": "twilightforest:block/jar_lid",
   "textures": {
-    "end": "twilightforest:block/cinder_log_top",
-    "side": "twilightforest:block/cinder_log"
+    "1": "twilightforest:block/cinder_log_top",
+    "2": "twilightforest:block/cinder_log"
   }
 }

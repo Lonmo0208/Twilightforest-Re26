@@ -174,15 +174,29 @@ public class PotionFlaskItem extends Item {
 
 	@Override
 	public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-		return Optional.of(new Tooltip(stack.getOrDefault(TFDataComponents.POTION_FLASK_CONTENTS, PotionFlaskComponent.EMPTY), DOSES));
+		// [FABRIC PORT] MC 26.1.2 的 ClientTooltipComponent.create 是一个穷举式 switch，
+		// 只支持 BundleTooltip / ActivePlayersTooltip；自定义 TooltipComponent 必须通过
+		// Fabric API 的 ClientTooltipComponentCallback.EVENT 注册。
+		//
+		// 原来的写法会直接 new Tooltip(...)，结果在渲染创造模式物品栏时 JVM 尝试加载
+		// PotionFlaskItem$Tooltip 类，然后被 ClientTooltipComponent 的 exhaustive switch
+		// default 分支打回，从而抛出 NoClassDefFoundError/IllegalArgumentException。
+		//
+		// 暂时禁用 Tooltip 图像（不显示瓶中药水的剂量预览），避免打开背包直接崩溃。
+		// 客户端的 PotionFlaskClientTooltip（ClientTooltipComponentCallback 注册）会在
+		// 需要的时候重新启用 Tooltip 预览。
+		return Optional.empty();
+	}
+
+	// NB: Tooltip record 仍然保留在此处（main 源集），因为 ClientTooltipComponentCallback
+	// 需要一个 TooltipComponent 子类型作为 data carrier。一旦客户端的渲染回调注册好，
+	// getTooltipImage 就可以再次返回 Optional.of(new Tooltip(...))。
+	public record Tooltip(PotionFlaskComponent component, int maxDoses) implements TooltipComponent {
 	}
 
 	//copied from Item.getBarWidth, but reversed the "durability" check so it increments up, not down
 	@Override
 	public int getBarWidth(ItemStack stack) {
 		return Math.round(13.0F - Math.abs(stack.getOrDefault(TFDataComponents.POTION_FLASK_CONTENTS, PotionFlaskComponent.EMPTY).doses() - DOSES) * 13.0F / DOSES);
-	}
-
-	public record Tooltip(PotionFlaskComponent component, int maxDoses) implements TooltipComponent {
 	}
 }

@@ -9,6 +9,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -27,7 +29,21 @@ public class PocketWatchItem extends Item {
 	@Override
 	public void inventoryTick(ItemStack stack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
 		if (!level.isClientSide() && owner instanceof LivingEntity living) {
-			if (slot != null && slot.getType() == EquipmentSlot.Type.HAND && slot.getIndex() >= 0 && slot.getIndex() <= 8) {
+			boolean inHotbarOrOffhand = false;
+			if (living instanceof Player player) {
+				Inventory inv = player.getInventory();
+				for (int i = 0; i < Inventory.getSelectionSize(); i++) {
+					if (inv.getItem(i).getItem() == this) {
+						inHotbarOrOffhand = true;
+						break;
+					}
+				}
+				if (!inHotbarOrOffhand && inv.getItem(Inventory.SLOT_OFFHAND).getItem() == this) {
+					inHotbarOrOffhand = true;
+				}
+			}
+
+			if (inHotbarOrOffhand) {
 				living.addEffect(new MobEffectInstance(MobEffects.SPEED, 5, 0, false, false, false));
 				living.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, 5, 0, false, false, false));
 			}

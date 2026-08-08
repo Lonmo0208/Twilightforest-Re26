@@ -19,6 +19,7 @@ import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.level.storage.loot.LootTable;
+import twilightforest.TwilightForestMod;
 import twilightforest.init.TFStructureTypes;
 import twilightforest.util.features.FeatureLogic;
 import twilightforest.world.components.structures.TreeGrowerStartable;
@@ -153,16 +155,34 @@ public class HollowTreeStructure extends Structure implements DecorationClearanc
 	@Override
 	public boolean checkSaplingClearance(ServerLevel level, BlockPos pos) {
 		int rangeClearance = 3;
-		Iterable<BlockPos> blockPos = BlockPos.betweenClosed(pos.getX() - rangeClearance, pos.getY() - rangeClearance, pos.getZ() - rangeClearance, pos.getX() + rangeClearance, pos.getY() + 128, pos.getZ() + rangeClearance);
+		Iterable<BlockPos> blockPos = BlockPos.betweenClosed(pos.getX() - rangeClearance, pos.getY(), pos.getZ() - rangeClearance, pos.getX() + rangeClearance, pos.getY() + 128, pos.getZ() + rangeClearance);
 
+		TwilightForestMod.LOGGER.debug("[HollowOak] checkSaplingClearance start @ pos={} scan range: X[{}..{}] Y[{}..{}] Z[{}..{}]",
+			pos,
+			pos.getX() - rangeClearance, pos.getX() + rangeClearance,
+			pos.getY(), pos.getY() + 128,
+			pos.getZ() - rangeClearance, pos.getZ() + rangeClearance);
+
+		int checked = 0;
 		for (BlockPos posCheck : blockPos) {
 			if (posCheck.equals(pos))
 				continue;
 
-			if (!FeatureLogic.treesReplaceable(level.getBlockState(posCheck)))
+			BlockState stateCheck = level.getBlockState(posCheck);
+			if (!FeatureLogic.treesReplaceable(stateCheck)) {
+				TwilightForestMod.LOGGER.debug("[HollowOak] checkSaplingClearance BLOCKED @ posCheck={} state={} block={}",
+					posCheck, stateCheck, stateCheck.getBlock());
+				TwilightForestMod.LOGGER.debug("  -> canBeReplaced={} in WORLDGEN_REPLACEABLES={} is BlockTags.FLOWERS={} in FEATURES_CANNOT_REPLACE={}",
+					stateCheck.canBeReplaced(),
+					stateCheck.is(twilightforest.tags.TFBlockTags.WORLDGEN_REPLACEABLES),
+					stateCheck.is(net.minecraft.tags.BlockTags.FLOWERS),
+					stateCheck.is(net.minecraft.tags.BlockTags.FEATURES_CANNOT_REPLACE));
 				return false;
+			}
+			checked++;
 		}
 
+		TwilightForestMod.LOGGER.debug("[HollowOak] checkSaplingClearance PASSED, checked {} blocks (sapling pos skipped)", checked);
 		return true;
 	}
 

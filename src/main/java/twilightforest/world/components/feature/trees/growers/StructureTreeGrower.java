@@ -28,7 +28,8 @@ public class StructureTreeGrower extends TreeGrower {
 	//copied from PlaceCommand.placeStructure
 	@Override
 	public boolean growTree(ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state, RandomSource random) {
-		Holder.Reference<Structure> structure = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(TFStructures.HOLLOW_TREE);
+		Holder.Reference<Structure> structureHolder = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(TFStructures.HOLLOW_TREE);
+		Structure structure = structureHolder.value();
 
 		if (!(structure instanceof TreeGrowerStartable treeGrowerStartable) || !treeGrowerStartable.checkSaplingClearance(level, pos))
 			return false;

@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.FabricModelManager;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -23,6 +24,9 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +53,24 @@ import java.util.Map;
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
 	public static final Map<Item, Identifier> LID_KEYS = new HashMap<>();
 	public static final Map<Item, ExtraModelKey<BlockStateModel>> LID_MODEL_KEYS = new HashMap<>();
-	public static final Map<Item, BlockModel> LID_MODELS = new HashMap<>();
+	public static final Map<Item, BlockStateModel> LIDS = new HashMap<>();
+
+	public static final ResourceManagerReloadListener LID_MODEL_CACHE_RELOAD_LISTENER = new ResourceManagerReloadListener() {
+		@Override
+		public void onResourceManagerReload(ResourceManager manager) {
+			LIDS.clear();
+			FabricModelManager fmm = (FabricModelManager) Minecraft.getInstance().getModelManager();
+			for (LidResource lidResource : LID_LOCATION_LIST) {
+				ExtraModelKey<BlockStateModel> key = LID_MODEL_KEYS.get(lidResource.lid());
+				if (key != null) {
+					BlockStateModel model = fmm.getModel(key);
+					if (model != null) {
+						LIDS.put(lidResource.lid(), model);
+					}
+				}
+			}
+		}
+	};
 
 	public record LidResource(Item lid, Identifier identifier, @Nullable String customPath) {
 		public LidResource(Item lid) {
@@ -90,6 +111,7 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		new LidResource(Items.SPRUCE_LOG, "spruce_log"),
 		new LidResource(Items.CRIMSON_STEM, "crimson_stem"),
 		new LidResource(Items.WARPED_STEM, "warped_stem"),
+		new LidResource(Items.PALE_OAK_LOG, "pale_oak_log"),
 		new LidResource(TFBlocks.STRIPPED_MANGROVE_LOG.asItem()),
 		new LidResource(TFBlocks.STRIPPED_CANOPY_LOG.asItem()),
 		new LidResource(TFBlocks.STRIPPED_DARK_LOG.asItem()),
@@ -108,6 +130,7 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		new LidResource(Items.STRIPPED_SPRUCE_LOG, "stripped_spruce_log"),
 		new LidResource(Items.STRIPPED_CRIMSON_STEM, "stripped_crimson_stem"),
 		new LidResource(Items.STRIPPED_WARPED_STEM, "stripped_warped_stem"),
+		new LidResource(Items.STRIPPED_PALE_OAK_LOG, "stripped_pale_oak_log"),
 		new LidResource(TFBlocks.CINDER_LOG.asItem()),
 		new LidResource(Items.PUMPKIN, "pumpkin"),
 		new LidResource(Items.BAMBOO_BLOCK, "bamboo_block"),
@@ -128,21 +151,27 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		}
 	}
 
-	public static @Nullable BlockModel getLidModel(Item lid) {
+	public static void registerReloadListener() {
+		ResourceLoader.get(PackType.CLIENT_RESOURCES)
+			.registerReloadListener(TwilightForestMod.prefix("lid_model_cache"), LID_MODEL_CACHE_RELOAD_LISTENER);
+	}
+
+	public static @Nullable BlockStateModel getLidModel(Item lid) {
 		if (lid == null) return null;
-		// Check cached BlockModel first
-		if (LID_MODELS.containsKey(lid)) {
-			return LID_MODELS.get(lid);
-		}
+		// Fast path: ResourceManagerReloadListener already cached the model.
+		BlockStateModel cached = LIDS.get(lid);
+		if (cached != null) return cached;
+		// Fallback: Reload listener may not have fired yet, or the LID_MODEL_KEYS
+		// was populated after models were baked. Look up directly from the
+		// FabricModelManager using the registered ExtraModelKey.
 		ExtraModelKey<BlockStateModel> key = LID_MODEL_KEYS.get(lid);
 		if (key == null) return null;
 		FabricModelManager fmm = (FabricModelManager) Minecraft.getInstance().getModelManager();
-		BlockStateModel bsm = fmm.getModel(key);
-		if (bsm == null) return null;
-		// Wrap BlockStateModel as BlockModel with identity transform and empty tints
-		BlockModel result = new BlockStateModelWrapper(bsm, List.of(), new Matrix4f().identity());
-		LID_MODELS.put(lid, result);
-		return result;
+		BlockStateModel model = fmm.getModel(key);
+		if (model != null) {
+			LIDS.put(lid, model);
+		}
+		return model;
 	}
 
 	@Override
@@ -161,24 +190,24 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 
 		BlockState blockState = blockEntity.getBlockState();
 
-		// Jar model
 		this.blockResolver.update(state.jarModel, blockState, BlockDisplayContext.create());
 
-		// Lid model - only set state.lid if we successfully loaded model
 		populateLidKeys();
 		state.lid = null;
-		BlockModel lidModel = getLidModel(blockEntity.lid);
-		if (lidModel != null) {
+		state.wobbleStyle = null;
+		BlockStateModel lidBsm = getLidModel(blockEntity.lid);
+		if (lidBsm != null) {
+			BlockModel lidModel = new BlockStateModelWrapper(lidBsm, List.of(), new Matrix4f().identity());
 			lidModel.update(state.lidModel, blockState, BlockDisplayContext.create(), 42L);
 			state.lid = blockEntity.lid;
 		}
 
-		// Wobble animation
 		WobbleStyle wobbleStyle = blockEntity.lastWobbleStyle;
 		if (wobbleStyle != null && blockEntity.getLevel() != null) {
 			float f = (float) (blockEntity.getLevel().getGameTime() - blockEntity.wobbleStartedAtTick) + partialTick;
 			state.wobbleAmplitude = WOBBLE_AMPLITUDE;
 			state.wobbleAmount = f / (float) wobbleStyle.duration;
+			state.wobbleStyle = wobbleStyle;
 		} else {
 			state.wobbleAmount = -1.0F;
 		}
@@ -191,22 +220,27 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 		poseStack.translate(-0.5, 0.0, -0.5);
 
-		// Wobble
 		if (state.wobbleAmount >= 0.0F && state.wobbleAmount <= 1.0F) {
-			float f5 = Mth.sin(-state.wobbleAmount * 3.0F * (float) Math.PI) * state.wobbleAmplitude;
-			float f6 = 1.0F - state.wobbleAmount;
-			poseStack.rotateAround(Axis.YP.rotation(f5 * f6), 0.5F, 0.0F, 0.5F);
+			if (state.wobbleStyle == WobbleStyle.POSITIVE) {
+				float amplitude = 0.015625F;
+				float deltaTime = state.wobbleAmount * (float) (Math.PI * 2);
+				float tiltX = -1.5F * (Mth.cos(deltaTime) + 0.5F) * Mth.sin(deltaTime / 2.0F);
+				poseStack.rotateAround(Axis.XP.rotation(tiltX * amplitude), 0.5F, 0.0F, 0.5F);
+				float tiltZ = Mth.sin(deltaTime);
+				poseStack.rotateAround(Axis.ZP.rotation(tiltZ * amplitude), 0.5F, 0.0F, 0.5F);
+			} else {
+				float f5 = Mth.sin(-state.wobbleAmount * 3.0F * (float) Math.PI) * state.wobbleAmplitude;
+				float f6 = 1.0F - state.wobbleAmount;
+				poseStack.rotateAround(Axis.YP.rotation(f5 * f6), 0.5F, 0.0F, 0.5F);
+			}
 		}
 
-		// Render lid model FIRST, so jar renders on top of lid base
 		if (state.lid != null && LID_KEYS.containsKey(state.lid)) {
 			state.lidModel.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 		}
 
-		// Render jar model
 		state.jarModel.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
-		// Render contents (for MasonJar)
 		if (state.itemStack != null && !state.itemStack.isEmpty()) {
 			poseStack.pushPose();
 			poseStack.translate(0.5D, 0.4375D, 0.5D);

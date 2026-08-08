@@ -133,26 +133,37 @@ public class BeanContext {
                 instances.add(instance);
                 beans.put(clazz, instance);
                 LOGGER.debug("Instantiated bean: {}", clazz.getName());
-            } catch (Exception e) {
+            } catch (Throwable e) {
+                // Catch Throwable (not just Exception) so NoClassDefFoundError,
+                // ExceptionInInitializerError, VerifyError, LinkageError, etc.
+                // never bubble up and crash the whole entrypoint.
                 LOGGER.error("Failed to instantiate @Component class: {}", clazz.getName(), e);
             }
         }
 
         // Inject @Autowired fields into all beans
         for (Object bean : instances) {
-            injectInto(bean);
+            try {
+                injectInto(bean);
+            } catch (Throwable e) {
+                LOGGER.error("Failed to inject @Autowired into bean: {}", bean.getClass().getName(), e);
+            }
         }
 
         // Call @PostConstruct methods on all beans
         for (Object bean : instances) {
-            callPostConstruct(bean);
+            try {
+                callPostConstruct(bean);
+            } catch (Throwable e) {
+                LOGGER.error("Failed to call @PostConstruct on bean: {}", bean.getClass().getName(), e);
+            }
         }
 
         // Also inject into the @Configurable TwilightForestMod class
         try {
             Class<?> twilightForestModClass = Class.forName("twilightforest.TwilightForestMod");
             injectInto(twilightForestModClass);
-        } catch (ClassNotFoundException e) {
+        } catch (Throwable e) {
             LOGGER.warn("Could not find TwilightForestMod class for injection", e);
         }
 

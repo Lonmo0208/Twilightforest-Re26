@@ -25,7 +25,7 @@ import twilightforest.world.components.structures.util.PieceBeardifierModifier;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings({"JavadocReference", "unused"})
+@SuppressWarnings({"unused"})
 public class WorldgenHooks {
 
 	public static ObjectList<DensityFunction> gatherCustomTerrain(StructureManager structureManager, ChunkPos chunkPos) {
@@ -45,8 +45,8 @@ public class WorldgenHooks {
 
 		double addedDensity = 0;
 
-		for (int i = 0; i < customDensities.size(); i++) {
-			addedDensity += customDensities.get(i).compute(context);
+		for (DensityFunction customDensity : customDensities) {
+			addedDensity += customDensity.compute(context);
 		}
 
 		return original + addedDensity;
@@ -56,7 +56,7 @@ public class WorldgenHooks {
 	 * Rebuilds the Beardifier with piece-specific terrain adjustments for PieceBeardifierModifier pieces.
 	 * Removes the vanilla rigid for such pieces and replaces it with a custom rigid using the piece's
 	 * getBeardifierBox() and getTerrainAdjustment().
-	 *
+	 * <p>
 	 * Mirror's NeoForge's PieceBeardifierModifier behavior: piece-level terrain adjustment
 	 * overrides structure-level adjustment.
 	 */

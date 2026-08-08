@@ -1982,12 +1982,28 @@ public static final Block SORTING_LEAVES = Registry.register(
 public static final SaplingBlock TWILIGHT_OAK_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_oak_sapling")),
-		new SaplingBlock(TFTreeGrowers.TWILIGHT_OAK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_oak_sapling"))))
+		new TFSaplingBlock(TFTreeGrowers.TWILIGHT_OAK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_oak_sapling"))),
+			new TFSaplingBlock.TreePlacement(
+				() -> {
+					// secondaryChance 0.1 : 90% normal oak, 10% large oak
+					if (net.minecraft.util.RandomSource.create().nextFloat() < 0.1F) {
+						return TFSaplingBlock.LARGE_TWILIGHT_OAK_TREE.get();
+					}
+					return TFSaplingBlock.TWILIGHT_OAK_TREE.get();
+				},
+				() -> {
+					// 2x2 mega sapling variant: 50/50 forest vs savannah mega oak
+					net.minecraft.util.RandomSource r = net.minecraft.util.RandomSource.create();
+					if (r.nextFloat() < 0.5F) return TFSaplingBlock.MEGA_TWILIGHT_OAK.get();
+					return TFSaplingBlock.SAVANNAH_MEGA_OAK.get();
+				}
+			))
 	);
 public static final SaplingBlock CANOPY_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_sapling")),
-		new SaplingBlock(TFTreeGrowers.CANOPY, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_sapling"))))
+		new TFSaplingBlock(TFTreeGrowers.CANOPY, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_sapling"))),
+			new TFSaplingBlock.TreePlacement(TFSaplingBlock.CANOPY_TREE, TFSaplingBlock.MEGA_CANOPY_TREE))
 	);
 public static final SaplingBlock MANGROVE_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -1997,37 +2013,52 @@ public static final SaplingBlock MANGROVE_SAPLING = Registry.register(
 public static final SaplingBlock DARKWOOD_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("darkwood_sapling")),
-		new SaplingBlock(TFTreeGrowers.DARK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("darkwood_sapling"))))
+		new TFSaplingBlock(TFTreeGrowers.DARK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("darkwood_sapling"))),
+			TFSaplingBlock.TreePlacement.single(TFSaplingBlock.DARKWOOD_TREE))
 	);
 public static final SaplingBlock HOLLOW_OAK_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hollow_oak_sapling")),
-		new SaplingBlock(TFTreeGrowers.HOLLOW_OAK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hollow_oak_sapling"))))
+		new HollowOakSaplingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hollow_oak_sapling"))))
 	);
 public static final SaplingBlock TIME_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("time_sapling")),
-		new SaplingBlock(TFTreeGrowers.TIME, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("time_sapling"))))
+		new TFSaplingBlock(TFTreeGrowers.TIME, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("time_sapling"))),
+			TFSaplingBlock.TreePlacement.single(TFSaplingBlock.TIME_TREE))
 	);
 public static final SaplingBlock TRANSFORMATION_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("transformation_sapling")),
-		new SaplingBlock(TFTreeGrowers.TRANSFORMATION, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("transformation_sapling"))))
+		new TFSaplingBlock(TFTreeGrowers.TRANSFORMATION, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("transformation_sapling"))),
+			TFSaplingBlock.TreePlacement.single(TFSaplingBlock.TRANSFORMATION_TREE))
 	);
 public static final SaplingBlock MINING_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mining_sapling")),
-		new SaplingBlock(TFTreeGrowers.MINING, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mining_sapling"))))
+		new TFSaplingBlock(TFTreeGrowers.MINING, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mining_sapling"))),
+			TFSaplingBlock.TreePlacement.single(TFSaplingBlock.MINING_TREE))
 	);
 public static final SaplingBlock SORTING_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("sorting_sapling")),
-		new SaplingBlock(TFTreeGrowers.SORTING, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("sorting_sapling"))))
+		new TFSaplingBlock(TFTreeGrowers.SORTING, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("sorting_sapling"))),
+			TFSaplingBlock.TreePlacement.single(TFSaplingBlock.SORTING_TREE))
 	);
 public static final SaplingBlock RAINBOW_OAK_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainbow_oak_sapling")),
-		new SaplingBlock(TFTreeGrowers.RAINBOW_OAK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainbow_oak_sapling"))))
+		new TFSaplingBlock(TFTreeGrowers.RAINBOW_OAK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainbow_oak_sapling"))),
+			new TFSaplingBlock.TreePlacement(
+				() -> {
+					// 10% tall rainbow oak chance, matching the secondaryChance=0.1 of the grower
+					if (net.minecraft.util.RandomSource.create().nextFloat() < 0.1F) {
+						return TFSaplingBlock.LARGE_RAINBOW_OAK_TREE.get();
+					}
+					return TFSaplingBlock.RAINBOW_OAK_TREE.get();
+				},
+				null
+			))
 	);
 
 public static final Block TWILIGHT_OAK_PLANKS = Registry.register(
