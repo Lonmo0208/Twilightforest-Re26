@@ -198,6 +198,12 @@ public class SnowQueen extends BaseTFBoss implements IBreathAttacker {
 		for (int i = 0; i < this.iceArray.length; i++) {
 			this.iceArray[i].tick();
 
+			// Client-side: positions are synced from server via UpdateTFMultipartPacket.
+			// Only the server calculates and sets positions to avoid double-updating which causes jitter.
+			if (this.level().isClientSide()) {
+				continue;
+			}
+
 			if (i < this.iceArray.length - 1) {
 				// set block position
 				Vec3 blockPos = this.getIceShieldPosition(i);
