@@ -1,5 +1,7 @@
 package twilightforest.beanification;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +11,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Utility class for scanning the classpath to find classes annotated with @Component.
@@ -25,18 +32,28 @@ public class ClassPathScanningUtil {
 	//   - reference rendering GUIs (JEI/REI/EMI/Curios) that pull in Minecraft client types
 	// Loading any class here on a dedicated server will throw NoClassDefFoundError and crash entrypoint.
 	// -----------------------------------------------------------------------------------------------
-	private static final List<String> BLACKLIST_PREFIXES = List.of(
-		// Client source-set root: all models, renderers, screens, particle factories, etc.
-		"twilightforest.client.",
+	private static final List<String> BLACKLIST_PREFIXES;
+
+	static {
+		List<String> prefixes = new ArrayList<>();
+		// On a dedicated server, skip the entire client source-set root.
+		// On the client, we MUST allow twilightforest.client.* so that @Component classes
+		// like TravellersClientEvents, ClientGameEvents, FoliageColorHandler etc. get
+		// properly instantiated by BeanContext (otherwise their @PostConstruct tick
+		// listeners never register and features like V-key hotbar swap silently break).
+		if (FabricLoader.getInstance().getEnvironmentType() != EnvType.CLIENT) {
+			prefixes.add("twilightforest.client.");
+		}
 		// Inactive / disabled code that still gets compiled because it's under src/main/java/disabled.
 		// This contains JEI/REI/EMI client plugins, Curios renderers, CastleGuardian entity models, etc.
-		"twilightforest.disabled.",
+		prefixes.add("twilightforest.disabled.");
 		// ASM hooks / utility modules that should not be wired via DI (and may pull client internals)
-		"twilightforest.asmhooks.",
-		"twilightforest.util.multiparts.",
+		prefixes.add("twilightforest.asmhooks.");
+		prefixes.add("twilightforest.util.multiparts.");
 		// Mixin classes are never beans, and scanning them risks early loading of their targets.
-		"twilightforest.mixin."
-	);
+		prefixes.add("twilightforest.mixin.");
+		BLACKLIST_PREFIXES = List.copyOf(prefixes);
+	}
 
 	// Some class-names don't live under the client packages but still import client classes
 	// (e.g. a compat bridge under twilightforest.compat.* that uses GuiGraphics).

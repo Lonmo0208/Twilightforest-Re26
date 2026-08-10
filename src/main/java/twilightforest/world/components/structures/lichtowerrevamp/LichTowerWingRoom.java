@@ -715,7 +715,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 		trapEntity.setPersistenceRequired();
 		trapEntity.setLeashedTo(knot, false);
 		trapEntity.snapTo(zombiePos.getX() + 0.5, zombiePos.getY() - 1, zombiePos.getZ() + 0.5);
-		((twilightforest.util.TFEntityExtensions) trapEntity).twilightforest$setData(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE, Unit.INSTANCE);
+		trapEntity.setAttached(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE, Unit.INSTANCE);
 		level.addFreshEntityWithPassengers(trapEntity);
 	}
 

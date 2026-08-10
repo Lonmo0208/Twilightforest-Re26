@@ -33,12 +33,12 @@ import twilightforest.components.entity.GiantPickaxeMiningAttachment;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFItems;
 import twilightforest.mixin.AbstractArrowMixin;
-import twilightforest.util.TFEntityExtensions;
 import twilightforest.item.*;
 import twilightforest.loot.modifiers.GiantToolGroupingModifier;
 import twilightforest.tags.TFBlockTags;
 import twilightforest.tags.TFEntityTypeTags;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 
 
@@ -99,7 +99,7 @@ public class ToolEvents {
 			&& result.getEntity() instanceof LivingEntity living
 			&& arrow.getOwner() != result.getEntity() && !result.getEntity().is(TFEntityTypeTags.BOSSES)) { // TODO: Port - verify BOSSES tag exists in TFEntityTypeTags
 
-			if (((TFEntityExtensions) player).twilightforest$getPersistentData().getCompound("PlayerPersisted").orElse(new net.minecraft.nbt.CompoundTag()).contains(EnderBowItem.KEY)) {
+			if (TFDataAttachments.getOrCreate(player, TFDataAttachments.TF_PERSISTENT_DATA, CompoundTag::new).getCompound("PlayerPersisted").orElse(new net.minecraft.nbt.CompoundTag()).contains(EnderBowItem.KEY)) {
 				double sourceX = player.getX(), sourceY = player.getY(), sourceZ = player.getZ();
 				float sourceYaw = player.getYRot(), sourcePitch = player.getXRot();
 				@Nullable Entity playerVehicle = player.getVehicle();
@@ -133,7 +133,7 @@ public class ToolEvents {
 	 * Performs the ender bow position swap between shooter and target.
 	 */
 	public static void performEnderBowSwap(AbstractArrow arrow, EntityHitResult result) {
-		if (!((TFEntityExtensions) arrow).twilightforest$hasData(TFDataAttachments.ENDER_BOW_ARROW)) return;
+		if (!arrow.hasAttached(TFDataAttachments.ENDER_BOW_ARROW)) return;
 		if (!(arrow.getOwner() instanceof Player player)) return;
 		if (!(result.getEntity() instanceof LivingEntity living)) return;
 		if (player == living || living.is(TFEntityTypeTags.BOSSES)) return;
@@ -237,7 +237,7 @@ public class ToolEvents {
 		BlockState state = event.getState();
 
 		if (event.getPlayer() instanceof ServerPlayer player && canHarvestWithGiantPick(player, state, pos)) {
-			var attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.GIANT_PICKAXE_MINING);
+			var attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.GIANT_PICKAXE_MINING, twilightforest.components.entity.GiantPickaxeMiningAttachment::new);
 
 			// Initialize mining time if not already set
 			if (attachment.getMining() != player.level().getGameTime()) {

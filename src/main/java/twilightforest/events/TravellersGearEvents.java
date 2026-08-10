@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 import twilightforest.beanification.Component;
 import twilightforest.beanification.PostConstruct;
+import twilightforest.TwilightForestMod;
 import twilightforest.components.entity.SlimySolesAttachment;
 import twilightforest.init.*;
 import twilightforest.init.custom.TravellersModifiersManager;
@@ -165,13 +166,13 @@ public class TravellersGearEvents {
 		LivingEntity livingEntity = event.getEntity();
 		ItemStack boots = livingEntity.getItemBySlot(EquipmentSlot.FEET);
 		Float coefficient = boots.get(TFDataComponents.SLIMY_SOLES_COEFFICIENT);
-		SlimySolesAttachment slimySolesAttachment = ((TFEntityExtensions) livingEntity).twilightforest$getData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO);
+		SlimySolesAttachment slimySolesAttachment = TFDataAttachments.getOrCreate(livingEntity, TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, twilightforest.components.entity.SlimySolesAttachment::new);
 		if (!livingEntity.isShiftKeyDown() && TravellersModifiersManager.isModifierActive(livingEntity, boots, TravellersModifiersManager.SLIMY_SOLES_MODIFIER) && coefficient != null && (calculateFallDamage(event) > 0 || slimySolesAttachment.forceBounce)) {
 			event.setCanceled(true);
 			slimySolesAttachment.bounceVelocity = -livingEntity.getDeltaMovement().y() * Math.sqrt(coefficient);
 			slimySolesAttachment.doubleJumpBoostVelocity = slimySolesAttachment.bounceVelocity;
 			slimySolesAttachment.hasBounced = false;
-			((TFEntityExtensions) livingEntity).twilightforest$setData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, slimySolesAttachment);
+			livingEntity.setAttached(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, slimySolesAttachment);
 		}
 	}
 
@@ -185,23 +186,25 @@ public class TravellersGearEvents {
 
 	private void cancelSlimySolesJump(FabricEvents.LivingEvent.LivingJumpEvent event) {
 		LivingEntity livingEntity = event.getEntity();
-		SlimySolesAttachment slimySolesAttachment = ((TFEntityExtensions) livingEntity).twilightforest$getData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO);
+		SlimySolesAttachment slimySolesAttachment = TFDataAttachments.getOrCreate(livingEntity, TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, twilightforest.components.entity.SlimySolesAttachment::new);
 		slimySolesAttachment.bounceVelocity = 0;
 		slimySolesAttachment.forceBounce = false;
-		((TFEntityExtensions) livingEntity).twilightforest$setData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, slimySolesAttachment);
+		livingEntity.setAttached(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, slimySolesAttachment);
 	}
 
 	private void tickMovementModifiers(FabricEvents.PlayerTickEvent.Pre event) {
 		Player player = event.getEntity();
 		Boolean hasDoubleJump = null;
-		if (!TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.DOUBLE_JUMP_MODIFIER))
+		boolean doubleJumpModifierActive = TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.DOUBLE_JUMP_MODIFIER);
+		if (!doubleJumpModifierActive)
 			hasDoubleJump = false;
 		else if (player.onGround() || player.isInLiquid() || player.onClimbable())
 			hasDoubleJump = true;
 
-		if (hasDoubleJump != null && hasDoubleJump != ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.HAS_DOUBLE_JUMP)) {
-			((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.HAS_DOUBLE_JUMP, hasDoubleJump);
-			((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.DOUBLE_JUMP_VALIDATOR, 0);
+		boolean currentHasDoubleJump = Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.HAS_DOUBLE_JUMP, () -> false));
+		if (hasDoubleJump != null && hasDoubleJump != currentHasDoubleJump) {
+			player.setAttached(TFDataAttachments.HAS_DOUBLE_JUMP, hasDoubleJump);
+			player.setAttached(TFDataAttachments.DOUBLE_JUMP_VALIDATOR, 0);
 			AttributeInstance instance = player.getAttribute(Attributes.SAFE_FALL_DISTANCE);
 			if (instance != null)
 				instance.removeModifier(TFAttributeModifiers.TRAVELLERS_DOUBLE_JUMP_SAFE_FALL_DISTANCE);
@@ -209,16 +212,17 @@ public class TravellersGearEvents {
 
 		if (!player.level().isClientSide()) {
 			boolean modifierActive = TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.GRADUAL_GLIDE_MODIFIER);
-			if (!modifierActive && ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.IS_GRADUALLY_GLIDING)) {
-				((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.IS_GRADUALLY_GLIDING, false);
+			if (!modifierActive && Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.IS_GRADUALLY_GLIDING, () -> false))) {
+				player.setAttached(TFDataAttachments.IS_GRADUALLY_GLIDING, false);
 				PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new GradualGlidePacket(false, player.getUUID()));
 			}
 		}
 
 		//reset double jump wing anim if on the ground
 		if (event.getEntity().level().isClientSide()) {
-			if (((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TRAVELLERS_WINGS_ANIM).doubleJump && player.onGround()) {
-				((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TRAVELLERS_WINGS_ANIM).doubleJump = false;
+			var anim = TFDataAttachments.getOrCreate(player, TFDataAttachments.TRAVELLERS_WINGS_ANIM, twilightforest.components.entity.TravellersWingsAnimAttachment::new);
+			if (anim.doubleJump && player.onGround()) {
+				anim.doubleJump = false;
 			}
 		}
 
@@ -252,13 +256,57 @@ public class TravellersGearEvents {
 		TravellersGearLogic.travellersWingsGradualGlide(livingEntity);
 		TravellersGearLogic.travellersBootsUnrestrained(livingEntity);
 		TravellersGearLogic.travellersBootsSlimySolesBounce(livingEntity);
+		TravellersGearLogic.waterWalkingTick(livingEntity);
+		this.applyAquaticAgilityTransient(livingEntity);
 
 		if (livingEntity.level().isClientSide()) return;
+
 		TravellersGearLogic.travellersVestHaste(livingEntity);
 		TravellersGearLogic.travellersWingsHighJump(livingEntity);
 		TravellersGearLogic.travellersGearAutoRepair(livingEntity);
 		TravellersGearLogic.travellersBootsStraightAhead(livingEntity);
 		TravellersGearLogic.determineWingState(livingEntity);
+
+		if (livingEntity instanceof Player player) {
+			boolean shouldHaveNightVision = TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.ALL_NIGHT_GOGGLES_MODIFIER);
+			MobEffectInstance existingNightVision = player.getEffect(MobEffects.NIGHT_VISION);
+			boolean isOurNightVision = existingNightVision != null
+				&& existingNightVision.getDuration() >= 399
+				&& existingNightVision.getDuration() <= 401
+				&& !existingNightVision.isVisible();
+
+			if (shouldHaveNightVision) {
+				if (!isOurNightVision) {
+					int duration = 20 * 20; // 20 seconds
+					MobEffectInstance nightVision = new MobEffectInstance(MobEffects.NIGHT_VISION, duration, 0, false, false);
+					player.addEffect(nightVision, player);
+				}
+			} else if (isOurNightVision) {
+				player.removeEffect(MobEffects.NIGHT_VISION);
+			}
+		}
+	}
+
+	private void applyAquaticAgilityTransient(LivingEntity livingEntity) {
+		ItemStack headStack = livingEntity.getItemBySlot(EquipmentSlot.HEAD);
+		boolean hasModifier = TravellersModifiersManager.isModifierActive(livingEntity, headStack, TravellersModifiersManager.AQUATIC_AGILITY_MODIFIER);
+		AttributeInstance miningAttr = livingEntity.getAttribute(Attributes.SUBMERGED_MINING_SPEED);
+
+		// NOTE: oxygenBonus is already correctly applied via ItemStack ATTRIBUTE_MODIFIERS.
+		// Only submerged_mining_speed (ADD_MULTIPLIED_TOTAL) fails to apply through the
+		// vanilla equipment attribute pipeline for an unknown reason, so we patch it on
+		// every tick with a transient modifier.
+		if (miningAttr != null) {
+			boolean shouldHave = hasModifier;
+			boolean hasMining = miningAttr.hasModifier(TFAttributeModifiers.TRAVELLERS_AQUATIC_AGILITY_MINING.id());
+			if (shouldHave != hasMining) {
+				if (shouldHave) {
+					miningAttr.addOrUpdateTransientModifier(TFAttributeModifiers.TRAVELLERS_AQUATIC_AGILITY_MINING);
+				} else {
+					miningAttr.removeModifier(TFAttributeModifiers.TRAVELLERS_AQUATIC_AGILITY_MINING);
+				}
+			}
+		}
 	}
 
 	private void activateAndDeactivateTravellersModifiers(FabricEvents.ItemAttributeModifierEvent event) {
@@ -305,7 +353,7 @@ public class TravellersGearEvents {
 	private void setLastDamageArmorTime(FabricEvents.ArmorHurtEvent event) {
 		if (Arrays.stream(EquipmentSlot.values()).noneMatch(slot -> event.getNewDamage(slot) > 0)) return;
 		LivingEntity entity = event.getEntity();
-		((TFEntityExtensions) entity).twilightforest$setData(TFDataAttachments.LAST_DAMAGE_ARMOR_TIME, entity.level().getGameTime());
+		entity.setAttached(TFDataAttachments.LAST_DAMAGE_ARMOR_TIME, entity.level().getGameTime());
 	}
 
 
@@ -330,7 +378,7 @@ public class TravellersGearEvents {
 			return;
 		}
 		ItemStack inputStack = travellersItemStacks.getFirst();
-		List<Holder.Reference<TravellersModifier>> modifiers = TravellersModifiersManager.findAllInsertableModifiers(access, inputStack);
+		List<Holder<TravellersModifier>> modifiers = TravellersModifiersManager.findAllInsertableModifiers(access, inputStack);
 		if (modifiers.isEmpty()) {
 			event.setCanceled(true);
 			return;
@@ -390,7 +438,7 @@ public class TravellersGearEvents {
 				var oldMods = TravellersModifiersManager.findAllInsertableModifiers(player, compareStack);
 				TravellersModifiersManager.findAllInsertableModifiers(player, event.getCrafting()).stream()
 					.filter(modifier -> !oldMods.contains(modifier)).toList()
-						.forEach(modifier -> TFAdvancements.ADD_MODIFIER.trigger(player, modifier.key().identifier()));
+						.forEach(modifier -> TFAdvancements.ADD_MODIFIER.trigger(player, modifier.unwrapKey().get().identifier()));
 			}
 		}
 	}
@@ -403,9 +451,11 @@ public class TravellersGearEvents {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private <T> void copyAttachmentData(Player source, Player target, AttachmentType<T> type) {
-		if (((TFEntityExtensions) source).twilightforest$hasData(type)) {
-			((TFEntityExtensions) target).twilightforest$setData(type, ((TFEntityExtensions) source).twilightforest$getData(type));
+		T value = source.getAttached(type);
+		if (value != null) {
+			target.setAttached(type, value);
 		}
 	}
 }

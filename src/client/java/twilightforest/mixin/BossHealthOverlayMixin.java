@@ -27,7 +27,8 @@ import java.util.UUID;
 public abstract class BossHealthOverlayMixin {
 
 	@Shadow @Final private Minecraft minecraft;
-	@Shadow @Final private Map<UUID, LerpingBossEvent> events;
+	@Shadow @Final
+	public Map<UUID, LerpingBossEvent> events;
 
 	@Unique
 	private static final int TF_BAR_WIDTH = 182;

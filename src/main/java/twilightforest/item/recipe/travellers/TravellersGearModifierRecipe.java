@@ -17,7 +17,6 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import twilightforest.init.custom.TravellersModifiersManager;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifiable;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
@@ -36,7 +35,7 @@ public abstract class TravellersGearModifierRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean matches(@NotNull CraftingInput input, @NotNull Level level) {
+	public boolean matches(CraftingInput input, Level level) {
 		ItemStack stack = getModifiableArmor(input);
 		if (stack == null)
 			return false;
@@ -45,18 +44,32 @@ public abstract class TravellersGearModifierRecipe extends CustomRecipe {
 			slots = travellersModifiableItem.getModifierSlots();
 		return TravellersModifiersManager.countInsertableModifiers(level.registryAccess(), stack) < slots
 			&& !TravellersModifiersManager.hasTravellersModifier(level.registryAccess(), stack, this.travellersModifierKey)
-			&& TravellersModifiersManager.getModifierDataComponentProviders(level.registryAccess(), input.items().stream().map(stack1 -> Ingredient.of(stack1.getItem())).toList(), this.travellersModifierKey) <= 1;
+			&& TravellersModifiersManager.getModifierDataComponentProviders(level.registryAccess(), ingredientListFrom(input), this.travellersModifierKey) <= 1;
 	}
 
-	@Override
-	public @NotNull ItemStack assemble(@NotNull CraftingInput input) {
+	// Note: No @Override — this signature does not exist in CustomRecipe on Fabric 26.1.x, kept for forward compatibility
+	public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
 		ItemStack travellerArmorStack = getModifiableArmor(input);
 		if (travellerArmorStack == null)
-			return ItemStack.EMPTY;  // Should never happen
+			return ItemStack.EMPTY;
 
 		ItemStack stack = travellerArmorStack.copy();
-		HolderLookup.Provider registries = net.minecraft.core.RegistryAccess.EMPTY;
-		return applyModifier(registries, stack, input.items().stream().map(stack1 -> Ingredient.of(stack1.getItem())).toList());
+		return applyModifier(registries, stack, ingredientListFrom(input));
+	}
+
+	private static List<Ingredient> ingredientListFrom(CraftingInput input) {
+		return input.items().stream()
+			.filter(stack -> !stack.isEmpty())
+			.map(stack -> Ingredient.of(stack.getItem()))
+			.toList();
+	}
+
+	@Deprecated
+	@Override
+	public ItemStack assemble(CraftingInput input) {
+		// Relies on the TravellersModifiersManager cache being populated during matches(),
+		// so the EMPTY RegistryAccess fall-through still resolves modifiers via CACHED_MODIFIERS.
+		return assemble(input, net.minecraft.core.RegistryAccess.EMPTY);
 	}
 
 	public ItemStack applyModifier(HolderLookup.Provider registries, ItemStack stack, List<Ingredient> inputs) {
@@ -107,11 +120,11 @@ public abstract class TravellersGearModifierRecipe extends CustomRecipe {
 			this.codec = codec;
 		}
 
-		public @NotNull MapCodec<T> codec() {
+		public MapCodec<T> codec() {
 			return codec;
 		}
 
-		public @NotNull StreamCodec<RegistryFriendlyByteBuf, T> streamCodec() {
+		public StreamCodec<RegistryFriendlyByteBuf, T> streamCodec() {
 			return StreamCodec.of(this::toNetwork, this::fromNetwork);
 		}
 

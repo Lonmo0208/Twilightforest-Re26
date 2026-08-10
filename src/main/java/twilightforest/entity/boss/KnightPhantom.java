@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -29,6 +30,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.BlocksAttacks;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -85,6 +87,7 @@ public class KnightPhantom extends BaseTFBoss {
 	private BlockPos chargePos = BlockPos.ZERO;
 	private final EntityDimensions invisibleSize = EntityDimensions.fixed(1.25F, 2.5F);
 	private final EntityDimensions visibleSize = EntityDimensions.fixed(1.75F, 4.0F);
+	private PhantomWatchAndAttackGoal watchAndAttackGoal;
 
 	@SuppressWarnings("this-escape")
 	public KnightPhantom(EntityType<? extends KnightPhantom> type, Level level) {
@@ -104,7 +107,8 @@ public class KnightPhantom extends BaseTFBoss {
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(0, new PhantomWatchAndAttackGoal(this));
+		this.watchAndAttackGoal = new PhantomWatchAndAttackGoal(this);
+		this.goalSelector.addGoal(0, this.watchAndAttackGoal);
 		this.goalSelector.addGoal(1, new PhantomUpdateFormationAndMoveGoal(this));
 		this.goalSelector.addGoal(2, new PhantomAttackStartGoal(this));
 		this.goalSelector.addGoal(3, new PhantomThrowWeaponGoal(this));
@@ -313,12 +317,37 @@ public class KnightPhantom extends BaseTFBoss {
 	}
 
 	@Override
-	public boolean hurtServer(ServerLevel server, DamageSource source, float amount) {
-		if (this.isBlocking()) {
-			this.playSound(SoundEvents.SHIELD_BLOCK.value(), 1.0F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
+	public boolean isBlocking() {
+		// Phantom should NOT block during attack formations - it's vulnerable while attacking
+		if (this.getCurrentFormation() == Formation.ATTACK_PLAYER_START || this.getCurrentFormation() == Formation.ATTACK_PLAYER_ATTACK) {
 			return false;
 		}
+		return super.isBlocking();
+	}
 
+	@Nullable
+	@Override
+	public ItemStack getItemBlockingWith() {
+		// During attack formations, the phantom drops its guard
+		if (this.getCurrentFormation() == Formation.ATTACK_PLAYER_START || this.getCurrentFormation() == Formation.ATTACK_PLAYER_ATTACK) {
+			return null;
+		}
+		return super.getItemBlockingWith();
+	}
+
+	@Override
+	public boolean hurtServer(ServerLevel server, DamageSource source, float amount) {
+		// During attack formations, ensure no blocking item is active
+		if (this.getCurrentFormation() == Formation.ATTACK_PLAYER_START || this.getCurrentFormation() == Formation.ATTACK_PLAYER_ATTACK) {
+			if (this.isUsingItem()) {
+				this.stopUsingItem();
+			}
+		} else {
+			// When hit during non-attack formation, raise shield via the AI goal
+			if (this.getOffhandItem().getItem() instanceof net.minecraft.world.item.ShieldItem && this.watchAndAttackGoal != null) {
+				this.watchAndAttackGoal.updateGuard();
+			}
+		}
 		return super.hurtServer(server, source, amount);
 	}
 

@@ -11,7 +11,6 @@ import twilightforest.beanification.PostConstruct;
 import twilightforest.entity.IHostileMount;
 import twilightforest.init.TFDamageTypes;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.util.TFEntityExtensions;
 
 @Component
 public class HostileMountEvents {
@@ -36,10 +35,10 @@ public class HostileMountEvents {
 			event.setCanceled(true);
 		}
 
-		if (damageSource.is(DamageTypes.FALL) && ((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.YETI_THROWING).getThrown()) {
+		if (damageSource.is(DamageTypes.FALL) && TFDataAttachments.getOrCreate(living, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new).getThrown()) {
 			float amount = event.getAmount();
 			event.setCanceled(true);
-			living.hurt(TFDamageTypes.getEntityDamageSource(living.level(), TFDamageTypes.YEETED, ((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.YETI_THROWING).getThrower()), amount);
+			living.hurt(TFDamageTypes.getEntityDamageSource(living.level(), TFDamageTypes.YEETED, TFDataAttachments.getOrCreate(living, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new).getThrower()), amount);
 		}
 	}
 

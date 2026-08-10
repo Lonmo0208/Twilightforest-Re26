@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import twilightforest.TwilightForestMod;
 import twilightforest.advancements.DrinkFromFlaskTrigger;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.util.TFEntityExtensions;
 
 import java.net.URI;
 
@@ -44,7 +43,7 @@ public abstract class PlayerAdvancementsMixin {
 
 		for (var criteria : advancement.value().criteria().entrySet()) {
 			if (criteria.getValue().trigger() instanceof DrinkFromFlaskTrigger) {
-				((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.FLASK_DOSES).resetDoses();
+				TFDataAttachments.getOrCreate(player, TFDataAttachments.FLASK_DOSES, twilightforest.components.entity.PotionFlaskTrackingAttachment::new).resetDoses();
 				break;
 			}
 		}

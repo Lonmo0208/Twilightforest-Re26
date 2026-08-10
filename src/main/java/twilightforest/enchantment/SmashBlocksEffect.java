@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import twilightforest.entity.projectile.ChainBlock;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.util.TFEntityExtensions;
 
 import java.util.Optional;
 
@@ -38,7 +37,8 @@ public record SmashBlocksEffect(LevelBasedValue maxSmash, LevelBasedValue radius
 	@Override
 	public void apply(ServerLevel level, int enchantmentLevel, EnchantedItemInUse item, Entity entity, Vec3 position) {
 		if (item.owner() instanceof ServerPlayer player) {
-			int blocksSmashed = ((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed();
+			var smash = TFDataAttachments.getOrCreate(entity, TFDataAttachments.SMASH_BLOCKS, twilightforest.components.entity.SmashBlocksEnchantmentAttachment::new);
+			int blocksSmashed = smash.getBlocksSmashed();
 			int maxSmash = Math.round(this.maxSmash.calculate(enchantmentLevel));
 			if (blocksSmashed >= maxSmash) return;
 			BlockPos start = BlockPos.containing(position);
@@ -61,7 +61,7 @@ public record SmashBlocksEffect(LevelBasedValue maxSmash, LevelBasedValue radius
 				}
 			}
 
-			((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.SMASH_BLOCKS).setBlocksSmashed(blocksSmashed);
+			smash.setBlocksSmashed(blocksSmashed);
 		}
 	}
 

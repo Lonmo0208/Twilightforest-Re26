@@ -6,13 +6,44 @@ import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.util.Unit;
+import net.minecraft.world.entity.Entity;
 import twilightforest.TwilightForestMod;
 import twilightforest.components.entity.*;
 import twilightforest.util.Codecs;
 
+import java.util.function.Supplier;
+
 public class TFDataAttachments {
+
+	/**
+	 * Safe attachment accessor with defensive fallback.
+	 * <p>
+	 * Even though every AttachmentType in this class declares an {@code initializer(...)},
+	 * Fabric can still return {@code null} during certain early lifecycle events
+	 * (e.g. {@code ServerPlayerEvents.PlayerLoggedInEvent} for brand-new players, or
+	 * mid-way through {@code COPY_FROM} / {@code AFTER_RESPAWN} transitions).
+	 * <p>
+	 * This helper guarantees a non-null value and writes the fallback back to the
+	 * entity so subsequent calls stay consistent.
+	 *
+	 * @param entity          the entity to read the attachment from
+	 * @param type            the registered attachment type
+	 * @param defaultSupplier supplier for a fresh default instance (matches the type's declared initializer)
+	 * @param <A>             attachment value type
+	 * @param <E>             entity subtype
+	 * @return a non-null attachment value (either the stored one or the created default)
+	 */
+	public static <A, E extends Entity> A getOrCreate(E entity, AttachmentType<A> type, Supplier<A> defaultSupplier) {
+		A a = entity.getAttached(type);
+		if (a == null) {
+			a = defaultSupplier.get();
+			entity.setAttached(type, a);
+		}
+		return a;
+	}
 
 	public static final AttachmentType<Boolean> FEATHER_FAN = AttachmentRegistry.create(TwilightForestMod.prefix("feather_fan_falling"), builder ->
 		builder.initializer(() -> false).persistent(Codec.BOOL.fieldOf("feather_fan_falling").codec()).syncWith(ByteBufCodecs.BOOL, (entity, target) -> true));
@@ -62,6 +93,9 @@ public class TFDataAttachments {
 	public static final AttachmentType<Long> LAST_TICK_WATER_WALKING = AttachmentRegistry.create(TwilightForestMod.prefix("last_tick_water_walking"), builder ->
 		builder.initializer(() -> 0L).persistent(Codec.LONG.fieldOf("last_water_walking_tick").codec()));
 
+	public static final AttachmentType<Long> LAST_TICK_WATER_WALK_LOG = AttachmentRegistry.create(TwilightForestMod.prefix("last_tick_water_walk_log"), builder ->
+		builder.initializer(() -> -1L));
+
 	public static final AttachmentType<Boolean> HAS_DOUBLE_JUMP = AttachmentRegistry.create(TwilightForestMod.prefix("has_double_jump"), builder ->
 		builder.initializer(() -> false).persistent(Codec.BOOL.fieldOf("double_jump").codec()));
 
@@ -103,4 +137,9 @@ public class TFDataAttachments {
 
 	public static final AttachmentType<Boolean> ENDER_BOW_ARROW = AttachmentRegistry.create(TwilightForestMod.prefix("ender_bow_arrow"), builder ->
 		builder.initializer(() -> false).persistent(Codec.BOOL.fieldOf("ender_bow_arrow").codec()));
+
+	
+	
+	public static final AttachmentType<CompoundTag> TF_PERSISTENT_DATA = AttachmentRegistry.create(TwilightForestMod.prefix("persistent_data"), builder ->
+		builder.initializer(CompoundTag::new).persistent(CompoundTag.CODEC.fieldOf("tf_data").codec()));
 }

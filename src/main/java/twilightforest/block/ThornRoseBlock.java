@@ -38,8 +38,12 @@ public class ThornRoseBlock extends VegetationBlock {
 
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-		BlockState blockstate = level.getBlockState(pos.relative(state.getValue(DirectionalBlock.FACING).getOpposite()));
-		return blockstate.is(TFBlocks.BROWN_THORNS) || blockstate.is(TFBlocks.GREEN_THORNS) || blockstate.isFaceSturdy(level, pos, state.getValue(DirectionalBlock.FACING));
+		Direction facing = state.getValue(DirectionalBlock.FACING);
+		BlockState blockstate = level.getBlockState(pos.relative(facing.getOpposite()));
+		if (blockstate.is(TFBlocks.BROWN_THORNS) || blockstate.is(TFBlocks.GREEN_THORNS)) {
+			return true;
+		}
+		return facing != Direction.UP && blockstate.isFaceSturdy(level, pos, facing);
 	}
 
 	@Override

@@ -23,7 +23,6 @@ import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFSounds;
 import twilightforest.inventory.InventoryUtil;
-import twilightforest.util.TFEntityExtensions;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -133,7 +132,7 @@ public class PotionFlaskItem extends Item {
 					}
 				}
 				if (!player.isCreative() && !player.isSpectator() && player instanceof ServerPlayer serverPlayer) {
-					flaskContents.potion().potion().ifPresent(potion -> ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.FLASK_DOSES).trackDrink(potion, serverPlayer));
+					flaskContents.potion().potion().ifPresent(potion -> TFDataAttachments.getOrCreate(player, TFDataAttachments.FLASK_DOSES, twilightforest.components.entity.PotionFlaskTrackingAttachment::new).trackDrink(potion, serverPlayer));
 				}
 
 				player.awardStat(Stats.ITEM_USED.get(this));
@@ -174,23 +173,23 @@ public class PotionFlaskItem extends Item {
 
 	@Override
 	public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-		// [FABRIC PORT] MC 26.1.2 的 ClientTooltipComponent.create 是一个穷举式 switch，
-		// 只支持 BundleTooltip / ActivePlayersTooltip；自定义 TooltipComponent 必须通过
-		// Fabric API 的 ClientTooltipComponentCallback.EVENT 注册。
+		
+		
+		
 		//
-		// 原来的写法会直接 new Tooltip(...)，结果在渲染创造模式物品栏时 JVM 尝试加载
-		// PotionFlaskItem$Tooltip 类，然后被 ClientTooltipComponent 的 exhaustive switch
-		// default 分支打回，从而抛出 NoClassDefFoundError/IllegalArgumentException。
+		
+		
+		
 		//
-		// 暂时禁用 Tooltip 图像（不显示瓶中药水的剂量预览），避免打开背包直接崩溃。
-		// 客户端的 PotionFlaskClientTooltip（ClientTooltipComponentCallback 注册）会在
-		// 需要的时候重新启用 Tooltip 预览。
+		
+		
+		
 		return Optional.empty();
 	}
 
-	// NB: Tooltip record 仍然保留在此处（main 源集），因为 ClientTooltipComponentCallback
-	// 需要一个 TooltipComponent 子类型作为 data carrier。一旦客户端的渲染回调注册好，
-	// getTooltipImage 就可以再次返回 Optional.of(new Tooltip(...))。
+	
+	
+	
 	public record Tooltip(PotionFlaskComponent component, int maxDoses) implements TooltipComponent {
 	}
 

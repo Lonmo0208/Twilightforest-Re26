@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "#twilightforest:casket_skulls",
+    "N": "minecraft:nether_star",
+    "K": "twilightforest:charm_of_keeping_3",
+    "C": "#twilightforest:casket_chests",
+    "B": "#twilightforest:casket_stones"
+  },
+  "pattern": [
+    "SNS",
+    "KCK",
+    "BKB"
+  ],
+  "result": {
+    "id": "twilightforest:keepsake_casket"
+  }
+}

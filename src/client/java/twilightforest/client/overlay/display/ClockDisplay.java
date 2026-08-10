@@ -3,9 +3,7 @@ package twilightforest.client.overlay.display;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,6 +22,9 @@ public class ClockDisplay implements ItemDisplay {
 	private static final long REAL_LIFE_DAY_LENGTH_IN_SECONDS = 86400L;
 	private static final DateTimeFormatter FORMAT_24 = DateTimeFormatter.ofPattern("HH:mm");
 	private static final DateTimeFormatter FORMAT_12 = DateTimeFormatter.ofPattern("hh:mm a");
+	private static final int FACE_SCALE = 2;
+	private static final int FACE_SIZE = 8 * FACE_SCALE;
+	private static final int PAD = 4;
 	private static final NavigableMap<Long, TimeFrame> TIME_FRAMES = new TreeMap<>(Map.ofEntries(
 		Map.entry(0L, TimeFrame.SUNRISE),
 		Map.entry(501L, TimeFrame.DAY),
@@ -49,16 +50,34 @@ public class ClockDisplay implements ItemDisplay {
 
 	@Override
 	public void render(ItemStack item, GuiGraphicsExtractor graphics, Minecraft minecraft, Gui gui, Player player, int widestWidgetWidth) {
-		FormattedCharSequence formattedcharsequence = this.getText(minecraft).getVisualOrderText();
-		if (minecraft.level.dimensionType().hasSkyLight()) {
+		Component textComponent = this.getText(minecraft);
+		int textWidth = minecraft.font.width(textComponent);
+		boolean showClockFace = minecraft.level.dimensionType().hasSkyLight();
+		int contentWidth = textWidth + (showClockFace ? FACE_SIZE + PAD : 0);
+		int contentHeight = Math.max(minecraft.font.lineHeight, showClockFace ? FACE_SIZE : 0);
+		int widgetX = Math.max(0, (widestWidgetWidth / 2) - (contentWidth / 2));
+		int widgetY = 0;
+
+		int faceX = widgetX;
+		int textX = showClockFace ? faceX + FACE_SIZE + PAD : widgetX;
+		int textY = widgetY + (contentHeight - minecraft.font.lineHeight) / 2;
+
+		if (showClockFace) {
 			int k = this.getFrameForTime(minecraft.level.getDefaultClockTime()).frame;
 			int xRow = k % 2;
 			int yRow = k / 2 % 2;
-			float xMin = xRow * 8;
-			float yMin = yRow * 8;
-			graphics.blit(RenderPipelines.GUI_TEXTURED, TwilightForestMod.getGuiTexture("time.png"), (widestWidgetWidth / 2 - 5) - minecraft.font.width(formattedcharsequence) / 2, 0, xMin, yMin, 8, 8, 16, 16);
+			float u0 = xRow * 8 / 16.0F;
+			float u1 = (xRow * 8 + 8) / 16.0F;
+			float v0 = yRow * 8 / 16.0F;
+			float v1 = (yRow * 8 + 8) / 16.0F;
+			int faceY = widgetY + (contentHeight - FACE_SIZE) / 2;
+			graphics.blit(
+				TwilightForestMod.getGuiTexture("time.png"),
+				faceX, faceY, faceX + FACE_SIZE, faceY + FACE_SIZE,
+				u0, u1, v0, v1
+			);
 		}
-		graphics.text(minecraft.font, formattedcharsequence, Math.max(0, (widestWidgetWidth / 2 + 5) - minecraft.font.width(formattedcharsequence) / 2), 0, 0xFFFFFF);
+		graphics.text(minecraft.font, textComponent, textX, textY, 0xFFFFFFFF);
 	}
 
 	private TimeFrame getFrameForTime(long dayTimeInTicks) {
@@ -70,7 +89,10 @@ public class ClockDisplay implements ItemDisplay {
 	public Bounds getWidgetSize(ItemStack item, Minecraft minecraft, Gui gui, Player player, int widestWidgetWidth) {
 		int textWidth = minecraft.font.width(this.getText(minecraft));
 		boolean showClockFace = minecraft.level.dimensionType().hasSkyLight();
-		return new Bounds(Math.max(0, (widestWidgetWidth / 2 - (showClockFace ? 5 : 0)) - (textWidth / 2)), 0, textWidth + (showClockFace ? 10 : 0), minecraft.font.lineHeight);
+		int contentWidth = textWidth + (showClockFace ? FACE_SIZE + PAD : 0);
+		int contentHeight = Math.max(minecraft.font.lineHeight, showClockFace ? FACE_SIZE : 0);
+		int startX = Math.max(0, (widestWidgetWidth / 2) - (contentWidth / 2));
+		return new Bounds(startX, 0, contentWidth, contentHeight);
 	}
 
 	private Component getText(Minecraft minecraft) {

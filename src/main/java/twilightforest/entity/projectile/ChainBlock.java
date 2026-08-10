@@ -31,7 +31,6 @@ import twilightforest.init.TFDamageTypes;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFItems;
 import twilightforest.init.TFSounds;
-import twilightforest.util.TFEntityExtensions;
 import twilightforest.tags.TFBlockTags;
 
 public class ChainBlock extends ThrowableProjectile {
@@ -159,9 +158,10 @@ public class ChainBlock extends ThrowableProjectile {
 			BlockState state = level.getBlockState(pos);
 			if (!state.isAir()) {
 				boolean restrictedPlaceMode = this.getOwner() instanceof ServerPlayer player && player.gameMode.getGameModeForPlayer().isBlockPlacingRestricted();
-				if (!canBreakBlockAt(level, pos, state, this.stack, restrictedPlaceMode) || ((TFEntityExtensions) this).twilightforest$getData(TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed() >= 12) {
-					this.bounce(result.getDirection());
-				}
+			var smashOwner = this.getOwner() != null ? TFDataAttachments.getOrCreate(this.getOwner(), TFDataAttachments.SMASH_BLOCKS, twilightforest.components.entity.SmashBlocksEnchantmentAttachment::new) : new twilightforest.components.entity.SmashBlocksEnchantmentAttachment();
+			if (!canBreakBlockAt(level, pos, state, this.stack, restrictedPlaceMode) || smashOwner.getBlocksSmashed() >= 12) {
+				this.bounce(result.getDirection());
+			}
 
 				Vec3 vec3 = result.getBlockPos().clampLocationWithin(result.getLocation().add(-0.5D, 0D, 0D));
 				EnchantmentHelper.onHitBlock(
@@ -263,8 +263,11 @@ public class ChainBlock extends ThrowableProjectile {
 				if (this.isReturning()) {
 					// despawn if close enough
 					if (distToPlayer < 2F) {
-						if (this.stack != null && this.getOwner() instanceof LivingEntity living && ((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed() > 0) {
-							this.stack.hurtAndBreak(Math.min(((TFEntityExtensions) living).twilightforest$getData(TFDataAttachments.SMASH_BLOCKS).getBlocksSmashed(), 3), living, this.getHand());
+						if (this.stack != null && this.getOwner() instanceof LivingEntity living) {
+							var smash = TFDataAttachments.getOrCreate(living, TFDataAttachments.SMASH_BLOCKS, twilightforest.components.entity.SmashBlocksEnchantmentAttachment::new);
+							if (smash.getBlocksSmashed() > 0) {
+								this.stack.hurtAndBreak(Math.min(smash.getBlocksSmashed(), 3), living, this.getHand());
+							}
 						}
 						this.discard();
 					}

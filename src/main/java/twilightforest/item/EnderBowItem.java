@@ -6,7 +6,6 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.util.TFEntityExtensions;
 
 public class EnderBowItem extends BowItem {
 	public static final String KEY = "twilightforest:ender";
@@ -18,9 +17,7 @@ public class EnderBowItem extends BowItem {
 	@Override
 	protected Projectile createProjectile(Level level, LivingEntity shooter, ItemStack weapon, ItemStack projectile, boolean isCrit) {
 		Projectile proj = super.createProjectile(level, shooter, weapon, projectile, isCrit);
-		if (proj instanceof TFEntityExtensions ext) {
-			ext.twilightforest$setData(TFDataAttachments.ENDER_BOW_ARROW, true);
-		}
+		proj.setAttached(TFDataAttachments.ENDER_BOW_ARROW, true);
 		return proj;
 	}
 }

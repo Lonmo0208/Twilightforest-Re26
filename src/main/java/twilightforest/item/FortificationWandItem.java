@@ -18,11 +18,7 @@ public class FortificationWandItem extends ScepterItem {
 	@Override
 	public InteractionResult performScepterAction(Level level, ItemStack stack, Player player, InteractionHand hand) {
 		if (!level.isClientSide()) {
-			var attachment = player.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
-			if (attachment == null) {
-				attachment = new FortificationShieldAttachment();
-				player.setAttached(TFDataAttachments.FORTIFICATION_SHIELDS, attachment);
-			}
+			var attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 			if (attachment != null) {
 				attachment.setShields(player, 5, true);
 			}

@@ -15,7 +15,7 @@ public class TravellersWingsStatePacketClientHandler {
 			if (player != null && player.level() != null) {
 				Entity entity = player.level().getEntity(message.entityId);
 				if (entity instanceof LivingEntity livingEntity) {
-					var attachment = livingEntity.getAttached(TFDataAttachments.TRAVELLERS_WINGS);
+					var attachment = TFDataAttachments.getOrCreate(livingEntity, TFDataAttachments.TRAVELLERS_WINGS, twilightforest.components.entity.TravellersWingsAttachment::new);
 					if (attachment != null) {
 						attachment.state = message.state;
 						attachment.sidestepLeft = message.sidestepLeft;

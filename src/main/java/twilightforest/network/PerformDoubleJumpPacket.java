@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
 import twilightforest.TwilightForestMod;
 import twilightforest.item.travellers_gear.TravellersGearLogic;
 
@@ -26,8 +27,9 @@ public record PerformDoubleJumpPacket() implements CustomPacketPayload {
 
 	public static void handle(PerformDoubleJumpPacket message, ServerPlayNetworking.Context context) {
 		context.server().execute(() -> {
-			if (!TravellersGearLogic.performDoubleJump(context.player()))
-				TravellersGearLogic.handleDoubleJumpAbuse(context.player());
+			ServerPlayer player = context.player();
+			if (!TravellersGearLogic.performDoubleJump(player))
+				TravellersGearLogic.handleDoubleJumpAbuse(player);
 		});
 	}
 }

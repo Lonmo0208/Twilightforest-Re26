@@ -83,9 +83,14 @@ public record TransferableComponentModifier(
 	}
 
 	public List<ItemStack[]> findDataComponentProviders(List<Ingredient> input) {
-		return input.stream().map(Ingredient::items)
-			.filter(holders -> holders.anyMatch(holder -> new ItemStack(holder.value()).has(transferableComponent.type())))
-			.map(holders -> holders.map(holder -> new ItemStack(holder.value())).toArray(ItemStack[]::new))
+		// Convert each Ingredient stream to ItemStack[] with ONE terminal operation FIRST
+		// (prevents "stream has already been operated upon" when trying to filter + map the same stream)
+		return input.stream()
+			.map(ingredient -> ingredient.items()
+				.map(holder -> new ItemStack(holder.value()))
+				.toArray(ItemStack[]::new))
+			.filter(itemStacks -> java.util.Arrays.stream(itemStacks)
+				.anyMatch(itemStack -> itemStack.has(transferableComponent.type())))
 			.toList();
 	}
 

@@ -14,7 +14,6 @@ import twilightforest.beanification.PostConstruct;
 import twilightforest.config.TFConfig;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFDimension;
-import twilightforest.util.TFEntityExtensions;
 import twilightforest.world.TFTeleporter;
 import twilightforest.world.NoReturnTeleporter;
 import net.minecraft.util.Unit;
@@ -51,7 +50,7 @@ public class CapabilityEvents {
 
 	private void updateShields(FabricEvents.EntityTickEvent.Post event) {
 		if (event.getEntity() instanceof LivingEntity living && !living.level().isClientSide()) {
-			FortificationShieldAttachment attachment = living.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
+			FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(living, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 			if (attachment != null) {
 				attachment.tick(living);
 			}
@@ -59,16 +58,16 @@ public class CapabilityEvents {
 	}
 
 	private void updatePlayerCaps(FabricEvents.PlayerTickEvent.Post event) {
-		if (((TFEntityExtensions) event.getEntity()).twilightforest$getData(TFDataAttachments.FEATHER_FAN)) {
+		if (Boolean.TRUE.equals(TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.FEATHER_FAN, () -> false))) {
 			event.getEntity().setIgnoreFallDamageFromCurrentImpulse(true, event.getEntity().position());
 			event.getEntity().currentImpulseImpactPos = event.getEntity().position();
 
 			if (event.getEntity().onGround() || event.getEntity().isSwimming() || event.getEntity().isInWater()) {
-				((TFEntityExtensions) event.getEntity()).twilightforest$setData(TFDataAttachments.FEATHER_FAN, false);
+				event.getEntity().setAttached(TFDataAttachments.FEATHER_FAN, false);
 			}
 		}
-		((TFEntityExtensions) event.getEntity()).twilightforest$getData(TFDataAttachments.YETI_THROWING).tick(event.getEntity());
-		((TFEntityExtensions) event.getEntity()).twilightforest$getData(TFDataAttachments.TF_PORTAL_COOLDOWN).tick(event.getEntity());
+		TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new).tick(event.getEntity());
+		TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.TF_PORTAL_COOLDOWN, twilightforest.components.entity.TFPortalAttachment::new).tick(event.getEntity());
 	}
 
 	private void absorbShieldHits(FabricEvents.LivingIncomingDamageEvent event) {
@@ -76,7 +75,7 @@ public class CapabilityEvents {
 		if (living instanceof twilightforest.entity.boss.Lich) return;
 
 		if (!living.level().isClientSide() && !event.getSource().is(DamageTypeTags.BYPASSES_ARMOR)) {
-			FortificationShieldAttachment attachment = living.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
+			FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(living, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 			if (attachment != null && attachment.shieldsLeft() > 0) {
 				boolean isCreativePlayer = living instanceof Player player && player.getAbilities().invulnerable;
 				if (!isCreativePlayer && living.invulnerableTime <= 0) {
@@ -104,7 +103,7 @@ public class CapabilityEvents {
 		if (event.getEntity().level().isClientSide() || !(event.getEntity() instanceof ServerPlayer player))
 			return;
 		dataFixLegacyBanish(player);
-		if (!((TFEntityExtensions) player).twilightforest$hasData(TFDataAttachments.BANISHED_TO_TWILIGHT_FOREST))
+		if (!player.hasAttached(TFDataAttachments.BANISHED_TO_TWILIGHT_FOREST))
 			newSpawnInTwilightForest(player);
 	}
 
@@ -122,11 +121,11 @@ public class CapabilityEvents {
 			NoReturnTeleporter.createNoPortalTransition(level, player, newDefaultSpawn));
 		player.setRespawnPosition(new ServerPlayer.RespawnConfig(LevelData.RespawnData.of(TFDimension.DIMENSION_KEY, newDefaultSpawn, player.getYRot(), 0.0F), true), false);
 
-		((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.BANISHED_TO_TWILIGHT_FOREST, Unit.INSTANCE);
+		player.setAttached(TFDataAttachments.BANISHED_TO_TWILIGHT_FOREST, Unit.INSTANCE);
 	}
 
 	private static void dataFixLegacyBanish(ServerPlayer player) {
-		CompoundTag tagCompound = ((TFEntityExtensions) player).twilightforest$getPersistentData();
+		CompoundTag tagCompound = TFDataAttachments.getOrCreate(player, TFDataAttachments.TF_PERSISTENT_DATA, CompoundTag::new);
 		final String PERSISTED_NBT_TAG = "PlayerPersisted";
 		if (!tagCompound.contains(PERSISTED_NBT_TAG))
 			return;
@@ -136,10 +135,11 @@ public class CapabilityEvents {
 
 		playerData.remove("twilightforest_banished");
 		tagCompound.put(PERSISTED_NBT_TAG, playerData);
+		player.setAttached(TFDataAttachments.TF_PERSISTENT_DATA, tagCompound);
 
-		if (((TFEntityExtensions) player).twilightforest$hasData(TFDataAttachments.BANISHED_TO_TWILIGHT_FOREST))
+		if (player.hasAttached(TFDataAttachments.BANISHED_TO_TWILIGHT_FOREST))
 			return;
 
-		((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.BANISHED_TO_TWILIGHT_FOREST, Unit.INSTANCE);
+		player.setAttached(TFDataAttachments.BANISHED_TO_TWILIGHT_FOREST, Unit.INSTANCE);
 	}
 }

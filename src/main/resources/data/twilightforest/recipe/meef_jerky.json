@@ -1,7 +1,7 @@
 {
   "type": "twilightforest:drying",
   "filter_time": 6000,
-  "input": "minecraft:cooked_porkchop",
+  "input": "twilightforest:raw_meef",
   "result": {
     "id": "twilightforest:meef_jerky"
   }

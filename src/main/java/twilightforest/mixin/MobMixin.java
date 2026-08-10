@@ -13,4 +13,7 @@ public interface MobMixin {
 
 	@Accessor("goalSelector")
 	GoalSelector getGoalSelector();
+
+	@Accessor("goalSelector")
+	GoalSelector twilightforest$getGoalSelector();
 }

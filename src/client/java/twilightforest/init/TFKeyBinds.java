@@ -1,6 +1,7 @@
 package twilightforest.init;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
 import twilightforest.TwilightForestMod;
@@ -28,8 +29,8 @@ public abstract class TFKeyBinds {
 	}
 
 	public static void init() {
-		// KeyMappings are created statically and automatically registered via their constructors.
-		// The Category is also created statically.
-		// Nothing additional needed for registration - the static initializers handle it.
+		for (KeyMapping keyMapping : KEY_MAPPINGS) {
+			KeyMappingHelper.registerKeyMapping(keyMapping);
+		}
 	}
 }

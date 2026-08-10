@@ -15,7 +15,7 @@ public class UpdateThrownPacketClientHandler {
 			Level level = context.player().level();
 			Entity entity = level.getEntity(message.entityID());
 			if (entity instanceof Player player) {
-				var attachment = player.getAttached(TFDataAttachments.YETI_THROWING);
+				var attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new);
 				LivingEntity thrower = message.thrower() != 0 ? (LivingEntity) level.getEntity(message.thrower()) : null;
 				if (attachment != null) {
 					attachment.setThrown(player, message.thrown(), thrower);

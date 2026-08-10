@@ -487,6 +487,13 @@ public class Naga extends BaseTFBoss {
 	private void moveSegments() {
 		for (int i = 0; i < this.bodySegments.length; i++) {
 			this.bodySegments[i].tick();
+			
+			// Skip position updates on client side - positions are synced via UpdateTFMultipartPacket
+			// This prevents double-updating which causes jitter
+			if (this.level().isClientSide()) {
+				continue;
+			}
+			
 			Entity leader = i == 0 ? this : this.bodySegments[i - 1];
 			double followX = leader.getX();
 			double followY = leader.getY();

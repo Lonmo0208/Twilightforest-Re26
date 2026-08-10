@@ -54,7 +54,8 @@ public class TravellersArmorItem extends Item implements TravellersModifiable {
 	public static Properties gogglesProperties(Properties properties) {
 		return properties
 			.attributes(defaultArmorProperties(ArmorType.HELMET).build())
-			.component(TFDataComponents.ZOOM_ABILITY_MODIFIER, 0.3F);
+			.component(TFDataComponents.ZOOM_ABILITY_MODIFIER, 0.3F)
+			.component(TFDataComponents.ITEM_DISPLAY, twilightforest.components.item.ItemDisplayContents.EMPTY);
 	}
 
 	public static Properties chestProperties(Properties properties) {
@@ -94,13 +95,13 @@ public class TravellersArmorItem extends Item implements TravellersModifiable {
 		if (registries == null)
 			return;
 
-		List<Holder.Reference<TravellersModifier>> abilityModifiers = TravellersModifiersManager.findAllAbilityModifiers(registries, stack);
-		for (Holder.Reference<TravellersModifier> travellersModifierReference : abilityModifiers) {
+		List<Holder<TravellersModifier>> abilityModifiers = TravellersModifiersManager.findAllAbilityModifiers(registries, stack);
+		for (Holder<TravellersModifier> travellersModifierReference : abilityModifiers) {
 			builder.accept(Component.translatable("travellers_gear.ability", TravellersModifiersManager.getModifierTooltipComponent(travellersModifierReference).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.GOLD));
 		}
 
-		List<Holder.Reference<TravellersModifier>> insertableModifiers = TravellersModifiersManager.findAllInsertableModifiers(registries, stack);
-		for (Holder.Reference<TravellersModifier> modifier : insertableModifiers) {
+		List<Holder<TravellersModifier>> insertableModifiers = TravellersModifiersManager.findAllInsertableModifiers(registries, stack);
+		for (Holder<TravellersModifier> modifier : insertableModifiers) {
 			builder.accept(Component.literal("- ").append(TravellersModifiersManager.getModifierTooltipComponent(modifier).withStyle(ChatFormatting.GRAY)));
 			for (Component description : modifier.value().getDescription()) {
 				// FIXME There has to be a better way to bold only the indent and arrow and not the information component

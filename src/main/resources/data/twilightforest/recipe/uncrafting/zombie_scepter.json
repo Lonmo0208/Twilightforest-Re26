@@ -1,0 +1,15 @@
+{
+  "type": "twilightforest:uncrafting",
+  "cost": 3,
+  "input": "twilightforest:zombie_scepter",
+  "input_count": 1,
+  "key": {
+    "R": "minecraft:rotten_flesh",
+    "S": "minecraft:potion"
+  },
+  "pattern": [
+    "R  ",
+    " S ",
+    "   "
+  ]
+}

@@ -26,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 
 
@@ -63,13 +64,13 @@ public class TravellersGearLogic {
 	}
 
 	public static void waterWalkingSplashEffect(LivingEntity livingEntity) {
-		Long lastTickWaterWalking = ((TFEntityExtensions) livingEntity).twilightforest$getData(TFDataAttachments.LAST_TICK_WATER_WALKING);
+		long lastTickWaterWalking = java.util.Objects.requireNonNullElse(TFDataAttachments.getOrCreate(livingEntity, TFDataAttachments.LAST_TICK_WATER_WALKING, () -> 0L), 0L);
 		Level level = livingEntity.level();
 		Vec3 livingEntityVelocity = livingEntity.getKnownMovement();
 		if (lastTickWaterWalking + 1 == level.getGameTime() || livingEntityVelocity.horizontalDistance() < 0.01)
 			return;
 
-		((TFEntityExtensions) livingEntity).twilightforest$setData(TFDataAttachments.LAST_TICK_WATER_WALKING, livingEntity.level().getGameTime());
+		livingEntity.setAttached(TFDataAttachments.LAST_TICK_WATER_WALKING, livingEntity.level().getGameTime());
 
 		ParticlePacket particlePacket = new ParticlePacket();  // we have to create it on client to avoid networking delays
 		for (int particleNumber = 0; particleNumber < livingEntity.dimensions.width(); particleNumber++) {
@@ -90,7 +91,157 @@ public class TravellersGearLogic {
 
 	public static boolean isBelowMaxWaterWalkingSubmergedHeight(LivingEntity livingEntity) {
 		double waterHeight = livingEntity.getFluidHeight(FluidTags.WATER);
-		return waterHeight < WATER_WALKING_MAX_SUBMERGED_HEIGHT;
+		return waterHeight <= WATER_WALKING_MAX_SUBMERGED_HEIGHT;
+	}
+
+	public static double getWaterFluidHeight(LivingEntity livingEntity) {
+		return livingEntity.getFluidHeight(FluidTags.WATER);
+	}
+
+	private static final double EPSILON = 0.001D;
+
+	/**
+	 * Scan upward from the entity's feet to find the actual water surface top.
+	 * Works correctly even when the entity is fully submerged (e.g. inside 2+ deep
+	 * water) — it keeps climbing until it exits the continuous WATER column.
+	 *
+	 * @return the Y coordinate of the water surface top (e.g. -1 + 8/9 for a
+	 *         source block at y=-1), or {@code Double.NaN} if no water is nearby.
+	 */
+	public static double findWaterSurfaceY(Level level, BlockPos feetPos) {
+		BlockPos.MutableBlockPos cursor = feetPos.mutable();
+		FluidState fs = level.getFluidState(cursor);
+		if (!fs.is(FluidTags.WATER)) {
+			cursor.move(0, -1, 0);
+			fs = level.getFluidState(cursor);
+			if (!fs.is(FluidTags.WATER)) return Double.NaN;
+			return cursor.getY() + fs.getHeight(level, cursor);
+		}
+		int highestWaterY = cursor.getY();
+		FluidState highestFs = fs;
+		while (true) {
+			cursor.move(0, 1, 0);
+			FluidState next = level.getFluidState(cursor);
+			if (!next.is(FluidTags.WATER)) break;
+			highestWaterY = cursor.getY();
+			highestFs = next;
+		}
+		return highestWaterY + highestFs.getHeight(level, BlockPos.containing(cursor.getX(), highestWaterY, cursor.getZ()));
+	}
+
+	/**
+	 * Lift a water-walking entity back onto the water surface.
+	 *
+	 * Fabric (unlike NeoForge) does NOT automatically snap an entity to the fluid
+	 * top during collision processing — canStandOnFluid only matters when the
+	 * entity is already very close to the surface (within the AABB sweep).
+	 * We therefore have to perform the lift ourselves, and crucially we have to
+	 * do it in a way that survives client→server position sync for real players.
+	 *
+	 * Strategy:
+	 *   1. Find the actual continuous water surface Y via column scan.
+	 *   2. Apply an upward velocity via {@code setDeltaMovement} so that both
+	 *      client and server physics move the entity up consistently.
+	 *   3. If the entity is still far below the surface, snap its position via
+	 *      {@code setPos}; for {@code ServerPlayer} additionally call
+	 *      {@code teleportTo} so the authoritative position is actually sent
+	 *      to the client instead of being overwritten by the underwater move
+	 *      packet the client sends a moment later.
+	 *   4. Once close to the surface, zero out the downward velocity so the
+	 *      vanilla collision system + canStandOnFluid take over and keep the
+	 *      entity standing stably.
+	 */
+	public static void waterWalkingTick(LivingEntity livingEntity) {
+		if (!TravellersModifiersManager.isModifierActive(livingEntity, TravellersModifiersManager.WATER_WALK_MODIFIER))
+			return;
+		if (livingEntity.isShiftKeyDown())
+			return;
+
+		Level level = livingEntity.level();
+		BlockPos feetPos = livingEntity.blockPosition();
+		double surfaceY = findWaterSurfaceY(level, feetPos);
+		if (Double.isNaN(surfaceY))
+			return;
+
+		double currentY = livingEntity.getY();
+		Vec3 velocity = livingEntity.getDeltaMovement();
+
+		double diff = surfaceY - currentY;
+
+		// ── Guard: only handle SHALLOW water ────────────────────────────────────
+		// NeoForge official cap is WATER_WALKING_MAX_SUBMERGED_HEIGHT = 0.4:
+		// the modifier is only active while the entity is AT MOST 0.4 blocks into
+		// the fluid (toes dipped).  If the entity is deeper (e.g. the player
+		// held Shift to intentionally submerge) we MUST leave vanilla water
+		// physics alone — no upward velocity, no snap, nothing.  The player then
+		// swims / floats up normally; once they naturally surface into the
+		// shallow zone below we re-engage and "catch" them onto the top.
+		// Without this guard the infamous "release Shift → get launched out of
+		// the water" bug happens because our code was trying to yank the player
+		// from 2+ blocks deep straight to the surface every tick.
+		if (diff > WATER_WALKING_MAX_SUBMERGED_HEIGHT + 0.1D)
+			return;
+
+		if (diff > EPSILON) {
+			// --- Shallow submerged (toes dipped, diff <= 0.5): gently rise to top ---
+			double upVel = Math.max(Math.min(diff * 0.9D, 0.2D), 0.04D);
+			if (velocity.y() < upVel) {
+				livingEntity.setDeltaMovement(velocity.x(), upVel, velocity.z());
+			}
+
+			if (!level.isClientSide() && Math.abs(currentY - surfaceY) > 0.05D) {
+				livingEntity.setPos(livingEntity.getX(), surfaceY, livingEntity.getZ());
+				livingEntity.resetFallDistance();
+				if (livingEntity instanceof net.minecraft.server.level.ServerPlayer sp
+					&& Math.abs(sp.getY() - surfaceY) > 0.25D) {
+					sp.teleportTo(sp.getX(), surfaceY, sp.getZ());
+				}
+			}
+		} else if (diff > -0.15D) {
+			// --- Within 0.15 blocks of the surface (either side): stand on top ---
+			if (velocity.y() < 0) {
+				livingEntity.setDeltaMovement(velocity.x(), 0.0, velocity.z());
+			}
+
+			// Official: sprinting is disabled while water-walking, even though
+			// normal walking is allowed.  Mirror NeoForge's behaviour here.
+			livingEntity.setSprinting(false);
+
+			// ── Speed alignment: two-part correction (see also travel()@HEAD mixin)
+			// Part 1 (Mixin): seed onGround=true at travel() HEAD so that
+			// moveRelative applies the FULL ground-mode input acceleration.
+			// Part 2 (here): after travel() finishes, collision resolution has
+			// overwritten onGround=false and applied air-drag (horizVel *= 0.91).
+			// The correct ground-mode terminal friction is slipperiness=0.6 times
+			// that same 0.91 → 0.6 * 0.91 = 0.546 total.  To bring the air-drag
+			// value (0.91) down to the target (0.546) we multiply by 0.6 here.
+			// Net: 0.91 * 0.6 = 0.546 ≡ ground friction, plus the ground-mode
+			// acceleration we already got from the travel() HEAD mixin yields a
+			// walk speed & feel IDENTICAL to walking on grass blocks.
+			if (!livingEntity.onGround()) {
+				// Only apply when travel's collision resolver actually left us
+				// airborne (flag untouched = travel did real ground friction).
+				Vec3 v = livingEntity.getDeltaMovement();
+				final double groundFrictionAdjustment = 0.6D; // (0.6*0.91)/0.91
+				livingEntity.setDeltaMovement(v.x() * groundFrictionAdjustment, v.y(), v.z() * groundFrictionAdjustment);
+			}
+			livingEntity.setOnGround(true);
+
+			livingEntity.resetFallDistance();
+			// Server-side authoritative correction ONLY when the error is clearly beyond
+			// normal physics drift (< 0.05 setPos, < 0.25 skip teleport entirely). Experience
+			// 1248819: teleportTo must be a corrector, not a driver — using it every tick
+			// causes the exact "position ping-pong" jitter the user is reporting.
+			if (!level.isClientSide()) {
+				if (Math.abs(currentY - surfaceY) > 0.05D) {
+					livingEntity.setPos(livingEntity.getX(), surfaceY, livingEntity.getZ());
+				}
+				if (livingEntity instanceof net.minecraft.server.level.ServerPlayer sp
+					&& Math.abs(sp.getY() - surfaceY) > 0.25D) {
+					sp.teleportTo(sp.getX(), surfaceY, sp.getZ());
+				}
+			}
+		}
 	}
 
 	public static void travellersBootsStraightAhead(LivingEntity livingEntity) {
@@ -117,7 +268,7 @@ public class TravellersGearLogic {
 		Long cooldown = leggingsStack.get(TFDataComponents.SIDESTEP_COOLDOWN);
 		if (cooldown == null)
 			return;
-		TravellersWingsAttachment attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TRAVELLERS_WINGS);
+		TravellersWingsAttachment attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.TRAVELLERS_WINGS, twilightforest.components.entity.TravellersWingsAttachment::new);
 		long dt = player.level().getGameTime() - attachment.lastSidestepTime;
 		if (TravellersModifiersManager.isModifierActive(player, leggingsStack, TravellersModifiersManager.SIDESTEP_MODIFIER) && dt > cooldown && attachment.shouldPlaySideStepCooldownSound) {
 			player.level().playLocalSound(player.blockPosition(), TFSounds.SIDE_STEP_CHARGED, player.getSoundSource(), 1F, player.getVoicePitch(), false);
@@ -129,25 +280,35 @@ public class TravellersGearLogic {
 		ItemStack leggingsStack = livingEntity.getItemBySlot(EquipmentSlot.LEGS);
 		Float multiplier = leggingsStack.get(TFDataComponents.GRADUALLY_GLIDING_MULTIPLIER);
 		Vec3 deltaMovement = livingEntity.getDeltaMovement();
-		if (!TravellersModifiersManager.isModifierActive(livingEntity, leggingsStack, TravellersModifiersManager.GRADUAL_GLIDE_MODIFIER) || multiplier == null || deltaMovement.y() >= 0 || livingEntity.isFallFlying())
-			return;
 
-		boolean isGraduallyGliding = !(livingEntity instanceof Player player) || ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.IS_GRADUALLY_GLIDING);
-		if (!isGraduallyGliding)
+		boolean modActive = TravellersModifiersManager.isModifierActive(livingEntity, leggingsStack, TravellersModifiersManager.GRADUAL_GLIDE_MODIFIER);
+		boolean attachmentGlide = !(livingEntity instanceof Player player) || Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.IS_GRADUALLY_GLIDING, () -> false));
+
+		// ── Exact NeoForge official guards ──
+		// 1) Modifier present & active
+		// 2) Glide multiplier configured on the leggings stack
+		// 3) Actually FALLING (deltaMovement.y() < 0) — useless otherwise
+		// 4) Not already elytra-flying (two flight systems must not stack)
+		// 5) For players specifically: the IS_GRADUALLY_GLIDING attachment must be TRUE.
+		//    Non-player mobs wearing travellers leggings always glide when eligible
+		//    (they have no client-side Shift toggle to drive the attachment).
+		if (!modActive || multiplier == null || deltaMovement.y() >= 0 || livingEntity.isFallFlying())
+			return;
+		if (!attachmentGlide)
 			return;
 
 		double newDeltaMovementY = deltaMovement.y() * multiplier;
 		livingEntity.setDeltaMovement(
 			deltaMovement.x(),
-			newDeltaMovementY,  // works similar to minecraft air resistance
+			newDeltaMovementY,
 			deltaMovement.z()
 		);
 
-		livingEntity.fallDistance = (float) (Math.pow(newDeltaMovementY, 2) / 2 / livingEntity.getGravity());  // use mv ^ 2 / 2 / mg = h
+		livingEntity.fallDistance = (float) (Math.pow(newDeltaMovementY, 2) / 2 / livingEntity.getGravity());
 	}
 
 	public static void travellersGearAutoRepair(LivingEntity livingEntity) {
-		long lastHitTime = ((TFEntityExtensions) livingEntity).twilightforest$getData(TFDataAttachments.LAST_DAMAGE_ARMOR_TIME);
+		long lastHitTime = java.util.Objects.requireNonNullElse(TFDataAttachments.getOrCreate(livingEntity, TFDataAttachments.LAST_DAMAGE_ARMOR_TIME, () -> 0L), 0L);
 		if (livingEntity.level().getGameTime() - lastHitTime <= 10 * 20)  // 10 seconds
 			return;
 
@@ -200,7 +361,7 @@ public class TravellersGearLogic {
 	}
 
 	public static boolean tryPerformSidestep(Player player, boolean isLeftSidestep) {
-		TravellersWingsAttachment attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TRAVELLERS_WINGS);
+		TravellersWingsAttachment attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.TRAVELLERS_WINGS, twilightforest.components.entity.TravellersWingsAttachment::new);
 		long lastSidestepTime = attachment.lastSidestepTime;
 		ItemStack leggingsStack = player.getItemBySlot(EquipmentSlot.LEGS);
 		Long cooldown = leggingsStack.get(TFDataComponents.SIDESTEP_COOLDOWN);
@@ -221,7 +382,7 @@ public class TravellersGearLogic {
 		player.push(dashDirection.scale(1.6));  // 5 blocks
 		player.playSound(TFSounds.SIDE_STEP, 1.0F, player.getVoicePitch());
 
-		TravellersWingsAttachment attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TRAVELLERS_WINGS);
+		TravellersWingsAttachment attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.TRAVELLERS_WINGS, twilightforest.components.entity.TravellersWingsAttachment::new);
 		TravellersWingsAttachment.WingState newState = TravellersWingsAttachment.WingState.SIDESTEP;
 		attachment.state = newState;
 		attachment.sidestepLeft = isLeftSidestep;
@@ -233,27 +394,53 @@ public class TravellersGearLogic {
 	}
 
 	public static boolean performDoubleJump(Player player) {
-		boolean hasDoubleJump = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.HAS_DOUBLE_JUMP);
-		if (!hasDoubleJump || player.isFallFlying() || player.onClimbable() || player.onGround() || player.isSwimming() || player.getAbilities().flying || player.isInLiquid() || player.isPassenger())
-			return false;
-		player.jumpFromGround();
+		boolean hasDoubleJump = Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.HAS_DOUBLE_JUMP, () -> false));
+		
+		
+		
 		Vec3 velocity = player.getDeltaMovement();
-		double boostVelocity = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO).doubleJumpBoostVelocity;
+		boolean fakeGround = player.onGround() && velocity.y() > 0.1D;
+		boolean conditionFailed = !hasDoubleJump || player.isFallFlying() || player.onClimbable()
+			|| player.isSwimming() || player.getAbilities().flying || player.isInLiquid() || player.isPassenger()
+			|| (player.onGround() && !fakeGround);
+		if (conditionFailed)
+			return false;
+		double velYBefore = velocity.y();
+		player.jumpFromGround();
+		double velYAfterJump = player.getDeltaMovement().y();
+		
+		
+		
+		
+		
+		if (Math.abs(velYAfterJump - velYBefore) < 0.0001D) {
+			float jumpPower = 0.42F;
+			if (player.hasEffect(MobEffects.JUMP_BOOST)) {
+				var effect = player.getEffect(MobEffects.JUMP_BOOST);
+				if (effect != null)
+					jumpPower += 0.1F * (effect.getAmplifier() + 1);
+			}
+			Vec3 v = player.getDeltaMovement();
+			player.setDeltaMovement(v.x(), velYBefore + jumpPower, v.z());
+		}
+		velocity = player.getDeltaMovement();
+		var bounce = TFDataAttachments.getOrCreate(player, TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, twilightforest.components.entity.SlimySolesAttachment::new);
+		double boostVelocity = bounce.doubleJumpBoostVelocity;
 		if (boostVelocity != 0) {
 			player.setDeltaMovement(velocity.x(), Math.sqrt(Math.pow(velocity.y(), 2) + Math.pow(boostVelocity, 2)), velocity.z());
-			((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO).doubleJumpBoostVelocity = 0;
+			bounce.doubleJumpBoostVelocity = 0;
 		}
 		player.resetFallDistance();
 		float pitchShift = 0.1F;
 		player.playSound(TFSounds.DOUBLE_JUMP, 1.5F, (player.getVoicePitch() - 1) * (1 + pitchShift) + (1 - pitchShift * 0.2F));
-		((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.HAS_DOUBLE_JUMP, false);
-		((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.DOUBLE_JUMP_VALIDATOR, 0);
+		player.setAttached(TFDataAttachments.HAS_DOUBLE_JUMP, false);
+		player.setAttached(TFDataAttachments.DOUBLE_JUMP_VALIDATOR, 0);
 		AttributeInstance instance = player.getAttribute(Attributes.SAFE_FALL_DISTANCE);
 		if (instance != null) // Increase safe fall distance so the player can land up to 2 blocks below their starting height after performing a double jump at peak height without taking fall damage
 			instance.addOrUpdateTransientModifier(TFAttributeModifiers.TRAVELLERS_DOUBLE_JUMP_SAFE_FALL_DISTANCE);
 
 		if (player.getItemBySlot(EquipmentSlot.LEGS).is(TFItems.TRAVELLERS_WINGS)) {
-			TravellersWingsAttachment attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TRAVELLERS_WINGS);
+			TravellersWingsAttachment attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.TRAVELLERS_WINGS, twilightforest.components.entity.TravellersWingsAttachment::new);
 			attachment.state = TravellersWingsAttachment.WingState.DOUBLE_JUMP;
 			attachment.doubleJumpTimer = 0;
 		}
@@ -272,14 +459,14 @@ public class TravellersGearLogic {
 				particlePacket.queueParticle(type, wingsPosition, particleVelocity.multiply(0.25, -0.5, 0.25).add(deltaMovement));
 			}
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, particlePacket);
-			TravellersWingsAttachment attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TRAVELLERS_WINGS);
+			TravellersWingsAttachment attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.TRAVELLERS_WINGS, twilightforest.components.entity.TravellersWingsAttachment::new);
 			PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new TravellersWingsStatePacket(player.getId(), TravellersWingsAttachment.WingState.DOUBLE_JUMP, attachment.sidestepLeft, attachment.doubleJumpTimer, attachment.sidestepTimer));
 		}
 		return true;
 	}
 
 	public static void travellersBootsSlimySolesBounce(LivingEntity livingEntity) {
-		SlimySolesAttachment slimySolesAttachment = ((TFEntityExtensions) livingEntity).twilightforest$getData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO);
+		SlimySolesAttachment slimySolesAttachment = TFDataAttachments.getOrCreate(livingEntity, TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, twilightforest.components.entity.SlimySolesAttachment::new);
 		if (slimySolesAttachment.bounceVelocity == 0 || slimySolesAttachment.hasBounced)
 			return;
 		Vec3 velocity = livingEntity.getDeltaMovement();
@@ -317,8 +504,8 @@ public class TravellersGearLogic {
 		MinecraftServer server = null;
 		if (server == null || !server.isDedicatedServer())
 			return;
-		int count = ((TFEntityExtensions) serverPlayer).twilightforest$getData(validator);
-		int lastTick = ((TFEntityExtensions) serverPlayer).twilightforest$getData(lastCheck);
+		int count = serverPlayer.getAttached(validator);
+		int lastTick = serverPlayer.getAttached(lastCheck);
 		int currentTick = serverPlayer.tickCount;
 		int diff = currentTick - lastTick;
 		TwilightForestMod.LOGGER.debug("{} {} check: count={}, lastTick={}, currentTick={}, diff={}",
@@ -328,14 +515,14 @@ public class TravellersGearLogic {
 			count = -1;
 		}
 
-		((TFEntityExtensions) serverPlayer).twilightforest$setData(lastCheck, currentTick);
+		serverPlayer.setAttached(lastCheck, currentTick);
 
 		if (count >= 5) {
 			serverPlayer.connection.disconnect(new DisconnectionDetails(Component.translatable("multiplayer.disconnect.flying")));
 			return;
 		}
 
-		((TFEntityExtensions) serverPlayer).twilightforest$setData(validator, count + 1);
+		serverPlayer.setAttached(validator, count + 1);
 
 		if (count > 1) {
 			TwilightForestMod.LOGGER.warn("{} illegal {}", serverPlayer.getName().getString(), movementType);
@@ -366,7 +553,7 @@ public class TravellersGearLogic {
 	}
 
 	public static void determineWingState(LivingEntity livingEntity) {
-		TravellersWingsAttachment attachment = ((TFEntityExtensions) livingEntity).twilightforest$getData(TFDataAttachments.TRAVELLERS_WINGS);
+		TravellersWingsAttachment attachment = TFDataAttachments.getOrCreate(livingEntity, TFDataAttachments.TRAVELLERS_WINGS, twilightforest.components.entity.TravellersWingsAttachment::new);
 		TravellersWingsAttachment.WingState newState = TravellersWingsAttachment.WingState.IDLE;
 
 		boolean isLocked = false;

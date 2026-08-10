@@ -17,6 +17,7 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -31,7 +32,9 @@ public abstract class MapRendererMixin {
 	@Final
 	private TextureAtlas decorationSprites;
 
+	@Unique
 	private static final Field TF_MAP_DATA_FIELD;
+	@Unique
 	private static final Field TF_IS_TF_MAP_FIELD;
 
 	static {
@@ -72,12 +75,14 @@ public abstract class MapRendererMixin {
 		TFMagicMapData magicMapData = (TFMagicMapData) mapData;
 
 		// Render the map texture
-		submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.text(mapRenderState.texture), (pose, buffer) -> {
-			buffer.addVertex(pose, 0.0F, 128.0F, -0.01F).setColor(-1).setUv(0.0F, 1.0F).setLight(lightCoords);
-			buffer.addVertex(pose, 128.0F, 128.0F, -0.01F).setColor(-1).setUv(1.0F, 1.0F).setLight(lightCoords);
-			buffer.addVertex(pose, 128.0F, 0.0F, -0.01F).setColor(-1).setUv(1.0F, 0.0F).setLight(lightCoords);
-			buffer.addVertex(pose, 0.0F, 0.0F, -0.01F).setColor(-1).setUv(0.0F, 0.0F).setLight(lightCoords);
-		});
+		if (mapRenderState.texture != null) {
+			submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.text(mapRenderState.texture), (pose, buffer) -> {
+				buffer.addVertex(pose, 0.0F, 128.0F, -0.01F).setColor(-1).setUv(0.0F, 1.0F).setLight(lightCoords);
+				buffer.addVertex(pose, 128.0F, 128.0F, -0.01F).setColor(-1).setUv(1.0F, 1.0F).setLight(lightCoords);
+				buffer.addVertex(pose, 128.0F, 0.0F, -0.01F).setColor(-1).setUv(1.0F, 0.0F).setLight(lightCoords);
+				buffer.addVertex(pose, 0.0F, 0.0F, -0.01F).setColor(-1).setUv(0.0F, 0.0F).setLight(lightCoords);
+			});
+		}
 
 		// Render decorations
 		MagicMapPlayerIconRenderer playerIconRenderer = new MagicMapPlayerIconRenderer();
@@ -110,10 +115,11 @@ public abstract class MapRendererMixin {
 		ci.cancel();
 	}
 
+	@Unique
 	private void tf$renderVanillaDecoration(MapRenderState.MapDecorationRenderState decoration, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int index) {
 		poseStack.pushPose();
 		poseStack.translate(decoration.x / 2.0F + 64.0F, decoration.y / 2.0F + 64.0F, -0.02F);
-		poseStack.mulPose(Axis.ZP.rotationDegrees(decoration.rot * 360 / 16.0F));
+		poseStack.mulPose(Axis.ZP.rotationDegrees(decoration.rot * 360.0F / 16.0F));
 		poseStack.scale(4.0F, 4.0F, 3.0F);
 		poseStack.translate(-0.125F, 0.125F, 0.0F);
 		TextureAtlasSprite atlasSprite = decoration.atlasSprite;
@@ -129,6 +135,7 @@ public abstract class MapRendererMixin {
 		poseStack.popPose();
 	}
 
+	@Unique
 	private void tf$renderDecorationName(MapRenderState.MapDecorationRenderState decoration, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords) {
 		if (decoration.name == null) {
 			return;

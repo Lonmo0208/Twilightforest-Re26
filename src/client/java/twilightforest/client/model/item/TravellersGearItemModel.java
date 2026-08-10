@@ -61,7 +61,7 @@ public class TravellersGearItemModel implements ItemModel {
 		this.baseModel.update(state, stack, resolver, context, level, owner, seed);
 
 		if (stack.has(TFDataComponents.IS_TRAVELLERS_GEAR) && level != null) {
-			List<Holder.Reference<TravellersModifier>> modifiers =
+			List<Holder<TravellersModifier>> modifiers =
 				TravellersModifiersManager.findAllInsertableModifiers(level, stack);
 			if (!modifiers.isEmpty()) {
 				String key = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath()
@@ -73,14 +73,14 @@ public class TravellersGearItemModel implements ItemModel {
 		}
 	}
 
-	private ItemModel getModifiedGear(List<Holder.Reference<TravellersModifier>> modifiers) {
+	private ItemModel getModifiedGear(List<Holder<TravellersModifier>> modifiers) {
 		ModelBaker baker = this.bakingContext.blockModelBaker();
 		MaterialBaker materials = baker.materials();
 		List<ItemModel> modelLayers = new ArrayList<>();
 		int layerIndex = 0;
 
-		for (Holder.Reference<TravellersModifier> modifier : modifiers) {
-			Material.Baked modSprite = this.getModifierSprite(modifier.key(), materials);
+		for (Holder<TravellersModifier> modifier : modifiers) {
+			Material.Baked modSprite = this.getModifierSprite(modifier.unwrapKey().get(), materials);
 			if (!modSprite.sprite().contents().name().equals(MissingTextureAtlasSprite.getLocation())) {
 				QuadCollection overlayQuads = ItemModelLayerHelper.computeItemLayer(
 					baker, modSprite, BlockModelRotation.IDENTITY, layerIndex
@@ -93,10 +93,10 @@ public class TravellersGearItemModel implements ItemModel {
 		return new CompositeModel(modelLayers);
 	}
 
-	private String getModifiersSuffix(List<Holder.Reference<TravellersModifier>> modifiers) {
+	private String getModifiersSuffix(List<Holder<TravellersModifier>> modifiers) {
 		StringBuilder ret = new StringBuilder();
 		for (var mod : modifiers) {
-			ret.append("_").append(mod.key().identifier().getPath());
+			ret.append("_").append(mod.unwrapKey().get().identifier().getPath());
 		}
 		return ret.toString();
 	}

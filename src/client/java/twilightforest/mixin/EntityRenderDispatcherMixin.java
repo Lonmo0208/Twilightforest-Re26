@@ -1,9 +1,10 @@
 package twilightforest.mixin;
 
-import com.mojang.blaze3d.font.GlyphProvider;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MapRenderer;
 import net.minecraft.client.renderer.PlayerSkinRenderCache;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -11,13 +12,17 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.resources.model.EquipmentAssetManager;
 import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,6 +33,9 @@ import twilightforest.entity.TFPart;
 
 @Mixin(EntityRenderDispatcher.class)
 public class EntityRenderDispatcherMixin {
+
+	@Unique
+	private static final Logger TF_LOGGER = LoggerFactory.getLogger("twilightforest");
 
 	@Shadow @Final private BlockModelResolver blockModelResolver;
 	@Shadow @Final private ItemModelResolver itemModelResolver;
@@ -97,6 +105,7 @@ public class EntityRenderDispatcherMixin {
 			if (partRenderer != null) {
 				cir.setReturnValue(partRenderer);
 			}
+			// If not found in BakedMultiPartRenderers, let the standard Fabric registry handle it
 		}
 	}
 
@@ -109,7 +118,6 @@ public class EntityRenderDispatcherMixin {
 	 * Also handles non-PartEntityState renderers (e.g. SnowQueenIceShieldRenderer using
 	 * FallingBlockRenderState) via BakedMultiPartRenderers.lookupByState().
 	 */
-	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "getRenderer(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;)Lnet/minecraft/client/renderer/entity/EntityRenderer;", at = @At("HEAD"), cancellable = true)
 	private void tf$redirectPartStateGetRenderer(EntityRenderState state, CallbackInfoReturnable<EntityRenderer<?, ?>> cir) {
 		// Check PartEntityState first (Naga, Hydra, etc.)
@@ -117,14 +125,47 @@ public class EntityRenderDispatcherMixin {
 			EntityRenderer<?, ?> partRenderer = BakedMultiPartRenderers.lookup(partState.partRendererId);
 			if (partRenderer != null) {
 				cir.setReturnValue(partRenderer);
+				return;
 			}
 			// If not found in BakedMultiPartRenderers, let the standard Fabric registry handle it
-			return;
 		}
 		// Check non-PartEntityState renderers (SnowQueenIceShield using FallingBlockRenderState)
 		EntityRenderer<?, ?> stateRenderer = BakedMultiPartRenderers.lookupByState(state);
 		if (stateRenderer != null) {
 			cir.setReturnValue(stateRenderer);
+		}
+		// If stateRenderer is null (e.g. normal LivingEntityRenderState from spawner),
+		// do NOT call cir.setReturnValue - fallback to standard Fabric registry lookup,
+		// which would be overwritten to null and cause NPE in submit().
+	}
+
+	/**
+	 * Last-resort defensive guard against null renderers in submit().
+	 * If neither the custom BakedMultiPartRenderers nor the standard Fabric registry
+	 * produced a renderer (can happen with unregistered entity types from spawners
+	 * or mod compatibility scenarios), cancel the submit instead of crashing with NPE.
+	 * Also logs a warning once to aid debugging.
+	 */
+	@Inject(
+		method = "submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/renderer/state/level/CameraRenderState;DDDLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V",
+		at = @At(value = "HEAD"),
+		cancellable = true
+	)
+	private <S extends EntityRenderState> void tf$submitGuardAgainstNullRenderer(
+		S renderState, CameraRenderState camera, double x, double y, double z,
+		PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CallbackInfo ci
+	) {
+		EntityRenderDispatcher self = (EntityRenderDispatcher) (Object) this;
+		EntityRenderer<?, ? super S> renderer = self.getRenderer(renderState);
+		if (renderer == null) {
+			TF_LOGGER.warn(
+				"[TF-RenderGuard] Skipping entity render submit because no renderer was found! " +
+					"stateClass={}, entityType={}. This indicates a renderer registration mismatch or " +
+					"a spawner trying to render an unregistered entity type. Preventing NPE crash.",
+				renderState == null ? "null" : renderState.getClass().getName(),
+				renderState == null ? "null" : renderState.entityType
+			);
+			ci.cancel();
 		}
 	}
 }

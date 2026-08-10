@@ -13,7 +13,6 @@ import net.minecraft.world.phys.Vec3;
 // import net.neoforged.neoforge.fluids.FluidType;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.custom.TravellersModifiersManager;
-import twilightforest.util.TFEntityExtensions;
 import twilightforest.item.travellers_gear.TravellersGearLogic;
 
 import java.util.function.BiPredicate;
@@ -55,7 +54,7 @@ public class EntityHooks {
 
 	// TODO: Port to Fabric - isInFluidType and FluidType are NeoForge-specific
 	public static BiPredicate<Object, Double> unrestrainedSwimPredicate(BiPredicate<Object, Double> o, LivingEntity livingEntity) {
-		return (fluidType, height) -> o.test(fluidType, height);
+		return o;
 	}
 
 	/**
@@ -66,7 +65,7 @@ public class EntityHooks {
 	 * Targets: IRETURN
 	 */
 	public static boolean overrideStayCloseToHolder(boolean prior, PathfinderMob mob) {
-		return prior && !((TFEntityExtensions) mob).twilightforest$hasData(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE);
+		return prior && !mob.hasAttached(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE);
 	}
 
 	/**

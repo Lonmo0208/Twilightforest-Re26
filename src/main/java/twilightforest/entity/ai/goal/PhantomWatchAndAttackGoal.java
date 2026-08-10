@@ -39,26 +39,42 @@ public class PhantomWatchAndAttackGoal extends Goal {
 					}
 				}
 
-				if (this.boss.getOffhandItem().getItem() instanceof ShieldItem && this.boss.getCurrentFormation() != KnightPhantom.Formation.ATTACK_PLAYER_ATTACK && this.isGuard) {
+				// Block with shield only when:
+				// 1. Not attacking (ATTACK_PLAYER_ATTACK formation)
+				// 2. Guard state is active (set by hurtServer when the phantom is hit)
+				boolean shouldBlock = false;
+				if (this.boss.getOffhandItem().getItem() instanceof ShieldItem && this.boss.getCurrentFormation() != KnightPhantom.Formation.ATTACK_PLAYER_ATTACK) {
+					if (this.isGuard) {
+						shouldBlock = true;
+					}
+				}
+
+				if (shouldBlock) {
 					this.boss.startUsingItem(InteractionHand.OFF_HAND);
 				} else {
 					this.boss.stopUsingItem();
 				}
 
+				// Guard cycle: when guard is active, it lasts for 60 ticks (3 seconds)
+				// After that, the shield drops and won't be raised again until next hit
 				if (this.isGuard) {
-					if (this.guardCoolDownTime <= 180) {
+					if (this.guardCoolDownTime <= 60) {
 						++this.guardCoolDownTime;
 					} else {
 						this.isGuard = false;
-					}
-				} else {
-					if (this.guardCoolDownTime > 0) {
-						--this.guardCoolDownTime;
-					} else {
-						this.isGuard = true;
+						this.guardCoolDownTime = 0;
 					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * Called from KnightPhantom.hurtServer to trigger the guard state when the phantom is hit.
+	 * This makes the phantom raise its shield after being attacked.
+	 */
+	public void updateGuard() {
+		this.isGuard = true;
+		this.guardCoolDownTime = 0;
 	}
 }
