@@ -196,6 +196,12 @@ public class Hydra extends BaseTFBoss {
 
 		super.aiStep();
 
+		// Skip position updates on client side - positions are synced via UpdateTFMultipartPacket
+		// This prevents double-updating which causes jitter
+		if (this.level().isClientSide()) {
+			return;
+		}
+
 		// set body part positions
 		float angle;
 		double dx, dy, dz;

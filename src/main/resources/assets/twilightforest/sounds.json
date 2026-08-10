@@ -2585,25 +2585,37 @@
   },
   "item.twilightforest.travellers_gear.double_jump": {
     "sounds": [
-      "twilightforest:random/travellers/double_jump"
+      {
+        "type": "event",
+        "name": "block.thin_cloud.place"
+      }
     ],
     "subtitle": "subtitles.twilightforest.item.travellers_gear.double_jump"
   },
   "item.twilightforest.travellers_gear.perfect_dodge": {
     "sounds": [
-      "twilightforest:random/travellers/perfect_dodge"
+      {
+        "type": "event",
+        "name": "item.shield.equip"
+      }
     ],
     "subtitle": "subtitles.twilightforest.item.travellers_gear.perfect_dodge"
   },
   "item.twilightforest.travellers_gear.side_step": {
     "sounds": [
-      "twilightforest:random/travellers/side_step"
+      {
+        "type": "event",
+        "name": "entity.experience_orb.pickup"
+      }
     ],
     "subtitle": "subtitles.twilightforest.item.travellers_gear.side_step"
   },
   "item.twilightforest.travellers_gear.side_step_ready": {
     "sounds": [
-      "twilightforest:random/travellers/side_step_ready"
+      {
+        "type": "event",
+        "name": "block.amethyst_block.chime"
+      }
     ],
     "subtitle": "subtitles.twilightforest.item.travellers_gear.side_step_ready"
   },

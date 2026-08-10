@@ -365,11 +365,11 @@ public class HydraHeadContainer {
 			this.setHeadFacing();
 			this.executeAttacks();
 			this.playSounds();
+			this.setNeckPosition(); // Only update neck positions on server side
 		} else {
 			this.addMouthParticles();
 		}
 		this.animateHeadDeath();
-		this.setNeckPosition();
 	}
 
 	public boolean canRespawn() {

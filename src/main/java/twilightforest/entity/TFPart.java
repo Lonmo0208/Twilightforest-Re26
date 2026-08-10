@@ -163,6 +163,9 @@ public abstract class TFPart<T extends Entity> extends Entity {
 		this.setOldPosAndRot();
 		this.setPos(vec.x(), vec.y(), vec.z());
 		this.setRot(data.yRot(), data.xRot());
+		// Reset interpolation counter to prevent tick()'s interpolation logic
+		// from overwriting the position set by readData(), which causes jitter
+		this.newPosRotationIncrements = 0;
 		final float w = data.width();
 		final float h = data.height();
 		this.setSize(data.fixed() ? EntityDimensions.fixed(w, h) : EntityDimensions.scalable(w, h));

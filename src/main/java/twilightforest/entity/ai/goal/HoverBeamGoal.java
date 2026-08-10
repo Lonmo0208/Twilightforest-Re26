@@ -119,6 +119,9 @@ public class HoverBeamGoal extends HoverBaseGoal<SnowQueen> {
 			double velY = offsetY / distanceDesired * 0.1D;
 			double velZ = offsetZ / distanceDesired * 0.05D;
 
+			// gravity offset
+			velY += 0.045F;
+
 			this.attacker.push(velX, velY, velZ);
 		}
 

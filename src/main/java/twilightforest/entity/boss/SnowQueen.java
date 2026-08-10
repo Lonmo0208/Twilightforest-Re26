@@ -192,10 +192,12 @@ public class SnowQueen extends BaseTFBoss implements IBreathAttacker {
 
 	@Override
 	public void tick() {
+		this.setDeltaMovement(this.getDeltaMovement().x(), this.getDeltaMovement().y() - 0.05D, this.getDeltaMovement().z());
 		super.tick();
 
 		for (int i = 0; i < this.iceArray.length; i++) {
 			this.iceArray[i].tick();
+
 			if (i < this.iceArray.length - 1) {
 				// set block position
 				Vec3 blockPos = this.getIceShieldPosition(i);
@@ -203,7 +205,7 @@ public class SnowQueen extends BaseTFBoss implements IBreathAttacker {
 				this.iceArray[i].setPos(blockPos.x(), blockPos.y(), blockPos.z());
 			} else {
 				// last block beneath
-				this.iceArray[i].setPos(this.getX(), this.getY() + this.getShieldYOffset() - 0.5D, this.getZ());
+				this.iceArray[i].setPos(this.getX(), this.getY() - 1, this.getZ());
 			}
 			this.iceArray[i].setYRot(this.getIceShieldAngle(i));
 
