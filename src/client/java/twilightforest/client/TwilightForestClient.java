@@ -80,7 +80,6 @@ import twilightforest.config.ConfigSetup;
 import twilightforest.network.*;
 import twilightforest.network.client.*;
 import twilightforest.network.UpdateTFMultipartPacket;
-import twilightforest.util.TFEntityExtensions;
 import fuzs.forgeconfigapiport.fabric.api.v5.client.ConfigScreenFactoryRegistry;
 
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
@@ -88,6 +87,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import twilightforest.client.overlay.ShieldOverlay;
+import twilightforest.client.overlay.ItemDisplayOverlay;
+import twilightforest.client.overlay.PortalOverlay;
+import twilightforest.client.overlay.QuestingRamIndicatorOverlay;
+import twilightforest.client.overlay.OreMeterOverlay;
 import twilightforest.client.renderer.entity.layers.FirstPersonShieldRenderer;
 import twilightforest.client.renderer.entity.layers.IceLayer;
 import twilightforest.client.renderer.entity.layers.ShieldLayer;
@@ -177,9 +180,9 @@ public class TwilightForestClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player != null) {
 				var player = client.player;
-				if (((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.FEATHER_FAN)
+				if (Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.FEATHER_FAN, () -> false))
 					&& (player.onGround() || player.isSwimming() || player.isInWater())) {
-					((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.FEATHER_FAN, false);
+					player.setAttached(TFDataAttachments.FEATHER_FAN, false);
 				}
 			}
 		});
@@ -194,8 +197,19 @@ public class TwilightForestClient implements ClientModInitializer {
 		});
 		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(clientGameEvents::renderAurora);
 
+		// Manually initialize TravellersClientEvents (handles all Traveller's Gear keybinds:
+		// V-key swap hotbar, Z-key zoom, C-key cycle item display, double-jump, sidestep, etc.).
+		// We always instantiate + call setup() here (matching the ClientGameEvents pattern
+		// above) so these features reliably work regardless of whether the BeanContext
+		// classpath scanner successfully walked the twilightforest.client.* package.
+		new twilightforest.client.event.TravellersClientEvents().setup();
+
 		// Register first-person shield renderer
 		LevelRenderEvents.COLLECT_SUBMITS.register(FirstPersonShieldRenderer::render);
+
+		// Register Traveller's Gear keybinds so they appear in the in-game Controls menu
+		// and users can rebind them (Fabric does not auto-register KeyMappings like NeoForge).
+		TFKeyBinds.init();
 	}
 
 	private void registerAtlases() {
@@ -630,5 +644,9 @@ public class TwilightForestClient implements ClientModInitializer {
 
 	private void registerHudElements() {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.ARMOR_BAR, TwilightForestMod.prefix("fortification_shield"), new ShieldOverlay());
+		HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, TwilightForestMod.prefix("quest_ram_indicator"), new QuestingRamIndicatorOverlay());
+		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, TwilightForestMod.prefix("portal_overlay"), new PortalOverlay());
+		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, TwilightForestMod.prefix("ore_meter_stats"), new OreMeterOverlay());
+		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, TwilightForestMod.prefix("item_display"), new ItemDisplayOverlay());
 	}
 }

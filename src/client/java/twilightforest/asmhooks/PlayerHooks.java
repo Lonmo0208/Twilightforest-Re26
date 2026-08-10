@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import twilightforest.init.TFAttributeModifiers;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFDataComponents;
-import twilightforest.util.TFEntityExtensions;
 import twilightforest.init.custom.TravellersModifiersManager;
 
 @SuppressWarnings({"JavadocReference", "unused"})
@@ -46,7 +45,7 @@ public class PlayerHooks {
 			return;
 		AttributeModifier modifier = attributeInstance.getModifier(TFAttributeModifiers.STRAIGHT_AHEAD_ATTRIBUTE_MODIFIER_LOCATION);
 		double multiplier = modifier == null ? 1 : modifier.amount() + 1;
-		((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.TEMPORARY_SAVED_STRAIGHT_AHEAD, multiplier);
+		player.setAttached(TFDataAttachments.TEMPORARY_SAVED_STRAIGHT_AHEAD, multiplier);
 		attributeInstance.removeModifier(TFAttributeModifiers.STRAIGHT_AHEAD_ATTRIBUTE_MODIFIER_LOCATION);
 	}
 
@@ -62,7 +61,7 @@ public class PlayerHooks {
 		AttributeInstance attributeInstance = player.getAttributes().getInstance(Attributes.MOVEMENT_SPEED);
 		if (attributeInstance == null)
 			return;
-		double multiplier = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TEMPORARY_SAVED_STRAIGHT_AHEAD);
-		attributeInstance.addTransientModifier(new AttributeModifier(TFAttributeModifiers.STRAIGHT_AHEAD_ATTRIBUTE_MODIFIER_LOCATION, multiplier - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+		double m = TFDataAttachments.getOrCreate(player, TFDataAttachments.TEMPORARY_SAVED_STRAIGHT_AHEAD, () -> null);
+		attributeInstance.addTransientModifier(new AttributeModifier(TFAttributeModifiers.STRAIGHT_AHEAD_ATTRIBUTE_MODIFIER_LOCATION, m - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 	}
 }

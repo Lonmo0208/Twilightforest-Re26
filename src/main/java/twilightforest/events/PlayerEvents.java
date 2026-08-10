@@ -4,7 +4,6 @@ import net.minecraft.world.entity.player.Player;
 import twilightforest.beanification.Component;
 import twilightforest.beanification.PostConstruct;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.util.TFEntityExtensions;
 
 /**
  * Handles player tick events that were previously registered via NeoForge events.
@@ -24,19 +23,19 @@ public class PlayerEvents {
 	 */
 	public static void tickPlayerCaps(Player player) {
 		// Feather fan: clear fall damage
-		if (((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.FEATHER_FAN)) {
+		if (Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.FEATHER_FAN, () -> false))) {
 			player.setIgnoreFallDamageFromCurrentImpulse(true, player.position());
 			player.currentImpulseImpactPos = player.position();
 
 			if (player.onGround() || player.isSwimming() || player.isInWater()) {
-				((TFEntityExtensions) player).twilightforest$setData(TFDataAttachments.FEATHER_FAN, false);
+				player.setAttached(TFDataAttachments.FEATHER_FAN, false);
 			}
 		}
 
 		// Yeti throwing progress
-		((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.YETI_THROWING).tick(player);
+		TFDataAttachments.getOrCreate(player, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new).tick(player);
 
 		// Portal cooldown
-		((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.TF_PORTAL_COOLDOWN).tick(player);
+		TFDataAttachments.getOrCreate(player, TFDataAttachments.TF_PORTAL_COOLDOWN, twilightforest.components.entity.TFPortalAttachment::new).tick(player);
 	}
 }

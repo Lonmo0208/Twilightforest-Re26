@@ -43,8 +43,8 @@ import twilightforest.init.TFItems;
 import twilightforest.init.TFSounds;
 import twilightforest.init.TFStats;
 import twilightforest.network.SpawnCharmPacket;
+import twilightforest.init.TFDataAttachments;
 import twilightforest.tags.TFItemTags;
-import twilightforest.util.TFEntityExtensions;
 import twilightforest.util.TFItemStackUtils;
 
 import java.util.ArrayList;
@@ -83,9 +83,9 @@ public class CharmEvents {
 		// gets transferred to the new player entity that is created on respawn.
 		net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
 			// Copy the persistent data (TFData) from the old player to the new player
-			CompoundTag oldData = ((TFEntityExtensions) oldPlayer).twilightforest$getPersistentData();
+			CompoundTag oldData = TFDataAttachments.getOrCreate(oldPlayer, TFDataAttachments.TF_PERSISTENT_DATA, CompoundTag::new);
 			if (!oldData.isEmpty()) {
-				CompoundTag newData = ((TFEntityExtensions) newPlayer).twilightforest$getPersistentData();
+				CompoundTag newData = TFDataAttachments.getOrCreate(newPlayer, TFDataAttachments.TF_PERSISTENT_DATA, CompoundTag::new);
 				newData.merge(oldData.copy());
 			}
 		});
@@ -419,7 +419,7 @@ public class CharmEvents {
 	public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
 
 	public static CompoundTag getPlayerData(Player player) {
-		CompoundTag persistentData = ((TFEntityExtensions) player).twilightforest$getPersistentData();
+		CompoundTag persistentData = TFDataAttachments.getOrCreate(player, TFDataAttachments.TF_PERSISTENT_DATA, CompoundTag::new);
 		if (!persistentData.contains(PERSISTED_NBT_TAG)) {
 			persistentData.put(PERSISTED_NBT_TAG, new CompoundTag());
 		}

@@ -10,7 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import twilightforest.util.TFEntityExtensions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -42,6 +41,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.jspecify.annotations.Nullable;
 import twilightforest.config.TFConfig;
 import twilightforest.init.*;
+import twilightforest.init.TFDataAttachments;
 import twilightforest.network.MissingAdvancementToastPacket;
 import twilightforest.tags.TFBlockTags;
 import twilightforest.util.PlayerHelper;
@@ -233,7 +233,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 
 			if (entity.canUsePortal(false)) {
 				entity.setAsInsidePortal(this, entity.blockPosition());
-				((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.TF_PORTAL_COOLDOWN).setInPortal(true);
+				TFDataAttachments.getOrCreate(entity, TFDataAttachments.TF_PORTAL_COOLDOWN, twilightforest.components.entity.TFPortalAttachment::new).setInPortal(true);
 			}
 		}
 	}

@@ -70,7 +70,6 @@ import twilightforest.util.entities.OminousFireDamageSource;
 import twilightforest.world.components.structures.SpawnIndexProvider;
 import twilightforest.world.components.structures.finalcastle.FinalCastleBossGazeboComponent;
 import twilightforest.world.components.structures.start.TFStructureStart;
-import twilightforest.world.components.structures.type.DarkTowerStructure;
 import twilightforest.world.components.structures.util.ControlledSpawns;
 import twilightforest.world.components.structures.util.ValidatedSpawnLocations;
 
@@ -188,7 +187,7 @@ public class EntityEvents {
 
 			if (event.getEntity() instanceof ServerPlayer player) {
 				var zombie = EntityType.ZOMBIE.create(player.level(), EntitySpawnReason.CONVERSION);
-				((TFEntityExtensions) zombie).twilightforest$setData(TFDataAttachments.ZOMBIFIED_PLAYER, player.getGameProfile());
+				zombie.setAttached(TFDataAttachments.ZOMBIFIED_PLAYER, player.getGameProfile());
 				zombie.setCustomName(player.getName());
 				zombie.copyPosition(player);
 				zombie.setCanPickUpLoot(true);
@@ -202,7 +201,7 @@ public class EntityEvents {
 	}
 
 	private void zombifiedPlayerAttacks(FabricEvents.LivingIncomingDamageEvent event) {
-		if (!(event.getSource() instanceof OminousFireDamageSource) && event.getSource().getEntity() instanceof Zombie zombie && ((TFEntityExtensions) zombie).twilightforest$hasData(TFDataAttachments.ZOMBIFIED_PLAYER)) {
+		if (!(event.getSource() instanceof OminousFireDamageSource) && event.getSource().getEntity() instanceof Zombie zombie && zombie.hasAttached(TFDataAttachments.ZOMBIFIED_PLAYER)) {
 			float amount = event.getAmount();
 			event.setCanceled(true);
 			event.getEntity().hurt(new OminousFireDamageSource(event.getSource()), amount);
@@ -533,7 +532,7 @@ public class EntityEvents {
 
 	private void addQualifiedGroupPlayerIfNeeded(FabricEvents.LivingDamageEvent.Post event) {
 		if (event.getEntity().is(TFEntityTypeTags.MULTIPLAYER_INCLUSIVE_ENTITIES)) {
-			var data = ((TFEntityExtensions) event.getEntity()).twilightforest$getData(TFDataAttachments.MULTIPLAYER_FIGHT);
+			var data = TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new);
 			if (event.getSource().getEntity() != null) {
 				data.maybeAddQualifiedPlayer(event.getSource().getEntity());
 			}
@@ -541,8 +540,8 @@ public class EntityEvents {
 	}
 
 	private void grantGroupAdvancementIfNeeded(FabricEvents.LivingDeathEvent event) {
-		if (!event.isCanceled() && ((TFEntityExtensions) event.getEntity()).twilightforest$hasData(TFDataAttachments.MULTIPLAYER_FIGHT)) {
-			((TFEntityExtensions) event.getEntity()).twilightforest$getData(TFDataAttachments.MULTIPLAYER_FIGHT).grantGroupAdvancement(event.getEntity());
+		if (!event.isCanceled() && event.getEntity().hasAttached(TFDataAttachments.MULTIPLAYER_FIGHT)) {
+			TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new).grantGroupAdvancement(event.getEntity());
 		}
 	}
 
@@ -563,25 +562,25 @@ public class EntityEvents {
 	private void resetFlaskLogic(FabricEvents.AdvancementEvent.AdvancementEarnEvent event) {
 		for (var criteria : event.getAdvancement().value().criteria().entrySet()) {
 			if (criteria.getValue().trigger() instanceof DrinkFromFlaskTrigger) {
-				((TFEntityExtensions) event.getEntity()).twilightforest$getData(TFDataAttachments.FLASK_DOSES).resetDoses();
+				TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.FLASK_DOSES, twilightforest.components.entity.PotionFlaskTrackingAttachment::new).resetDoses();
 				break;
 			}
 		}
 	}
 
 	private void handleLeashPathingOverrides(FabricEvents.EntityJoinLevelEvent event) {
-		if (!(event.getEntity() instanceof PathfinderMob mob && ((TFEntityExtensions) mob).twilightforest$hasData(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE))) {
+		if (!(event.getEntity() instanceof PathfinderMob mob && mob.hasAttached(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE))) {
 			return;
 		}
 
 		if (!mob.mayBeLeashed()) {
-			((TFEntityExtensions) mob).twilightforest$removeData(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE);
+			mob.setAttached(TFDataAttachments.LEASH_PATHFINDER_OVERRIDE, null);
 		}
 	}
 
 	private void stopEndermenFromGrabbingBlocksInTF(FabricEvents.EntityJoinLevelEvent event) {
 		if (event.getEntity() instanceof EnderMan enderMan) {
-			var goalSelector = ((TFEntityExtensions) enderMan).getGoalSelector();
+			var goalSelector = ((TFEntityExtensions) enderMan).twilightforest$getGoalSelector();
 			goalSelector.getAvailableGoals().stream()
 				.filter(g -> g.getGoal().getClass().getName().contains("EndermanTakeBlockGoal"))
 				.findAny()
@@ -656,7 +655,7 @@ public class EntityEvents {
 	 */
 	public static boolean handleZombifiedPlayerAttack(LivingEntity entity, DamageSource source, float amount) {
 		if (!(source instanceof OminousFireDamageSource) && source.getEntity() instanceof net.minecraft.world.entity.monster.zombie.Zombie zombie
-			&& ((TFEntityExtensions) zombie).twilightforest$hasData(TFDataAttachments.ZOMBIFIED_PLAYER)) {
+			&& zombie.hasAttached(TFDataAttachments.ZOMBIFIED_PLAYER)) {
 			entity.hurt(new OminousFireDamageSource(source), amount);
 			return true;
 		}
@@ -674,8 +673,8 @@ public class EntityEvents {
 			&& source.is(DamageTypes.IN_WALL)) {
 			return true; // cancel
 		}
-		if (source.is(DamageTypes.FALL) && ((TFEntityExtensions) entity).twilightforest$hasData(TFDataAttachments.YETI_THROWING)) {
-			var yetiData = ((TFEntityExtensions) entity).twilightforest$getData(TFDataAttachments.YETI_THROWING);
+		if (source.is(DamageTypes.FALL) && entity.hasAttached(TFDataAttachments.YETI_THROWING)) {
+			var yetiData = TFDataAttachments.getOrCreate(entity, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new);
 			if (yetiData.getThrown()) {
 				entity.hurt(TFDamageTypes.getEntityDamageSource(entity.level(), TFDamageTypes.YEETED, yetiData.getThrower()), amount);
 				return true; // cancel original fall damage
@@ -691,7 +690,7 @@ public class EntityEvents {
 	 */
 	public static void tickShields(LivingEntity entity) {
 		if (!entity.level().isClientSide()) {
-			FortificationShieldAttachment attachment = entity.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
+			FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(entity, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 			if (attachment != null) {
 				attachment.tick(entity);
 			}

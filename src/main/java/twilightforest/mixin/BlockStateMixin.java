@@ -1,21 +1,15 @@
 package twilightforest.mixin;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.util.TriState;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 
 /**
- * Mixin to add NeoForge-compatible methods to BlockState.
+ * Fabric BlockState extensions.
+ * Note: NeoForge-compatible methods (canSustainPlant, etc.) have been removed as they are
+ * NeoForge-only APIs that do not exist in Fabric 26.1.2.
+ * Vegetation/support checks go through vanilla BlockTags.SUPPORTS_VEGETATION and
+ * VegetationBlock#mayPlaceOn instead.
  */
 @Mixin(BlockState.class)
 public class BlockStateMixin {
-
-	@Unique
-	public TriState canSustainPlant(LevelReader level, BlockPos pos, Direction direction, BlockState state) {
-		return TriState.DEFAULT;
-	}
 }

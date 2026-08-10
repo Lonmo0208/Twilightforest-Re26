@@ -85,8 +85,7 @@ public class BlockTagGenerator extends ModdedBlockTagGenerator {
 		this.valueLookupBuilder(BlockTags.INCORRECT_FOR_WOODEN_TOOL).add(Blocks.IRON_BLOCK, Blocks.RAW_IRON_BLOCK, Blocks.IRON_ORE,
 			Blocks.DEEPSLATE_IRON_ORE, Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE,
 			Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE);
-		this.valueLookupBuilder(BlockTags.SUBSTRATE_OVERWORLD).add(Blocks.STONE, Blocks.GRANITE, Blocks.DIORITE, Blocks.ANDESITE,
-			Blocks.DEEPSLATE, Blocks.TUFF, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.PODZOL, Blocks.MYCELIUM);
+		this.valueLookupBuilder(BlockTags.SUBSTRATE_OVERWORLD).add(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.PODZOL, Blocks.MYCELIUM).addTag(BlockTags.MOSS_BLOCKS).addTag(BlockTags.MUD);
 
 		// TF-specific tags
 		this.valueLookupBuilder(TFBlockTags.TWILIGHT_OAK_LOGS).add(TFBlocks.TWILIGHT_OAK_LOG, TFBlocks.STRIPPED_TWILIGHT_OAK_LOG, TFBlocks.TWILIGHT_OAK_WOOD, TFBlocks.STRIPPED_TWILIGHT_OAK_WOOD);

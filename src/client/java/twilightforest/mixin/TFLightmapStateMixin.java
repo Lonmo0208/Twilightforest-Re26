@@ -6,15 +6,14 @@ import net.minecraft.client.renderer.LightmapRenderStateExtractor;
 import net.minecraft.client.renderer.state.LightmapRenderState;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.dimension.DimensionType;
 import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import twilightforest.TwilightForestMod;
 import twilightforest.init.TFDimensionData;
 
 @Mixin(LightmapRenderStateExtractor.class)
@@ -22,6 +21,7 @@ public class TFLightmapStateMixin {
 
 	@Shadow @Final private Minecraft minecraft;
 
+	@Unique
 	private static final Identifier TF_DIM_TYPE_ID = TFDimensionData.TWILIGHT_DIM_TYPE.identifier();
 
 	// Lightmap uniform adjustment — only applied inside the Twilight Forest dimension.
@@ -34,7 +34,9 @@ public class TFLightmapStateMixin {
 	//    but won't wash out a torch's dark surroundings.
 	//  - both only kick in when the original values are *below* that floor (i.e. only
 	//    the lowest-end), never dimming already-lit areas.
+	@Unique
 	private static final float TF_INDOOR_BRIGHTNESS_FLOOR = 0.04F;
+	@Unique
 	private static final float TF_AMBIENT_BOOST_MAX = 0.06F;
 
 	@Inject(method = "extract", at = @At(value = "TAIL"))

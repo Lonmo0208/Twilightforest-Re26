@@ -37,7 +37,7 @@ public class ShieldOverlay implements HudElement {
 			return;
 		}
 
-		FortificationShieldAttachment attachment = player.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
+		FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 		if (attachment == null) return;
 		int shieldCount = attachment.shieldsLeft();
 		if (shieldCount <= 0) return;

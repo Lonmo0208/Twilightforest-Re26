@@ -1,0 +1,14 @@
+{
+  "type": "twilightforest:uncrafting",
+  "cost": 3,
+  "input": "twilightforest:fortification_scepter",
+  "input_count": 1,
+  "key": {
+    "G": "minecraft:golden_apple"
+  },
+  "pattern": [
+    "G  ",
+    "   ",
+    "   "
+  ]
+}

@@ -10,7 +10,6 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 import twilightforest.config.TFConfig;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.util.TFEntityExtensions;
 
 import java.util.Set;
 
@@ -33,8 +32,8 @@ public record MultiplayerBasedNumberProvider(NumberProvider rollsPerPlayer, Numb
 	@Override
 	public float getFloat(LootContext context) {
 		if (TFConfig.multiplayerFightAdjuster.adjustsLootRolls()) {
-			if (context.hasParameter(LootContextParams.THIS_ENTITY) && ((TFEntityExtensions) context.getParameter(LootContextParams.THIS_ENTITY)).twilightforest$hasData(TFDataAttachments.MULTIPLAYER_FIGHT)) {
-				int qualifiedPlayers = ((TFEntityExtensions) context.getParameter(LootContextParams.THIS_ENTITY)).twilightforest$getData(TFDataAttachments.MULTIPLAYER_FIGHT).getQualifiedPlayers().size();
+			if (context.hasParameter(LootContextParams.THIS_ENTITY) && context.getParameter(LootContextParams.THIS_ENTITY).hasAttached(TFDataAttachments.MULTIPLAYER_FIGHT)) {
+				int qualifiedPlayers = TFDataAttachments.getOrCreate(context.getParameter(LootContextParams.THIS_ENTITY), TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new).getQualifiedPlayers().size();
 				float total = this.defaultRolls.getFloat(context);
 				for (int i = 0; i < qualifiedPlayers - 1; i++) {
 					total += Math.max(0, this.rollsPerPlayer.getFloat(context));

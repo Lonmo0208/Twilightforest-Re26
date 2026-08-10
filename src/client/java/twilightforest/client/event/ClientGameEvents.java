@@ -8,12 +8,15 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.WrittenBookItem;
 import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.MoonPhase;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
@@ -31,6 +34,8 @@ import twilightforest.config.TFConfig;
 import twilightforest.events.HostileMountEvents;
 import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFDimension;
+import twilightforest.init.TFItems;
+import twilightforest.item.MoonDialItem;
 import twilightforest.util.HolderMatcher;
 
 import java.util.HashSet;
@@ -214,6 +219,7 @@ public class ClientGameEvents {
 
 			if (mc.player != null) {
 				fixTranslatableBookNames(mc.player);
+				updateMoonDialPhases(mc);
 			}
 		}
 	}
@@ -235,6 +241,40 @@ public class ClientGameEvents {
 					if (currentName == null || currentName.getString().equals(rawTitle)) {
 						stack.set(DataComponents.CUSTOM_NAME, Component.translatable(rawTitle));
 					}
+				}
+			}
+		}
+	}
+
+	private void updateMoonDialPhases(Minecraft mc) {
+		if (mc.level == null) return;
+		Player player = mc.player;
+		if (player == null) return;
+
+		var level = mc.level;
+		int phaseIndex;
+		if (level.dimensionTypeRegistration().is(Identifier.fromNamespaceAndPath("minecraft", "the_end"))) {
+			phaseIndex = 404;
+		} else if (level.dimensionType().hasFixedTime() && !level.dimension().equals(TFDimension.DIMENSION_KEY)) {
+			phaseIndex = -1;
+		} else {
+			MoonPhase phase = level.environmentAttributes().getDimensionValue(EnvironmentAttributes.MOON_PHASE);
+			if (phase != null) {
+				phaseIndex = phase.index();
+			} else {
+				long dayTime = level.getGameTime();
+				phaseIndex = (int) ((dayTime / 24000L) % 8L);
+			}
+		}
+
+		MoonDialItem.CLIENT_PHASE = phaseIndex;
+
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			ItemStack stack = player.getInventory().getItem(i);
+			if (stack.is(TFItems.MOON_DIAL)) {
+				int currentDamage = stack.getDamageValue();
+				if (currentDamage != phaseIndex) {
+					stack.setDamageValue(phaseIndex);
 				}
 			}
 		}

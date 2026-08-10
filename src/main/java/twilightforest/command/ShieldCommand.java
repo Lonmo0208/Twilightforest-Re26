@@ -33,12 +33,7 @@ public class ShieldCommand {
 	}
 
 	private FortificationShieldAttachment getOrCreateAttachment(LivingEntity living) {
-		FortificationShieldAttachment attachment = living.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
-		if (attachment == null) {
-			attachment = new FortificationShieldAttachment();
-			living.setAttached(TFDataAttachments.FORTIFICATION_SHIELDS, attachment);
-		}
-		return attachment;
+		return TFDataAttachments.getOrCreate(living, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 	}
 
 	private int add(Entity e, int num, boolean temporary) {

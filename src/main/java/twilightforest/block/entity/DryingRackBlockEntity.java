@@ -52,6 +52,7 @@ public class DryingRackBlockEntity extends BlockEntity {
 				SingleRecipeInput input = new SingleRecipeInput(entity.getTheItem());
 				RecipeHolder<DryingRecipe> recipeholder = entity.quickCheck.getRecipeFor(input, serverLevel).orElse(null);
 				boolean recipeHolderExists = recipeholder != null;
+
 				entity.updateDryingTime(recipeHolderExists);
 				if (recipeHolderExists) {
 					entity.dryTime++;
@@ -124,9 +125,15 @@ public class DryingRackBlockEntity extends BlockEntity {
 
 		LootParams params = new LootParams.Builder(serverLevel).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(this.getBlockPos())).create(LootContextParamSets.CHEST);
 
-		lootTable.getRandomItems(new LootContext.Builder(params).withOptionalRandomSeed(seed).create(Optional.of(lootTableKey.identifier())), lootStack -> this.stack = lootStack);
+		final boolean[] placed = {false};
+		lootTable.getRandomItems(new LootContext.Builder(params).withOptionalRandomSeed(seed).create(Optional.of(lootTableKey.identifier())), lootStack -> {
+			if (!lootStack.isEmpty()) {
+				this.setTheItem(lootStack);
+				placed[0] = true;
+			}
+		});
 
-		return true;
+		return placed[0];
 	}
 
 	private int getDryingTime() {
@@ -144,7 +151,14 @@ public class DryingRackBlockEntity extends BlockEntity {
 	@Override
 	protected void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
-		output.storeNullable("item", ItemStack.CODEC, this.stack);
+		if (this.stack.isEmpty() || this.stack.getCount() <= 0 || this.stack.getItem() == net.minecraft.world.item.Items.AIR) {
+			this.stack = ItemStack.EMPTY;
+		} else if (this.stack.getCount() > this.stack.getMaxStackSize()) {
+			this.stack.setCount(this.stack.getMaxStackSize());
+		}
+		if (!this.stack.isEmpty()) {
+			output.storeNullable("item", ItemStack.OPTIONAL_CODEC, this.stack);
+		}
 		output.putInt("dry_time", this.dryTime);
 		output.putInt("total_dry_time", this.totalDryTime);
 	}
@@ -152,7 +166,18 @@ public class DryingRackBlockEntity extends BlockEntity {
 	@Override
 	protected void loadAdditional(ValueInput input) {
 		super.loadAdditional(input);
-		this.stack = input.read("item", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+		ItemStack loaded = ItemStack.EMPTY;
+		try {
+			Optional<ItemStack> opt = input.read("item", ItemStack.OPTIONAL_CODEC);
+			if (opt.isPresent()) {
+				ItemStack s = opt.get();
+				if (s != null && !s.isEmpty() && s.getCount() > 0 && s.getItem() != net.minecraft.world.item.Items.AIR) {
+					loaded = s;
+				}
+			}
+		} catch (Exception ignored) {
+		}
+		this.stack = loaded;
 		this.dryTime = input.getIntOr("dry_time", 0);
 		this.totalDryTime = input.getIntOr("total_dry_time", DEFAULT_DRYING_TIME);
 		this.drying = input.getBooleanOr("drying", false);

@@ -207,6 +207,16 @@
                         }
                     ],
                     "name": "minecraft:book"
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "twilightforest:music_disc_home",
+                    "weight": 15
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "twilightforest:music_disc_radiance",
+                    "weight": 15
                 }
             ],
             "rolls": 1.0

@@ -1,0 +1,14 @@
+{
+  "type": "twilightforest:uncrafting",
+  "cost": 3,
+  "input": "twilightforest:lifedrain_scepter",
+  "input_count": 1,
+  "key": {
+    "F": "minecraft:fermented_spider_eye"
+  },
+  "pattern": [
+    "F  ",
+    "   ",
+    "   "
+  ]
+}

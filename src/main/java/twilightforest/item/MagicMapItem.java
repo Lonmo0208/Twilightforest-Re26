@@ -71,7 +71,7 @@ public class MagicMapItem extends MapItem {
 	}
 
 	@Nullable
-	protected TFMagicMapData getCustomMapData(ItemStack stack, Level level) {
+	public TFMagicMapData getCustomMapData(ItemStack stack, Level level) {
 		TFMagicMapData mapdata = getData(stack, level);
 		if (mapdata == null && level instanceof ServerLevel serverLevel) {
 			BlockPos sharedSpawnPos = level.getRespawnData().pos();

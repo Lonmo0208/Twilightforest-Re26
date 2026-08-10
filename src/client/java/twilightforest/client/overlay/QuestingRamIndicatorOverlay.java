@@ -1,5 +1,7 @@
 package twilightforest.client.overlay;
 
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -8,26 +10,32 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import org.jspecify.annotations.NonNull;
 import twilightforest.beanification.Autowired;
 import twilightforest.TwilightForestMod;
 import twilightforest.config.TFConfig;
 import twilightforest.entity.passive.QuestRam;
 import twilightforest.entity.passive.quest.ram.QuestingRamCurrentContext;
 
-public class QuestingRamIndicatorOverlay {
+public class QuestingRamIndicatorOverlay implements HudElement {
 
 	private static final Identifier QUESTING_RAM_CHECK_SPRITE = TwilightForestMod.prefix("questing_ram_check");
 	private static final Identifier QUESTING_RAM_X_SPRITE = TwilightForestMod.prefix("questing_ram_x");
 
-	// TODO: Port to Fabric - @Autowired(dist = Dist.CLIENT) uses NeoForge's Dist
 	@Autowired
 	private static QuestingRamCurrentContext questingRamCurrentContext;
+
+	@Override
+	public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, @NonNull DeltaTracker deltaTracker) {
+		Minecraft minecraft = Minecraft.getInstance();
+		render(minecraft, graphics, minecraft.gui, minecraft.player);
+	}
 
 	public static void render(Minecraft minecraft, GuiGraphicsExtractor graphics, Gui gui, Player player) {
 		if (player != null && !minecraft.options.hideGui && TFConfig.showQuestRamCrosshairIndicator) {
 			if (minecraft.options.getCameraType().isFirstPerson() && (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR || gui.canRenderCrosshairForSpectator(minecraft.hitResult)) && minecraft.crosshairPickEntity instanceof QuestRam ram) {
 				ItemStack stack = player.getInventory().getItem(player.getInventory().getSelectedSlot());
-				if (!stack.isEmpty()) {
+				if (!stack.isEmpty() && questingRamCurrentContext != null) {
 					for (var questEntry : questingRamCurrentContext.getContext().questItems().entrySet()) {
 						if (questEntry.getValue().test(stack)) {
 							int j = ((graphics.guiHeight() - 1) / 2) - 11;

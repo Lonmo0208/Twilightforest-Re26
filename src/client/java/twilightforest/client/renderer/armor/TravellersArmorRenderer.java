@@ -79,7 +79,11 @@ public class TravellersArmorRenderer extends TFArmorRenderer {
 				TravellersWingsModel.skipBelt(copiedRoot, !hasBelt);
 				TravellersWingsModel.skipWings(copiedRoot, !hasWings);
 			}
-			case FEET -> copiedRoot.getAllParts().forEach(p -> p.skipDraw = false);
+			case FEET -> {
+				copiedRoot.getAllParts().forEach(p -> p.skipDraw = true);
+				copiedRoot.getChild("right_leg").skipDraw = false;
+				copiedRoot.getChild("left_leg").skipDraw = false;
+			}
 			default -> { }
 		}
 

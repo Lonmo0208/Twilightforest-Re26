@@ -15,12 +15,17 @@ public abstract class SimpleTextDisplay implements ItemDisplay {
 	public void render(ItemStack item, GuiGraphicsExtractor graphics, Minecraft minecraft, Gui gui, Player player, int widestWidgetWidth) {
 		Component text = this.getText(item, minecraft, gui, player);
 		int textWidth = minecraft.font.width(text);
-		graphics.text(minecraft.font, text, (widestWidgetWidth / 2) - (textWidth / 2), 0, 0xFFFFFF);
+		int contentHeight = minecraft.font.lineHeight;
+		int widgetX = Math.max(0, (widestWidgetWidth / 2) - (textWidth / 2));
+		int widgetY = 0;
+
+		graphics.text(minecraft.font, text, widgetX, widgetY, 0xFFFFFFFF);
 	}
 
 	@Override
 	public Bounds getWidgetSize(ItemStack item, Minecraft minecraft, Gui gui, Player player, int widestWidgetWidth) {
 		int textWidth = minecraft.font.width(this.getText(item, minecraft, gui, player));
-		return new Bounds(Math.max(0, (widestWidgetWidth / 2) - (textWidth / 2)), 0, textWidth, minecraft.font.lineHeight);
+		int startX = Math.max(0, (widestWidgetWidth / 2) - (textWidth / 2));
+		return new Bounds(startX, 0, textWidth, minecraft.font.lineHeight);
 	}
 }

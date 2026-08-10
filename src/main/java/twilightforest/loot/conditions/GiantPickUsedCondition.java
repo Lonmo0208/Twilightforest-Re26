@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.util.TFEntityExtensions;
 
 import java.util.Set;
 
@@ -29,7 +28,7 @@ public record GiantPickUsedCondition(LootContext.EntityTarget target) implements
 	@Override
 	public boolean test(LootContext context) {
 		if (context.getOptionalParameter(this.target.contextParam()) instanceof Player player) {
-			var attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.GIANT_PICKAXE_MINING);
+			var attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.GIANT_PICKAXE_MINING, twilightforest.components.entity.GiantPickaxeMiningAttachment::new);
 			return player.level().getGameTime() == attachment.getMining() && attachment.canMakeGiantBlock();
 		}
 		return false;

@@ -16,14 +16,14 @@ public class TFRenderPipelines {
 
 	private static final BlendFunction SHADOW = new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-	public static final RenderPipeline RED_THREAD = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
+	public static final RenderPipeline RED_THREAD = RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
 		.withLocation(TwilightForestMod.prefix("pipeline/red_thread"))
-		.withVertexShader("core/block")
-		.withFragmentShader("core/block")
+		.withVertexShader(TwilightForestMod.prefix("pipeline/red_thread"))
+		.withFragmentShader(TwilightForestMod.prefix("pipeline/red_thread"))
+		.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS)
 		.withSampler("Sampler0")
-		.withVertexFormat(DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS)
-		.withCull(true)
 		.withDepthStencilState(new DepthStencilState(CompareOp.ALWAYS_PASS, false))
+		.withCull(false)
 		.build();
 
 	public static final RenderPipeline PROTECTION_BOX = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)

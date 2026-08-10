@@ -6,6 +6,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -14,11 +15,13 @@ import twilightforest.init.TFDimensionData;
 @Mixin(net.minecraft.client.renderer.Lightmap.class)
 public class TFLightmapMixin {
 
+	@Unique
 	private static final Identifier TF_DIM_TYPE_ID = TFDimensionData.TWILIGHT_DIM_TYPE.identifier();
 
 	// Minimum brightness for low-light/blocked areas when inside the Twilight Forest dimension.
 	// Level-0 (fully dark corners) is lifted to ~12% perceived brightness, which keeps interiors
 	// readable without affecting well-lit areas (level 10+) at all.
+	@Unique
 	private static final float TF_LOW_LIGHT_MIN_BRIGHTNESS = 0.12F;
 
 	@Inject(method = "getBrightness", at = @At(value = "RETURN"), cancellable = true)

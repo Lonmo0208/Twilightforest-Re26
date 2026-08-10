@@ -12,7 +12,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.util.TFEntityExtensions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +63,7 @@ public final class GiantToolGroupingModifier {
 			return generatedLoot;
 		}
 
-		var attachment = ((TFEntityExtensions) player).twilightforest$getData(TFDataAttachments.GIANT_PICKAXE_MINING);
+		var attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.GIANT_PICKAXE_MINING, twilightforest.components.entity.GiantPickaxeMiningAttachment::new);
 
 		if (attachment.getMining() == 0L || !attachment.canMakeGiantBlock()) {
 			return generatedLoot;

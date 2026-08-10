@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import twilightforest.TwilightForestMod;
+
 public record TravellersEntryModifier(EquipmentSlotGroup group, List<ItemAttributeModifiers.Entry> modifiers, DataComponentType<Unit> markerComponent, List<Component> description, boolean builtin) implements InsertableTravellersModifier {
 
 	@SuppressWarnings("unchecked")
@@ -44,10 +46,25 @@ public record TravellersEntryModifier(EquipmentSlotGroup group, List<ItemAttribu
 	public boolean addModifier(ItemStack stack) {
 		if (!this.builtin()) {
 			ItemAttributeModifiers modifiers = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+			int before = modifiers.modifiers().size();
 			for (ItemAttributeModifiers.Entry entry : this.modifiers()) {
-				modifiers = modifiers.withModifierAdded(entry.attribute(), entry.modifier(), entry.slot());
+				try {
+					modifiers = modifiers.withModifierAdded(entry.attribute(), entry.modifier(), entry.slot());
+					TwilightForestMod.LOGGER.info("[TF-AttribApply] entry.attr={} op={} amt={} slot={} modId={}",
+						entry.attribute().unwrapKey().map(k -> k.identifier().toString()).orElse("UNKNOWN"),
+						entry.modifier().operation(),
+						entry.modifier().amount(),
+						entry.slot(),
+						entry.modifier().id());
+				} catch (Exception e) {
+					TwilightForestMod.LOGGER.error("[TF-AttribApply] FAILED entry: attr={} slot={} err={}",
+						entry.attribute().unwrapKey().map(k -> k.identifier().toString()).orElse("UNKNOWN"), entry.slot(), e.getMessage());
+				}
 			}
 			stack.set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
+			int after = modifiers.modifiers().size();
+			TwilightForestMod.LOGGER.info("[TF-AttribApply] stack={} marker={} beforeEntries={} afterEntries={} addedN={}",
+				stack.getItem(), this.markerComponent(), before, after, after - before);
 		}
 		stack.set(this.markerComponent(), Unit.INSTANCE);
 		return true;

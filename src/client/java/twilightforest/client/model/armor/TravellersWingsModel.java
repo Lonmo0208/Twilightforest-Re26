@@ -187,8 +187,8 @@ public class TravellersWingsModel extends HumanoidModel<HumanoidRenderState> {
 	public void setupModelAnimations(LivingEntity entity, float f, float f1, double ageInTicks, float netHeadYaw, float headPitch) {
 		this.bodyParts().forEach(modelPart -> modelPart.getAllParts().forEach(ModelPart::resetPose));
 		super.setupAnim(new HumanoidRenderState() {}); // Dummy state, actual pose set below
-		TravellersWingsAnimAttachment animAttachment = entity.getAttached(TFDataAttachments.TRAVELLERS_WINGS_ANIM);
-		TravellersWingsAttachment attachment = entity.getAttached(TFDataAttachments.TRAVELLERS_WINGS);
+		TravellersWingsAnimAttachment animAttachment = TFDataAttachments.getOrCreate(entity, TFDataAttachments.TRAVELLERS_WINGS_ANIM, twilightforest.components.entity.TravellersWingsAnimAttachment::new);
+		TravellersWingsAttachment attachment = TFDataAttachments.getOrCreate(entity, TFDataAttachments.TRAVELLERS_WINGS, twilightforest.components.entity.TravellersWingsAttachment::new);
 
 		if (animAttachment == null || attachment == null) return;
 

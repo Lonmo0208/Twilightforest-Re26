@@ -191,9 +191,7 @@ public class GhastTrapBlockEntity extends BlockEntity {
 		}
 	}
 
-	/**
-	 * 在恶魂陷阱附近生成一只砷铅铁恶灵（陷阱 24 格内已有砷铅铁恶灵时不再生成）
-	 */
+	
 	private void spawnCarminiteGhastling(ServerLevel level, BlockPos pos) {
 		AABB aabb = new AABB(pos).inflate(24D, 16D, 24D);
 		if (!level.getEntitiesOfClass(CarminiteGhastling.class, aabb).isEmpty())
@@ -213,9 +211,7 @@ public class GhastTrapBlockEntity extends BlockEntity {
 		}
 	}
 
-	/**
-	 * 检查位置是否有足够的开阔空间容纳 4x4 体型的砷铅铁恶灵
-	 */
+	
 	private boolean isValidGhastlingSpawn(ServerLevel level, BlockPos pos) {
 		for (int dx = -2; dx <= 2; dx++) {
 			for (int dy = 0; dy < 4; dy++) {

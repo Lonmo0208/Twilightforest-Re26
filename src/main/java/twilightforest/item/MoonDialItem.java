@@ -1,10 +1,10 @@
 package twilightforest.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.MoonPhase;
 import org.jspecify.annotations.Nullable;
 import twilightforest.init.TFDimension;
 
@@ -31,6 +32,8 @@ public class MoonDialItem extends Item {
 	private static final String PHASE_UNKNOWN = "item.twilightforest.moon_dial.phase_unknown";
 	private static final String PHASE_UNKNOWN_FOOLS = "item.twilightforest.moon_dial.phase_unknown_fools";
 
+	public static int CLIENT_PHASE = -1;
+
 	public MoonDialItem(Properties properties) {
 		super(properties);
 	}
@@ -49,7 +52,7 @@ public class MoonDialItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
-		int phase = stack.getDamageValue();
+		int phase = CLIENT_PHASE >= 0 ? CLIENT_PHASE : stack.getDamageValue();
 		if (phase >= 0 && phase < PHASE_TRANSLATION_KEYS.length) {
 			builder.accept(Component.translatable(PHASE_TRANSLATION_KEYS[phase]).withStyle(ChatFormatting.GRAY));
 		} else if (phase == -1) {
@@ -60,18 +63,17 @@ public class MoonDialItem extends Item {
 	}
 
 	private int calculatePhase(ServerLevel level) {
-		if (level.dimension() == TFDimension.DIMENSION_KEY) {
-			long time = level.getOverworldClockTime();
-			return (int) ((time / 10000L + 6L) % 8L);
-		}
-		Holder<net.minecraft.world.level.dimension.DimensionType> dtype = level.dimensionTypeRegistration();
-		if (dtype.is(Identifier.fromNamespaceAndPath("minecraft", "the_end"))) {
+		if (level.dimensionTypeRegistration().is(Identifier.fromNamespaceAndPath("minecraft", "the_end"))) {
 			return 404;
 		}
-		if (!level.dimensionType().hasFixedTime()) {
-			long dayTime = level.getOverworldClockTime();
-			return (int) ((dayTime / 24000L) % 8L);
+		if (level.dimensionType().hasFixedTime() && !level.dimension().equals(TFDimension.DIMENSION_KEY)) {
+			return -1;
 		}
-		return -1;
+		MoonPhase phase = level.environmentAttributes().getDimensionValue(EnvironmentAttributes.MOON_PHASE);
+		if (phase != null) {
+			return phase.index();
+		}
+		long dayTime = level.getGameTime();
+		return (int) ((dayTime / 24000L) % 8L);
 	}
 }

@@ -8,6 +8,8 @@
 		"MouseHandlerMixin",
 		"ClientLevelMixin",
 		"EntityRenderDispatcherMixin",
+		"GuiGraphicsExtractorMixin",
+		"KeyboardInputMixin",
 		"LivingEntityRendererMixin",
 		"MapRendererMixin",
 		"MapRenderStateMixin",

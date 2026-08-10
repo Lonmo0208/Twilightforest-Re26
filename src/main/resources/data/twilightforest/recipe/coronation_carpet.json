@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "R": "minecraft:red_carpet"
+  },
+  "pattern": [
+    "GGG",
+    "RRR"
+  ],
+  "result": {
+    "count": 3,
+    "id": "twilightforest:coronation_carpet"
+  }
+}

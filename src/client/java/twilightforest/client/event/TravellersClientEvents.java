@@ -43,12 +43,25 @@ import twilightforest.item.travellers_gear.TravellersGearLogic;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
 import twilightforest.network.*;
 import twilightforest.tags.TFItemTags;
+import twilightforest.util.TFEntityExtensions;
 
 import java.lang.reflect.Field;
 
 @Component
 @Environment(EnvType.CLIENT)
 public class TravellersClientEvents {
+
+	private static volatile boolean setupInvoked = false;
+
+	
+	private boolean lastJumpKeyDown = false;
+	
+	
+	private boolean hasDoneFirstGroundJump = false;
+	
+	
+	
+	private boolean lastOnGround = false;
 
 	private static boolean isZoomKeyHeld(Player player) {
 		return TFKeyBinds.ZOOM_KEY.isDown() && !player.isScoping();
@@ -70,14 +83,76 @@ public class TravellersClientEvents {
 	}
 
 	@PostConstruct
-	private void setup() {
+	public void setup() {
+		// Guard against double-registration: BeanContext may call @PostConstruct via
+		// classpath scanning while TwilightForestClient.onInitializeClient() also
+		// invokes setup() manually. Either one wins, the other becomes a no-op.
+		if (setupInvoked) return;
+		synchronized (TravellersClientEvents.class) {
+			if (setupInvoked) return;
+			setupInvoked = true;
+		}
 		// Register per-frame client tick handling for all traveler's gear keybinds and modifiers
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			LocalPlayer localPlayer = client.player;
 			if (localPlayer == null) return;
 
-			// Key press detection (consumeClick for fresh presses)
+			boolean nowOnGround = localPlayer.onGround();
+
+			// ─────────────────────────────────────────────────────────
+			
+			
+			
+			
+			
+			// ─────────────────────────────────────────────────────────
+
+			
+			Boolean hasDoubleJump = null;
+			boolean doubleJumpModifierActive = TravellersModifiersManager.isModifierActive(localPlayer, TravellersModifiersManager.DOUBLE_JUMP_MODIFIER);
+			if (!doubleJumpModifierActive) {
+				hasDoubleJump = false;
+			} else if (nowOnGround || localPlayer.isInLiquid() || localPlayer.onClimbable()) {
+				hasDoubleJump = true;
+			}
+			boolean currentHasDoubleJump = safeBoolAttachment(localPlayer, TFDataAttachments.HAS_DOUBLE_JUMP);
+			if (hasDoubleJump != null && hasDoubleJump != currentHasDoubleJump) {
+				localPlayer.setAttached(TFDataAttachments.HAS_DOUBLE_JUMP, hasDoubleJump);
+				localPlayer.setAttached(TFDataAttachments.DOUBLE_JUMP_VALIDATOR, 0);
+				AttributeInstance instance = localPlayer.getAttribute(Attributes.SAFE_FALL_DISTANCE);
+				if (instance != null) {
+					instance.removeModifier(TFAttributeModifiers.TRAVELLERS_DOUBLE_JUMP_SAFE_FALL_DISTANCE);
+				}
+			}
+
+			// ═════════════════════════════════════════════════════════
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			// ═════════════════════════════════════════════════════════
 			this.handleDoubleJump();
+
+			
+			
+			if (this.lastOnGround && !nowOnGround) {
+				if (!this.hasDoneFirstGroundJump)
+					this.hasDoneFirstGroundJump = true;
+			}
+			
+			if (nowOnGround || localPlayer.isInLiquid() || localPlayer.onClimbable()) {
+				if (this.hasDoneFirstGroundJump)
+					this.hasDoneFirstGroundJump = false;
+			}
+			this.lastOnGround = nowOnGround;
+
+			// Other keybinds and state updates
 			this.cycleItemDisplayMap();
 			this.swapHotbar();
 			this.toggleRedThreadVision();
@@ -86,14 +161,30 @@ public class TravellersClientEvents {
 			this.updateZoomState();
 			this.updateGradualGlideState();
 
-			// Movement modifiers
-			this.handleAgileRanger(localPlayer);
-			this.handleStraightAhead(localPlayer);
-			this.speedUpControlledWhileSneaking(localPlayer);
+			// Note: moveVector modifiers (Agile Ranger, Straight Ahead, Glide-Sneak
+			// speed-up) now run from KeyboardInputMixin at TAIL of tick(). Applying
+			// them here was too late: aiStep() had already consumed the vector.
+
+			// Sidestep impulse tracking + double-tap detection
 			this.handleSidestep(localPlayer);
 
 			// Stealth effect
 			this.handleStealth();
+
+			// Water walking — client side must ALSO lift/snap the local player so the
+			// client physics and server physics agree. If only the server runs this,
+			// the client keeps applying gravity (velY=-0.0784) and sends underwater
+			// position packets, fighting the server's teleportTo corrections → jitter.
+			TravellersGearLogic.waterWalkingTick(localPlayer);
+
+			// Gradual glide — must run on BOTH client AND server so that the client's
+			// prediction (what the player actually sees on screen) is slowed by the
+			// same 0.8333 multiplier the server applies. If we skip the client side:
+			//   1) Player's local render shows full-speed free fall → no perceived effect
+			//   2) Client's move packets report the un-slowed position back to server
+			//      which then overwrites the server-side setDeltaMovement correction
+			// This is the exact mirror of TravellersGearEvents END_SERVER_TICK path.
+			TravellersGearLogic.travellersWingsGradualGlide(localPlayer);
 		});
 	}
 
@@ -193,17 +284,43 @@ public class TravellersClientEvents {
 	}
 
 	private void handleDoubleJump() {
-		if (!(Minecraft.getInstance().player instanceof LocalPlayer localPlayer)
-			|| !Minecraft.getInstance().options.keyJump.consumeClick()
-			|| Minecraft.getInstance().screen != null)
+		if (!(Minecraft.getInstance().player instanceof LocalPlayer localPlayer)) {
 			return;
+		}
+		if (Minecraft.getInstance().screen != null) {
+			return;
+		}
+		
+		
+		
+		boolean keyDown = Minecraft.getInstance().options.keyJump.isDown();
+		boolean edgePress = keyDown && !this.lastJumpKeyDown;
+		this.lastJumpKeyDown = keyDown;  
+		if (!edgePress) {
+			return;
+		}
+
+		
+		
+		if (localPlayer.onGround() || localPlayer.isInLiquid() || localPlayer.onClimbable()) {
+			return;
+		}
+		if (!this.hasDoneFirstGroundJump)
+			return;
+
 		int lastJumpKeyPressTime = safeIntAttachment(localPlayer, TFDataAttachments.LAST_JUMP_KEY_PRESS_TIME);
 		localPlayer.setAttached(TFDataAttachments.LAST_JUMP_KEY_PRESS_TIME, localPlayer.tickCount);
+
 		boolean avoidCreativeFly = localPlayer.getAbilities().mayfly && localPlayer.tickCount - lastJumpKeyPressTime <= 6;
-		if (!avoidCreativeFly && TravellersModifiersManager.isModifierActive(localPlayer, TravellersModifiersManager.DOUBLE_JUMP_MODIFIER)) {
-			if (TravellersGearLogic.performDoubleJump(localPlayer)) {
-				ClientPlayNetworking.send(new PerformDoubleJumpPacket());
-			}
+		if (avoidCreativeFly)
+			return;
+
+		boolean isModifierActive = TravellersModifiersManager.isModifierActive(localPlayer, TravellersModifiersManager.DOUBLE_JUMP_MODIFIER);
+		if (!isModifierActive)
+			return;
+
+		if (TravellersGearLogic.performDoubleJump(localPlayer)) {
+			ClientPlayNetworking.send(new PerformDoubleJumpPacket());
 		}
 	}
 
@@ -227,7 +344,23 @@ public class TravellersClientEvents {
 		if (player == null) return;
 		boolean wasGraduallyGliding = safeBoolAttachment(player, TFDataAttachments.IS_GRADUALLY_GLIDING);
 		boolean shiftHeld = player.isShiftKeyDown();
-		boolean isGraduallyGliding = TFConfig.manualTravellersWingsGradualGlideDefault == shiftHeld && player.getKnownMovement().y() < 0 && !player.onGround();
+		double velY = player.getKnownMovement().y();
+		// NeoForge official three conditions, plus one Fabric-specific tolerance:
+		//   1) manualDefault == shiftHeld  (Shift-toggle matches manual/auto mode)
+		//   2) velY < 0                     (actually falling, not rising/apex)
+		//   3) truly airborne               (NOT on solid ground — but with a
+		//                                     tolerance for Fabric-side false
+		//                                     positives: water-walking code and
+		//                                     1-frame collision lag both set
+		//                                     onGround=true even when velY is
+		//                                     already the full -0.0784 gravity
+		//                                     value. If velY <= -0.05 we trust
+		//                                     the physics and ignore the flag.)
+		boolean trustOnGroundFalse = !player.onGround() || velY <= -0.05D;
+		boolean isGraduallyGliding = TFConfig.manualTravellersWingsGradualGlideDefault == shiftHeld
+			&& velY < 0
+			&& trustOnGroundFalse;
+
 		if (isGraduallyGliding == wasGraduallyGliding)
 			return;
 

@@ -48,7 +48,7 @@ public class ShieldLayer<S extends LivingEntityRenderState, M extends EntityMode
 		if (entity instanceof Lich lich) {
 			return lich.getTeleportInvisibility() > 0 ? 0 : lich.getShieldStrength();
 		}
-		FortificationShieldAttachment attachment = entity.getAttached(TFDataAttachments.FORTIFICATION_SHIELDS);
+		FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(entity, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 		return attachment != null ? attachment.shieldsLeft() : 0;
 	}
 

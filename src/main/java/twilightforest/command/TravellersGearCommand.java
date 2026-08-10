@@ -9,12 +9,17 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceKeyArgument;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import twilightforest.TFRegistries;
+import twilightforest.init.TFDataComponents;
+import twilightforest.init.TFItems;
 import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.item.travellers_gear.TravellersArmorBeltItem;
 import twilightforest.item.travellers_gear.modifiers.InsertableTravellersModifier;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifiable;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
@@ -35,12 +40,71 @@ public class TravellersGearCommand {
 
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
 		return Commands.literal("travellers_gear").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+			.then(Commands.literal("give_set")
+				.executes(context -> this.giveMaxedSet(context.getSource())))
 			.then(Commands.literal("add_modifier")
 				.then(Commands.argument("modifier", ResourceKeyArgument.key(TFRegistries.Keys.TRAVELLERS_MODIFIERS))
 					.executes(context -> this.addModifier(context.getSource(), ResourceKeyArgument.resolveKey(context, "modifier", TFRegistries.Keys.TRAVELLERS_MODIFIERS, ERROR_INVALID_MODIFIER)))))
 				.then(Commands.literal("remove_modifier")
 					.then(Commands.argument("modifier", ResourceKeyArgument.key(TFRegistries.Keys.TRAVELLERS_MODIFIERS))
 						.executes(context -> this.removeModifier(context.getSource(), ResourceKeyArgument.resolveKey(context, "modifier", TFRegistries.Keys.TRAVELLERS_MODIFIERS, ERROR_INVALID_MODIFIER)))));
+	}
+
+	private int giveMaxedSet(CommandSourceStack source) throws CommandSyntaxException {
+		if (!(source.getEntity() instanceof Player player) || player instanceof FakePlayer) throw ERROR_NOT_RUN_BY_PLAYER.create();
+		var registries = source.registryAccess();
+
+		
+		ItemStack goggles = new ItemStack(TFItems.TRAVELLERS_GOGGLES);
+		TravellersModifiersManager.addModifier(registries, goggles, TravellersModifiersManager.AUTO_REPAIR_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, goggles, TravellersModifiersManager.ITEM_DISPLAY_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, goggles, TravellersModifiersManager.AQUATIC_AGILITY_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, goggles, TravellersModifiersManager.RED_THREAD_VISION_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, goggles, TravellersModifiersManager.ALL_NIGHT_GOGGLES_MODIFIER);
+
+		
+		ItemStack vest = new ItemStack(TFItems.TRAVELLERS_VEST);
+		vest.set(TFDataComponents.TRAVELLERS_HAS_GLOVES, Unit.INSTANCE);
+		TravellersModifiersManager.addModifier(registries, vest, TravellersModifiersManager.AUTO_REPAIR_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, vest, TravellersModifiersManager.STEALTH_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, vest, TravellersModifiersManager.ARROW_MAGNETISM_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, vest, TravellersModifiersManager.EFFICIENT_EATER_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, vest, TravellersModifiersManager.PERFECT_DODGE_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, vest, TravellersModifiersManager.HASTE_MODIFIER);
+
+		
+		ItemStack wings = new ItemStack(TFItems.TRAVELLERS_WINGS);
+		wings.set(TFDataComponents.TRAVELLERS_HAS_BELT, Unit.INSTANCE);
+		wings.set(TFDataComponents.SWAP_HOTBAR_ABILITY, Unit.INSTANCE);
+		wings.set(DataComponents.CONTAINER, TravellersArmorBeltItem.DEFAULT_EMPTY_BELT_CONTAINER);
+		TravellersModifiersManager.addModifier(registries, wings, TravellersModifiersManager.AUTO_REPAIR_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, wings, TravellersModifiersManager.SWAP_HOTBAR_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, wings, TravellersModifiersManager.GRADUAL_GLIDE_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, wings, TravellersModifiersManager.AGILE_RANGER_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, wings, TravellersModifiersManager.DOUBLE_JUMP_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, wings, TravellersModifiersManager.SIDESTEP_MODIFIER);
+
+		
+		ItemStack boots = new ItemStack(TFItems.TRAVELLERS_BOOTS);
+		TravellersModifiersManager.addModifier(registries, boots, TravellersModifiersManager.AUTO_REPAIR_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, boots, TravellersModifiersManager.STRAIGHT_AHEAD_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, boots, TravellersModifiersManager.SLIMY_SOLES_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, boots, TravellersModifiersManager.UNRESTRAINED_MODIFIER);
+		TravellersModifiersManager.addModifier(registries, boots, TravellersModifiersManager.WATER_WALK_MODIFIER);
+
+		giveOrDrop(player, goggles);
+		giveOrDrop(player, vest);
+		giveOrDrop(player, wings);
+		giveOrDrop(player, boots);
+
+		source.sendSuccess(() -> Component.translatable("twilightforest.command.travellers_gear.give_set.success"), true);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static void giveOrDrop(Player player, ItemStack stack) {
+		if (!player.getInventory().add(stack)) {
+			player.drop(stack, false);
+		}
 	}
 
 	private int addModifier(CommandSourceStack source, Holder.Reference<TravellersModifier> modifier) throws CommandSyntaxException {

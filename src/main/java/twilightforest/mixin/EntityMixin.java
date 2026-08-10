@@ -1,130 +1,58 @@
 package twilightforest.mixin;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+
+import org.jetbrains.annotations.NotNull;
+
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import twilightforest.entity.TFPart;
 import twilightforest.util.TFEntityExtensions;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
- * Mixin to add NeoForge-compatible methods to Entity.
+ * Mixin adding Twilight Forest-specific capabilities to the base Entity class.
+ * <p>
+ * Only methods/hooks that are genuinely missing from Fabric API (or vanilla) are
+ * implemented here. Specifically:
+ * <ul>
+ *   <li>MultiPartEntity support — required for Hydra, Naga, and Snow Queen bosses,
+ *       which consist of multiple sub-parts with independent hitboxes and damage
+ *       calculations. Fabric has no equivalent of Forge/NeoForge's built-in
+ *       Entity#isMultipartEntity and Entity#getParts methods on the Entity base
+ *       class, so these HAVE to live in a Mixin.</li>
+ *   <li>Misc small Forge-style convenience hooks that Fabric does not expose as
+ *       direct Entity methods.</li>
+ *   <li>Client-side multipart-ID reassignment injection, so the client references
+ *       the same part-entity IDs as the server after receiving a spawn packet.</li>
+ * </ul>
+ *
+ * Previously, this Mixin also provided two parallel attachment stores which have
+ * since been retired in favor of Fabric's official Attachment API:
+ * <ul>
+ *   <li>A {@code ConcurrentHashMap<AttachmentType<?>, Object> tfAttachments}
+ *       backing getData/setData/hasData/removeData. Callers now use
+ *       {@code Entity.getAttached()}/{@code setAttached()} directly.</li>
+ *   <li>A free-form {@code CompoundTag tfPersistentData} backing
+ *       getPersistentData(). Callers now use
+ *       {@code Entity.getAttached(TFDataAttachments.TF_PERSISTENT_DATA)} which
+ *       is registered as a persistent Fabric Attachment.</li>
+ * </ul>
  */
 @Mixin(Entity.class)
 public abstract class EntityMixin implements TFEntityExtensions {
 
-	@Accessor("dimensions")
-	public abstract EntityDimensions getDimensions();
-
-	@Accessor("dimensions")
-	public abstract void setDimensions(EntityDimensions dimensions);
-
-	@Accessor("ENTITY_COUNTER")
-	public static AtomicInteger getEntityCounter() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Unique
-	private final Map<AttachmentType<?>, Object> tfAttachments = new ConcurrentHashMap<>();
-
 	@Override
 	@Unique
-	@SuppressWarnings("unchecked")
-	public <T> @NonNull T twilightforest$getData(@NonNull AttachmentType<T> type) {
-		Object value = tfAttachments.get(type);
-		if (value != null) {
-			return (T) value;
-		}
-		java.util.function.Supplier<T> initializer = type.initializer();
-		if (initializer != null) {
-			T newValue = initializer.get();
-			// Save the new instance to the map so it persists
-			tfAttachments.put(type, newValue);
-			return newValue;
-		}
-		return null;
-	}
-
-	@Override
-	@Unique
-	public <T> void twilightforest$setData(@NonNull AttachmentType<T> type, @NonNull T value) {
-		tfAttachments.put(type, value);
-	}
-
-	@Override
-	@Unique
-	public boolean twilightforest$hasData(@NonNull AttachmentType<?> type) {
-		return tfAttachments.containsKey(type);
-	}
-
-	@Override
-	@Unique
-	public void twilightforest$removeData(@NonNull AttachmentType<?> type) {
-		tfAttachments.remove(type);
-	}
-
-	/**
-	 * Persistent data stored directly on the Entity instance.
-	 * This field is preserved across the Entity's lifetime (e.g. ServerPlayer across death/respawn).
-	 * It is also written to / read from the entity's NBT via
-	 * {@link #tf$writePersistentData(CompoundTag, CallbackInfo)} and
-	 * {@link #tf$readPersistentData(CompoundTag, CallbackInfo)} so that data survives
-	 * server restarts and log-out / log-in cycles.
-	 */
-	@Unique
-	private CompoundTag tfPersistentData = null;
-
-	@Override
-	@Unique
-	public @NonNull CompoundTag twilightforest$getPersistentData() {
-		if (this.tfPersistentData == null) {
-			this.tfPersistentData = new CompoundTag();
-		}
-		return this.tfPersistentData;
-	}
-
-	/**
-	 * Save {@link #tfPersistentData} into the entity's NBT under the key {@code "TFData"}.
-	 * Injects at RETURN of {@link Entity#saveWithoutId(ValueOutput)} so the custom
-	 * data is appended after all vanilla data (including addAdditionalSaveData).
-	 */
-	@Inject(method = "saveWithoutId", at = @At("RETURN"))
-	private void tf$writePersistentData(ValueOutput output, CallbackInfo ci) {
-		if (this.tfPersistentData != null && !this.tfPersistentData.isEmpty()) {
-			output.store("TFData", CompoundTag.CODEC, this.tfPersistentData.copy());
-		}
-	}
-
-	/**
-	 * Load {@link #tfPersistentData} from the entity's NBT under the key {@code "TFData"}.
-	 * Injects at RETURN of {@link Entity#load(ValueInput)} so the custom
-	 * data is restored after all vanilla data has been parsed (including readAdditionalSaveData).
-	 */
-	@Inject(method = "load", at = @At("RETURN"))
-	private void tf$readPersistentData(ValueInput input, CallbackInfo ci) {
-		input.read("TFData", CompoundTag.CODEC).ifPresent(tag -> {
-			this.tfPersistentData = tag;
-		});
-	}
-
-	@Override
-	@Unique
-	public Entity @NonNull [] twilightforest$getParts() {
+	public Entity @NotNull [] twilightforest$getParts() {
 		return new Entity[0];
 	}
 
@@ -137,12 +65,24 @@ public abstract class EntityMixin implements TFEntityExtensions {
 	@Override
 	@Unique
 	public boolean twilightforest$canFitInsideContainerItems() {
-		return true;
+		// Original Forge default: allow items inside containers. Sub-entities or
+		// boss multiparts may override this (e.g. Hydra heads are not pick-uppable).
+		return ((Entity) (Object) this) instanceof ItemEntity;
 	}
 
 	@Override
 	@Unique
-	public void twilightforest$breakItem(@NonNull ItemStack stack) {
+	public void twilightforest$breakItem(@NotNull ItemStack stack) {
+		// Default no-op. LivingEntityMixin overrides this to play the break sound
+		// and shrink the stack count, just like Forge's LivingEntity#breakItem.
+	}
+
+	@Override
+	@Unique
+	public @NonNull GoalSelector twilightforest$getGoalSelector() {
+		// Default no-op for non-Mob entities. MobMixin overrides this to return the
+		// real GoalSelector so callers don't have to cast/instanceof-check first.
+		return null;
 	}
 
 	/**
