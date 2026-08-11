@@ -551,7 +551,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 	}
 
 	private static boolean matches(ItemStack input, ItemStack output) {
-		return input.is(output.getItem()) && input.getCount() >= output.getCount();
+		return input.is(output.getItem()) && input.getCount() >= 1;
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
