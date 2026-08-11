@@ -2,14 +2,20 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "#": "twilightforest:encased_towerwood",
-    "^": "twilightforest:smoker",
-    "∴": "#c:dusts/redstone"
+    "#": {
+      "item": "twilightforest:encased_towerwood"
+    },
+    "^": {
+      "item": "twilightforest:smoker"
+    },
+    "r": {
+      "tag": "#c:dusts/redstone"
+    }
   },
   "pattern": [
-    "#∴#",
-    "∴^∴",
-    "#∴#"
+    "#r#",
+    "r^r",
+    "#r#"
   ],
   "result": {
     "id": "twilightforest:encased_smoker"
