@@ -1,9 +1,3 @@
 {
-  "values": [
-    "minecraft:obsidian",
-    "minecraft:crying_obsidian",
-    "minecraft:netherite_block",
-    "minecraft:ancient_debris",
-    "minecraft:respawn_anchor"
-  ]
+  "values": []
 }
