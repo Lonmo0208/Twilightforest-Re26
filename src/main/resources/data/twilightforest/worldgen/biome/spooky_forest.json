@@ -9,7 +9,6 @@
   "effects": {
     "foliage_color": "#ff8501",
     "grass_color": "#c45123",
-    "grass_color_modifier": "twilightforest:spooky_forest",
     "water_color": "#bc8857"
   },
   "features": [

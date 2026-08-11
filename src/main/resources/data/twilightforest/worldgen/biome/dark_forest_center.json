@@ -8,7 +8,7 @@
   "effects": {
     "foliage_color": "#f9821e",
     "grass_color": "#667540",
-    "grass_color_modifier": "twilightforest:dark_forest_center",
+    "grass_color_modifier": "dark_forest",
     "water_color": "#3f76e4"
   },
   "features": [
