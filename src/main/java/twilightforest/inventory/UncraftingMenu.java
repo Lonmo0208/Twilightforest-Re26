@@ -508,10 +508,38 @@ public class UncraftingMenu extends RecipeBookMenu {
 					if (recipe.value() instanceof UncraftingRecipe uncraftingRecipe
 							&& recipe.value().getType() == TFRecipes.UNCRAFTING_RECIPE
 							&& uncraftingRecipe.isItemStackAnIngredient(inputStack)) {
-						if (TFConfig.reverseRecipeBlacklist == TFConfig.disableUncraftingRecipes.contains(recipe.id().toString())) {
-							if (TFConfig.flipUncraftingModIdList == TFConfig.blacklistedUncraftingModIds.contains(recipe.id().identifier().getNamespace())) {
-								recipes.add(uncraftingRecipe);
+						// Check if scepter uncrafting is allowed
+						if (!TFConfig.allowScepterUncrafting && inputStack.is(twilightforest.tags.TFItemTags.SCEPTERS)) {
+							continue; // Skip scepter recipes if not allowed
+						}
+						// Check recipe blacklist
+						// Logic: reverseRecipeBlacklist = false -> blacklist mode (disable listed recipes)
+						//          reverseRecipeBlacklist = true  -> whitelist mode (only enable listed recipes)
+						boolean recipeDisabled = TFConfig.disableUncraftingRecipes.contains(recipe.id().toString());
+						boolean modDisabled = TFConfig.blacklistedUncraftingModIds.contains(recipe.id().identifier().getNamespace());
+						boolean addRecipe;
+						
+						if (!TFConfig.reverseRecipeBlacklist) {
+							// Blacklist mode: add recipe only if NOT disabled
+							addRecipe = !recipeDisabled;
+						} else {
+							// Whitelist mode: add recipe only if IS disabled (meaning it's whitelisted)
+							addRecipe = recipeDisabled;
+						}
+						
+						// Apply mod filter based on flipUncraftingModIdList
+						// flipUncraftingModIdList = false -> blacklist mode (disable listed mod)
+						// flipUncraftingModIdList = true  -> whitelist mode (only enable listed mod)
+						if (addRecipe) {
+							if (!TFConfig.flipUncraftingModIdList) {
+								addRecipe = !modDisabled;
+							} else {
+								addRecipe = modDisabled;
 							}
+						}
+						
+						if (addRecipe) {
+							recipes.add(uncraftingRecipe);
 						}
 					}
 				}
@@ -534,10 +562,15 @@ public class UncraftingMenu extends RecipeBookMenu {
 					ItemStack output = craftingRecipe.assemble(CraftingInput.EMPTY);
 					if (!matches(inputStack, output)) continue;
 
-					if (TFConfig.reverseRecipeBlacklist == TFConfig.disableUncraftingRecipes.contains(recipe.id().toString())) {
-						if (TFConfig.flipUncraftingModIdList == TFConfig.blacklistedUncraftingModIds.contains(recipe.id().identifier().getNamespace())) {
-							recipes.add(craftingRecipe);
-						}
+					// Check recipe blacklist (same logic as first pass)
+					boolean recipeDisabled = TFConfig.disableUncraftingRecipes.contains(recipe.id().toString());
+					boolean modDisabled = TFConfig.blacklistedUncraftingModIds.contains(recipe.id().identifier().getNamespace());
+					boolean addRecipe = TFConfig.reverseRecipeBlacklist ? recipeDisabled : !recipeDisabled;
+					if (addRecipe) {
+						addRecipe = TFConfig.flipUncraftingModIdList ? modDisabled : !modDisabled;
+					}
+					if (addRecipe) {
+						recipes.add(craftingRecipe);
 					}
 				}
 			}

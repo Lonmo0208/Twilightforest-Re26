@@ -162,6 +162,11 @@ public class TFCommonConfig {
 				.translation(TFConfig.CONFIG_ID + "disable_uncrafting_table")
 				.comment(ConfigComments.DISABLE_TABLE)
 				.define("disableUncraftingTable", false);
+			UNCRAFTING_STUFFS.allowScepterUncrafting = builder
+				.worldRestart()
+				.translation(TFConfig.CONFIG_ID + "allow_scepter_uncrafting")
+				.comment(ConfigComments.SCEPTER_UNCRAFTING)
+				.define("allowScepterUncrafting", false);
 		}
 		builder.pop();
 
@@ -235,6 +240,7 @@ public class TFCommonConfig {
 		ModConfigSpec.BooleanValue flipUncraftingModIdList;
 		ModConfigSpec.BooleanValue disableUncraftingOnly;
 		ModConfigSpec.BooleanValue disableEntireTable;
+		ModConfigSpec.BooleanValue allowScepterUncrafting;
 	}
 
 	static class MagicTrees {

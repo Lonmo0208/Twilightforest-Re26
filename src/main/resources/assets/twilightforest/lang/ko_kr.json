@@ -832,6 +832,8 @@
     "config.twilightforest.uncrafting_recipes_flip.tooltip": "값이 참이라면, 위의 역제작 제작법 목록이 블랙리스트에서 화이트리스트로 바뀝니다.",
     "config.twilightforest.uncrafting_xp_cost": "역제작 가격 배수",
     "config.twilightforest.uncrafting_xp_cost.tooltip": "아이템을 역제작하는 데 드는 총 XP 비용을 곱하고 올림합니다.\n값이 높을수록 역제작 비용이 더 많이 들고, 값이 낮을수록 비용이 적게 듭니다. 0으로 설정하면 비용을 완전히 비활성화합니다.\n이 설정은 역순으로 만든 제작법에만 적용되며, 역제작 제작법은 여전히 평소와 같은 비용을 사용합니다.",
+    "config.twilightforest.allow_scepter_uncrafting": "지배 역제작 허용",
+    "config.twilightforest.allow_scepter_uncrafting.tooltip": "활성화하면 네 가지 리치의 지배(황혼의 지배, 생명의 지배, 불사의 지배, 무장의 지배)를 역제작대에서 역제작할 수 있습니다.\n기본적으로 지배는 게임 밸런스를 위해 역제작할 수 없습니다. 지배는 강력한 보스 보상이기 때문입니다.\n활성화하면 지배를 역제작할 때 기본 재료와 살짝 내구도가 감소한 지배가 반환됩니다.\n참고: 이 옵션은 세계 재시작 설정으로, 게임을 완전히 재시작하거나 세이브에 다시 들어가야만 적용됩니다.",
     "container.twilightforest.uncrafting_table": "역제작대",
     "container.twilightforest.uncrafting_table.cycle_back_ingredient": "이전 역제작 재료",
     "container.twilightforest.uncrafting_table.cycle_back_recipe": "이전 제작법",

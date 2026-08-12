@@ -21,6 +21,7 @@ import twilightforest.init.TFEntities;
 import twilightforest.init.TFMapDecorations;
 import twilightforest.init.TFStructureTypes;
 import twilightforest.tags.TFBiomeTags;
+import twilightforest.util.WorldUtil;
 import twilightforest.world.components.structures.darktower.DarkTowerMainComponent;
 import twilightforest.world.components.structures.util.ControlledSpawningStructure;
 
@@ -46,6 +47,11 @@ public class DarkTowerStructure extends ControlledSpawningStructure {
 	@Override
 	public StructureType<?> type() {
 		return TFStructureTypes.DARK_TOWER;
+	}
+
+	@Override
+	public int adjustForTerrain(GenerationContext context, int x, int z) {
+		return WorldUtil.adjustForTerrain(context, x, z, 32, 4);
 	}
 
 	public static DarkTowerStructure buildDarkTowerConfig(BootstrapContext<Structure> context) {

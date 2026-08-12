@@ -1454,13 +1454,9 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent implements Pi
 
 	@Override
 	public BoundingBox getBeardifierBox() {
-		// Extend the box downward to cover terrain below the floating tower.
-		// The vanilla bounding box starts at the tower's bottom (above ground),
-		// so BEARD_BOX only carves terrain inside the tower volume, not below it.
-		// By extending to Y=-64 we ensure all terrain underneath is carved out.
 		return new BoundingBox(
 			this.boundingBox.minX(),
-			this.boundingBox.minY() - 64,
+			this.boundingBox.minY() - 16,
 			this.boundingBox.minZ(),
 			this.boundingBox.maxX(),
 			this.boundingBox.maxY(),

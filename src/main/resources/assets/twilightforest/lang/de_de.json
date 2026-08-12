@@ -733,6 +733,8 @@
     "config.twilightforest.uncrafting_recipes_flip.tooltip": "Wenn dies \"true\" ist, wird die obige Rezeptliste zum Zerlegen von Rezepten von einer schwarzen Liste in eine weiße Liste umgewandelt.",
     "config.twilightforest.uncrafting_xp_cost": "Zerlege-Kostenmultiplikator",
     "config.twilightforest.uncrafting_xp_cost.tooltip": "Multipliziert die Gesamt-XP-Kosten für die Herstellung eines Gegenstands und rundet auf.\nHöhere Werte bedeuten, dass die Herstellung des Rezepts mehr kostet, niedrigere bedeuten weniger. Auf 0 setzen, um die Kosten vollständig zu deaktivieren.\nBeachten Sie, dass dies nur umgekehrte Herstellungsrezepte betrifft. Das ZErlegen von Rezepten kostet immer noch die gleichen Kosten wie normalerweise.",
+    "config.twilightforest.allow_scepter_uncrafting": "Zepter-Zerlegen erlauben",
+    "config.twilightforest.allow_scepter_uncrafting.tooltip": "Wenn aktiviert, können die vier Lich-Zepter (Dämmerungszepter, Zepter des Lebensaugers, Zombiezepter, Zepter des Schildes) am Dekomponiertisch zerlegt werden.\nStandardmäßig ist das Zerlegen deaktiviert, um das Spielgleichgewicht zu erhalten – die Zepter sind mächtige Bossbelohnungen.\nWenn aktiviert, gibt das Zerlegen eines Zepter die Basis-Materialien sowie eine leicht beschädigte Version des Zepter zurück.\nHinweis: Diese Option ist eine Einstellung für den Welten-Neustart und wird erst nach einem vollständigen Neustart des Spiels oder nach dem erneuten Betreten der Welt wirksam.",
     "container.twilightforest.uncrafting_table": "Dekomponiertisch",
     "container.twilightforest.uncrafting_table.cycle_back_ingredient": "Vorherige Werkbank-Zutaten",
     "container.twilightforest.uncrafting_table.cycle_back_recipe": "Voriges Werkbank-Rezept",

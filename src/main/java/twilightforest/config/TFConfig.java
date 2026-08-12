@@ -85,6 +85,7 @@ public class TFConfig {
 	public static boolean flipUncraftingModIdList = false;
 	public static boolean disableUncraftingOnly = false;
 	public static boolean disableEntireTable = false;
+	public static boolean allowScepterUncrafting = false;
 
 	// -- Magic Trees --
 	public static boolean disableTimeCore = false;
@@ -172,6 +173,7 @@ public class TFConfig {
 		reverseRecipeBlacklist = config.UNCRAFTING_STUFFS.reverseRecipeBlacklist.get();
 		blacklistedUncraftingModIds = config.UNCRAFTING_STUFFS.blacklistedUncraftingModIds.get();
 		flipUncraftingModIdList = config.UNCRAFTING_STUFFS.flipUncraftingModIdList.get();
+		allowScepterUncrafting = config.UNCRAFTING_STUFFS.allowScepterUncrafting.get();
 
 		// Tree Cores
 		disableTimeCore = config.MAGIC_TREES.timeRange.get() <= 0;

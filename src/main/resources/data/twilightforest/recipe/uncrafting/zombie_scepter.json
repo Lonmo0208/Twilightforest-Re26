@@ -5,7 +5,15 @@
   "input_count": 1,
   "key": {
     "R": "minecraft:rotten_flesh",
-    "S": "minecraft:potion"
+    "S": {
+      "fabric:type": "fabric:components",
+      "base": "minecraft:potion",
+      "components": {
+        "minecraft:potion_contents": {
+          "potion": "minecraft:long_strength"
+        }
+      }
+    }
   },
   "pattern": [
     "R  ",

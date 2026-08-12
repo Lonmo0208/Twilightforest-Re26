@@ -6,6 +6,7 @@ import twilightforest.network.MovePlayerPacket;
 public class MovePlayerPacketClientHandler {
 
 	public static void handle(MovePlayerPacket message, ClientPlayNetworking.Context context) {
-		context.client().execute(() -> context.player().push(message.motionX(), message.motionY(), message.motionZ()));
+		// Push is handled by entity sync (needsSync=true in Entity.push())
+		// Do NOT apply push here again - it causes double velocity on client
 	}
 }

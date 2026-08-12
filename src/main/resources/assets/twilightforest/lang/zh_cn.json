@@ -927,6 +927,8 @@
     "config.twilightforest.uncrafting_recipes_flip.tooltip": "启用后，拆解台配方黑名单变为白名单。",
     "config.twilightforest.uncrafting_xp_cost": "拆解成本倍率",
     "config.twilightforest.uncrafting_xp_cost.tooltip": "将拆解物品所需的总经验倍乘，向上取整。\n数值越高，拆解消耗的经验越多，反之则越少。设置为0时完全不消耗经验。\n请注意，此选项仅影响“逆合成配方”，拆解配方的经验消耗不受影响。",
+    "config.twilightforest.allow_scepter_uncrafting": "允许权杖拆解",
+    "config.twilightforest.allow_scepter_uncrafting.tooltip": "启用后，四种巫妖权杖（暮光、吸血、僵尸、护盾）可以在拆解台中拆解。\n默认禁用以平衡游戏性——权杖是强大的Boss奖励。\n启用后，拆解权杖将返回基础材料和一个耐久受损的权杖。\n注意：该选项属于世界重启设置，需完全重启游戏或重新进入存档后才会生效。",
     "container.twilightforest.uncrafting_table": "拆解台",
     "container.twilightforest.uncrafting_table.cycle_back_ingredient": "上一个拆解材料",
     "container.twilightforest.uncrafting_table.cycle_back_recipe": "阻止合成配方",

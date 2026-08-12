@@ -39,6 +39,12 @@ public class UncraftingResultSlot extends ResultSlot {
 		this.tempRemainderMap.clear();
 
 		boolean combined;
+		
+		// Save the input item before consuming it (for scepter damage return)
+		ItemStack inputItemBeforeConsume = ItemStack.EMPTY;
+		if (!this.inputSlot.getItem(0).isEmpty()) {
+			inputItemBeforeConsume = this.inputSlot.getItem(0).copy();
+		}
 
 		// If the input slot has an item, this is always a TF uncrafting-table specific operation
 		// (enchantment transfer / recrafting), regardless of whether assembly matches a recipe.
@@ -90,6 +96,21 @@ public class UncraftingResultSlot extends ResultSlot {
 				}
 			}
 			this.inputSlot.removeItem(0, this.uncraftingMatrix.numberOfInputItems);
+			
+			// Return a damaged scepter after uncrafting (for zombie scepter and other scepters)
+			if (!inputItemBeforeConsume.isEmpty() && isScepterItem(inputItemBeforeConsume)) {
+				ItemStack damagedScepter = inputItemBeforeConsume.copy();
+				int maxDamage = damagedScepter.getMaxDamage();
+				int currentDamage = damagedScepter.getDamageValue();
+				// Reduce durability by 1 (or at least leave 1 durability)
+				int newDamage = Math.min(currentDamage + 1, maxDamage - 1);
+				if (newDamage >= maxDamage) {
+					newDamage = maxDamage - 1; // Ensure at least 1 durability remains
+				}
+				damagedScepter.setDamageValue(newDamage);
+				// Give the damaged scepter back to the player
+				InventoryUtil.giveItemToPlayer(this.player, damagedScepter);
+			}
 		}
 
 		//VanillaCopy of the super method, but altered to work with the assembly matrix
@@ -142,5 +163,12 @@ public class UncraftingResultSlot extends ResultSlot {
 			result.set(slot, input.getItem(slot));
 		}
 		return result;
+	}
+
+	/**
+	 * Check if an item is a scepter (returns a damaged version after uncrafting)
+	 */
+	private static boolean isScepterItem(ItemStack stack) {
+		return stack.is(twilightforest.tags.TFItemTags.SCEPTERS);
 	}
 }

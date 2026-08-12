@@ -89,6 +89,11 @@ public final class ConfigComments {
 					Please note that table has more uses than just uncrafting, you can read about them here! http://benimatic.com/tfwiki/index.php?title=Uncrafting_Table
 					It is highly recommended to keep the table enabled as the mod has special uncrafting exclusive recipes, but the option remains for people that dont want the table to be functional at all.
 					If you are looking to just prevent normal crafting recipes from being reversed, consider using the 'disableUncrafting' option instead.""";
+	public static final String SCEPTER_UNCRAFTING = """
+					If true, allows the four Lich Scepters (Twilight, Life Drain, Zombie, Fortification) to be uncrafted in the Uncrafting Table.
+					By default, scepters cannot be uncrafted to balance gameplay - they are powerful boss rewards.
+					When enabled, uncrafting a scepter will return its base ingredients plus a slightly damaged version of the scepter.
+					NOTE: This option only takes effect after fully restarting the game (it is a world-restart setting).""";
 
 	public static final String MAGIC_TREES = "Settings for all things related to the magic trees.";
 	public static final String TIME_CORE = """

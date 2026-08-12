@@ -1,5 +1,6 @@
 package twilightforest.network;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,5 +27,10 @@ public record MovePlayerPacket(double motionX, double motionY, double motionZ) i
 		return TYPE;
 	}
 
-	// Client-side handler moved to MovePlayerPacketClientHandler
+	// No client-side push needed - Entity.push() on server already syncs via needsSync
+	// This handler exists only for registration compatibility
+	public static void handle(MovePlayerPacket message, ClientPlayNetworking.Context context) {
+		// Push is handled by entity sync (needsSync=true in Entity.push())
+		// Do NOT apply push here again - it causes double velocity on client
+	}
 }

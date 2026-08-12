@@ -13,6 +13,8 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +23,9 @@ import twilightforest.init.TFEntities;
 import twilightforest.init.TFMapDecorations;
 import twilightforest.init.TFStructureTypes;
 import twilightforest.tags.TFBiomeTags;
+import twilightforest.util.WorldUtil;
+import twilightforest.world.components.chunkgenerators.BoxDensityFunction;
+import twilightforest.world.components.structures.CustomDensitySource;
 import twilightforest.world.components.structures.lichtower.TowerMainComponent;
 import twilightforest.world.components.structures.util.ControlledSpawningStructure;
 
@@ -29,7 +34,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class LichTowerStructure extends ControlledSpawningStructure {
+public class LichTowerStructure extends ControlledSpawningStructure implements CustomDensitySource {
 	public static final MapCodec<LichTowerStructure> CODEC = RecordCodecBuilder.mapCodec(instance ->
 		controlledSpawningCodec(instance).apply(instance, LichTowerStructure::new)
 	);
@@ -46,6 +51,24 @@ public class LichTowerStructure extends ControlledSpawningStructure {
 	@Override
 	public StructureType<?> type() {
 		return TFStructureTypes.LICH_TOWER;
+	}
+
+	@Override
+	public DensityFunction getStructureTerraformer(ChunkPos chunkPosAt, StructureStart structurePieceSource) {
+		BoundingBox mainPieceBox = structurePieceSource.getPieces().getFirst().getBoundingBox();
+
+		int yBase = mainPieceBox.minY();
+
+		DensityFunction activator = DensityFunctions.yClampedGradient(yBase - 2, yBase - 1, 1, 0);
+
+		DensityFunction bury = BoxDensityFunction.make(mainPieceBox, -5, -5, TerrainAdjustment.BURY);
+
+		return DensityFunctions.mul(activator, bury);
+	}
+
+	@Override
+	public int adjustForTerrain(GenerationContext context, int x, int z) {
+		return WorldUtil.adjustForTerrain(context, x, z, 32, 4);
 	}
 
 	@SuppressWarnings("unchecked")

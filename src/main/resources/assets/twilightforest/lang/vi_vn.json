@@ -825,6 +825,8 @@
     "config.twilightforest.uncrafting_recipes_flip.tooltip": "Nếu đúng, điều này sẽ đảo ngược danh sách công thức không chế ở trên từ danh sách đen sang danh sách trắng.",
     "config.twilightforest.uncrafting_xp_cost": "Hệ Số Chi Phí Không Chế",
     "config.twilightforest.uncrafting_xp_cost.tooltip": "Nhân tổng chi phí XP của việc không chế một vật phẩm và làm tròn lên.\nGiá trị cao hơn có nghĩa là công thức sẽ tốn nhiều chi phí hơn để không chế, giá trị thấp hơn có nghĩa là ít hơn. Đặt thành 0 để vô hiệu hóa hoàn toàn chi phí.\nLưu ý rằng điều này chỉ ảnh hưởng đến các công thức chế tạo đảo ngược, các công thức không chế vẫn sẽ sử dụng cùng một chi phí như thường lệ.",
+    "config.twilightforest.allow_scepter_uncrafting": "Cho phép Không Chế Scepter",
+    "config.twilightforest.allow_scepter_uncrafting.tooltip": "Nếu bật, cho phép bốn Scepter của Lich (Scepter của Hoàng Hôn, Hút Sự Sống, Zombie và Tăng Cường) được không chế trong Bàn Không Chế.\nMặc định, các scepter không thể không chế để cân bằng lối chơi – chúng là phần thưởng trùm mạnh mẽ.\nKhi bật, không chế một scepter sẽ trả về các nguyên liệu cơ bản cùng với một phiên bản scepter bị giảm độ bền nhẹ.\nLưu ý: tùy chọn này là cài đặt khởi động lại thế giới và chỉ có hiệu lực sau khi khởi động lại hoàn toàn trò chơi hoặc vào lại thế giới lưu.",
     "container.twilightforest.uncrafting_table": "Bàn Không Chế",
     "container.twilightforest.uncrafting_table.cycle_back_ingredient": "Nguyên Liệu Không Chế Trước",
     "container.twilightforest.uncrafting_table.cycle_back_recipe": "Công Thức Chế Tạo Trước",

@@ -73,12 +73,10 @@ public class WorldgenHooks {
 					boolean isAirborne = pieceBox.minY() >= 100;
 
 					if (isAirborne) {
-						// Classification: this piece belongs to an airborne tower structure
-						// (Lich Tower, Dark Tower, Final Castle). Keep vanilla rigids and do
-						// NOT insert custom PieceBeardifierModifier rigids. The custom rigid
-						// boxes assume ground-level placement and produce floating terrain
-						// discs when placed in mid-air.
-						continue;
+						BoundingBox customBox = modifier.getBeardifierBox();
+						if (customBox.minY() >= 100) {
+							continue;
+						}
 					}
 
 					// Surface piece: remove vanilla rigid and replace with piece's custom one

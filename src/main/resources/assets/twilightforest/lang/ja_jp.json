@@ -943,6 +943,8 @@
     "config.twilightforest.uncrafting_recipes_flip.tooltip": "trueにすると、上記の解体クラフトレシピの一覧がブラックリストからホワイトリストに反転します。",
     "config.twilightforest.uncrafting_xp_cost": "解体クラフトのコストの倍率",
     "config.twilightforest.uncrafting_xp_cost.tooltip": "アイテムを解体クラフトする際の合計経験値コストの乗数（切り上げ）。\n値が高いほどレシピの修繕コストが増加し、低いほどコストが低下します。0に設定するとコストは完全に無効化されます。\nこれは逆クラフトレシピにのみ影響し、解体クラフトレシピでは通常と同じコストが使用されることに注意してください。",
+    "config.twilightforest.allow_scepter_uncrafting": "セプターの解体を許可",
+    "config.twilightforest.allow_scepter_uncrafting.tooltip": "有効にすると、4種類のリッチセプター（黄昏、吸精、ゾンビ、守り）を解体作業台で解体できるようになります。\nデフォルトではゲームバランスを保つためにセプターを解体できません――セプターは強力なボス報酬です。\n有効にすると、セプターの解体で基礎素材と、わずかに耐久の減ったセプターが返ってきます。\n注意：このオプションはワールド再起動設定です。完全にゲームを再起動するか、セーブデータに再度入り直した後にのみ反映されます。",
     "container.twilightforest.uncrafting_table": "解体作業台",
     "container.twilightforest.uncrafting_table.cycle_back_ingredient": "前の解体クラフト材料",
     "container.twilightforest.uncrafting_table.cycle_back_recipe": "前のクラフトレシピ",

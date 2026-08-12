@@ -92,6 +92,20 @@ public class UncraftingSlot extends Slot {
 					InventoryUtil.giveItemToPlayer(player, stack1.create());
 				});
 			}
+			// Return a damaged scepter after uncrafting so the player keeps a degraded version
+			// of the scepter instead of losing it entirely (matches the allowScepterUncrafting description).
+			if (isScepterItem(inputStack)) {
+				ItemStack damagedScepter = inputStack.copy();
+				int maxDamage = damagedScepter.getMaxDamage();
+				int currentDamage = damagedScepter.getDamageValue();
+				// Reduce durability by 1 (or at least leave 1 durability)
+				int newDamage = Math.min(currentDamage + 1, Math.max(maxDamage - 1, 0));
+				if (newDamage >= maxDamage) {
+					newDamage = Math.max(maxDamage - 1, 0);
+				}
+				damagedScepter.setDamageValue(newDamage);
+				InventoryUtil.giveItemToPlayer(player, damagedScepter);
+			}
 			this.inputSlot.removeItem(0, this.uncraftingMatrix.numberOfInputItems);
 		}
 
@@ -101,5 +115,12 @@ public class UncraftingSlot extends Slot {
 	@Override
 	public boolean isActive() {
 		return false;
+	}
+
+	/**
+	 * Check if an item is a scepter (returns a damaged version after uncrafting)
+	 */
+	private static boolean isScepterItem(ItemStack stack) {
+		return stack.is(twilightforest.tags.TFItemTags.SCEPTERS);
 	}
 }

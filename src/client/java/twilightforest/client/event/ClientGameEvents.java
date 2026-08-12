@@ -1,5 +1,6 @@
 package twilightforest.client.event;
 
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -12,7 +13,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.WrittenBookItem;
 import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.ChunkPos;
@@ -36,6 +39,7 @@ import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFDimension;
 import twilightforest.init.TFItems;
 import twilightforest.item.MoonDialItem;
+import twilightforest.tags.TFItemTags;
 import twilightforest.util.HolderMatcher;
 
 import java.util.HashSet;
@@ -70,8 +74,8 @@ public class ClientGameEvents {
 	// TODO: Port to Fabric - NeoForge.EVENT_BUS and all NeoForge event types need Fabric equivalents
 	@PostConstruct
 	private void setup() {
+		ItemTooltipCallback.EVENT.register(this::addCustomTooltips);
 		// All event registrations are NeoForge-specific and need to be ported to Fabric
-		// NeoForge.EVENT_BUS.addListener(this::addCustomTooltips);
 		// NeoForge.EVENT_BUS.addListener(this::clientTick);
 		// NeoForge.EVENT_BUS.addListener(this::customizeSplashes);
 		// NeoForge.EVENT_BUS.addListener(this::clearEntityRenderUtilMap);
@@ -288,12 +292,16 @@ public class ClientGameEvents {
 		}
 	}
 
-	// TODO: Port to Fabric - ItemTooltipEvent is NeoForge-specific; use Fabric tooltip callback
-	/*
-	private void addCustomTooltips(ItemTooltipEvent event) {
-		...
+	// Fabric port of the NeoForge ItemTooltipEvent handler: WIP warning + Emperors Cloth tooltip
+	private void addCustomTooltips(ItemStack stack, Item.TooltipContext context, TooltipFlag flag, List<Component> lines) {
+		if (stack.has(TFDataComponents.EMPERORS_CLOTH)) {
+			lines.add(1, EMPERORS_CLOTH_TOOLTIP);
+		}
+
+		if (stack.is(TFItemTags.WIP)) {
+			lines.add(WIP_TEXT);
+		}
 	}
-	*/
 
 	// TODO: Port to Fabric - ComputeFovModifierEvent is NeoForge-specific
 	/*

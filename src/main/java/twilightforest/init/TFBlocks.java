@@ -845,12 +845,12 @@ public static final Block AURORA_BLOCK = Registry.register(
 public static final RotatedPillarBlock AURORA_PILLAR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("aurora_pillar")),
-		new RotatedPillarBlock(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.CHIME).mapColor(MapColor.ICE).requiresCorrectToolForDrops().strength(2.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("aurora_pillar"))))
+		new AuroraPillarBlock(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.CHIME).mapColor(MapColor.ICE).requiresCorrectToolForDrops().strength(2.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("aurora_pillar"))))
 	);
 public static final Block AURORA_SLAB = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("aurora_slab")),
-		new SlabBlock(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.CHIME).mapColor(MapColor.ICE).requiresCorrectToolForDrops().strength(2.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("aurora_slab"))))
+		new AuroraSlabBlock(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.CHIME).mapColor(MapColor.ICE).requiresCorrectToolForDrops().strength(2.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("aurora_slab"))))
 	);
 public static final Block AURORALIZED_GLASS = Registry.register(
 		BuiltInRegistries.BLOCK,
