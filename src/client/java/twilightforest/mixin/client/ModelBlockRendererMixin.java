@@ -1,4 +1,4 @@
-package twilightforest.mixin;
+package twilightforest.mixin.client;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;

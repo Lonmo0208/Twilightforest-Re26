@@ -1,4 +1,4 @@
-package twilightforest.mixin;
+package twilightforest.mixin.client;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.textures.GpuSampler;

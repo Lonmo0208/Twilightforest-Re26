@@ -1,4 +1,4 @@
-package twilightforest.mixin;
+package twilightforest.mixin.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

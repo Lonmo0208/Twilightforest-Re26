@@ -1,4 +1,4 @@
-package twilightforest.mixin;
+package twilightforest.mixin.client;
 
 import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
