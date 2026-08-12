@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 import twilightforest.TwilightForestMod;
+import twilightforest.client.state.block.TFChestRenderState;
 import twilightforest.init.TFBlocks;
 
 import java.util.EnumMap;
@@ -52,8 +53,6 @@ public class TFChestRenderer<T extends ChestBlockEntity> extends ChestRenderer<T
 		MATERIALS = builder.build();
 	}
 
-	// Store the block type during extraction so submit() can look up the correct sprite
-	private Block currentBlock;
 	private final SpriteGetter sprites;
 	private final MultiblockChestResources<ChestModel> models;
 
@@ -64,15 +63,19 @@ public class TFChestRenderer<T extends ChestBlockEntity> extends ChestRenderer<T
 	}
 
 	@Override
+	public TFChestRenderState createRenderState() {
+		return new TFChestRenderState();
+	}
+
+	@Override
 	public void extractRenderState(T blockEntity, ChestRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
 		super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
-		this.currentBlock = blockEntity.getBlockState().getBlock();
+		((TFChestRenderState) state).sprite = getCustomSprite(blockEntity.getBlockState().getBlock(), state);
 	}
 
 	@Override
 	public void submit(ChestRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
-		Block block = this.currentBlock;
-		SpriteId customSprite = block != null ? getCustomSprite(block, state) : null;
+		SpriteId customSprite = ((TFChestRenderState) state).sprite;
 		if (customSprite != null) {
 			poseStack.pushPose();
 			poseStack.mulPose(ChestRenderer.modelTransformation(state.facing));

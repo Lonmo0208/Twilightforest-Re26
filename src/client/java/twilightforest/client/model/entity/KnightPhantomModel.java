@@ -109,7 +109,7 @@ public class KnightPhantomModel extends HumanoidModel<KnightPhantomRenderState> 
 
 	@Override
 	public void setupAnim(KnightPhantomRenderState entity) {
-		if (entity.isCharging) {
+		if (!entity.isCharging) {
 			this.root().visible = false;
 		}
 
