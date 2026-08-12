@@ -37,7 +37,8 @@
 		"ServerPlayerMixin",
 		"StructurePieceMixin",
 		"StructurePiecesBuilderMixin",
-		"StructureStartMixin"
+		"StructureStartMixin",
+		"SulfurCubeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

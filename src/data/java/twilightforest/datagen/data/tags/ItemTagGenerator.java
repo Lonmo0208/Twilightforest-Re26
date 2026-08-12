@@ -578,6 +578,72 @@ public class ItemTagGenerator extends ModdedItemTagGenerator {
 			TFItems.MUSIC_DISC_MAKER, TFItems.MUSIC_DISC_THREAD, TFItems.MUSIC_DISC_MOTION
 		);
 
+		// Sulfur Cube archetype tags - only full blocks (not slabs, stairs, doors, fences, etc.)
+		// BOUNCY is already covered by ItemTags.PLANKS and ItemTags.LOGS (registered above)
+
+		// SLOW_BOUNCY - stone-like full blocks
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY)
+			// Nagastone full blocks (no stairs)
+			.add(TFBlocks.NAGASTONE.asItem(), TFBlocks.NAGASTONE_HEAD.asItem(), TFBlocks.ETCHED_NAGASTONE.asItem(),
+				TFBlocks.NAGASTONE_PILLAR.asItem(), TFBlocks.MOSSY_ETCHED_NAGASTONE.asItem(), TFBlocks.MOSSY_NAGASTONE_PILLAR.asItem(),
+				TFBlocks.CRACKED_ETCHED_NAGASTONE.asItem(), TFBlocks.CRACKED_NAGASTONE_PILLAR.asItem(), TFBlocks.SPIRAL_BRICKS.asItem())
+			// Mazestone, Deadrock (via tag - all full blocks)
+			.add(TFBlocks.TWISTED_STONE.asItem(), TFBlocks.TWISTED_STONE_PILLAR.asItem(), TFBlocks.BOLD_STONE_PILLAR.asItem(),
+				TFBlocks.TERRORCOTTA_ARCS.asItem(), TFBlocks.TERRORCOTTA_CURVES.asItem(), TFBlocks.TERRORCOTTA_LINES.asItem(),
+				TFBlocks.TROLLSTEINN.asItem(), TFBlocks.TROPHY_PEDESTAL.asItem(), TFBlocks.STRONGHOLD_SHIELD.asItem())
+			// Underbrick full blocks
+			.add(TFBlocks.UNDERBRICK.asItem(), TFBlocks.MOSSY_UNDERBRICK.asItem(), TFBlocks.CRACKED_UNDERBRICK.asItem(), TFBlocks.UNDERBRICK_FLOOR.asItem());
+
+		// SLOW_FLAT - metal storage blocks
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_FLAT)
+			.add(TFBlocks.KNIGHTMETAL_BLOCK.asItem(), TFBlocks.FIERY_BLOCK.asItem(), TFBlocks.STEELEAF_BLOCK.asItem(),
+				TFBlocks.CARMINITE_BLOCK.asItem(), TFBlocks.IRONWOOD_BLOCK.asItem());
+
+		// FAST_SLIDING - ice-like full blocks
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_FAST_SLIDING)
+			.add(TFBlocks.AURORA_BLOCK.asItem(), TFBlocks.AURORA_PILLAR.asItem());
+
+		// SLOW_SLIDING - mushroom/fungus full blocks
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_SLIDING)
+			.add(TFBlocks.HUGE_MUSHGLOOM.asItem(), TFBlocks.HUGE_MUSHGLOOM_STEM.asItem());
+
+		// FAST_FLAT - organic/plant full blocks
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_FAST_FLAT)
+			.add(TFBlocks.ROOT_BLOCK.asItem(), TFBlocks.LIVEROOT_BLOCK.asItem(), TFBlocks.HUGE_STALK.asItem());
+
+		// LIGHT - wool/fur-like full blocks
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_LIGHT)
+			.add(TFBlocks.ARCTIC_FUR_BLOCK.asItem());
+
+		// REGULAR - dirt/soil full blocks
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_REGULAR)
+			.add(TFBlocks.UBEROUS_SOIL.asItem());
+
+		// Mazestone and Deadrock (all full blocks)
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY)
+			.add(TFBlocks.MAZESTONE.asItem(), TFBlocks.MAZESTONE_BRICK.asItem(), TFBlocks.CRACKED_MAZESTONE.asItem(),
+				TFBlocks.MOSSY_MAZESTONE.asItem(), TFBlocks.CUT_MAZESTONE.asItem(), TFBlocks.DECORATIVE_MAZESTONE.asItem(),
+				TFBlocks.MAZESTONE_MOSAIC.asItem(), TFBlocks.MAZESTONE_BORDER.asItem())
+			.add(TFBlocks.DEADROCK.asItem(), TFBlocks.CRACKED_DEADROCK.asItem(), TFBlocks.WEATHERED_DEADROCK.asItem());
+		// Castle bricks added individually (CASTLE_BLOCKS tag includes doors which are not full blocks)
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY)
+			.add(TFBlocks.CASTLE_BRICK.asItem(), TFBlocks.WORN_CASTLE_BRICK.asItem(), TFBlocks.CRACKED_CASTLE_BRICK.asItem(),
+				TFBlocks.MOSSY_CASTLE_BRICK.asItem(), TFBlocks.CASTLE_ROOF_TILE.asItem(), TFBlocks.THICK_CASTLE_BRICK.asItem(),
+				TFBlocks.ENCASED_CASTLE_BRICK_PILLAR.asItem(), TFBlocks.ENCASED_CASTLE_BRICK_TILE.asItem(),
+				TFBlocks.BOLD_CASTLE_BRICK_PILLAR.asItem(), TFBlocks.BOLD_CASTLE_BRICK_TILE.asItem(),
+				TFBlocks.PINK_CASTLE_RUNE_BRICK.asItem(), TFBlocks.BLUE_CASTLE_RUNE_BRICK.asItem(),
+				TFBlocks.YELLOW_CASTLE_RUNE_BRICK.asItem(), TFBlocks.VIOLET_CASTLE_RUNE_BRICK.asItem());
+
+		// SULFUR_CUBE_GIANT_BLOCKS - giant blocks that make the cube bigger when swallowed
+		this.valueLookupBuilder(TFItemTags.SULFUR_CUBE_GIANT_BLOCKS)
+			.add(TFBlocks.GIANT_COBBLESTONE.asItem(), TFBlocks.GIANT_LOG.asItem(), TFBlocks.GIANT_OBSIDIAN.asItem());
+
+		// Also add giant blocks to SLOW_BOUNCY so they can be swallowed by sulfur cubes
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_SLOW_BOUNCY)
+			.add(TFBlocks.GIANT_COBBLESTONE.asItem(), TFBlocks.GIANT_OBSIDIAN.asItem());
+		this.valueLookupBuilder(ItemTags.SULFUR_CUBE_ARCHETYPE_BOUNCY)
+			.add(TFBlocks.GIANT_LOG.asItem());
+
 		this.valueLookupBuilder(ItemTags.LOOM_PATTERNS).add(
 			TFItems.NAGA_BANNER_PATTERN,
 			TFItems.LICH_BANNER_PATTERN,

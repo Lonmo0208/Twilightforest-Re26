@@ -17,7 +17,8 @@
       "client.ModelBlockRendererAccessor",
       "client.LevelRendererMixin",
       "client.TFLightmapStateMixin",
-      "client.TFLightmapMixin"
+      "client.TFLightmapMixin",
+      "client.SulfurCubeRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
