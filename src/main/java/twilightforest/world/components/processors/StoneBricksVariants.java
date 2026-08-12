@@ -1,5 +1,7 @@
 package twilightforest.world.components.processors;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -8,21 +10,20 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.jetbrains.annotations.Nullable;
-import twilightforest.init.TFStructureProcessors;
 import twilightforest.util.features.FeaturePlacers;
 
-public final class StoneBricksVariants extends StructureProcessor {
+public final class StoneBricksVariants implements StructureProcessor {
 	public static final StoneBricksVariants INSTANCE = new StoneBricksVariants();
-	public static final MapCodec<StoneBricksVariants> CODEC = MapCodec.unit(() -> INSTANCE);
+	public static final MapCodec<StoneBricksVariants> MAP_CODEC = MapCodec.unit(() -> INSTANCE);
 
 	private StoneBricksVariants() {
 	}
 
+	@Nullable
+
 	@Override
-	public StructureTemplate.StructureBlockInfo processBlock(LevelReader worldReaderIn, BlockPos pos, BlockPos piecepos, StructureTemplate.StructureBlockInfo originalBlock, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
+	public StructureTemplate.StructureBlockInfo processBlock(LevelReader worldReaderIn, BlockPos pos, BlockPos piecepos, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
 		RandomSource random = settings.getRandom(modifiedBlockInfo.pos());
 
 		// We use nextBoolean in other processors so this lets us re-seed deterministically
@@ -45,8 +46,10 @@ public final class StoneBricksVariants extends StructureProcessor {
 		return modifiedBlockInfo;
 	}
 
+	@Nullable
+
 	@Override
-	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.STONE_BRICK_VARIANTS;
+	public MapCodec<? extends StructureProcessor> codec() {
+		return MAP_CODEC;
 	}
 }

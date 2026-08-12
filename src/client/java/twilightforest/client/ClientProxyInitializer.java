@@ -92,9 +92,9 @@ public class ClientProxyInitializer {
 		ClientProxy.portalAttachmentHandler = player -> {
 			if (player instanceof LocalPlayer local) {
 				Minecraft minecraft = Minecraft.getInstance();
-				if (minecraft.screen != null && !minecraft.screen.isPauseScreen() && !(minecraft.screen instanceof DeathScreen)) {
-					if (minecraft.screen instanceof AbstractContainerScreen) local.closeContainer();
-					minecraft.setScreen(null);
+				if (minecraft.gui.screen() != null && !minecraft.gui.screen().isPauseScreen() && !(minecraft.gui.screen() instanceof DeathScreen)) {
+					if (minecraft.gui.screen() instanceof AbstractContainerScreen) local.closeContainer();
+					minecraft.gui.setScreen(null);
 				}
 				return true;
 			}

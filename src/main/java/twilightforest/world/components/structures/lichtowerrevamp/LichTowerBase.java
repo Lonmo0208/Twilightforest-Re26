@@ -1,5 +1,6 @@
 package twilightforest.world.components.structures.lichtowerrevamp;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -127,23 +128,23 @@ public final class LichTowerBase extends TwilightJigsawPiece implements SpawnInd
 		return 1;
 	}
 
-	private static class TrimProcessor extends StructureProcessor {
+	private static class TrimProcessor implements StructureProcessor {
 		private static final TrimProcessor INSTANCE = new TrimProcessor();
+		public static final MapCodec<TrimProcessor> MAP_CODEC = MapCodec.unit(() -> INSTANCE);
 
 		@Nullable
 		@Override
-		public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos origin, BlockPos centerBottom, StructureTemplate.StructureBlockInfo originalBlockInfo, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
+		public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos origin, BlockPos centerBottom, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
 			if (modifiedBlockInfo.state().is(Blocks.POLISHED_ANDESITE_STAIRS) && level.getBlockState(modifiedBlockInfo.pos()).is(BlockTags.STONE_BRICKS)) {
-				// Don't replace trim blocks placed by tower wings
 				return null;
 			}
 
-			return super.processBlock(level, origin, centerBottom, originalBlockInfo, modifiedBlockInfo, settings);
+			return modifiedBlockInfo;
 		}
 
 		@Override
-		protected StructureProcessorType<?> getType() {
-			return null; // not serialized
+		public MapCodec<? extends StructureProcessor> codec() {
+			return MAP_CODEC;
 		}
 	}
 }

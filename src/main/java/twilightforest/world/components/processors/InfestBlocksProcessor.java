@@ -1,5 +1,7 @@
 package twilightforest.world.components.processors;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -11,18 +13,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.jetbrains.annotations.Nullable;
-import twilightforest.init.TFStructureProcessors;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public final class InfestBlocksProcessor extends StructureProcessor {
+public final class InfestBlocksProcessor implements StructureProcessor {
 	public static final InfestBlocksProcessor INSTANCE = new InfestBlocksProcessor();
-	public static final MapCodec<InfestBlocksProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
+	public static final MapCodec<InfestBlocksProcessor> MAP_CODEC = MapCodec.unit(() -> INSTANCE);
 
 	// TODO Convert to DataMap
 	private static final Supplier<Map<Block, BlockState>> CONVERSIONS = Suppliers.memoize(() -> Util.make(new HashMap<>(), map -> {
@@ -37,8 +36,10 @@ public final class InfestBlocksProcessor extends StructureProcessor {
 	private InfestBlocksProcessor() {
 	}
 
+	@Nullable
+
 	@Override
-	public StructureTemplate.StructureBlockInfo processBlock(LevelReader worldReaderIn, BlockPos pos, BlockPos piecepos, StructureTemplate.StructureBlockInfo originalBlock, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
+	public StructureTemplate.StructureBlockInfo processBlock(LevelReader worldReaderIn, BlockPos pos, BlockPos piecepos, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
 		RandomSource random = settings.getRandom(modifiedBlockInfo.pos().below(-10));
 
 		// We use nextBoolean in other processors so this lets us re-seed deterministically
@@ -52,8 +53,10 @@ public final class InfestBlocksProcessor extends StructureProcessor {
 		return new StructureTemplate.StructureBlockInfo(modifiedBlockInfo.pos(), replacement, null);
 	}
 
+	@Nullable
+
 	@Override
-	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.INFEST_BLOCKS;
+	public MapCodec<? extends StructureProcessor> codec() {
+		return MAP_CODEC;
 	}
 }

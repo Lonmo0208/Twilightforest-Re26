@@ -8,7 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -76,12 +76,12 @@ public class LichTowerStructure extends ControlledSpawningStructure implements C
 		return new LichTowerStructure(
 			ControlledSpawningConfig.firstIndexMonsters(
 				WeightedList.<MobSpawnSettings.SpawnerData>builder()
-					.add(new MobSpawnSettings.SpawnerData(EntityType.ZOMBIE, 1, 2), 10)
-					.add(new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 1, 2), 10)
-					.add(new MobSpawnSettings.SpawnerData(EntityType.CREEPER, 1, 1), 1)
-					.add(new MobSpawnSettings.SpawnerData(EntityType.ENDERMAN, 1, 2), 1)
+					.add(new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 1, 2), 10)
+					.add(new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 1, 2), 10)
+					.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, 1, 1), 1)
+					.add(new MobSpawnSettings.SpawnerData(EntityTypes.ENDERMAN, 1, 2), 1)
 					.add(new MobSpawnSettings.SpawnerData(TFEntities.DEATH_TOME.get(), 1, 2), 5)
-					.add(new MobSpawnSettings.SpawnerData(EntityType.WITCH, 1, 1), 1)
+					.add(new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, 1, 1), 1)
 					.build()
 			),
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_naga"))),

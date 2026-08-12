@@ -155,7 +155,7 @@ public class EntityUtil {
 				if (flingSound != null) {
 					entity.playSound(flingSound, 1.0F, 1.0F);
 				}
-				livingentity.knockback(f1 * 0.5F, Mth.sin(entity.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(entity.getYRot() * Mth.DEG_TO_RAD));
+				livingentity.knockback(f1 * 0.5F, Mth.sin(entity.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(entity.getYRot() * Mth.DEG_TO_RAD), source, f);
 				entity.setDeltaMovement(entity.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
 			}
 
@@ -271,7 +271,7 @@ public class EntityUtil {
 				ChunkAccess chunk = world.getChunk(i1, j1, ChunkStatus.STRUCTURE_STARTS);
 				if (chunk instanceof ProtoChunk proto) {
 					proto.getEntities().forEach(nbt -> {
-						Entity entity = EntityType.loadEntityRecursive(nbt, world.getLevel(), EntitySpawnReason.LOAD, e -> e);
+						Entity entity = EntityType.loadEntityRecursive(nbt, world.getLevel(), new EntitySpawnRequest(EntitySpawnReason.LOAD, false), e -> e);
 						if (entity != null && boundingBox.intersects(entity.getBoundingBox())) {
 							list.add(entity);
 						}

@@ -36,6 +36,21 @@ repositories {
 	maven {
 		name = "TerraformersMC" //EMI
 		url = "https://maven.terraformersmc.com/"
+		content {
+			includeGroup("com.terraformersmc")
+		}
+	}
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		// forRepositories(fg.repository) // Uncomment when using ForgeGradle
+		filter {
+			includeGroup "maven.modrinth"
+		}
 	}
 	maven { // TOP
 		url "https://maven.k-4u.nl"
@@ -50,6 +65,7 @@ repositories {
 			includeGroup "curse.maven"
 		}
 	}
+	mavenCentral()
 }
 
 sourceSets {

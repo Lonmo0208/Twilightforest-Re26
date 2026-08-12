@@ -10,14 +10,14 @@ public class TFBossBarPacketClientHandler {
 	public static void handleAdd(TFBossBarPacket.AddTFBossBarPacket packet, ClientPlayNetworking.Context context) {
 		context.client().execute(() -> {
 			Minecraft minecraft = Minecraft.getInstance();
-			minecraft.gui.getBossOverlay().events.put(packet.id, new ClientTFBossBar(packet.id, packet.name, packet.progress, packet.color, packet.overlay, packet.darkenScreen, packet.playMusic, packet.createWorldFog));
+			minecraft.gui.hud.getBossOverlay().events.put(packet.id, new ClientTFBossBar(packet.id, packet.name, packet.progress, packet.color, packet.overlay, packet.darkenScreen, packet.playMusic, packet.createWorldFog));
 		});
 	}
 
 	public static void handleUpdateStyle(TFBossBarPacket.UpdateTFBossBarStylePacket packet, ClientPlayNetworking.Context context) {
 		context.client().execute(() -> {
 			Minecraft minecraft = Minecraft.getInstance();
-			if (minecraft.gui.getBossOverlay().events.get(packet.id) instanceof ClientTFBossBar bossEvent) {
+			if (minecraft.gui.hud.getBossOverlay().events.get(packet.id) instanceof ClientTFBossBar bossEvent) {
 				bossEvent.setBarColor(packet.color);
 				bossEvent.setOverlay(packet.overlay);
 				if (!packet.allowLerp) bossEvent.setSetTime(bossEvent.getSetTime() - 200L); // Boss bars lerp over 100 milliseconds, we sometimes don't want that

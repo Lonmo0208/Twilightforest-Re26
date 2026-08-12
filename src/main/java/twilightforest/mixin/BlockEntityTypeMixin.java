@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.WallHangingSignBlock;
 import net.minecraft.world.level.block.WallSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,11 +33,11 @@ public class BlockEntityTypeMixin {
 		BlockEntityType<?> self = (BlockEntityType<?>) (Object) this;
 		Block block = state.getBlock();
 
-		if (self == BlockEntityType.SIGN) {
+		if (self == BlockEntityTypes.SIGN) {
 			if (block instanceof StandingSignBlock || block instanceof WallSignBlock) {
 				cir.setReturnValue(true);
 			}
-		} else if (self == BlockEntityType.HANGING_SIGN) {
+		} else if (self == BlockEntityTypes.HANGING_SIGN) {
 			if (block instanceof CeilingHangingSignBlock || block instanceof WallHangingSignBlock) {
 				cir.setReturnValue(true);
 			}

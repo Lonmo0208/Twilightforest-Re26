@@ -99,13 +99,13 @@ public class TravellersClientEvents {
 
 			boolean nowOnGround = localPlayer.onGround();
 
-			// ─────────────────────────────────────────────────────────
+			// 閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓
 			
 			
 			
 			
 			
-			// ─────────────────────────────────────────────────────────
+			// 閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓
 
 			
 			Boolean hasDoubleJump = null;
@@ -125,7 +125,7 @@ public class TravellersClientEvents {
 				}
 			}
 
-			// ═════════════════════════════════════════════════════════
+			// 閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳?
 			
 			
 			
@@ -136,7 +136,7 @@ public class TravellersClientEvents {
 			
 			
 			
-			// ═════════════════════════════════════════════════════════
+			// 閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳?
 			this.handleDoubleJump();
 
 			
@@ -171,16 +171,16 @@ public class TravellersClientEvents {
 			// Stealth effect
 			this.handleStealth();
 
-			// Water walking — client side must ALSO lift/snap the local player so the
+			// Water walking 閳?client side must ALSO lift/snap the local player so the
 			// client physics and server physics agree. If only the server runs this,
 			// the client keeps applying gravity (velY=-0.0784) and sends underwater
-			// position packets, fighting the server's teleportTo corrections → jitter.
+			// position packets, fighting the server's teleportTo corrections 閳?jitter.
 			TravellersGearLogic.waterWalkingTick(localPlayer);
 
-			// Gradual glide — must run on BOTH client AND server so that the client's
+			// Gradual glide 閳?must run on BOTH client AND server so that the client's
 			// prediction (what the player actually sees on screen) is slowed by the
 			// same 0.8333 multiplier the server applies. If we skip the client side:
-			//   1) Player's local render shows full-speed free fall → no perceived effect
+			//   1) Player's local render shows full-speed free fall 閳?no perceived effect
 			//   2) Client's move packets report the un-slowed position back to server
 			//      which then overwrites the server-side setDeltaMovement correction
 			// This is the exact mirror of TravellersGearEvents END_SERVER_TICK path.
@@ -287,7 +287,7 @@ public class TravellersClientEvents {
 		if (!(Minecraft.getInstance().player instanceof LocalPlayer localPlayer)) {
 			return;
 		}
-		if (Minecraft.getInstance().screen != null) {
+		if (Minecraft.getInstance().gui.screen() != null) {
 			return;
 		}
 		
@@ -348,7 +348,7 @@ public class TravellersClientEvents {
 		// NeoForge official three conditions, plus one Fabric-specific tolerance:
 		//   1) manualDefault == shiftHeld  (Shift-toggle matches manual/auto mode)
 		//   2) velY < 0                     (actually falling, not rising/apex)
-		//   3) truly airborne               (NOT on solid ground — but with a
+		//   3) truly airborne               (NOT on solid ground 閳?but with a
 		//                                     tolerance for Fabric-side false
 		//                                     positives: water-walking code and
 		//                                     1-frame collision lag both set

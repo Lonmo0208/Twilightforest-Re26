@@ -7,22 +7,20 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.Nullable;
-import twilightforest.init.TFStructureProcessors;
 import twilightforest.tags.TFBlockTags;
 
-public final class SoftReplaceProcessor extends StructureProcessor {
+public final class SoftReplaceProcessor implements StructureProcessor {
 	public static final SoftReplaceProcessor INSTANCE = new SoftReplaceProcessor();
-	public static final MapCodec<SoftReplaceProcessor> CODEC = MapCodec.unit(INSTANCE);
+	public static final MapCodec<SoftReplaceProcessor> MAP_CODEC = MapCodec.unit(INSTANCE);
 
 	private SoftReplaceProcessor() {
 	}
 
 	@Nullable
 	@Override
-	public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos offset, BlockPos piecePos, StructureTemplate.StructureBlockInfo originalInfo, StructureTemplate.StructureBlockInfo modifiedInfo, StructurePlaceSettings placeSettings) {
+	public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos offset, BlockPos piecePos, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo modifiedInfo, StructurePlaceSettings placeSettings) {
 		BlockState blockAt = level.getBlockState(modifiedInfo.pos());
 
 		boolean isReplaceableAt = blockAt.canBeReplaced() || blockAt.is(TFBlockTags.WORLDGEN_REPLACEABLES);
@@ -39,15 +37,15 @@ public final class SoftReplaceProcessor extends StructureProcessor {
 		return null;
 	}
 
+	@Override
+	public MapCodec<? extends StructureProcessor> codec() {
+		return MAP_CODEC;
+	}
+
 	private boolean isFullBlock(BlockState state) {
 		Block block = state.getBlock();
 		return !(block instanceof FenceBlock || block instanceof WallBlock || block instanceof SlabBlock || block instanceof StairBlock
 			|| block instanceof DoorBlock || block instanceof TrapDoorBlock || block instanceof FenceGateBlock
 			|| block instanceof IronBarsBlock || block instanceof StainedGlassBlock);
-	}
-
-	@Override
-	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.SOFT_REPLACE;
 	}
 }

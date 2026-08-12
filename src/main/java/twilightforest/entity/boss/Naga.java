@@ -98,8 +98,17 @@ public class Naga extends BaseTFBoss {
 		this.healthPerSegment = this.getMaxHealth() / 10;
 		this.moveControl = new NagaMoveControl(this);
 
-		this.setId(ENTITY_COUNTER.getAndAdd(this.bodySegments.length + 1) + 1);
-		TFPart.assignPartIDs(this);
+		// Only assign IDs on the server. On the client, the entity ID and part IDs
+		// are assigned later from the spawn packet via setId()/recreateFromPacket
+		// (Level.getNextEntityId() returns 0 on the client, so calling getId() here
+		// would throw "Tried to access entity ID before ID assignment").
+		if (!level().isClientSide()) {
+			this.setId(level().getNextEntityId());
+			for (int i = 0; i < this.bodySegments.length; i++) {
+				level().getNextEntityId();
+			}
+			TFPart.assignPartIDs(this);
+		}
 	}
 
 	@Override
@@ -594,7 +603,7 @@ public class Naga extends BaseTFBoss {
 	public void tickDeathAnimation() {
 		if (this.deathTime >= DEATH_ANIMATION_DURATION) {
             Vec3 start = this.position().add(0.0D, this.getBbHeight() * 0.5D, 0.0D);
-            Vec3 end = EntityUtil.bossChestLocation(this).getCenter();
+            Vec3 end = Vec3.atCenterOf(EntityUtil.bossChestLocation(this));
             Vec3 diff = end.subtract(start);
 
             double angle = Math.atan2(end.z - start.z, end.x - start.x) * Mth.RAD_TO_DEG + 180D;

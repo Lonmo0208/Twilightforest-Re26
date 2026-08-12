@@ -1,10 +1,12 @@
 package twilightforest.client;
 
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.BindGroupLayout;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -22,6 +24,7 @@ import net.minecraft.world.phys.Vec3;
 import twilightforest.TwilightForestMod;
 
 import java.nio.ByteBuffer;
+import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
@@ -45,8 +48,9 @@ public class TFShaders {
 			.withLocation(TwilightForestMod.prefix("aurora/aurora"))
 			.withVertexShader(TwilightForestMod.prefix("core/aurora/aurora"))
 			.withFragmentShader(TwilightForestMod.prefix("core/aurora/aurora"))
-			.withUniform("AuroraSettings", UniformType.UNIFORM_BUFFER)
-			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+			.withBindGroupLayout(BindGroupLayout.builder().withUniform("AuroraSettings", UniformType.UNIFORM_BUFFER).build())
+			.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
+			.withPrimitiveTopology(PrimitiveTopology.QUADS)
 			.withCull(false)
 			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
 			.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
@@ -86,7 +90,7 @@ public class TFShaders {
 
 		public AuroraShaderInstance(RenderPipeline pipeline) {
 			this.pipeline = pipeline;
-			this.sequentialBuffer = RenderSystem.getSequentialBuffer(VertexFormat.Mode.QUADS);
+			this.sequentialBuffer = RenderSystem.getSequentialBuffer(PrimitiveTopology.QUADS);
 			this.initialized = false;
 		}
 
@@ -101,7 +105,7 @@ public class TFShaders {
 		private void buildQuadBuffer() {
 			try (ByteBufferBuilder byteBufferBuilder = ByteBufferBuilder.exactlySized(
 				DefaultVertexFormat.POSITION_COLOR.getVertexSize() * 4)) {
-				BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+				BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
 				bufferBuilder.addVertex(-1F, 1F, 0F).setColor(1F, 1F, 1F, 1F);
 				bufferBuilder.addVertex(-1F, -1F, 0F).setColor(1F, 1F, 1F, 1F);
@@ -121,8 +125,8 @@ public class TFShaders {
 			if (pipeline == null || !initialized) return;
 
 			Minecraft mc = Minecraft.getInstance();
-			GpuTextureView colorTexture = mc.getMainRenderTarget().getColorTextureView();
-			GpuTextureView depthTexture = mc.getMainRenderTarget().getDepthTextureView();
+			GpuTextureView colorTexture = mc.gameRenderer.mainRenderTarget().getColorTextureView();
+			GpuTextureView depthTexture = mc.gameRenderer.mainRenderTarget().getDepthTextureView();
 
 			AuroraSettings settings = new AuroraSettings(seed, x, y, z);
 			GpuBufferSlice auroraSlice = auroraUniforms.writeUniform(settings);
@@ -140,7 +144,7 @@ public class TFShaders {
 
 			try (RenderPass renderPass = RenderSystem.getDevice()
 				.createCommandEncoder()
-				.createRenderPass(() -> "TF Aurora", colorTexture, OptionalInt.empty(), depthTexture, OptionalDouble.empty())) {
+				.createRenderPass(() -> "TF Aurora", colorTexture, Optional.empty(), depthTexture, OptionalDouble.empty())) {
 				renderPass.setPipeline(pipeline);
 				RenderSystem.bindDefaultUniforms(renderPass);
 				renderPass.setUniform("AuroraSettings", auroraSlice);
@@ -148,13 +152,13 @@ public class TFShaders {
 
 				updateSkyQuad(context, intensity);
 
-				renderPass.setVertexBuffer(0, vertexBuffer);
+				renderPass.setVertexBuffer(0, vertexBuffer.slice());
 				if (indexCount > 0) {
 					GpuBuffer indices = sequentialBuffer.getBuffer(indexCount);
 					renderPass.setIndexBuffer(indices, sequentialBuffer.type());
-					renderPass.drawIndexed(0, 0, indexCount, 1);
+					renderPass.drawIndexed(indexCount, 1, 0, 0, 0);
 				} else {
-					renderPass.draw(0, vertexCount);
+					renderPass.draw(vertexCount, 1, 0, 0);
 				}
 			}
 
@@ -168,7 +172,7 @@ public class TFShaders {
 
 			try (ByteBufferBuilder byteBufferBuilder = ByteBufferBuilder.exactlySized(
 				DefaultVertexFormat.POSITION_COLOR.getVertexSize() * 4)) {
-				BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+				BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
 				bufferBuilder.addVertex(-scale, y, scale).setColor(1F, 1F, 1F, intensity);
 				bufferBuilder.addVertex(-scale, y, -scale).setColor(1F, 1F, 1F, intensity);

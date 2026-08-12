@@ -17,22 +17,22 @@ import java.util.Map;
 public record QuestingRamContext(Map<DyeColor, Ingredient> questItems, ResourceKey<LootTable> lootTable) {
 
 	public static final QuestingRamContext FALLBACK = new QuestingRamContext(ImmutableMap.<DyeColor, Ingredient>builder()
-		.put(DyeColor.WHITE, Ingredient.of(Items.WHITE_WOOL))
-		.put(DyeColor.LIGHT_GRAY, Ingredient.of(Items.LIGHT_GRAY_WOOL))
-		.put(DyeColor.GRAY, Ingredient.of(Items.GRAY_WOOL))
-		.put(DyeColor.BLACK, Ingredient.of(Items.BLACK_WOOL))
-		.put(DyeColor.RED, Ingredient.of(Items.RED_WOOL))
-		.put(DyeColor.ORANGE, Ingredient.of(Items.ORANGE_WOOL))
-		.put(DyeColor.YELLOW, Ingredient.of(Items.YELLOW_WOOL))
-		.put(DyeColor.GREEN, Ingredient.of(Items.GREEN_WOOL))
-		.put(DyeColor.LIME, Ingredient.of(Items.LIME_WOOL))
-		.put(DyeColor.BLUE, Ingredient.of(Items.BLUE_WOOL))
-		.put(DyeColor.CYAN, Ingredient.of(Items.CYAN_WOOL))
-		.put(DyeColor.LIGHT_BLUE, Ingredient.of(Items.LIGHT_BLUE_WOOL))
-		.put(DyeColor.PURPLE, Ingredient.of(Items.PURPLE_WOOL))
-		.put(DyeColor.MAGENTA, Ingredient.of(Items.MAGENTA_WOOL))
-		.put(DyeColor.PINK, Ingredient.of(Items.PINK_WOOL))
-		.put(DyeColor.BROWN, Ingredient.of(Items.BROWN_WOOL)).build(),
+		.put(DyeColor.WHITE, Ingredient.of(Items.WOOL.pick(DyeColor.WHITE)))
+		.put(DyeColor.LIGHT_GRAY, Ingredient.of(Items.WOOL.pick(DyeColor.LIGHT_GRAY)))
+		.put(DyeColor.GRAY, Ingredient.of(Items.WOOL.pick(DyeColor.GRAY)))
+		.put(DyeColor.BLACK, Ingredient.of(Items.WOOL.pick(DyeColor.BLACK)))
+		.put(DyeColor.RED, Ingredient.of(Items.WOOL.pick(DyeColor.RED)))
+		.put(DyeColor.ORANGE, Ingredient.of(Items.WOOL.pick(DyeColor.ORANGE)))
+		.put(DyeColor.YELLOW, Ingredient.of(Items.WOOL.pick(DyeColor.YELLOW)))
+		.put(DyeColor.GREEN, Ingredient.of(Items.WOOL.pick(DyeColor.GREEN)))
+		.put(DyeColor.LIME, Ingredient.of(Items.WOOL.pick(DyeColor.LIME)))
+		.put(DyeColor.BLUE, Ingredient.of(Items.WOOL.pick(DyeColor.BLUE)))
+		.put(DyeColor.CYAN, Ingredient.of(Items.WOOL.pick(DyeColor.CYAN)))
+		.put(DyeColor.LIGHT_BLUE, Ingredient.of(Items.WOOL.pick(DyeColor.LIGHT_BLUE)))
+		.put(DyeColor.PURPLE, Ingredient.of(Items.WOOL.pick(DyeColor.PURPLE)))
+		.put(DyeColor.MAGENTA, Ingredient.of(Items.WOOL.pick(DyeColor.MAGENTA)))
+		.put(DyeColor.PINK, Ingredient.of(Items.WOOL.pick(DyeColor.PINK)))
+		.put(DyeColor.BROWN, Ingredient.of(Items.WOOL.pick(DyeColor.BROWN))).build(),
 		TFLootTables.QUESTING_RAM_REWARDS);
 
 	public static final Codec<QuestingRamContext> CODEC = RecordCodecBuilder.create(instance -> instance.group(

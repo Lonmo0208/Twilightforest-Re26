@@ -32,7 +32,7 @@ public class ItemDisplayOverlay implements HudElement {
 	}
 
 	public static void render(GuiGraphicsExtractor graphics, Minecraft minecraft, Window window, Gui gui, Player player) {
-		if (player == null || gui.getDebugOverlay().showDebugScreen() || minecraft.options.hideGui)
+		if (player == null || minecraft.getDebugOverlay().showDebugScreen() || minecraft.gameRenderer.gameRenderState().guiRenderState.isHudHidden)
 			return;
 
 		ItemStack goggles = player.getItemBySlot(EquipmentSlot.HEAD);

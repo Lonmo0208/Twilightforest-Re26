@@ -1,5 +1,7 @@
 package twilightforest.world.components.processors;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -8,22 +10,21 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.jetbrains.annotations.Nullable;
 import twilightforest.init.TFBlocks;
-import twilightforest.init.TFStructureProcessors;
 import twilightforest.util.features.FeaturePlacers;
 
-public final class NagastoneVariants extends StructureProcessor {
+public final class NagastoneVariants implements StructureProcessor {
 	public static final NagastoneVariants INSTANCE = new NagastoneVariants();
-	public static final MapCodec<NagastoneVariants> CODEC = MapCodec.unit(() -> INSTANCE);
+	public static final MapCodec<NagastoneVariants> MAP_CODEC = MapCodec.unit(() -> INSTANCE);
 
 	private NagastoneVariants() {
 	}
 
+	@Nullable
+
 	@Override
-	public StructureTemplate.StructureBlockInfo processBlock(LevelReader worldIn, BlockPos pos, BlockPos piecepos, StructureTemplate.StructureBlockInfo oldInfo, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
+	public StructureTemplate.StructureBlockInfo processBlock(LevelReader worldIn, BlockPos pos, BlockPos piecepos, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
 		RandomSource random = settings.getRandom(modifiedBlockInfo.pos());
 
 		// We use nextBoolean in other processors so this lets us re-seed deterministically
@@ -47,8 +48,10 @@ public final class NagastoneVariants extends StructureProcessor {
 		return modifiedBlockInfo;
 	}
 
+	@Nullable
+
 	@Override
-	public StructureProcessorType<?> getType() {
-		return TFStructureProcessors.NAGASTONE_VARIANTS;
+	public MapCodec<? extends StructureProcessor> codec() {
+		return MAP_CODEC;
 	}
 }

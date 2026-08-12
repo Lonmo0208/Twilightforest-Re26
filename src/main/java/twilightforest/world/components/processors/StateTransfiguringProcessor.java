@@ -7,17 +7,14 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
-import twilightforest.init.TFStructureProcessors;
 import twilightforest.util.features.FeaturePlacers;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-// Similar to RuleProcessor except it uses the ProcessorRule's output state as a template for transferring BlockStates onto, with FeaturePlacers.transferAllStateKeys(...)
-// Despite definitions for BlockStates being supported by the schema, they merely are defaults to be overwritten from the input block's states
-public class StateTransfiguringProcessor extends StructureProcessor {
-	public static final MapCodec<StateTransfiguringProcessor> CODEC = ProcessorRule.CODEC.listOf().fieldOf("rules").xmap(StateTransfiguringProcessor::new, p -> p.rules);
+public class StateTransfiguringProcessor implements StructureProcessor {
+	public static final MapCodec<StateTransfiguringProcessor> MAP_CODEC = ProcessorRule.CODEC.listOf().fieldOf("rules").xmap(StateTransfiguringProcessor::new, p -> p.rules);
 	private final List<ProcessorRule> rules;
 
 	public StateTransfiguringProcessor(List<? extends ProcessorRule> rules) {
@@ -28,9 +25,7 @@ public class StateTransfiguringProcessor extends StructureProcessor {
 
 	@Nullable
 	@Override
-	public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos origin, BlockPos centerBottom, StructureTemplate.StructureBlockInfo originalBlockInfo, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
-		BlockState state = level.getBlockState(modifiedBlockInfo.pos());
-
+	public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos origin, BlockPos centerBottom, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
 		XoroshiroRandomSource random = REUSABLE_RANDOM.get();
 		random.setSeed(Mth.getSeed(modifiedBlockInfo.pos()));
 		long i = random.nextLong();
@@ -38,7 +33,7 @@ public class StateTransfiguringProcessor extends StructureProcessor {
 			random.setSeed(i * 3);
 			i += 115;
 
-			if (processorRule.test(modifiedBlockInfo.state(), state, originalBlockInfo.pos(), modifiedBlockInfo.pos(), centerBottom, random))
+			if (processorRule.test(level, modifiedBlockInfo.state(), templateRelativePos, modifiedBlockInfo.pos(), centerBottom, random))
 				return new StructureTemplate.StructureBlockInfo(modifiedBlockInfo.pos(), FeaturePlacers.transferAllStateKeys(modifiedBlockInfo.state(), processorRule.getOutputState()), processorRule.getOutputTag(random, modifiedBlockInfo.nbt()));
 		}
 
@@ -46,7 +41,7 @@ public class StateTransfiguringProcessor extends StructureProcessor {
 	}
 
 	@Override
-	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.STATE_TRANSFIGURING;
+	public MapCodec<? extends StructureProcessor> codec() {
+		return MAP_CODEC;
 	}
 }

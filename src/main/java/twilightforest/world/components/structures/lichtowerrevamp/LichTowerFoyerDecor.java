@@ -107,7 +107,7 @@ public class LichTowerFoyerDecor extends TwilightJigsawPiece  {
 
 		BlockPos behind = placePos.relative(this.getSourceJigsaw().orientation().front().getOpposite());
 		if (chunkBounds.isInside(placePos)) {
-			level.getChunk(behind).markPosForPostprocessing(behind);
+			level.getChunk(behind).markPosForPostProcessing(behind);
 		}
 	}
 }

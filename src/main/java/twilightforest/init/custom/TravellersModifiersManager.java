@@ -234,7 +234,7 @@ public class TravellersModifiersManager {
 
 		return FALLBACK_MODIFIERS.entrySet().stream()
 			.filter(entry -> entry.getValue() instanceof InsertableTravellersModifier mod && !mod.isAbility() && mod.hasModifier(stack))
-			.map(entry -> (Holder<TravellersModifier>) new FallbackHolder<>(entry.getKey(), entry.getValue()))
+			.map(entry -> (Holder<TravellersModifier>) new FallbackHolder<>(registries.lookupOrThrow(TFRegistries.Keys.TRAVELLERS_MODIFIERS), entry.getKey(), entry.getValue()))
 			.toList();
 	}
 
@@ -255,47 +255,14 @@ public class TravellersModifiersManager {
 
 		return FALLBACK_MODIFIERS.entrySet().stream()
 			.filter(entry -> entry.getValue().isAbility() && entry.getValue().hasModifier(stack))
-			.map(entry -> (Holder<TravellersModifier>) new FallbackHolder<>(entry.getKey(), entry.getValue()))
+			.map(entry -> (Holder<TravellersModifier>) new FallbackHolder<>(registries.lookupOrThrow(TFRegistries.Keys.TRAVELLERS_MODIFIERS), entry.getKey(), entry.getValue()))
 			.toList();
 	}
 
-	private static final class FallbackHolder<T> implements Holder<T> {
-		private final ResourceKey<T> key;
-		private final T value;
-
-		FallbackHolder(ResourceKey<T> key, T value) {
-			this.key = key;
-			this.value = value;
-		}
-
-		@Override
-		public T value() {
-			return value;
-		}
-
-		@Override
-		public boolean isBound() {
-			return true;
-		}
-
-		@Override
-		public boolean areComponentsBound() {
-			return true;
-		}
-
-		@Override
-		public boolean is(Identifier key) {
-			return this.key.identifier().equals(key);
-		}
-
-		@Override
-		public boolean is(ResourceKey<T> key) {
-			return this.key == key;
-		}
-
-		@Override
-		public boolean is(Predicate<ResourceKey<T>> predicate) {
-			return predicate.test(this.key);
+	private static final class FallbackHolder<T> extends Holder.Reference<T> {
+		FallbackHolder(HolderLookup.RegistryLookup<T> registry, ResourceKey<T> key, T value) {
+			super(Holder.Reference.Type.STAND_ALONE, registry, key, value);
+			bindComponents(DataComponentMap.EMPTY);
 		}
 
 		@Override
@@ -304,51 +271,15 @@ public class TravellersModifiersManager {
 		}
 
 		@Override
-		@Deprecated
-		public boolean is(Holder<T> holder) {
-			return holder.is(this.key);
-		}
-
-		@Override
-		public Stream<TagKey<T>> tags() {
-			return Stream.empty();
-		}
-
-		@Override
-		public DataComponentMap components() {
-			return DataComponentMap.EMPTY;
-		}
-
-		@Override
-		public Either<ResourceKey<T>, T> unwrap() {
-			return Either.left(this.key);
-		}
-
-		@Override
-		public Optional<ResourceKey<T>> unwrapKey() {
-			return Optional.of(this.key);
-		}
-
-		@Override
-		public Holder.Kind kind() {
-			return Holder.Kind.REFERENCE;
-		}
-
-		@Override
-		public boolean canSerializeIn(HolderOwner<T> registry) {
-			return true;
-		}
-
-		@Override
 		public int hashCode() {
-			return key.hashCode() * 31 + System.identityHashCode(value);
+			return key().hashCode() * 31 + System.identityHashCode(value());
 		}
 
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj) return true;
 			if (!(obj instanceof Holder<?> other)) return false;
-			return unwrapKey().equals(other.unwrapKey()) && value == other.value();
+			return unwrapKey().equals(other.unwrapKey()) && value() == other.value();
 		}
 	}
 

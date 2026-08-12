@@ -12,7 +12,7 @@ public class SyncUncraftingCostsPacketClientHandler {
 		context.client().execute(() -> {
 			if (context.client().player != null && context.client().player.containerMenu instanceof UncraftingMenu uncrafting) {
 				uncrafting.setClientCosts(packet.uncraftingCost(), packet.recraftingCost());
-				Screen screen = context.client().screen;
+				Screen screen = context.client().gui.screen();
 				if (screen instanceof UncraftingScreen uncraftingScreen) {
 					uncraftingScreen.refreshCostDisplay();
 				}

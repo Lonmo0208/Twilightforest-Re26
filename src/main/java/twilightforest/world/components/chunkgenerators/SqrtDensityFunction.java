@@ -7,7 +7,7 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 
 public record SqrtDensityFunction(DensityFunction input) implements DensityFunction.SimpleFunction {
 	public static final MapCodec<SqrtDensityFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("input").forGetter(SqrtDensityFunction::input)
+		DensityFunction.CODEC.fieldOf("input").forGetter(SqrtDensityFunction::input)
 	).apply(instance, SqrtDensityFunction::new));
 	public static final KeyDispatchDataCodec<SqrtDensityFunction> KEY_CODEC = KeyDispatchDataCodec.of(CODEC);
 

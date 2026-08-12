@@ -13,9 +13,8 @@ accessible class net/minecraft/world/entity/monster/Ghast$GhastLookGoal
 mutable field net/minecraft/world/level/chunk/status/ChunkStatus index I
 mutable field net/minecraft/world/level/chunk/status/ChunkStatus parent Lnet/minecraft/world/level/chunk/status/ChunkStatus;
 
-# CloudEvents and TFWeatherRenderer (plays rain sounds in various scenarios)
+# CloudEvents (plays rain sounds in various scenarios)
 accessible field net/minecraft/client/renderer/LevelRenderer weatherEffectRenderer Lnet/minecraft/client/renderer/WeatherEffectRenderer;
-accessible field net/minecraft/client/renderer/WeatherEffectRenderer rainSoundTime I
 
 # Codecs (for creation of a MapColor codec)
 accessible method net/minecraft/world/level/material/MapColor <init> (II)V
@@ -107,7 +106,7 @@ accessible field net/minecraft/world/level/saveddata/maps/MapItemSavedData track
 mutable field net/minecraft/world/level/saveddata/maps/MapItemSavedData trackedDecorationCount I
 
 # TFOverlays (partially determines if the quest ram indicator should render below the crosshair, and allows the food bar to be rendered when riding hostile mounts)
-accessible method net/minecraft/client/gui/Gui canRenderCrosshairForSpectator (Lnet/minecraft/world/phys/HitResult;)Z
+accessible method net/minecraft/client/gui/Hud canRenderCrosshairForSpectator (Lnet/minecraft/world/phys/HitResult;)Z
 
 # TFSkyRenderer (allows for rendering the sky)
 accessible field net/minecraft/client/renderer/LevelRenderer skyRenderer Lnet/minecraft/client/renderer/SkyRenderer;
@@ -251,9 +250,6 @@ accessible method net/minecraft/core/particles/SimpleParticleType <init> (Z)V
 
 # Mob targetSelector
 accessible field net/minecraft/world/entity/Mob targetSelector Lnet/minecraft/world/entity/ai/goal/GoalSelector;
-
-# Entity ENTITY_COUNTER
-accessible field net/minecraft/world/entity/Entity ENTITY_COUNTER Ljava/util/concurrent/atomic/AtomicInteger;
 
 # Player model
 accessible field net/minecraft/client/model/player/PlayerModel slim Z

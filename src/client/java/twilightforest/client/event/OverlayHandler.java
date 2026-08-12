@@ -52,7 +52,7 @@ public class OverlayHandler {
 	}
 
 	private static void renderIndicator(Minecraft minecraft, GuiGraphicsExtractor graphics, Gui gui, Player player, int screenWidth, int screenHeight) {
-		if (minecraft.options.getCameraType().isFirstPerson() && (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR || gui.canRenderCrosshairForSpectator(minecraft.hitResult)) && minecraft.crosshairPickEntity instanceof QuestRam ram) {
+		if (minecraft.options.getCameraType().isFirstPerson() && (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR || gui.hud.canRenderCrosshairForSpectator(minecraft.hitResult)) && minecraft.crosshairPickEntity instanceof QuestRam ram) {
 			ItemStack stack = player.getInventory().getItem(player.getInventory().getSelectedSlot());
 			if (!stack.isEmpty()) {
 				for (var questEntry : questingRamCurrentContext.getContext().questItems().entrySet()) {

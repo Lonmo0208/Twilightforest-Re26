@@ -108,10 +108,10 @@ public class PinchBeetle extends Monster implements IHostileMount {
 	}
 
 	@Override
-	public void knockback(double x, double y, double z) {
+	public void knockback(double x, double y, double z, DamageSource source, float damageAmount) {
 		//only take knockback if not holding something
 		if (this.getPassengers().isEmpty()) {
-			super.knockback(x, y, z);
+			super.knockback(x, y, z, source, damageAmount);
 		}
 	}
 

@@ -458,7 +458,7 @@ public static final BinaryRotatedBlock TERRORCOTTA_LINES = Registry.register(
 public static final CarpetBlock CORONATION_CARPET = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("coronation_carpet")),
-		new WoolCarpetBlock(DyeColor.RED, BlockBehaviour.Properties.ofFullCopy(Blocks.RED_CARPET).isValidSpawn(Blocks::always).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("coronation_carpet"))))
+		new WoolCarpetBlock(DyeColor.RED, BlockBehaviour.Properties.ofFullCopy(Blocks.CARPET.pick(DyeColor.RED)).isValidSpawn(Blocks::always).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("coronation_carpet"))))
 	);
 
 	//ominous
@@ -481,7 +481,7 @@ public static final OminousCandleBlock OMINOUS_CANDLE = Registry.register(
 public static final OminousCandleBlock OMINOUS_WHITE_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_white_candle")),
-		new OminousCandleBlock(Blocks.WHITE_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_white_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.WHITE), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_white_candle")))
 		.mapColor(MapColor.WOOL)
 		.noOcclusion()
 		.strength(0.1F)
@@ -492,7 +492,7 @@ public static final OminousCandleBlock OMINOUS_WHITE_CANDLE = Registry.register(
 public static final OminousCandleBlock OMINOUS_ORANGE_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_orange_candle")),
-		new OminousCandleBlock(Blocks.ORANGE_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_orange_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.ORANGE), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_orange_candle")))
 		.mapColor(MapColor.COLOR_ORANGE)
 		.noOcclusion()
 		.strength(0.1F)
@@ -503,7 +503,7 @@ public static final OminousCandleBlock OMINOUS_ORANGE_CANDLE = Registry.register
 public static final OminousCandleBlock OMINOUS_MAGENTA_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_magenta_candle")),
-		new OminousCandleBlock(Blocks.MAGENTA_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_magenta_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.MAGENTA), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_magenta_candle")))
 		.mapColor(MapColor.COLOR_MAGENTA)
 		.noOcclusion()
 		.strength(0.1F)
@@ -514,7 +514,7 @@ public static final OminousCandleBlock OMINOUS_MAGENTA_CANDLE = Registry.registe
 public static final OminousCandleBlock OMINOUS_LIGHT_BLUE_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_light_blue_candle")),
-		new OminousCandleBlock(Blocks.LIGHT_BLUE_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_light_blue_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.LIGHT_BLUE), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_light_blue_candle")))
 		.mapColor(MapColor.COLOR_LIGHT_BLUE)
 		.noOcclusion()
 		.strength(0.1F)
@@ -525,7 +525,7 @@ public static final OminousCandleBlock OMINOUS_LIGHT_BLUE_CANDLE = Registry.regi
 public static final OminousCandleBlock OMINOUS_YELLOW_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_yellow_candle")),
-		new OminousCandleBlock(Blocks.YELLOW_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_yellow_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.YELLOW), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_yellow_candle")))
 		.mapColor(MapColor.COLOR_YELLOW)
 		.noOcclusion()
 		.strength(0.1F)
@@ -536,7 +536,7 @@ public static final OminousCandleBlock OMINOUS_YELLOW_CANDLE = Registry.register
 public static final OminousCandleBlock OMINOUS_LIME_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_lime_candle")),
-		new OminousCandleBlock(Blocks.LIME_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_lime_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.LIME), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_lime_candle")))
 		.mapColor(MapColor.COLOR_LIGHT_GREEN)
 		.noOcclusion()
 		.strength(0.1F)
@@ -547,7 +547,7 @@ public static final OminousCandleBlock OMINOUS_LIME_CANDLE = Registry.register(
 public static final OminousCandleBlock OMINOUS_PINK_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_pink_candle")),
-		new OminousCandleBlock(Blocks.PINK_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_pink_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.PINK), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_pink_candle")))
 		.mapColor(MapColor.COLOR_PINK)
 		.noOcclusion()
 		.strength(0.1F)
@@ -558,7 +558,7 @@ public static final OminousCandleBlock OMINOUS_PINK_CANDLE = Registry.register(
 public static final OminousCandleBlock OMINOUS_GRAY_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_gray_candle")),
-		new OminousCandleBlock(Blocks.GRAY_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_gray_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.GRAY), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_gray_candle")))
 		.mapColor(MapColor.COLOR_GRAY)
 		.noOcclusion()
 		.strength(0.1F)
@@ -569,7 +569,7 @@ public static final OminousCandleBlock OMINOUS_GRAY_CANDLE = Registry.register(
 public static final OminousCandleBlock OMINOUS_LIGHT_GRAY_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_light_gray_candle")),
-		new OminousCandleBlock(Blocks.LIGHT_GRAY_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_light_gray_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.LIGHT_GRAY), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_light_gray_candle")))
 		.mapColor(MapColor.COLOR_LIGHT_GRAY)
 		.noOcclusion()
 		.strength(0.1F)
@@ -580,7 +580,7 @@ public static final OminousCandleBlock OMINOUS_LIGHT_GRAY_CANDLE = Registry.regi
 public static final OminousCandleBlock OMINOUS_CYAN_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_cyan_candle")),
-		new OminousCandleBlock(Blocks.CYAN_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_cyan_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.CYAN), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_cyan_candle")))
 		.mapColor(MapColor.COLOR_CYAN)
 		.noOcclusion()
 		.strength(0.1F)
@@ -591,7 +591,7 @@ public static final OminousCandleBlock OMINOUS_CYAN_CANDLE = Registry.register(
 public static final OminousCandleBlock OMINOUS_PURPLE_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_purple_candle")),
-		new OminousCandleBlock(Blocks.PURPLE_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_purple_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.PURPLE), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_purple_candle")))
 		.mapColor(MapColor.COLOR_PURPLE)
 		.noOcclusion()
 		.strength(0.1F)
@@ -602,7 +602,7 @@ public static final OminousCandleBlock OMINOUS_PURPLE_CANDLE = Registry.register
 public static final OminousCandleBlock OMINOUS_BLUE_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_blue_candle")),
-		new OminousCandleBlock(Blocks.BLUE_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_blue_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.BLUE), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_blue_candle")))
 		.mapColor(MapColor.COLOR_BLUE)
 		.noOcclusion()
 		.strength(0.1F)
@@ -613,7 +613,7 @@ public static final OminousCandleBlock OMINOUS_BLUE_CANDLE = Registry.register(
 public static final OminousCandleBlock OMINOUS_BROWN_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_brown_candle")),
-		new OminousCandleBlock(Blocks.BROWN_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_brown_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.BROWN), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_brown_candle")))
 		.mapColor(MapColor.COLOR_BROWN)
 		.noOcclusion()
 		.strength(0.1F)
@@ -624,7 +624,7 @@ public static final OminousCandleBlock OMINOUS_BROWN_CANDLE = Registry.register(
 public static final OminousCandleBlock OMINOUS_GREEN_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_green_candle")),
-		new OminousCandleBlock(Blocks.GREEN_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_green_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.GREEN), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_green_candle")))
 		.mapColor(MapColor.COLOR_GREEN)
 		.noOcclusion()
 		.strength(0.1F)
@@ -635,7 +635,7 @@ public static final OminousCandleBlock OMINOUS_GREEN_CANDLE = Registry.register(
 public static final OminousCandleBlock OMINOUS_RED_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_red_candle")),
-		new OminousCandleBlock(Blocks.RED_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_red_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.RED), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_red_candle")))
 		.mapColor(MapColor.COLOR_RED)
 		.noOcclusion()
 		.strength(0.1F)
@@ -646,7 +646,7 @@ public static final OminousCandleBlock OMINOUS_RED_CANDLE = Registry.register(
 public static final OminousCandleBlock OMINOUS_BLACK_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_black_candle")),
-		new OminousCandleBlock(Blocks.BLACK_CANDLE, BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_black_candle")))
+		new OminousCandleBlock(Blocks.DYED_CANDLE.pick(DyeColor.BLACK), BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_black_candle")))
 		.mapColor(MapColor.COLOR_BLACK)
 		.noOcclusion()
 		.strength(0.1F)

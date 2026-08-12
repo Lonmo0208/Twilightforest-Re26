@@ -9,15 +9,14 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockRotProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.Nullable;
-import twilightforest.init.TFStructureProcessors;
 
 import java.util.ArrayList;
 
 public final class TargetedRotProcessor extends BlockRotProcessor {
-	public static final MapCodec<TargetedRotProcessor> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+	public static final MapCodec<TargetedRotProcessor> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 		BlockState.CODEC.listOf().xmap(ImmutableSet::copyOf, ArrayList::new).fieldOf("blocks_to_rot").forGetter(p -> p.blocksToRot),
 		Codec.FLOAT.fieldOf("integrity").orElse(1.0f).forGetter(p -> p.integrity)
 	).apply(instance, TargetedRotProcessor::new));
@@ -31,13 +30,14 @@ public final class TargetedRotProcessor extends BlockRotProcessor {
 
 	@Nullable
 	@Override
-	public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos origin, BlockPos centerBottom, StructureTemplate.StructureBlockInfo originalBlockInfo, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
+	public StructureTemplate.StructureBlockInfo processBlock(LevelReader level, BlockPos origin, BlockPos centerBottom, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings) {
 		if (!this.blocksToRot.contains(modifiedBlockInfo.state())) return modifiedBlockInfo;
-		return super.processBlock(level, origin, centerBottom, originalBlockInfo, modifiedBlockInfo, settings);
+		return super.processBlock(level, origin, centerBottom, templateRelativePos, modifiedBlockInfo, settings);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.TARGETED_ROT;
+	public MapCodec<BlockRotProcessor> codec() {
+		return (MapCodec<BlockRotProcessor>) (MapCodec<?>) MAP_CODEC;
 	}
 }

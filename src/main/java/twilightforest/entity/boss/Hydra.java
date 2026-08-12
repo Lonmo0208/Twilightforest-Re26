@@ -90,8 +90,17 @@ public class Hydra extends BaseTFBoss {
 
 		this.partArray = parts.toArray(new HydraPart[0]);
 
-		this.setId(ENTITY_COUNTER.getAndAdd(this.partArray.length + 1) + 1);
-		TFPart.assignPartIDs(this);
+		// Only assign IDs on the server. On the client, the entity ID and part IDs
+		// are assigned later from the spawn packet via setId()/recreateFromPacket
+		// (Level.getNextEntityId() returns 0 on the client, so calling getId() here
+		// would throw "Tried to access entity ID before ID assignment").
+		if (!level().isClientSide()) {
+			this.setId(level().getNextEntityId());
+			for (int i = 0; i < this.partArray.length; i++) {
+				level().getNextEntityId();
+			}
+			TFPart.assignPartIDs(this);
+		}
 
 		this.xpReward = 511;
 	}
@@ -850,7 +859,7 @@ public class Hydra extends BaseTFBoss {
 	}
 
 	@Override
-	public void knockback(double strength, double xRatio, double zRatio) {
+	public void knockback(double power, double xd, double zd, DamageSource source, float damage) {
 	}
 
 	@Override

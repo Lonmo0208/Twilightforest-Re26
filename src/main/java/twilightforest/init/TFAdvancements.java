@@ -1,6 +1,5 @@
 package twilightforest.init;
 
-import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import twilightforest.TwilightForestMod;
 import twilightforest.advancements.*;

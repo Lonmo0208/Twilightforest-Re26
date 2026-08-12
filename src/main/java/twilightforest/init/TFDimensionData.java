@@ -14,6 +14,7 @@ import net.minecraft.world.attribute.*;
 import net.minecraft.world.clock.WorldClock;
 import net.minecraft.world.clock.WorldClocks;
 import net.minecraft.world.level.CardinalLighting;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -47,6 +48,7 @@ public class TFDimensionData {
 
 	public static void bootstrapType(BootstrapContext<DimensionType> context) {
 		HolderGetter<Timeline> timelines = context.lookup(Registries.TIMELINE);
+		HolderGetter<Block> blocks = context.lookup(Registries.BLOCK);
 		Optional<Holder<WorldClock>> overworldClock = context.lookup(Registries.WORLD_CLOCK)
 			.get(WorldClocks.OVERWORLD)
 			.map(h -> (Holder<WorldClock>) h);
@@ -59,7 +61,7 @@ public class TFDimensionData {
 			-32, // Minimum Y Level
 			32 + 256, // Height + Min Y = Max Y
 			32 + 256, // Logical Height
-			BlockTags.INFINIBURN_OVERWORLD, //infiburn tag
+			blocks.getOrThrow(BlockTags.INFINIBURN_OVERWORLD), //infiburn tag
 			0.01F, //ambient light - keep original TF value so outdoors doesn't look over-bright
 			new DimensionType.MonsterSettings(UniformInt.of(0, 7), 7), //monster settings
 			DimensionType.Skybox.OVERWORLD, //skybox
@@ -120,7 +122,7 @@ public class TFDimensionData {
 				DensityFunctions.zero(),
 				DensityFunctions.zero()
 			),
-			TFSurfaceRules.tfSurface(),
+			TFSurfaceRules.tfSurface(context.lookup(Registries.BIOME)),
 			List.of(),
 			TFDimensionData.SEALEVEL,
 			false,

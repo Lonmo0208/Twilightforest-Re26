@@ -10,7 +10,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Unit;
 import net.minecraft.util.Util;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -327,8 +327,8 @@ public class LichPerimeterFence extends TwilightJigsawPiece implements SortableP
 		if (!chunkBounds.isInside(zombiePos))
 			return;
 
-		var knot = EntityUtil.createEntityIgnoreException(level, EntityType.LEASH_KNOT);
-		var boundedEntity = EntityUtil.createEntityIgnoreException(level, EntityType.ZOMBIE);
+		var knot = EntityUtil.createEntityIgnoreException(level, EntityTypes.LEASH_KNOT);
+		var boundedEntity = EntityUtil.createEntityIgnoreException(level, EntityTypes.ZOMBIE);
 		if (knot == null || boundedEntity == null)
 			return;
 

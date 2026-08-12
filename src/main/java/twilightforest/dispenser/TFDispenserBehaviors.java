@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import twilightforest.entity.projectile.MoonwormShot;
@@ -93,21 +94,21 @@ public class TFDispenserBehaviors {
 
 		//handling tags should be a thing smh
 		DispenserBlock.registerBehavior(Items.CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.BLACK_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.GRAY_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.LIGHT_GRAY_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.WHITE_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.RED_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.ORANGE_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.YELLOW_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.GREEN_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.LIME_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.BLUE_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.CYAN_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.LIGHT_BLUE_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.PURPLE_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.MAGENTA_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.PINK_CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.BROWN_CANDLE, new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.BLACK), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.GRAY), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.LIGHT_GRAY), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.WHITE), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.RED), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.ORANGE), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.YELLOW), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.GREEN), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.LIME), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.BLUE), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.CYAN), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.LIGHT_BLUE), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.PURPLE), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.MAGENTA), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.PINK), new CandleDispenseBehavior());
+		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.BROWN), new CandleDispenseBehavior());
 	}
 }

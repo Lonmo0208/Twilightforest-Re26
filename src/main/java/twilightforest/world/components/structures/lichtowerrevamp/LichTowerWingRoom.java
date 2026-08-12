@@ -16,6 +16,8 @@ import net.minecraft.util.*;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -507,27 +509,27 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 			case "chest" -> this.putChest(pos, level, random, parameters, dataRotation, Blocks.CHEST.defaultBlockState());
 			case "trapped_chest" -> this.putChest(pos, level, random, parameters, dataRotation, Blocks.TRAPPED_CHEST.defaultBlockState());
 			case "candle", "candles" -> this.putCandles(parameters, random, level, pos, Blocks.CANDLE.defaultBlockState());
-			case "white_candle" -> this.putCandles(parameters, random, level, pos, Blocks.WHITE_CANDLE.defaultBlockState());
-			case "orange_candle" -> this.putCandles(parameters, random, level, pos, Blocks.ORANGE_CANDLE.defaultBlockState());
-			case "magenta_candle" -> this.putCandles(parameters, random, level, pos, Blocks.MAGENTA_CANDLE.defaultBlockState());
-			case "light_blue_candle" -> this.putCandles(parameters, random, level, pos, Blocks.LIGHT_BLUE_CANDLE.defaultBlockState());
-			case "yellow_candle" -> this.putCandles(parameters, random, level, pos, Blocks.YELLOW_CANDLE.defaultBlockState());
-			case "lime_candle" -> this.putCandles(parameters, random, level, pos, Blocks.LIME_CANDLE.defaultBlockState());
-			case "pink_candle" -> this.putCandles(parameters, random, level, pos, Blocks.PINK_CANDLE.defaultBlockState());
-			case "gray_candle" -> this.putCandles(parameters, random, level, pos, Blocks.GRAY_CANDLE.defaultBlockState());
-			case "light_gray_candle" -> this.putCandles(parameters, random, level, pos, Blocks.LIGHT_GRAY_CANDLE.defaultBlockState());
-			case "cyan_candle" -> this.putCandles(parameters, random, level, pos, Blocks.CYAN_CANDLE.defaultBlockState());
-			case "purple_candle" -> this.putCandles(parameters, random, level, pos, Blocks.PURPLE_CANDLE.defaultBlockState());
-			case "blue_candle" -> this.putCandles(parameters, random, level, pos, Blocks.BLUE_CANDLE.defaultBlockState());
-			case "brown_candle" -> this.putCandles(parameters, random, level, pos, Blocks.BROWN_CANDLE.defaultBlockState());
-			case "green_candle" -> this.putCandles(parameters, random, level, pos, Blocks.GREEN_CANDLE.defaultBlockState());
-			case "red_candle" -> this.putCandles(parameters, random, level, pos, Blocks.RED_CANDLE.defaultBlockState());
-			case "black_candle" -> this.putCandles(parameters, random, level, pos, Blocks.BLACK_CANDLE.defaultBlockState());
+			case "white_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.WHITE).defaultBlockState());
+			case "orange_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.ORANGE).defaultBlockState());
+			case "magenta_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.MAGENTA).defaultBlockState());
+			case "light_blue_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.LIGHT_BLUE).defaultBlockState());
+			case "yellow_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.YELLOW).defaultBlockState());
+			case "lime_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.LIME).defaultBlockState());
+			case "pink_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.PINK).defaultBlockState());
+			case "gray_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.GRAY).defaultBlockState());
+			case "light_gray_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.LIGHT_GRAY).defaultBlockState());
+			case "cyan_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.CYAN).defaultBlockState());
+			case "purple_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.PURPLE).defaultBlockState());
+			case "blue_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.BLUE).defaultBlockState());
+			case "brown_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.BROWN).defaultBlockState());
+			case "green_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.GREEN).defaultBlockState());
+			case "red_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.RED).defaultBlockState());
+			case "black_candle" -> this.putCandles(parameters, random, level, pos, Blocks.DYED_CANDLE.pick(DyeColor.BLACK).defaultBlockState());
 			case "water_cauldron" -> this.putWaterCauldron(parameters, random, level, pos);
 			case "zombie_trap" -> this.putZombieTrap(random, level, pos);
 			case "wrought_iron_post" -> {
 				level.setBlock(pos, TFBlocks.WROUGHT_IRON_FENCE.defaultBlockState().setValue(WroughtIronFenceBlock.POST, WroughtIronFenceBlock.PostState.POST), Block.UPDATE_CLIENTS);
-				level.getChunk(pos).markPosForPostprocessing(pos);
+				level.getChunk(pos).markPosForPostProcessing(pos);
 			}
 			case "empty_lectern" -> {
 				Rotation stateRotation = this.placeSettings.getRotation().getRotated(dataRotation);
@@ -661,12 +663,12 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 	@NotNull
 	private EntityType<?> defaultRandomMob(RandomSource random) {
 		return switch (random.nextInt(10)) {
-			case 7, 8, 9 -> EntityType.SKELETON;
-			case 6 -> EntityType.SPIDER;
-			case 5 -> EntityType.CAVE_SPIDER;
+			case 7, 8, 9 -> EntityTypes.SKELETON;
+			case 6 -> EntityTypes.SPIDER;
+			case 5 -> EntityTypes.CAVE_SPIDER;
 			case 4 -> TFEntities.HEDGE_SPIDER.get();
 			case 3 -> TFEntities.SWARM_SPIDER.get();
-			default -> EntityType.ZOMBIE;
+			default -> EntityTypes.ZOMBIE;
 		};
 	}
 
@@ -675,7 +677,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 		return switch (label) {
 			case "hedge_spider" -> TFEntities.HEDGE_SPIDER.get();
 			case "swarm_spider" -> TFEntities.SWARM_SPIDER.get();
-			default -> EntityType.byString(label).orElse(EntityType.ZOMBIE);
+			default -> BuiltInRegistries.ENTITY_TYPE.get(Identifier.parse(label)).map(Holder.Reference::value).orElse(EntityTypes.ZOMBIE);
 		};
 	}
 
@@ -697,7 +699,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 		WroughtIronFenceBlock.PostState postProperty = level.getBlockState(pos.above()).isAir() ? WroughtIronFenceBlock.PostState.CAPPED : WroughtIronFenceBlock.PostState.POST;
 		BlockState fenceBlock = TFBlocks.WROUGHT_IRON_FENCE.defaultBlockState().setValue(WroughtIronFenceBlock.POST, postProperty);
 		level.setBlock(pos, fenceBlock, Block.UPDATE_CLIENTS);
-		level.getChunk(pos).markPosForPostprocessing(pos);
+		level.getChunk(pos).markPosForPostProcessing(pos);
 
 		Direction randomDirection = this.getRandomDirectionInsideChunk(level, random, pos);
 
@@ -705,8 +707,8 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 
 		BlockPos zombiePos = pos.relative(randomDirection, 1);
 
-		var knot = EntityUtil.createEntityIgnoreException(level, EntityType.LEASH_KNOT);
-		var trapEntity = EntityUtil.createEntityIgnoreException(level, EntityType.ZOMBIE);
+		var knot = EntityUtil.createEntityIgnoreException(level, EntityTypes.LEASH_KNOT);
+		var trapEntity = EntityUtil.createEntityIgnoreException(level, EntityTypes.ZOMBIE);
 		if (knot == null || trapEntity == null)
 			return;
 

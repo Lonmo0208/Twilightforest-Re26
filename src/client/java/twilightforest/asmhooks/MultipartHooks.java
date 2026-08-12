@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
+import twilightforest.mixin.client.ClientLevelMixin;
 import twilightforest.util.multiparts.MultipartEntityUtil;
 
 import java.util.Iterator;
@@ -18,12 +19,12 @@ public class MultipartHooks {
 	private static final MultipartEntityUtil multipartEntityUtil = new MultipartEntityUtil();
 
 	/**
-	 * {@link twilightforest.mixin.ClientLevelMixin}<p/>
+	 * {@link ClientLevelMixin}<p/>
 	 *
 	 * Wraps an {@link java.util.Iterator} of entities to inject TFPart entities
 	 * (HydraHead, HydraNeck, NagaSegment, SnowQueenIceShield) into the render pipeline.
 	 * <p/>
-	 * This is called by the Mixin {@link twilightforest.mixin.ClientLevelMixin#tf}
+	 * This is called by the Mixin {@link ClientLevelMixin#tf}
 	 * which modifies {@link net.minecraft.client.multiplayer.ClientLevel#entitiesForRendering()}
 	 * to wrap its return value.
 	 */

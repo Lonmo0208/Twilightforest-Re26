@@ -49,7 +49,7 @@ public class IceLayer<S extends LivingEntityRenderState, M extends EntityModel<S
 			stack.translate(-0.5F, -0.5F, -0.5F);
 
 			BlockModelRenderState iceModel = new BlockModelRenderState();
-			Minecraft.getInstance().blockModelResolver.update(iceModel, Blocks.ICE.defaultBlockState(), BlockDisplayContext.create());
+			new BlockModelResolver(Minecraft.getInstance().getModelManager()).update(iceModel, Blocks.ICE.defaultBlockState(), BlockDisplayContext.create());
 			iceModel.submit(stack, submitNodeCollector, light, OverlayTexture.NO_OVERLAY, 0);
 			stack.popPose();
 		}

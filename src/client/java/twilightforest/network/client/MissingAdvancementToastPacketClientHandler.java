@@ -9,7 +9,7 @@ public class MissingAdvancementToastPacketClientHandler {
 
 	public static void handle(MissingAdvancementToastPacket packet, ClientPlayNetworking.Context context) {
 		context.client().execute(() -> {
-			Minecraft.getInstance().getToastManager().addToast(new MissingAdvancementToast(packet.title(), packet.icon()));
+			Minecraft.getInstance().gui.toastManager().addToast(new MissingAdvancementToast(packet.title(), packet.icon()));
 		});
 	}
 }

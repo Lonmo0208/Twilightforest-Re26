@@ -121,7 +121,7 @@ public class TwilightForestClient implements ClientModInitializer {
 			mc.execute(() -> {
 				// Mark every loaded chunk section dirty so the rebuild threads
 				// re-tesselate terrain using the freshly re-baked colours.
-				mc.levelRenderer.allChanged();
+				mc.levelExtractor.allChanged();
 				ClientLevel level = mc.level;
 				if (level != null) {
 					// Clear per-BlockTintSource position → colour caches; this alone

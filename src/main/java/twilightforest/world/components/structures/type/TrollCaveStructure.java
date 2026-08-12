@@ -8,7 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -79,10 +79,10 @@ public class TrollCaveStructure extends ProgressionStructure implements Configur
 	public static TrollCaveStructure buildTrollCaveConfig(BootstrapContext<Structure> context) {
 		return new TrollCaveStructure(
 			ControlledSpawningConfig.create(List.of(WeightedList.<MobSpawnSettings.SpawnerData>builder()
-				.add(new MobSpawnSettings.SpawnerData(EntityType.CREEPER, 1, 2), 5)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 1, 2), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, 1, 2), 5)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 1, 2), 10)
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.TROLL.get(), 1, 2), 20)
-				.add(new MobSpawnSettings.SpawnerData(EntityType.WITCH, 1, 1), 5)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, 1, 1), 5)
 				.build()
 			, WeightedList.<MobSpawnSettings.SpawnerData>builder()
 				.add(new MobSpawnSettings.SpawnerData(TFEntities.GIANT_MINER.get(), 1, 1), 10)

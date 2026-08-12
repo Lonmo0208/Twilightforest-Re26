@@ -53,7 +53,7 @@ public class TravellersWingsModel extends HumanoidModel<HumanoidRenderState> {
 			this.wingBaseRight.getChild("wingAuxRight")
 		);
 		this.body.skipDraw = true;
-		this.mainCamera = Minecraft.getInstance().gameRenderer.getMainCamera();
+		this.mainCamera = Minecraft.getInstance().gameRenderer.mainCamera();
 	}
 
 	public static LayerDefinition createLayer(float deformation) {

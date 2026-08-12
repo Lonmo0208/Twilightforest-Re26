@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 import twilightforest.entity.monster.Wraith;
 import twilightforest.init.TFEntities;
-import twilightforest.init.TFStructureProcessors;
 import twilightforest.loot.TFLootTables;
 import twilightforest.util.features.FeatureLogic;
 
@@ -222,21 +221,21 @@ public class GraveyardFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	public static class WebTemplateProcessor extends StructureProcessor {
+	public static class WebTemplateProcessor implements StructureProcessor {
 		public static final WebTemplateProcessor INSTANCE = new WebTemplateProcessor();
-		public static final MapCodec<WebTemplateProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
+		public static final MapCodec<WebTemplateProcessor> MAP_CODEC = MapCodec.unit(() -> INSTANCE);
 
 		private WebTemplateProcessor() {
 		}
 
 		@Override
-		protected StructureProcessorType<?> getType() {
-			return TFStructureProcessors.WEB;
+		public MapCodec<? extends StructureProcessor> codec() {
+			return MAP_CODEC;
 		}
 
 		@Nullable
 		@Override
-		public StructureTemplate.StructureBlockInfo processBlock(LevelReader worldIn, BlockPos pos, BlockPos piecepos, StructureTemplate.StructureBlockInfo p_process_3_, StructureTemplate.StructureBlockInfo blockInfo, StructurePlaceSettings settings) {
+		public StructureTemplate.StructureBlockInfo processBlock(LevelReader worldIn, BlockPos pos, BlockPos piecepos, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo blockInfo, StructurePlaceSettings settings) {
 			return blockInfo.state().getBlock() == Blocks.GRASS_BLOCK ? blockInfo : settings.getRandom(pos).nextInt(5) == 0 ? new StructureTemplate.StructureBlockInfo(pos, Blocks.COBWEB.defaultBlockState(), null) : blockInfo;
 		}
 	}

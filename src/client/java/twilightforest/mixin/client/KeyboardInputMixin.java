@@ -1,4 +1,4 @@
-package twilightforest.mixin;
+package twilightforest.mixin.client;
 
 import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.LocalPlayer;

@@ -162,23 +162,23 @@ public class EntityEvents {
 
 		// === Handlers implemented via mixins ===
 		// See mixin package for implementation:
-		// - modifyIncomingDamage            → LivingEntityMixin (ModifyVariable in hurt())
-		// - zombifiedPlayerAttacks          → LivingEntityMixin (Inject cancellable in hurt())
-		// - addCloudJumpParticles           → LivingEntityMixin (Inject in jumpFromGround)
-		// - structureSpecialSpawns          → NaturalSpawnerMixin (already existed)
-		// - onParryProjectile               → ProjectileMixin (Inject in onHit)
-		// - lichBombsDontBlowUpItems        → TODO: not implementable via vanilla Explosion API
-		// - alertPlayerCastleIsWIP          → PlayerAdvancementsMixin
-		// - resetFlaskLogic                 → PlayerAdvancementsMixin
-		// - preventMountDismount            → EntityStopRidingMixin
-		// - handleMountDamage               → LivingEntityMixin (Inject cancellable in hurt(), from HostileMountEvents)
-		// - preventTeleportingOffHostileMounts → EntityTeleportMixin
-		// - updateShields                   → LivingEntityMixin (Inject at TAIL of tick(), from CapabilityEvents)
-		// - updatePlayerCaps                → PlayerMixin (Inject at TAIL of tick(), from CapabilityEvents)
-		// - preventFatigueWithPocketWatch   → LivingEntityMixin (Inject cancellable in addEffect, from ToolEvents)
-		// - stopEndermenFromGrabbingBlocks  → EntityEvents setup() via ENTITY_LOAD
-		// - handleLeashPathingOverrides     → EntityEvents setup() via ENTITY_LOAD
-		// - wipeOreMeterOnLeftClick        → TODO: ClientMinecraftMixin (client-side, not yet implemented)
+		// - modifyIncomingDamage            閳?LivingEntityMixin (ModifyVariable in hurt())
+		// - zombifiedPlayerAttacks          閳?LivingEntityMixin (Inject cancellable in hurt())
+		// - addCloudJumpParticles           閳?LivingEntityMixin (Inject in jumpFromGround)
+		// - structureSpecialSpawns          閳?NaturalSpawnerMixin (already existed)
+		// - onParryProjectile               閳?ProjectileMixin (Inject in onHit)
+		// - lichBombsDontBlowUpItems        閳?TODO: not implementable via vanilla Explosion API
+		// - alertPlayerCastleIsWIP          閳?PlayerAdvancementsMixin
+		// - resetFlaskLogic                 閳?PlayerAdvancementsMixin
+		// - preventMountDismount            閳?EntityStopRidingMixin
+		// - handleMountDamage               閳?LivingEntityMixin (Inject cancellable in hurt(), from HostileMountEvents)
+		// - preventTeleportingOffHostileMounts 閳?EntityTeleportMixin
+		// - updateShields                   閳?LivingEntityMixin (Inject at TAIL of tick(), from CapabilityEvents)
+		// - updatePlayerCaps                閳?PlayerMixin (Inject at TAIL of tick(), from CapabilityEvents)
+		// - preventFatigueWithPocketWatch   閳?LivingEntityMixin (Inject cancellable in addEffect, from ToolEvents)
+		// - stopEndermenFromGrabbingBlocks  閳?EntityEvents setup() via ENTITY_LOAD
+		// - handleLeashPathingOverrides     閳?EntityEvents setup() via ENTITY_LOAD
+		// - wipeOreMeterOnLeftClick        閳?TODO: ClientMinecraftMixin (client-side, not yet implemented)
 	} // end setup()
 
 	private void ominousFireConversion(FabricEvents.LivingDeathEvent event) {
@@ -186,7 +186,7 @@ public class EntityEvents {
 			EntityTransformation dataMap = null; // TODO: Port - getData from registry data maps
 
 			if (event.getEntity() instanceof ServerPlayer player) {
-				var zombie = EntityType.ZOMBIE.create(player.level(), EntitySpawnReason.CONVERSION);
+				var zombie = EntityTypes.ZOMBIE.create(player.level(), EntitySpawnReason.CONVERSION);
 				zombie.setAttached(TFDataAttachments.ZOMBIFIED_PLAYER, player.getGameProfile());
 				zombie.setCustomName(player.getName());
 				zombie.copyPosition(player);

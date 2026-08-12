@@ -58,7 +58,7 @@ public record SkullCandleSpecialRenderer(PlayerSkinRenderCache playerSkinRenderC
 		if (skullCandles != null) {
 			stack.translate(0.0F, 0.5F, 0.0F);
 			BlockModelRenderState state = new BlockModelRenderState();
-			SkullCandleRenderer.updateSkullCandle(skullCandles, Minecraft.getInstance().blockModelResolver, state, false);
+			SkullCandleRenderer.updateSkullCandle(skullCandles, new BlockModelResolver(Minecraft.getInstance().getModelManager()), state, false);
 			SkullCandleRenderer.submitCandles(state, stack, collector, light, overlay, outlineColor);
 		}
 	}

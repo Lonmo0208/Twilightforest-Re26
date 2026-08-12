@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Interaction;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -106,7 +106,7 @@ public class FinalCastleBossGazeboComponent extends TFStructureComponentOld {
 			double width = (punchBox.getXsize() + punchBox.getZsize()) * 0.5;
 			double height = punchBox.getYsize();
 
-			Interaction interaction = new Interaction(EntityType.INTERACTION, world.getLevel());
+			Interaction interaction = new Interaction(EntityTypes.INTERACTION, world.getLevel());
 
 			// IMPORTANT: Punching this box has to produce behavior of discarding the text
 			// Executed via EntityEvents#onAttackEvent using FabricEvents.AttackEntityEvent

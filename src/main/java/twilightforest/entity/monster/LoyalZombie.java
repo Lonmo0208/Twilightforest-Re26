@@ -201,23 +201,6 @@ public class LoyalZombie extends TamableAnimal {
 	}
 
 	@Override
-	public boolean isBaby() {
-		return this.getEntityData().get(DATA_BABY_ID);
-	}
-
-	@Override
-	public void setBaby(boolean baby) {
-		this.getEntityData().set(DATA_BABY_ID, baby);
-		if (this.level() != null && !this.level().isClientSide()) {
-			AttributeInstance attributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
-			attributeinstance.removeModifier(SPEED_MODIFIER_BABY_ID);
-			if (baby) {
-				attributeinstance.addTransientModifier(SPEED_MODIFIER_BABY);
-			}
-		}
-	}
-
-	@Override
 	public EntityDimensions getDefaultDimensions(Pose pose) {
 		return this.isBaby() ? BABY_DIMENSIONS : super.getDefaultDimensions(pose);
 	}

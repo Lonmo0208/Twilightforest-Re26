@@ -103,7 +103,7 @@ public class TravellersGearLogic {
 	/**
 	 * Scan upward from the entity's feet to find the actual water surface top.
 	 * Works correctly even when the entity is fully submerged (e.g. inside 2+ deep
-	 * water) — it keeps climbing until it exits the continuous WATER column.
+	 * water) 閳?it keeps climbing until it exits the continuous WATER column.
 	 *
 	 * @return the Y coordinate of the water surface top (e.g. -1 + 8/9 for a
 	 *         source block at y=-1), or {@code Double.NaN} if no water is nearby.
@@ -133,10 +133,10 @@ public class TravellersGearLogic {
 	 * Lift a water-walking entity back onto the water surface.
 	 *
 	 * Fabric (unlike NeoForge) does NOT automatically snap an entity to the fluid
-	 * top during collision processing — canStandOnFluid only matters when the
+	 * top during collision processing 閳?canStandOnFluid only matters when the
 	 * entity is already very close to the surface (within the AABB sweep).
 	 * We therefore have to perform the lift ourselves, and crucially we have to
-	 * do it in a way that survives client→server position sync for real players.
+	 * do it in a way that survives client閳姱erver position sync for real players.
 	 *
 	 * Strategy:
 	 *   1. Find the actual continuous water surface Y via column scan.
@@ -168,15 +168,15 @@ public class TravellersGearLogic {
 
 		double diff = surfaceY - currentY;
 
-		// ── Guard: only handle SHALLOW water ────────────────────────────────────
+		// 閳光偓閳光偓 Guard: only handle SHALLOW water 閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓閳光偓
 		// NeoForge official cap is WATER_WALKING_MAX_SUBMERGED_HEIGHT = 0.4:
 		// the modifier is only active while the entity is AT MOST 0.4 blocks into
 		// the fluid (toes dipped).  If the entity is deeper (e.g. the player
 		// held Shift to intentionally submerge) we MUST leave vanilla water
-		// physics alone — no upward velocity, no snap, nothing.  The player then
+		// physics alone 閳?no upward velocity, no snap, nothing.  The player then
 		// swims / floats up normally; once they naturally surface into the
 		// shallow zone below we re-engage and "catch" them onto the top.
-		// Without this guard the infamous "release Shift → get launched out of
+		// Without this guard the infamous "release Shift 閳?get launched out of
 		// the water" bug happens because our code was trying to yank the player
 		// from 2+ blocks deep straight to the surface every tick.
 		if (diff > WATER_WALKING_MAX_SUBMERGED_HEIGHT + 0.1D)
@@ -207,15 +207,15 @@ public class TravellersGearLogic {
 			// normal walking is allowed.  Mirror NeoForge's behaviour here.
 			livingEntity.setSprinting(false);
 
-			// ── Speed alignment: two-part correction (see also travel()@HEAD mixin)
+			// 閳光偓閳光偓 Speed alignment: two-part correction (see also travel()@HEAD mixin)
 			// Part 1 (Mixin): seed onGround=true at travel() HEAD so that
 			// moveRelative applies the FULL ground-mode input acceleration.
 			// Part 2 (here): after travel() finishes, collision resolution has
 			// overwritten onGround=false and applied air-drag (horizVel *= 0.91).
 			// The correct ground-mode terminal friction is slipperiness=0.6 times
-			// that same 0.91 → 0.6 * 0.91 = 0.546 total.  To bring the air-drag
+			// that same 0.91 閳?0.6 * 0.91 = 0.546 total.  To bring the air-drag
 			// value (0.91) down to the target (0.546) we multiply by 0.6 here.
-			// Net: 0.91 * 0.6 = 0.546 ≡ ground friction, plus the ground-mode
+			// Net: 0.91 * 0.6 = 0.546 閳?ground friction, plus the ground-mode
 			// acceleration we already got from the travel() HEAD mixin yields a
 			// walk speed & feel IDENTICAL to walking on grass blocks.
 			if (!livingEntity.onGround()) {
@@ -230,7 +230,7 @@ public class TravellersGearLogic {
 			livingEntity.resetFallDistance();
 			// Server-side authoritative correction ONLY when the error is clearly beyond
 			// normal physics drift (< 0.05 setPos, < 0.25 skip teleport entirely). Experience
-			// 1248819: teleportTo must be a corrector, not a driver — using it every tick
+			// 1248819: teleportTo must be a corrector, not a driver 閳?using it every tick
 			// causes the exact "position ping-pong" jitter the user is reporting.
 			if (!level.isClientSide()) {
 				if (Math.abs(currentY - surfaceY) > 0.05D) {
@@ -284,10 +284,10 @@ public class TravellersGearLogic {
 		boolean modActive = TravellersModifiersManager.isModifierActive(livingEntity, leggingsStack, TravellersModifiersManager.GRADUAL_GLIDE_MODIFIER);
 		boolean attachmentGlide = !(livingEntity instanceof Player player) || Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.IS_GRADUALLY_GLIDING, () -> false));
 
-		// ── Exact NeoForge official guards ──
+		// 閳光偓閳光偓 Exact NeoForge official guards 閳光偓閳光偓
 		// 1) Modifier present & active
 		// 2) Glide multiplier configured on the leggings stack
-		// 3) Actually FALLING (deltaMovement.y() < 0) — useless otherwise
+		// 3) Actually FALLING (deltaMovement.y() < 0) 閳?useless otherwise
 		// 4) Not already elytra-flying (two flight systems must not stack)
 		// 5) For players specifically: the IS_GRADUALLY_GLIDING attachment must be TRUE.
 		//    Non-player mobs wearing travellers leggings always glide when eligible

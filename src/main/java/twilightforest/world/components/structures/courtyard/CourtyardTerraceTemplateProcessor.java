@@ -9,16 +9,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.Nullable;
-import twilightforest.init.TFStructureProcessors;
 
 import java.util.HashSet;
 
-public final class CourtyardTerraceTemplateProcessor extends StructureProcessor {
+public final class CourtyardTerraceTemplateProcessor implements StructureProcessor {
 	public static final CourtyardTerraceTemplateProcessor INSTANCE = new CourtyardTerraceTemplateProcessor();
-	public static final MapCodec<CourtyardTerraceTemplateProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
+	public static final MapCodec<CourtyardTerraceTemplateProcessor> MAP_CODEC = MapCodec.unit(() -> INSTANCE);
 
 	private static final HashSet<BlockState> BLOCKS_REPLACE_TO_SLAB = new HashSet<>();
 
@@ -35,7 +33,7 @@ public final class CourtyardTerraceTemplateProcessor extends StructureProcessor 
 
 	@Nullable
 	@Override
-	public StructureTemplate.StructureBlockInfo processBlock(LevelReader world, BlockPos pos, BlockPos piecepos, StructureTemplate.StructureBlockInfo oldinfo, StructureTemplate.StructureBlockInfo newInfo, StructurePlaceSettings settings) {
+	public StructureTemplate.StructureBlockInfo processBlock(LevelReader world, BlockPos pos, BlockPos piecepos, BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo newInfo, StructurePlaceSettings settings) {
 		BlockState newState = newInfo.state();
 
 		if (newState.getBlock() == Blocks.SANDSTONE_SLAB) {
@@ -60,7 +58,7 @@ public final class CourtyardTerraceTemplateProcessor extends StructureProcessor 
 	}
 
 	@Override
-	public StructureProcessorType<?> getType() {
-		return TFStructureProcessors.COURTYARD_TERRACE;
+	public MapCodec<? extends StructureProcessor> codec() {
+		return MAP_CODEC;
 	}
 }

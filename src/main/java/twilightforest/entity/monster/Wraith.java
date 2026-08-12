@@ -204,7 +204,7 @@ public class Wraith extends Mob implements Enemy, EnforcedHomePoint {
 		public boolean canUse() {
 			if (this.wraith.getTarget() != null || !this.wraith.isMobWithinHomeArea(this.wraith))
 				return false;
-			MoveControl control = this.wraith.getMoveControl();
+			MoveControl<?> control = this.wraith.getMoveControl();
 			double d0 = control.getWantedX() - this.wraith.getX();
 			double d1 = control.getWantedY() - this.wraith.getY();
 			double d2 = control.getWantedZ() - this.wraith.getZ();

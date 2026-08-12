@@ -13,6 +13,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -114,7 +115,7 @@ public class LichTowerMagicGallery extends TwilightJigsawPiece implements SpawnI
 
 				variantHolderOpt.get().value();
 				this.placeSettings.getRotation();
-				galleryPainting.moveOrInterpolateTo(pos.getBottomCenter(), 0, 0);
+				galleryPainting.moveOrInterpolateTo(Vec3.atBottomCenterOf(pos), 0, 0);
 
 				level.addFreshEntityWithPassengers(galleryPainting);
 			}
