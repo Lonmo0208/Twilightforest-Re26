@@ -112,12 +112,12 @@ dependencies {
 
 	// Forge Config API Port (provides NeoForge-compatible config API)
 	//implementation files('libs/forgeconfigapiport/forgeconfigapiport-fabric-26.1.5.jar')
-	implementation 'curse.maven:forge-config-api-port-547434:8218664'
+	implementation 'curse.maven:forge-config-api-port-547434:8292030'
 	// Transitive dependencies for ForgeConfigAPIPort
 	implementation 'com.electronwill.night-config:core:3.8.3'
 	implementation 'com.electronwill.night-config:toml:3.8.3'
 	//curse.maven
-	implementation 'curse.maven:modmenu-308702:8397574'
+	implementation 'curse.maven:modmenu-308702:8402669'
 	// Test dependencies
 	testImplementation 'org.junit.jupiter:junit-jupiter:6.0.1'
 	testImplementation 'org.mockito:mockito-core:5.11.0'
