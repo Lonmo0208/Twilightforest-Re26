@@ -1,4 +1,4 @@
-{
+﻿{
   "parent": "twilightforest:progress_merge",
   "criteria": {
     "troll": {
@@ -8,7 +8,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "twilightforest:troll",
+              "entity_type": "twilightforest:troll",
               "location": {
                 "structures": "twilightforest:troll_cave"
               }
