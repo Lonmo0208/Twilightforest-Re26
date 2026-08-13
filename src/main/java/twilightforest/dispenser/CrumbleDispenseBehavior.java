@@ -1,7 +1,7 @@
 package twilightforest.dispenser;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.DispenseSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -18,9 +18,9 @@ public class CrumbleDispenseBehavior extends DefaultDispenseItemBehavior {
 	boolean fired = false;
 
 	@Override
-	protected ItemStack execute(BlockSource source, ItemStack stack) {
+	protected ItemStack execute(DispenseSource source, ItemStack stack) {
 		ServerLevel level = source.level();
-		BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+		BlockPos pos = source.pos().relative(source.direction());
 		BlockState state = level.getBlockState(pos);
 		if (!(stack.getMaxDamage() == stack.getDamageValue() + 1)) {
 			var resultBlock = DataMapType.getData(state.getBlock().builtInRegistryHolder(), TFDataMaps.CRUMBLE_HORN);
@@ -40,7 +40,7 @@ public class CrumbleDispenseBehavior extends DefaultDispenseItemBehavior {
 	}
 
 	@Override
-	protected void playSound(BlockSource source) {
+	protected void playSound(DispenseSource source) {
 		if (this.fired) {
 			super.playSound(source);
 			this.fired = false;

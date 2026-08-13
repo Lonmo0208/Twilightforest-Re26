@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import twilightforest.client.BakedMultiPartRenderers;
 import twilightforest.entity.boss.SnowQueenIceShield;
 
@@ -42,7 +43,7 @@ public class SnowQueenIceShieldRenderer extends EntityRenderer<SnowQueenIceShiel
 		BakedMultiPartRenderers.registerStateRenderer(state, SnowQueenIceShield.RENDERER);
 		BlockPos pos = BlockPos.containing(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
 		state.movingBlockRenderState.randomSeedPos = pos;
-		state.movingBlockRenderState.blockPos = pos;
+		state.movingBlockRenderState.pos = new Vec3(pos);
 		state.movingBlockRenderState.blockState = Blocks.PACKED_ICE.defaultBlockState();
 		if (entity.level() instanceof ClientLevel clientLevel) {
 			state.movingBlockRenderState.biome = clientLevel.getBiome(pos);

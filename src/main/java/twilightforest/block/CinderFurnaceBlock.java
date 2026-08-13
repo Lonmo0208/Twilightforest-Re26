@@ -33,11 +33,6 @@ public class CinderFurnaceBlock extends AbstractFurnaceBlock {
 	}
 
 	@Override
-	protected void openContainer(Level level, BlockPos pos, Player player) {
-
-	}
-
-	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new CinderFurnaceBlockEntity(pos, state);
 	}

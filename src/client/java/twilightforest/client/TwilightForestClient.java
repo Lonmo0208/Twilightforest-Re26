@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.AtlasRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -39,7 +38,6 @@ import net.minecraft.client.renderer.item.properties.select.SelectItemModelPrope
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.world.entity.Entity;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.event.ColorHandler;
@@ -149,7 +147,6 @@ public class TwilightForestClient implements ClientModInitializer {
 		ClientProxyInitializer.init();
 		TFShaders.registerRenderPipelines();
 		registerCustomModelTypes();
-		registerAtlases();
 		registerTooltipComponents();
 		registerModelLayers();
 		registerEntityRenderers();
@@ -210,15 +207,6 @@ public class TwilightForestClient implements ClientModInitializer {
 		// Register Traveller's Gear keybinds so they appear in the in-game Controls menu
 		// and users can rebind them (Fabric does not auto-register KeyMappings like NeoForge).
 		TFKeyBinds.init();
-	}
-
-	private void registerAtlases() {
-		// Register custom magic_paintings texture atlas
-		AtlasRegistry.register(new AtlasManager.AtlasConfig(
-			MagicPaintingAtlasInfo.ATLAS_LOCATION,
-			MagicPaintingAtlasInfo.ATLAS_INFO_LOCATION,
-			false
-		));
 	}
 
 	private void registerCustomModelTypes() {

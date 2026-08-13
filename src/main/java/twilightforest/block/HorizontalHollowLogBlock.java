@@ -9,7 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
@@ -172,7 +172,7 @@ public class HorizontalHollowLogBlock extends Block implements WaterloggedBlock 
 				playBreakSound(Blocks.SNOW.defaultBlockState(), level, pos, player);
 				if (!player.isCreative()) {
 					stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
-					level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(Items.SNOWBALL)));
+					LivingBlock.createAt(level, BlockPos.containing(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), new ItemStack(Items.SNOWBALL));
 				}
 
 				return InteractionResult.SUCCESS;
@@ -184,9 +184,9 @@ public class HorizontalHollowLogBlock extends Block implements WaterloggedBlock 
 
 				if (!player.isCreative()) {
 					stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
-					level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(TFBlocks.MOSS_PATCH)));
+					LivingBlock.createAt(level, BlockPos.containing(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), new ItemStack(TFBlocks.MOSS_PATCH));
 					if (variant == HollowLogVariants.Horizontal.MOSS_AND_GRASS)
-						level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(Blocks.SHORT_GRASS)));
+						LivingBlock.createAt(level, BlockPos.containing(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), new ItemStack(Blocks.SHORT_GRASS));
 				}
 
 				return InteractionResult.SUCCESS;

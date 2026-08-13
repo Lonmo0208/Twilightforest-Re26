@@ -41,3 +41,6 @@ build_errors2.log
 build_errors3.log
 build_errors4.log
 build_errors5.log
+
+# stray decompiled class files
+/net/

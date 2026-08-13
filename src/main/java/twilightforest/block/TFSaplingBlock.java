@@ -73,8 +73,8 @@ public class TFSaplingBlock extends net.minecraft.world.level.block.SaplingBlock
 		}
 		// Fallback: delegate to the TreeGrower as originally intended, but catch any silent
 		// failures so we can still produce a simple oak-ish tree when dynamic registry is empty.
-		boolean grew = this.treeGrower.growTree(level, level.getChunkSource().getGenerator(), pos, state, random);
-		if (!grew) {
+		TreeGrower.GrowthResult result = this.treeGrower.growTree(level, level.getChunkSource().getGenerator(), pos, state, random);
+		if (result == TreeGrower.GrowthResult.NONE) {
 			growFallbackTree(level, pos, random);
 		}
 	}

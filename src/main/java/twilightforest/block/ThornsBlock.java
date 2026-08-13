@@ -7,7 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -81,7 +81,7 @@ public class ThornsBlock extends ConnectableRotatedPillarBlock implements Simple
 
 	@Override
 	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
-		if ((!(entity instanceof ItemEntity item) || !item.getItem().is(TFItemTags.IMMUNE_TO_THORNS)) && level instanceof ServerLevel sl) {
+		if ((!(entity instanceof LivingBlock item) || !item.getItemStack().is(TFItemTags.IMMUNE_TO_THORNS)) && level instanceof ServerLevel sl) {
 			entity.hurtServer(sl, TFDamageTypes.getDamageSource(level, TFDamageTypes.THORNS), THORN_DAMAGE);
 		}
 	}

@@ -23,7 +23,7 @@ public class ThrowSpikeBlockGoal extends Goal {
 
 	@Override
 	public boolean canUse() {
-		LivingEntity target = this.attacker.getTarget();
+		LivingEntity target = (LivingEntity) this.attacker.getTarget();
 		if (target == null || this.attacker.distanceToSqr(target) > 42 || this.cooldown > 0) {
 			this.cooldown--;
 			return false;

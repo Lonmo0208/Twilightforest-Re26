@@ -43,7 +43,7 @@ public class ChargeAttackGoal extends Goal {
 
 	@Override
 	public boolean canUse() {
-		this.chargeTarget = this.charger.getTarget();
+		this.chargeTarget = (LivingEntity) this.charger.getTarget();
 
 		if (this.chargeTarget == null) {
 			return false;

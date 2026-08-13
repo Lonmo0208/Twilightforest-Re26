@@ -24,7 +24,7 @@ public class PhantomAttackStartGoal extends Goal {
 
 	@Override
 	public void tick() {
-		LivingEntity target = this.boss.getTarget();
+		LivingEntity target = (LivingEntity) this.boss.getTarget();
 		if (target != null) {
 			BlockPos targetPos = BlockPos.containing(target.xOld, target.yOld, target.zOld);
 

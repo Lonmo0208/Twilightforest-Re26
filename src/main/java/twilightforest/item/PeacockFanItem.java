@@ -9,7 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
@@ -117,7 +117,7 @@ public class PeacockFanItem extends Item {
 		int fannedEntities = 0;
 
 		for (Entity entity : level.getEntitiesOfClass(Entity.class, fanBox)) {
-			if (entity.isPushable() || entity instanceof ItemEntity || entity instanceof Projectile) {
+			if (entity.isPushable() || entity instanceof LivingBlock || entity instanceof Projectile) {
 				entity.setDeltaMovement(moveVec.x(), moveVec.y(), moveVec.z());
 				fannedEntities++;
 			}

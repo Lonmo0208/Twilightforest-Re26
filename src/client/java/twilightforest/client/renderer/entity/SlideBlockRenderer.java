@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import twilightforest.entity.SlideBlock;
 
 public class SlideBlockRenderer extends EntityRenderer<SlideBlock, FallingBlockRenderState> {
@@ -58,7 +59,7 @@ public class SlideBlockRenderer extends EntityRenderer<SlideBlock, FallingBlockR
 		super.extractRenderState(entity, state, partialTicks);
 		BlockPos pos = BlockPos.containing(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
 		state.movingBlockRenderState.randomSeedPos = pos;
-		state.movingBlockRenderState.blockPos = pos;
+		state.movingBlockRenderState.pos = new Vec3(pos);
 		state.movingBlockRenderState.blockState = entity.getBlockState();
 		if (entity.level() instanceof ClientLevel clientLevel) {
 			state.movingBlockRenderState.biome = clientLevel.getBiome(pos);

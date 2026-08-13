@@ -2,7 +2,7 @@ package twilightforest.mixin;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 
@@ -67,7 +67,7 @@ public abstract class EntityMixin implements TFEntityExtensions {
 	public boolean twilightforest$canFitInsideContainerItems() {
 		// Original Forge default: allow items inside containers. Sub-entities or
 		// boss multiparts may override this (e.g. Hydra heads are not pick-uppable).
-		return ((Entity) (Object) this) instanceof ItemEntity;
+		return ((Entity) (Object) this) instanceof LivingBlock;
 	}
 
 	@Override

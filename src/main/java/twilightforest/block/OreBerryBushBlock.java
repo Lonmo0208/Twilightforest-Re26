@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -32,7 +32,7 @@ public class OreBerryBushBlock extends TFBushBlock {
 
 	@Override
 	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
-		if (!(entity instanceof ItemEntity) && level instanceof ServerLevel sl) {
+		if (!(entity instanceof LivingBlock) && level instanceof ServerLevel sl) {
 			entity.hurtServer(sl, TFDamageTypes.getDamageSource(level, TFDamageTypes.OREBERRY), 1.0F);
 		}
 	}

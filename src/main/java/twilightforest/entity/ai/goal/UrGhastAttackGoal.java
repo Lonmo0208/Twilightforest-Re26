@@ -35,7 +35,7 @@ public class UrGhastAttackGoal extends Goal {
 
 	@Override
 	public void tick() {
-		LivingEntity target = this.ghast.getTarget();
+		LivingEntity target = (LivingEntity) this.ghast.getTarget();
 
 		if (target.distanceToSqr(this.ghast) < 4096.0D && this.ghast.getSensing().hasLineOfSight(target)) {
 			this.prevAttackTimer = this.attackTimer;

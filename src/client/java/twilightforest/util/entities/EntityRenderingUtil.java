@@ -7,12 +7,11 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.entity.state.ItemEntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.fabricmc.loader.api.FabricLoader;
@@ -163,21 +162,17 @@ public class EntityRenderingUtil {
 		}
 	}
 
-	public static void renderItemEntity(GuiGraphicsExtractor graphics, ItemStack stack, @Nullable Level level, float bobOffset) {
+	public static void renderLivingBlock(GuiGraphicsExtractor graphics, ItemStack stack, @Nullable Level level, float bobOffset) {
 		// 26.1.2: Rewritten to use EntityRenderState pipeline.
 		// The old custom PoseStack + ItemEntityRenderer approach is replaced by graphics.entity().
-		ItemEntity item = (ItemEntity) fetchEntity(EntityType.ITEM, level);
-		Objects.requireNonNull(item).setItem(stack);
-		// item.bobOffs is final in 26.1.2; set on render state below
+		LivingBlock item = (LivingBlock) fetchEntity(EntityType.LIVING_BLOCK, level);
+		Objects.requireNonNull(item).setItemStack(stack);
 
 		EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-		EntityRenderer<? super ItemEntity, ?> renderer = dispatcher.getRenderer(item);
+		EntityRenderer<? super LivingBlock, ?> renderer = dispatcher.getRenderer(item);
 		float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks();
 		EntityRenderState renderState = renderer.createRenderState(item, partialTick);
 		renderState.shadowPieces.clear();
-		if (renderState instanceof ItemEntityRenderState itemState) {
-			itemState.bobOffset = bobOffset;
-		}
 
 		Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
 		Quaternionf quaternion1 = Axis.XP.rotationDegrees(20.0F);

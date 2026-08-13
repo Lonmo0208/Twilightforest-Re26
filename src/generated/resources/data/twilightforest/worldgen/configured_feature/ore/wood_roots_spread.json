@@ -1,4 +1,4 @@
-{
+﻿{
   "type": "twilightforest:wood_roots",
   "config": {
     "root_block": {
@@ -6,7 +6,7 @@
       "entries": [
         {
           "data": {
-            "Name": "twilightforest:root"
+            "Name": "twilightforest:root_block"
           },
           "weight": 6
         },

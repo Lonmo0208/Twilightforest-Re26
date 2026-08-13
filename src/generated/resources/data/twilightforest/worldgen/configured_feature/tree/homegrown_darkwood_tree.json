@@ -1,4 +1,4 @@
-{
+﻿{
   "type": "twilightforest:dark_canopy_tree",
   "config": {
     "below_trunk_provider": {
@@ -31,7 +31,7 @@
           "entries": [
             {
               "data": {
-                "Name": "twilightforest:root"
+                "Name": "twilightforest:root_block"
               },
               "weight": 6
             },

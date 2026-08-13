@@ -14,7 +14,7 @@ import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -247,11 +247,11 @@ public class ProgressionEvents {
 			|| TFDimension.isTwilightPortalDestination(level)
 			|| TFConfig.allowPortalsInOtherDimensions) {
 
-			List<ItemEntity> itemList = level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(rangeToCheck));
-			ItemEntity qualified = null;
+			List<LivingBlock> itemList = level.getEntitiesOfClass(LivingBlock.class, player.getBoundingBox().inflate(rangeToCheck));
+			LivingBlock qualified = null;
 
-			for (ItemEntity entityItem : itemList) {
-				if (entityItem.getItem().is(TFItemTags.PORTAL_ACTIVATOR) &&
+			for (LivingBlock entityItem : itemList) {
+				if (entityItem.getItemStack().is(TFItemTags.PORTAL_ACTIVATOR) &&
 				TFBlocks.TWILIGHT_PORTAL.canFormPortal(level.getBlockState(entityItem.blockPosition())) &&
 				Objects.equals(entityItem.getOwner(), player)) {
 

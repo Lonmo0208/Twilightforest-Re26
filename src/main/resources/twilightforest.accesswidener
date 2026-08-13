@@ -279,3 +279,10 @@ accessible field net/minecraft/client/renderer/item/properties/conditional/Condi
 # Armor model layer definitions
 accessible field net/minecraft/client/model/geom/LayerDefinitions INNER_ARMOR_DEFORMATION Lnet/minecraft/client/model/geom/builders/CubeDeformation;
 accessible field net/minecraft/client/model/geom/LayerDefinitions OUTER_ARMOR_DEFORMATION Lnet/minecraft/client/model/geom/builders/CubeDeformation;
+
+# LivingBlock containers (chests / skull chest / keepsake casket) special block models
+# Exposes BuiltInBlockModels.Builder so twilight containers can be registered in the built-in
+# block models (same as vanilla chests) and render as full-size chests when acting as LivingBlocks.
+accessible class net/minecraft/client/renderer/block/BuiltInBlockModels$Builder
+accessible class net/minecraft/client/renderer/block/BuiltInBlockModels$ModelFactory
+accessible method net/minecraft/client/renderer/block/BuiltInBlockModels$Builder put (Lnet/minecraft/client/renderer/block/BuiltInBlockModels$ModelFactory;Lnet/minecraft/world/level/block/Block;)V

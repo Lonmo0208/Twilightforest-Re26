@@ -27,24 +27,24 @@ public class StructureTreeGrower extends TreeGrower {
 
 	//copied from PlaceCommand.placeStructure
 	@Override
-	public boolean growTree(ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state, RandomSource random) {
+	public GrowthResult growTree(ServerLevel level, ChunkGenerator generator, BlockPos pos, BlockState state, RandomSource random) {
 		Holder.Reference<Structure> structureHolder = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(TFStructures.HOLLOW_TREE);
 		Structure structure = structureHolder.value();
 
 		if (!(structure instanceof TreeGrowerStartable treeGrowerStartable) || !treeGrowerStartable.checkSaplingClearance(level, pos))
-			return false;
+			return GrowthResult.NONE;
 
 		StructureStart structurestart = treeGrowerStartable.generateFromSapling(level.registryAccess(), generator, generator.getBiomeSource(), level.getChunkSource().randomState(), level.getStructureManager(), level.getSeed(), pos, level);
 
 		if (!structurestart.isValid())
-			return false;
+			return GrowthResult.NONE;
 
 		BoundingBox boundingbox = structurestart.getBoundingBox();
 		ChunkPos start = new ChunkPos(SectionPos.blockToSectionCoord(boundingbox.minX()), SectionPos.blockToSectionCoord(boundingbox.minZ()));
 		ChunkPos end = new ChunkPos(SectionPos.blockToSectionCoord(boundingbox.maxX()), SectionPos.blockToSectionCoord(boundingbox.maxZ()));
 
 		if (ChunkPos.rangeClosed(start, end).noneMatch(currentChunkPos -> level.isLoaded(currentChunkPos.getWorldPosition())))
-			return false;
+			return GrowthResult.NONE;
 
 		level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 
@@ -66,6 +66,6 @@ public class StructureTreeGrower extends TreeGrower {
 			)
 		);
 
-		return true;
+		return GrowthResult.NORMAL;
 	}
 }

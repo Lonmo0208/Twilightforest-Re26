@@ -55,7 +55,7 @@ public class LichShadowsGoal extends Goal {
 		if (this.lich.getTeleportInvisibility() > 0) return;
 
 		if (!this.lich.isShadowClone()) {
-			LivingEntity targetedEntity = this.lich.getTarget();
+			LivingEntity targetedEntity = (LivingEntity) this.lich.getTarget();
 
 			if (this.lich.getAttackCooldown() == 60) {
 				if (!this.lich.teleportToNewTarget(targetedEntity, this.attackRange, this)) this.lich.teleportHome();

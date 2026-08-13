@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 import twilightforest.client.renderer.block.SkullCandleRenderer;
 import twilightforest.components.item.SkullCandles;
 import twilightforest.init.TFDataComponents;
+import twilightforest.mixin.client.MinecraftAccessor;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -58,7 +59,7 @@ public record SkullCandleSpecialRenderer(PlayerSkinRenderCache playerSkinRenderC
 		if (skullCandles != null) {
 			stack.translate(0.0F, 0.5F, 0.0F);
 			BlockModelRenderState state = new BlockModelRenderState();
-			SkullCandleRenderer.updateSkullCandle(skullCandles, Minecraft.getInstance().blockModelResolver, state, false);
+			SkullCandleRenderer.updateSkullCandle(skullCandles, ((MinecraftAccessor) Minecraft.getInstance()).tf$getBlockModelResolver(), state, false);
 			SkullCandleRenderer.submitCandles(state, stack, collector, light, overlay, outlineColor);
 		}
 	}

@@ -13,6 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -100,7 +101,7 @@ public class HostileWolf extends Monster {
 	}
 
 	@Override
-	public void setTarget(@Nullable LivingEntity entity) {
+	public void setTarget(@Nullable Entity entity) {
 		if (entity != null && entity != this.getTarget())
 			this.playSound(this.getTargetSound(), 4F, this.getVoicePitch());
 		super.setTarget(entity);

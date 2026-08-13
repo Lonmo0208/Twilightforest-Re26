@@ -185,7 +185,7 @@ public class Wraith extends Mob implements Enemy, EnforcedHomePoint {
 
 		@Override
 		public void start() {
-			LivingEntity target = wraith.getTarget();
+			LivingEntity target = (LivingEntity) wraith.getTarget();
 			if (target != null)
 				wraith.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), 0.5F);
 		}
@@ -248,7 +248,7 @@ public class Wraith extends Mob implements Enemy, EnforcedHomePoint {
 				this.wraith.setYRot(-((float) Mth.atan2(this.wraith.getDeltaMovement().x(), this.wraith.getDeltaMovement().z())) * (180F / (float) Math.PI));
 				this.wraith.setYBodyRot(this.wraith.getYRot());
 			} else {
-				LivingEntity entitylivingbase = this.wraith.getTarget();
+				LivingEntity entitylivingbase = (LivingEntity) this.wraith.getTarget();
 
 				if (entitylivingbase.distanceToSqr(this.wraith) < 4096.0D) {
 					double d1 = entitylivingbase.getX() - this.wraith.getX();

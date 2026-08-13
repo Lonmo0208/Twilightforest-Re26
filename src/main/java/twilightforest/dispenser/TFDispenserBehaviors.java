@@ -1,7 +1,7 @@
 package twilightforest.dispenser;
 
 import net.minecraft.core.Position;
-import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.DispenseSource;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.EquipmentDispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
@@ -40,7 +40,7 @@ public class TFDispenserBehaviors {
 
 		DispenseItemBehavior idispenseitembehavior = new OptionalDispenseItemBehavior() {
 			@Override
-			protected ItemStack execute(BlockSource source, ItemStack stack) {
+			protected ItemStack execute(DispenseSource source, ItemStack stack) {
 				this.setSuccess(EquipmentDispenseItemBehavior.dispenseEquipment(source, stack));
 				return stack;
 			}

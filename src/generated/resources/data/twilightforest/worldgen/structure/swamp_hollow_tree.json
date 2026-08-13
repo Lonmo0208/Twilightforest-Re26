@@ -93,7 +93,7 @@
   "root": {
     "type": "minecraft:simple_state_provider",
     "state": {
-      "Name": "twilightforest:root"
+      "Name": "twilightforest:root_block"
     }
   },
   "spawn_overrides": {

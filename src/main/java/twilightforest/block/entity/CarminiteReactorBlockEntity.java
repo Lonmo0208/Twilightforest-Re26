@@ -199,7 +199,7 @@ public class CarminiteReactorBlockEntity extends BlockEntity {
 	private void transformBlock(BlockPos pos, BlockState state, int fuzz, boolean netherTransform) {
 		BlockState stateThere = this.getLevel().getBlockState(pos);
 
-		if (stateThere.getBlock() != Blocks.AIR && (stateThere.is(TFBlockTags.CARMINITE_REACTOR_IMMUNE) || stateThere.getDestroySpeed(this.getLevel(), pos) == -1)) {
+		if (stateThere.getBlock() != Blocks.AIR && (stateThere.is(TFBlockTags.CARMINITE_REACTOR_IMMUNE) || stateThere.getDestroySpeed() == -1)) {
 			// don't destroy unbreakable stuff
 			return;
 		}
@@ -229,7 +229,7 @@ public class CarminiteReactorBlockEntity extends BlockEntity {
 
 		// don't destroy unbreakable stuff
 		if (!(stateThere.is(TFBlockTags.CARMINITE_REACTOR_IMMUNE) ||
-			(stateThere.getDestroySpeed(this.getLevel(), pos) == -1))) {
+			(stateThere.getDestroySpeed() == -1))) {
 			this.getLevel().setBlock(pos, state, Block.UPDATE_CLIENTS);
 		}
 	}

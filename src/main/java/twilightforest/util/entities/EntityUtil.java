@@ -58,7 +58,7 @@ public class EntityUtil {
 	}
 
 	public static boolean canDestroyBlock(Level world, BlockPos pos, BlockState state, Entity entity) {
-		float hardness = state.getDestroySpeed(world, pos);
+		float hardness = state.getDestroySpeed();
 		return hardness >= 0f && hardness < 50f && !state.isAir()
 			&& !(world.getBlockEntity(pos) instanceof Container)
 			&& (/* rude type limit */!(entity instanceof LivingEntity)

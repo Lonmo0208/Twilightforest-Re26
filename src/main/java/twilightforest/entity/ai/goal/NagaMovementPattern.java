@@ -216,7 +216,7 @@ public class NagaMovementPattern extends Goal {
 	 * Finds a point that allows us to circle the target clockwise.
 	 */
 	private BlockPos findCirclePoint(boolean clockwise, double radius, double rotation) {
-		LivingEntity toCircle = this.naga.getTarget();
+		LivingEntity toCircle = (LivingEntity) this.naga.getTarget();
 
 		// compute angle
 		double vecx = this.naga.getX() - toCircle.getX();

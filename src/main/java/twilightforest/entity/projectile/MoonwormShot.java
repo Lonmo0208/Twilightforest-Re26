@@ -10,7 +10,7 @@ import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -87,8 +87,7 @@ public class MoonwormShot extends TFThrowable {
 			if (this.level() instanceof ServerLevel serverLevel) {
 				LootParams ctx = new LootParams.Builder(serverLevel).withParameter(LootContextParams.THIS_ENTITY, this).withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.DAMAGE_SOURCE, this.damageSources().fall()).create(LootContextParamSets.ENTITY);
 				serverLevel.getServer().reloadableRegistries().getLootTable(TFLootTables.MOONWORM_FAILED_TO_PLACE_DROPS).getRandomItems(ctx).forEach((stack) -> {
-					ItemEntity squish = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), stack);
-					squish.spawnAtLocation(serverLevel, squish.getItem());
+					LivingBlock.createAt(this.level(), BlockPos.containing(this.getX(), this.getY(), this.getZ()), stack);
 				});
 			}
 			this.level().playSound(null, pos, TFSounds.BUG_SQUISH, SoundSource.NEUTRAL, 1.0F, 1.0F);
@@ -106,8 +105,7 @@ public class MoonwormShot extends TFThrowable {
 			if (this.level() instanceof ServerLevel serverLevel) {
 				LootParams ctx = new LootParams.Builder(serverLevel).withParameter(LootContextParams.THIS_ENTITY, this).withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.DAMAGE_SOURCE, this.damageSources().fall()).create(LootContextParamSets.ENTITY);
 				serverLevel.getServer().reloadableRegistries().getLootTable(TFLootTables.MOONWORM_FAILED_TO_PLACE_DROPS).getRandomItems(ctx).forEach((stack) -> {
-					ItemEntity squish = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(), stack);
-					squish.spawnAtLocation(serverLevel, squish.getItem());
+					LivingBlock.createAt(this.level(), BlockPos.containing(this.getX(), this.getY(), this.getZ()), stack);
 				});
 			}
 			this.level().playSound(null, this.blockPosition(), TFSounds.BUG_SQUISH, SoundSource.NEUTRAL, 1.0F, 1.0F);

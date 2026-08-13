@@ -126,7 +126,7 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 
 	@Override
 	protected void customServerAiStep(ServerLevel server) {
-		int status = this.getTarget() != null && this.shouldAttack(this.getTarget()) ? 1 : 0;
+		int status = this.getTarget() != null && this.shouldAttack((LivingEntity) this.getTarget()) ? 1 : 0;
 
 		this.getEntityData().set(ATTACK_STATUS, (byte) status);
 		this.getEntityData().set(ATTACK_TIMER, (byte) attackGoal.attackTimer);

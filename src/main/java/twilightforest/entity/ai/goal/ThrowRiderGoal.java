@@ -53,7 +53,7 @@ public class ThrowRiderGoal extends MeleeAttackGoal {
 
 	// Vanilla Copy with edits
 	@Override
-	protected void checkAndPerformAttack(LivingEntity victim) {
+	protected void checkAndPerformAttack(Entity victim) {
 		if (this.canPerformAttack(victim) && this.getTicksUntilNextAttack() <= 0 && this.mob.getPassengers().isEmpty() && this.cooldown-- == 0) {
 			this.cooldown = 3; // Gives the thrower a pause so it doesn't pick the target back up immediately after throwing; for whatever reason the attack cooldown isn't enough...
 			this.resetAttackCooldown();

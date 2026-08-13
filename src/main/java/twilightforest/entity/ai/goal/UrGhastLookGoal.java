@@ -35,7 +35,7 @@ public class UrGhastLookGoal extends Goal {
 			this.ghast.setYRot(-((float) Mth.atan2(vec3.x(), vec3.z())) * (180.0F / (float) Math.PI));
 			this.ghast.yBodyRot = this.ghast.getYRot();
 		} else {
-			LivingEntity livingentity = this.ghast.getTarget();
+			LivingEntity livingentity = (LivingEntity) this.ghast.getTarget();
 			if (livingentity.distanceToSqr(this.ghast) < 4096.0) {
 				double d1 = livingentity.getX() - this.ghast.getX();
 				double d2 = livingentity.getZ() - this.ghast.getZ();

@@ -54,7 +54,7 @@ public class Adherent extends Monster implements RangedAttackMob, ITFCharger {
 	}
 
 	@Override
-	public void performRangedAttack(LivingEntity attackTarget, float extraDamage) {
+	public void performRangedAttack(Entity attackTarget, float extraDamage) {
 		NatureBolt natureBolt = new NatureBolt(this.level(), this);
 		this.playSound(SoundEvents.GHAST_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
 

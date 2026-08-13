@@ -33,7 +33,7 @@ public class GroundAttackGoal extends Goal {
 
 	@Override
 	public boolean canUse() {
-		this.attackTarget = this.attacker.getTarget();
+		this.attackTarget = (LivingEntity) this.attacker.getTarget();
 
 		if (this.cooldown-- > 0 || this.attackTarget == null) {
 			return false;

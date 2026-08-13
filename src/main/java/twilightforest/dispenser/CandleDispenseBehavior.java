@@ -1,7 +1,7 @@
 package twilightforest.dispenser;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.DispenseSource;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -24,10 +24,10 @@ public class CandleDispenseBehavior extends OptionalDispenseItemBehavior {
 	}
 
 	@Override
-	protected ItemStack execute(BlockSource source, ItemStack stack) {
+	protected ItemStack execute(DispenseSource source, ItemStack stack) {
 		ServerLevel level = source.level();
 		if (!level.isClientSide()) {
-			BlockPos blockpos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+			BlockPos blockpos = source.pos().relative(source.direction());
 			this.setSuccess(tryAddCandle(level, blockpos, stack.getItem()) || tryCreateSkullCandle(level, blockpos, stack.getItem()));
 			if (this.isSuccess()) {
 				stack.shrink(1);

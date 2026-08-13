@@ -3,6 +3,7 @@ package twilightforest.entity.monster;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -61,7 +62,7 @@ public class StableIceCore extends BaseIceMob implements RangedAttackMob {
 	}
 
 	@Override
-	public void performRangedAttack(LivingEntity target, float distanceFactor) {
+	public void performRangedAttack(Entity target, float distanceFactor) {
 		IceSnowball snowball = new IceSnowball(this.level(), this);
 		snowball.setPos(this.getX(), this.getY() + this.getEyeHeight(), this.getZ());
 

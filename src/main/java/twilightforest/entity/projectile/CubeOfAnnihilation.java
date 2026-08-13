@@ -117,7 +117,7 @@ public class CubeOfAnnihilation extends ThrowableProjectile {
 	private boolean canAnnihilate(BlockPos pos, BlockState state, boolean restrictedPlaceMode) {
 		// whitelist many castle blocks
 		Block block = state.getBlock();
-		return (state.is(TFBlockTags.ANNIHILATION_INCLUSIONS) || block.getExplosionResistance() < 8F && state.getDestroySpeed(this.level(), pos) >= 0)
+		return (state.is(TFBlockTags.ANNIHILATION_INCLUSIONS) || block.getExplosionResistance() < 8F && state.getDestroySpeed() >= 0)
 			&& (!restrictedPlaceMode || this.stack.canBreakBlockInAdventureMode(new BlockInWorld(this.level(), pos, false)));
 	}
 

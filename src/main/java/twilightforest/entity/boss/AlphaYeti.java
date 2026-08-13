@@ -70,7 +70,7 @@ public class AlphaYeti extends BaseTFBoss implements RangedAttackMob, IHostileMo
 		});
 		this.goalSelector.addGoal(4, new ThrowRiderGoal(this, 1.0D, false) {
 			@Override
-			protected void checkAndPerformAttack(LivingEntity victim) {
+			protected void checkAndPerformAttack(Entity victim) {
 				super.checkAndPerformAttack(victim);
 				if (!AlphaYeti.this.getPassengers().isEmpty())
 					AlphaYeti.this.playSound(TFSounds.ALPHA_YETI_GRAB, 4.0F, 0.75F + AlphaYeti.this.getRandom().nextFloat() * 0.25F);
@@ -157,7 +157,7 @@ public class AlphaYeti extends BaseTFBoss implements RangedAttackMob, IHostileMo
 	}
 
 	@Override
-	public void setTarget(@Nullable LivingEntity entity) {
+	public void setTarget(@Nullable Entity entity) {
 		if (entity != null && entity != this.getTarget())
 			this.playSound(TFSounds.ALPHA_YETI_ALERT, 4.0F, 0.5F + this.getRandom().nextFloat() * 0.5F);
 		super.setTarget(entity);
@@ -257,7 +257,7 @@ public class AlphaYeti extends BaseTFBoss implements RangedAttackMob, IHostileMo
 	}
 
 	@Override
-	public void performRangedAttack(LivingEntity target, float distanceFactor) {
+	public void performRangedAttack(Entity target, float distanceFactor) {
 		if (!this.canRampage()) {
 			IceBomb ice = new IceBomb(this.level(), this, new ItemStack(TFItems.ICE_BOMB));
 

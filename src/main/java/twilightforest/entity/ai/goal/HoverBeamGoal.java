@@ -39,7 +39,7 @@ public class HoverBeamGoal extends HoverBaseGoal<SnowQueen> {
 
 	@Override
 	public boolean canUse() {
-		LivingEntity target = this.attacker.getTarget();
+		LivingEntity target = (LivingEntity) this.attacker.getTarget();
 
 		if (target == null) {
 			return false;
@@ -51,7 +51,7 @@ public class HoverBeamGoal extends HoverBaseGoal<SnowQueen> {
 
 	@Override
 	public boolean canContinueToUse() {
-		LivingEntity target = this.attacker.getTarget();
+		LivingEntity target = (LivingEntity) this.attacker.getTarget();
 
 		if (target == null || !target.isAlive()) {
 			return false;
@@ -126,7 +126,7 @@ public class HoverBeamGoal extends HoverBaseGoal<SnowQueen> {
 		}
 
 		// look at target
-		LivingEntity target = this.attacker.getTarget();
+		LivingEntity target = (LivingEntity) this.attacker.getTarget();
 		if (target != null) {
 			float tracking = this.isInPosition ? 1F : 20.0F;
 

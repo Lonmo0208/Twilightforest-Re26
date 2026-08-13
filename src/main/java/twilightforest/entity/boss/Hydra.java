@@ -333,7 +333,7 @@ public class Hydra extends BaseTFBoss {
 			// getTarget() was re-read in the middle of a chain and came back null. Doing a
 			// single snapshot + isAlive() guard at the top prevents any such mid-stream
 			// nullification from ever producing another NPE in customServerAiStep.
-			LivingEntity target = this.getTarget();
+			LivingEntity target = (LivingEntity) this.getTarget();
 			if (target == null || !target.isAlive()) {
 				// Treat a snapshot-invalidated target the same as no-target: nudge yaw and
 				// fall through to idle-head cleanup below.

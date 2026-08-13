@@ -54,7 +54,7 @@ public class LichMinionsGoal extends Goal {
 	@Override
 	public void tick() {
 		if (this.lich.getTeleportInvisibility() > 0) return;
-		LivingEntity targetedEntity = this.lich.getTarget();
+		LivingEntity targetedEntity = (LivingEntity) this.lich.getTarget();
 		if (targetedEntity == null) return;
 		float dist = this.lich.distanceTo(targetedEntity);
 		// spawn minions every so often
@@ -122,7 +122,7 @@ public class LichMinionsGoal extends Goal {
 
 	private void spawnMinionAt() {
 		// find a good spot
-		LivingEntity targetedEntity = this.lich.getTarget();
+		LivingEntity targetedEntity = (LivingEntity) this.lich.getTarget();
 		Vec3 minionSpot = this.lich.findVecInLOSOf(targetedEntity);
 
 		if (minionSpot != null && this.lich.level() instanceof ServerLevelAccessor accessor) {

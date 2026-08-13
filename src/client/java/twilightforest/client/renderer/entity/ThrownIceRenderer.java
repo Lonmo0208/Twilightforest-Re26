@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import twilightforest.entity.projectile.IceBomb;
 
 /**
@@ -50,7 +51,7 @@ public class ThrownIceRenderer extends EntityRenderer<IceBomb, FallingBlockRende
 		super.extractRenderState(entity, state, partialTicks);
 		BlockPos pos = BlockPos.containing(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
 		state.movingBlockRenderState.randomSeedPos = pos;
-		state.movingBlockRenderState.blockPos = pos;
+		state.movingBlockRenderState.pos = new Vec3(pos);
 		state.movingBlockRenderState.blockState = entity.getBlockState();
 		if (entity.level() instanceof ClientLevel clientLevel) {
 			state.movingBlockRenderState.biome = clientLevel.getBiome(pos);

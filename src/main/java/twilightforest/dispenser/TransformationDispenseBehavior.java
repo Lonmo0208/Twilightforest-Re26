@@ -1,7 +1,7 @@
 package twilightforest.dispenser;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.DispenseSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,9 +17,9 @@ public class TransformationDispenseBehavior extends DefaultDispenseItemBehavior 
 	boolean fired = false;
 
 	@Override
-	protected ItemStack execute(BlockSource source, ItemStack stack) {
+	protected ItemStack execute(DispenseSource source, ItemStack stack) {
 		Level level = source.level();
-		BlockPos blockpos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+		BlockPos blockpos = source.pos().relative(source.direction());
 		if (!level.isClientSide()) {
 			for (LivingEntity livingentity : level.getEntitiesOfClass(LivingEntity.class, new AABB(blockpos), EntitySelector.NO_SPECTATORS)) {
 				if (TransformPowderItem.transformEntityIfPossible(livingentity, null, stack, true)) {
@@ -31,7 +31,7 @@ public class TransformationDispenseBehavior extends DefaultDispenseItemBehavior 
 	}
 
 	@Override
-	protected void playSound(BlockSource source) {
+	protected void playSound(DispenseSource source) {
 		if (this.fired) {
 			super.playSound(source);
 		} else {

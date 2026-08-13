@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
 import twilightforest.client.model.entity.DeathTomeModel;
+import twilightforest.mixin.client.MinecraftAccessor;
 import twilightforest.potions.FrostedEffect;
 
 public class IceLayer<S extends LivingEntityRenderState, M extends EntityModel<S>> extends RenderLayer<S, M> {
@@ -49,7 +50,7 @@ public class IceLayer<S extends LivingEntityRenderState, M extends EntityModel<S
 			stack.translate(-0.5F, -0.5F, -0.5F);
 
 			BlockModelRenderState iceModel = new BlockModelRenderState();
-			Minecraft.getInstance().blockModelResolver.update(iceModel, Blocks.ICE.defaultBlockState(), BlockDisplayContext.create());
+			((MinecraftAccessor) Minecraft.getInstance()).tf$getBlockModelResolver().update(iceModel, Blocks.ICE.defaultBlockState(), BlockDisplayContext.create());
 			iceModel.submit(stack, submitNodeCollector, light, OverlayTexture.NO_OVERLAY, 0);
 			stack.popPose();
 		}

@@ -89,6 +89,8 @@ public class TFItemTags {
 	public static final TagKey<Item> REPAIRS_YETI_ARMOR = create("repairs_yeti_armor");
 	public static final TagKey<Item> REPAIRS_TRAVELLERS_GEAR = create("repairs_travellers_gear");
 
+	public static final TagKey<Item> CONTAINERS = create("containers");
+
 	public static final TagKey<Item> SCEPTERS = create("scepters");
 	public static final TagKey<Item> IMMUNE_TO_THORNS = create("immune_to_thorns");
 

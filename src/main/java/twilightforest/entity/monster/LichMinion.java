@@ -8,6 +8,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,7 +52,7 @@ public class LichMinion extends Zombie {
 		this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Lich.class) {
 			@Override
-			protected boolean canAttack(@Nullable LivingEntity potentialTarget, TargetingConditions targetPredicate) {
+			protected boolean canAttack(@Nullable Entity potentialTarget, TargetingConditions targetPredicate) {
 				return !(potentialTarget instanceof Lich) && super.canAttack(potentialTarget, targetPredicate);
 			}
 		});
@@ -60,7 +61,7 @@ public class LichMinion extends Zombie {
 
 	@Override
 	public boolean hurtServer(ServerLevel server, DamageSource source, float amount) {
-		LivingEntity prevTarget = getTarget();
+		LivingEntity prevTarget = (LivingEntity) getTarget();
 
 		if (super.hurtServer(server, source, amount)) {
 			if (source.getEntity() instanceof Lich) {
