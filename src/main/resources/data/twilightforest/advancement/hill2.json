@@ -1,4 +1,4 @@
-{
+﻿{
   "parent": "twilightforest:hill1",
   "criteria": {
     "redcap": {
@@ -8,7 +8,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "twilightforest:redcap_sapper",
+              "entity_type": "twilightforest:redcap_sapper",
               "location": {
                 "structures": "twilightforest:medium_hollow_hill"
               }

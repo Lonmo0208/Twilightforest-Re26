@@ -1,4 +1,4 @@
-{
+﻿{
   "parent": "twilightforest:beanstalk",
   "criteria": {
     "giant": {
@@ -8,7 +8,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "twilightforest:giant_miner"
+              "entity_type": "twilightforest:giant_miner"
             }
           }
         ]
