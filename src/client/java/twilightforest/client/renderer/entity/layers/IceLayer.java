@@ -28,7 +28,10 @@ public class IceLayer<S extends LivingEntityRenderState, M extends EntityModel<S
 	public void submit(PoseStack stack, SubmitNodeCollector submitNodeCollector, int light, S state, float netHeadYaw, float headPitch) {
 		if (!state.isFullyFrozen) return;
 		double count = -1.0D;
-		int id = (int)(state.ageInTicks * 1000);
+		// Use a slowly-changing seed (update every 5 ticks / 0.25s) to avoid violent per-frame
+		// position/rotation jitter of ice cubes. The original code used ageInTicks * 1000 which
+		// changed the seed every frame, causing visible twitching.
+		int id = (int)(state.ageInTicks / 5);
 
 		this.random.setSeed(id * id * 3121L + id * 45238971L);
 
