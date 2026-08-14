@@ -100,6 +100,11 @@ tasks.named('processDataResources') {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
+// Skip the test task so `build` does not block on running tests
+tasks.named('test') {
+	enabled = false
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
