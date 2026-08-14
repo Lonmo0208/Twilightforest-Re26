@@ -14,6 +14,8 @@ public class ServerTFBossBar extends ServerBossEvent {
 	public ServerTFBossBar(Component name, int color, BossBarOverlay overlay) {
 		super(UUID.randomUUID(), name, BossBarColor.WHITE, overlay);
 		this.color = color;
+		this.setPlayBossMusic(true);
+		this.setDarkenScreen(true);
 	}
 
 	public int getBarColor() {

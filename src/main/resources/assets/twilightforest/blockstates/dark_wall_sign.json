@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
-      "model": "twilightforest:block/dark_sign"
+    "facing=east": {
+      "model": "twilightforest:block/dark_wall_sign",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "twilightforest:block/dark_wall_sign",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "twilightforest:block/dark_wall_sign"
+    },
+    "facing=west": {
+      "model": "twilightforest:block/dark_wall_sign",
+      "y": 90
     }
   }
 }

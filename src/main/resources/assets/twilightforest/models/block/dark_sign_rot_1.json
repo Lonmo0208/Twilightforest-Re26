@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_sign_rot_1",
+  "textures": {
+    "all": "twilightforest:block/dark_sign",
+    "particle": "twilightforest:block/wood/planks_darkwood_0"
+  }
+}
