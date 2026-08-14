@@ -1,5 +1,6 @@
 package twilightforest.mixin.client;
 
+import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.MultiblockChestResources;
 import net.minecraft.client.renderer.block.BuiltInBlockModels;
 import net.minecraft.client.renderer.block.model.SpecialBlockModelWrapper;
@@ -16,8 +17,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import twilightforest.TwilightForestMod;
+import twilightforest.block.TrophyBlock;
+import twilightforest.block.TrophyWallBlock;
+import twilightforest.client.renderer.block.TrophyRenderer;
+import twilightforest.client.renderer.special.BrazierSpecialRenderer;
 import twilightforest.client.renderer.special.KeepsakeCasketSpecialRenderer;
 import twilightforest.client.renderer.special.SkullChestSpecialRenderer;
+import twilightforest.client.renderer.special.TrophyBlockSpecialRenderer;
+import twilightforest.enums.BossVariant;
 import twilightforest.init.TFBlocks;
 
 import java.util.Optional;
@@ -63,6 +70,32 @@ public abstract class BuiltInBlockModelsMixin {
 		// Skull chest and keepsake casket (render with their own special renderers)
 		registerFacingBlock(builder, TFBlocks.SKULL_CHEST, new SkullChestSpecialRenderer.Unbaked());
 		registerFacingBlock(builder, TFBlocks.KEEPSAKE_CASKET, new KeepsakeCasketSpecialRenderer.Unbaked());
+
+		// Boss trophies (ground + wall) and the brazier, so they render through the block path
+		registerTrophy(builder, TFBlocks.NAGA_TROPHY, BossVariant.NAGA);
+		registerTrophy(builder, TFBlocks.LICH_TROPHY, BossVariant.LICH);
+		registerTrophy(builder, TFBlocks.HYDRA_TROPHY, BossVariant.HYDRA);
+		registerTrophy(builder, TFBlocks.UR_GHAST_TROPHY, BossVariant.UR_GHAST);
+		registerTrophy(builder, TFBlocks.KNIGHT_PHANTOM_TROPHY, BossVariant.KNIGHT_PHANTOM);
+		registerTrophy(builder, TFBlocks.SNOW_QUEEN_TROPHY, BossVariant.SNOW_QUEEN);
+		registerTrophy(builder, TFBlocks.MINOSHROOM_TROPHY, BossVariant.MINOSHROOM);
+		registerTrophy(builder, TFBlocks.ALPHA_YETI_TROPHY, BossVariant.ALPHA_YETI);
+		registerTrophy(builder, TFBlocks.QUEST_RAM_TROPHY, BossVariant.QUEST_RAM);
+
+		registerWallTrophy(builder, TFBlocks.NAGA_WALL_TROPHY, BossVariant.NAGA);
+		registerWallTrophy(builder, TFBlocks.LICH_WALL_TROPHY, BossVariant.LICH);
+		registerWallTrophy(builder, TFBlocks.HYDRA_WALL_TROPHY, BossVariant.HYDRA);
+		registerWallTrophy(builder, TFBlocks.UR_GHAST_WALL_TROPHY, BossVariant.UR_GHAST);
+		registerWallTrophy(builder, TFBlocks.KNIGHT_PHANTOM_WALL_TROPHY, BossVariant.KNIGHT_PHANTOM);
+		registerWallTrophy(builder, TFBlocks.SNOW_QUEEN_WALL_TROPHY, BossVariant.SNOW_QUEEN);
+		registerWallTrophy(builder, TFBlocks.MINOSHROOM_WALL_TROPHY, BossVariant.MINOSHROOM);
+		registerWallTrophy(builder, TFBlocks.ALPHA_YETI_WALL_TROPHY, BossVariant.ALPHA_YETI);
+		registerWallTrophy(builder, TFBlocks.QUEST_RAM_WALL_TROPHY, BossVariant.QUEST_RAM);
+
+		builder.put((colors, state) -> new SpecialBlockModelWrapper.Unbaked<>(
+			new BrazierSpecialRenderer.Unbaked(),
+			Optional.empty()
+		), TFBlocks.BRAZIER);
 	}
 
 	/**
@@ -93,6 +126,39 @@ public abstract class BuiltInBlockModelsMixin {
 		builder.put((colors, state) -> {
 			Direction facing = state.hasProperty(ChestBlock.FACING) ? state.getValue(ChestBlock.FACING) : Direction.NORTH;
 			return new SpecialBlockModelWrapper.Unbaked<>(special, Optional.of(ChestRenderer.modelTransformation(facing)));
+		}, block);
+	}
+
+	/**
+	 * Registers a free-standing boss trophy as a built-in block model, dispatching on
+	 * {@link TrophyBlock#ROTATION} like vanilla mob heads, so that LivingBlock trophies render
+	 * identically to the placed block.
+	 */
+	private static void registerTrophy(BuiltInBlockModels.Builder builder, TrophyBlock block, BossVariant variant) {
+		builder.put((colors, state) -> {
+			int rotation = state.getValue(TrophyBlock.ROTATION);
+			return new SpecialBlockModelWrapper.Unbaked<>(
+				new TrophyBlockSpecialRenderer.Unbaked(variant, false),
+				Optional.of(TrophyRenderer.createGroundTransformation(rotation))
+			);
+		}, block);
+	}
+
+	/**
+	 * Registers a wall-mounted boss trophy as a built-in block model, dispatching on
+	 * {@link TrophyWallBlock#FACING} like vanilla wall heads. The UR Ghast trophy uses the unmounted
+	 * wall transformation, matching {@link TrophyRenderer}'s block entity rendering.
+	 */
+	private static void registerWallTrophy(BuiltInBlockModels.Builder builder, TrophyWallBlock block, BossVariant variant) {
+		builder.put((colors, state) -> {
+			Direction facing = state.getValue(TrophyWallBlock.FACING);
+			Transformation transformation = variant == BossVariant.UR_GHAST
+				? TrophyRenderer.createUnmountedWallTransformation(facing)
+				: TrophyRenderer.createWallTransformation(facing);
+			return new SpecialBlockModelWrapper.Unbaked<>(
+				new TrophyBlockSpecialRenderer.Unbaked(variant, true),
+				Optional.of(transformation)
+			);
 		}, block);
 	}
 }

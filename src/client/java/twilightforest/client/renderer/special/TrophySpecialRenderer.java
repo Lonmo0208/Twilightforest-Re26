@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.RotationSegment;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 import twilightforest.client.model.entity.TrophyBlockModel;

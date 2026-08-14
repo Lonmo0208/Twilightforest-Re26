@@ -131,7 +131,7 @@ public class TrophyRenderer implements BlockEntityRenderer<TrophyBlockEntity, Tr
 		}
 	}
 
-	private static Transformation createWallTransformation(Direction wallDirection) {
+	public static Transformation createWallTransformation(Direction wallDirection) {
 		return new Transformation(
 			new Vector3f(0.5F - wallDirection.getStepX() * 0.25F, 0.25F, 0.5F - wallDirection.getStepZ() * 0.25F),
 			Axis.YP.rotationDegrees(-wallDirection.getOpposite().toYRot()),
@@ -140,7 +140,7 @@ public class TrophyRenderer implements BlockEntityRenderer<TrophyBlockEntity, Tr
 		);
 	}
 
-	private static Transformation createUnmountedWallTransformation(Direction wallDirection) {
+	public static Transformation createUnmountedWallTransformation(Direction wallDirection) {
 		return new Transformation(
 			new Vector3f(0.5F, 0.25F, 0.5F),
 			Axis.YP.rotationDegrees(-wallDirection.getOpposite().toYRot()),
@@ -149,7 +149,7 @@ public class TrophyRenderer implements BlockEntityRenderer<TrophyBlockEntity, Tr
 		);
 	}
 
-	private static Transformation createGroundTransformation(int segment) {
+	public static Transformation createGroundTransformation(int segment) {
 		return new Transformation(
 			new Matrix4f().translation(0.5F, 0.0F, 0.5F).rotate(Axis.YP.rotationDegrees(-RotationSegment.convertToDegrees(segment))).scale(-1.0F, -1.0F, 1.0F)
 		);
