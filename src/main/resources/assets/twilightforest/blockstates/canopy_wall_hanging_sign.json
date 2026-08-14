@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
-      "model": "twilightforest:block/canopy_hanging_sign"
+    "facing=east": {
+      "model": "twilightforest:block/canopy_wall_hanging_sign",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "twilightforest:block/canopy_wall_hanging_sign",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "twilightforest:block/canopy_wall_hanging_sign"
+    },
+    "facing=west": {
+      "model": "twilightforest:block/canopy_wall_hanging_sign",
+      "y": 90
     }
   }
 }

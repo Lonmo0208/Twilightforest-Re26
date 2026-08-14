@@ -42,6 +42,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.world.entity.Entity;
 import twilightforest.TwilightForestMod;
+import net.minecraft.core.registries.BuiltInRegistries;
 import twilightforest.client.event.ColorHandler;
 import twilightforest.client.event.ClientGameEvents;
 import twilightforest.client.model.TFModelLayers;

@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
-      "model": "twilightforest:block/time_hanging_sign"
+    "facing=east": {
+      "model": "twilightforest:block/time_wall_hanging_sign",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "twilightforest:block/time_wall_hanging_sign",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "twilightforest:block/time_wall_hanging_sign"
+    },
+    "facing=west": {
+      "model": "twilightforest:block/time_wall_hanging_sign",
+      "y": 90
     }
   }
 }

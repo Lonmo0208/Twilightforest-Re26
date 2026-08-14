@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import twilightforest.TwilightForestMod;
@@ -3224,6 +3225,47 @@ public static final FlowerPotBlock POTTED_DEAD_THORN = Registry.register(
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("yellow_castle_door"), new BlockItem(YELLOW_CASTLE_DOOR, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("yellow_castle_door")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("yellow_castle_rune_brick"), new BlockItem(YELLOW_CASTLE_RUNE_BRICK, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("yellow_castle_rune_brick")))));
 		Registry.register(BuiltInRegistries.ITEM, TwilightForestMod.prefix("yeti_cave_miniature_structure"), new BlockItem(YETI_CAVE_MINIATURE_STRUCTURE, new Item.Properties().useBlockDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, TwilightForestMod.prefix("yeti_cave_miniature_structure")))));
+
+		// Register all sign blocks with BlockEntityType for proper rendering
+		BlockEntityTypes.SIGN.addValidBlock(TWILIGHT_OAK_SIGN);
+		BlockEntityTypes.SIGN.addValidBlock(TWILIGHT_WALL_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(TWILIGHT_OAK_HANGING_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(TWILIGHT_OAK_WALL_HANGING_SIGN);
+
+		BlockEntityTypes.SIGN.addValidBlock(CANOPY_SIGN);
+		BlockEntityTypes.SIGN.addValidBlock(CANOPY_WALL_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(CANOPY_HANGING_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(CANOPY_WALL_HANGING_SIGN);
+
+		BlockEntityTypes.SIGN.addValidBlock(MANGROVE_SIGN);
+		BlockEntityTypes.SIGN.addValidBlock(MANGROVE_WALL_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(MANGROVE_HANGING_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(MANGROVE_WALL_HANGING_SIGN);
+
+		BlockEntityTypes.SIGN.addValidBlock(DARK_SIGN);
+		BlockEntityTypes.SIGN.addValidBlock(DARK_WALL_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(DARK_HANGING_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(DARK_WALL_HANGING_SIGN);
+
+		BlockEntityTypes.SIGN.addValidBlock(TIME_SIGN);
+		BlockEntityTypes.SIGN.addValidBlock(TIME_WALL_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(TIME_HANGING_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(TIME_WALL_HANGING_SIGN);
+
+		BlockEntityTypes.SIGN.addValidBlock(TRANSFORMATION_SIGN);
+		BlockEntityTypes.SIGN.addValidBlock(TRANSFORMATION_WALL_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(TRANSFORMATION_HANGING_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(TRANSFORMATION_WALL_HANGING_SIGN);
+
+		BlockEntityTypes.SIGN.addValidBlock(MINING_SIGN);
+		BlockEntityTypes.SIGN.addValidBlock(MINING_WALL_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(MINING_HANGING_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(MINING_WALL_HANGING_SIGN);
+
+		BlockEntityTypes.SIGN.addValidBlock(SORTING_SIGN);
+		BlockEntityTypes.SIGN.addValidBlock(SORTING_WALL_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(SORTING_HANGING_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(SORTING_WALL_HANGING_SIGN);
 	}
 }
 

@@ -1,7 +1,64 @@
 {
   "variants": {
-    "": {
-      "model": "twilightforest:block/twilight_oak_sign"
+    "rotation=0": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_0"
+    },
+    "rotation=1": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_1"
+    },
+    "rotation=2": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_2"
+    },
+    "rotation=3": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_3"
+    },
+    "rotation=4": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_0",
+      "y": 90
+    },
+    "rotation=5": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_1",
+      "y": 90
+    },
+    "rotation=6": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_2",
+      "y": 90
+    },
+    "rotation=7": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_3",
+      "y": 90
+    },
+    "rotation=8": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_0",
+      "y": 180
+    },
+    "rotation=9": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_1",
+      "y": 180
+    },
+    "rotation=10": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_2",
+      "y": 180
+    },
+    "rotation=11": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_3",
+      "y": 180
+    },
+    "rotation=12": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_0",
+      "y": 270
+    },
+    "rotation=13": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_1",
+      "y": 270
+    },
+    "rotation=14": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_2",
+      "y": 270
+    },
+    "rotation=15": {
+      "model": "twilightforest:block/twilight_oak_sign_rot_3",
+      "y": 270
     }
   }
 }

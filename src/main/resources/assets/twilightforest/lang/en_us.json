@@ -1,0 +1,4 @@
+{
+  "config.twilightforest.allow_scepter_uncrafting": "Allow Scepter Uncrafting",
+  "config.twilightforest.allow_scepter_uncrafting.tooltip": "If true, allows the four Lich Scepters (Twilight, Life Drain, Zombie, Fortification) to be uncrafted in the Uncrafting Table.\nBy default, scepters cannot be uncrafted to balance gameplay - they are powerful boss rewards.\nWhen enabled, uncrafting a scepter will return its base ingredients plus a slightly damaged version of the scepter.\nNOTE: This option only takes effect after fully restarting the game (it is a world-restart setting)."
+}
