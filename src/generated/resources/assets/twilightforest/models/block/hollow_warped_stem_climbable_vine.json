@@ -1,9 +1,0 @@
-{
-  "parent": "twilightforest:block/climbable_hollow_log",
-  "textures": {
-    "climbable": "minecraft:block/vine",
-    "inner": "minecraft:block/stripped_warped_stem",
-    "side": "minecraft:block/warped_stem",
-    "top": "minecraft:block/warped_stem_top"
-  }
-}

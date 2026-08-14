@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "twilightforest",
-	"version": "${version}",
+	"version": "4.8.4205",
 	"name": "The Twilight Forest:Re26",
 	"description": "Unofficial port of Twilight Forest from Minecraft 1.21.1 to Minecraft 26.1.x and 26.2.x, adapting the mod's dimension, biomes, structures, bosses, items, and mechanics to the latest Minecraft version for modern gameplay.",
 	"authors": [
