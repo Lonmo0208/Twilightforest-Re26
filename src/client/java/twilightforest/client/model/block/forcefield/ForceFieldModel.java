@@ -132,6 +132,10 @@ public class ForceFieldModel implements BlockStateModel, LevelAwareBlockStateMod
         public static List<ExtraDirection> getExtraDirections(BlockState state, BlockGetter level, BlockPos pos) {
                 List<ExtraDirection> directions = new ArrayList<>();
 
+                if (!(state.getBlock() instanceof ForceFieldBlock)) {
+                        return directions;
+                }
+
                 boolean down = state.getValue(ForceFieldBlock.DOWN);
                 boolean up = state.getValue(ForceFieldBlock.UP);
                 boolean north = state.getValue(ForceFieldBlock.NORTH);
