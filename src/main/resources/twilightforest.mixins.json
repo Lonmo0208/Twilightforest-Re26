@@ -15,6 +15,7 @@
 		"ChunkStatusTasksMixin",
 		"BlockStateMixin",
 		"EnderManMixin",
+		"EntityEquipmentMixin",
 		"EntityMixin",
 		"EntityStopRidingMixin",
 		"EntityTeleportMixin",

@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import twilightforest.TwilightForestMod;
 import twilightforest.events.CharmEvents;
 
 /**
@@ -20,6 +21,8 @@ public class ServerPlayerMixin {
 
 	@Inject(method = "die", at = @At("HEAD"))
 	private void tf$handleDeathSave(DamageSource source, CallbackInfo ci) {
-		CharmEvents.handleDeathSave((ServerPlayer) (Object) this);
+		ServerPlayer self = (ServerPlayer) (Object) this;
+		TwilightForestMod.LOGGER.info("[CharmEvents-MIXIN] ServerPlayer.die() entered for {}", self.getName().getString());
+		CharmEvents.handleDeathSave(self);
 	}
 }
