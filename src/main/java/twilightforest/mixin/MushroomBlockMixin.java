@@ -1,6 +1,7 @@
 package twilightforest.mixin;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.MushroomBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,7 +35,14 @@ public class MushroomBlockMixin {
 				for (int z = -1; z <= 1; z++) {
 					if (x == 0 && z == 0)
 						continue;
-					if (level.getBlockState(pos.offset(x, -1, z)).is(TFBlocks.TWILIGHT_PORTAL)) {
+					BlockPos neighbor = pos.offset(x, -1, z);
+					// During world generation the level is a WorldGenRegion whose
+					// getBlockState throws "Requested chunk unavailable during world
+					// generation" for positions whose chunk lies outside the region
+					// cache. Guard the access so mushrooms placed at the edge of a
+					// generated chunk do not crash the server (seen with C2ME).
+					if (level.hasChunk(SectionPos.blockToSectionCoord(neighbor.getX()), SectionPos.blockToSectionCoord(neighbor.getZ()))
+						&& level.getBlockState(neighbor).is(TFBlocks.TWILIGHT_PORTAL)) {
 						cir.setReturnValue(true);
 						return;
 					}
