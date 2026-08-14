@@ -155,17 +155,19 @@ public class TFItemStackUtils {
 					} else {
 						blockedItems.add(itemstack);
 					}
-				} else if (j >= 100 && j < 104) {
-					// Map old armor slot numbers (100-103) to equipment slots
-					EquipmentSlot slot = switch (j - 100) {
-						case 0 -> EquipmentSlot.FEET;
-						case 1 -> EquipmentSlot.LEGS;
-						case 2 -> EquipmentSlot.CHEST;
-						case 3 -> EquipmentSlot.HEAD;
-						default -> null;
-					};
-					if (slot != null && inventory.getItem(j).isEmpty()) {
+				} else if (j >= 36 && j <= 40) {
+					// Native equipment slots: 36=FEET,37=LEGS,38=CHEST,39=HEAD,40=OFFHAND.
+					// Inventory.setItem(36..40) maps to the shared EntityEquipment.
+					if (inventory.getItem(j).isEmpty()) {
 						inventory.setItem(j, itemstack);
+					} else {
+						blockedItems.add(itemstack);
+					}
+				} else if (j >= 100 && j < 104) {
+					// Legacy armor slot numbers (100-103) -> map to native 36-39
+					int nativeSlot = 36 + (j - 100);
+					if (inventory.getItem(nativeSlot).isEmpty()) {
+						inventory.setItem(nativeSlot, itemstack);
 					} else {
 						blockedItems.add(itemstack);
 					}
