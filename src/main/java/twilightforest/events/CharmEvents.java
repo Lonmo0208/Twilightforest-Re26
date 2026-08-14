@@ -201,14 +201,28 @@ public class CharmEvents {
 			}
 		}
 
+		// Armor slots: save to keepInventory using slot ids 100-103 (matching loadNoClear convention: 100=FEET, 101=LEGS, 102=CHEST, 103=HEAD)
 		for (EquipmentSlot equipmentSlot : List.of(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD)) {
 			ItemStack armor = player.getItemBySlot(equipmentSlot);
 			if (armor.is(TFItemTags.KEPT_ON_DEATH)) {
+				int saveSlot = switch (equipmentSlot) {
+					case FEET -> 100;
+					case LEGS -> 101;
+					case CHEST -> 102;
+					case HEAD -> 103;
+					default -> -1;
+				};
+				if (saveSlot >= 0) {
+					keepInventory.setItem(saveSlot, armor.copy());
+				}
 				player.setItemSlot(equipmentSlot, ItemStack.EMPTY);
 			}
 		}
 
-		if (player.getItemBySlot(EquipmentSlot.OFFHAND).is(TFItemTags.KEPT_ON_DEATH)) {
+		// Offhand slot: save to keepInventory using slot id 150 (mapped to inventory.setItem(40) on load)
+		ItemStack offhand = player.getItemBySlot(EquipmentSlot.OFFHAND);
+		if (offhand.is(TFItemTags.KEPT_ON_DEATH)) {
+			keepInventory.setItem(150, offhand.copy());
 			player.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
 		}
 
@@ -458,6 +472,24 @@ public class CharmEvents {
 				tagList.add(tag);
 			}
 		}
+		// Save armor slots using the same convention as loadNoClear: 100=FEET, 101=LEGS, 102=CHEST, 103=HEAD
+		for (int saveSlot = 100; saveSlot <= 103; saveSlot++) {
+			ItemStack stack = inventory.getItem(saveSlot);
+			if (!stack.isEmpty()) {
+				CompoundTag tag = new CompoundTag();
+				tag.putByte("Slot", (byte) saveSlot);
+				tag.merge((CompoundTag) ItemStack.CODEC.encodeStart(registryAccess.createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow());
+				tagList.add(tag);
+			}
+		}
+		// Save offhand slot using convention 150 (mapped to inventory.setItem(40) on load)
+		ItemStack offhand = inventory.getItem(150);
+		if (!offhand.isEmpty()) {
+			CompoundTag tag = new CompoundTag();
+			tag.putByte("Slot", (byte) 150);
+			tag.merge((CompoundTag) ItemStack.CODEC.encodeStart(registryAccess.createSerializationContext(NbtOps.INSTANCE), offhand).getOrThrow());
+			tagList.add(tag);
+		}
 	}
 
 	// Helper to load items from a ListTag into an Inventory
@@ -466,8 +498,29 @@ public class CharmEvents {
 			CompoundTag tag = tagList.getCompound(i).orElse(new CompoundTag());
 			int slot = tag.getByte("Slot").orElse((byte)0) & 0xFF;
 			ItemStack stack = ItemStack.OPTIONAL_CODEC.decode(registryAccess.createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE), tag).result().map(Pair::getFirst).orElse(ItemStack.EMPTY);
-			if (!stack.isEmpty() && slot >= 0 && slot < inventory.getNonEquipmentItems().size()) {
-				inventory.getNonEquipmentItems().set(slot, stack);
+			if (stack.isEmpty()) continue;
+			if (slot >= 0 && slot < inventory.getNonEquipmentItems().size()) {
+				if (inventory.getNonEquipmentItems().get(slot).isEmpty()) {
+					inventory.getNonEquipmentItems().set(slot, stack);
+				} else {
+					inventory.add(stack);
+				}
+			} else if (slot >= 100 && slot <= 103) {
+				// Armor slots: mirror loadNoClear convention (100-103 -> FEET, LEGS, CHEST, HEAD)
+				if (inventory.getItem(slot).isEmpty()) {
+					inventory.setItem(slot, stack);
+				} else {
+					inventory.add(stack);
+				}
+			} else if (slot == 150) {
+				// Offhand: slot 150 maps to inventory.setItem(40) per loadNoClear convention
+				if (inventory.getItem(40).isEmpty()) {
+					inventory.setItem(40, stack);
+				} else {
+					inventory.add(stack);
+				}
+			} else {
+				inventory.add(stack);
 			}
 		}
 	}
