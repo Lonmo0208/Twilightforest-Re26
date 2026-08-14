@@ -2,6 +2,7 @@ package twilightforest.enchantment;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -13,10 +14,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.EnchantedItemInUse;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import twilightforest.entity.projectile.ChainBlock;
@@ -49,8 +50,8 @@ public record SmashBlocksEffect(LevelBasedValue maxSmash, LevelBasedValue radius
 				BlockState state = level.getBlockState(pos);
 				if (!state.isAir()) {
 					if (this.immuneBlocks().isPresent() && this.immuneBlocks().get().contains(state.getBlock().builtInRegistryHolder())) continue;
-					if (ChainBlock.canBreakBlockAt(level, pos, state, item.itemStack(), player.gameMode.getGameModeForPlayer() == GameType.CREATIVE)) {
-						// TODO: Port to Fabric - Block break event handling
+					if (ChainBlock.canBreakBlockAt(level, pos, state, item.itemStack(), player.gameMode.getGameModeForPlayer().isBlockPlacingRestricted())
+						&& PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, state, level.getBlockEntity(pos))) {
 						level.destroyBlock(pos, false);
 						if (!player.isCreative()) state.getBlock().playerDestroy(level, player, pos, state, level.getBlockEntity(pos), item.itemStack());
 						if (this.smashSound().isPresent()) {
