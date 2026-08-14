@@ -60,6 +60,14 @@ public class CharmEvents {
 
 	@PostConstruct
 	private void setup() {
+		// DIAGNOSTIC: check KEPT_ON_DEATH tag at startup AND after server (datapack) load,
+		// to confirm whether the tag is actually registered at runtime.
+		checkKeptOnDeathTag("startup");
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STARTED.register(server ->
+			checkKeptOnDeathTag("server_started"));
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STARTING.register(server ->
+			checkKeptOnDeathTag("server_starting"));
+
 		// 1. applyCharmOfLife - Check for charm of life before lethal damage kills the player
 		// Fabric doesn't have a cancellable death event, so we use ALLOW_DAMAGE to intercept lethal damage
 		net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
@@ -105,11 +113,195 @@ public class CharmEvents {
 	 * This runs BEFORE dropAllDeathLoot() so we can save items to persistent data and clear the inventory.
 	 */
 	public static void handleDeathSave(ServerPlayer player) {
-		if (!player.level().isClientSide() && !(player instanceof FakePlayer) &&
-				!player.isCreative() && !player.isSpectator()) {
-			if (player.level() instanceof ServerLevel serverLevel && !serverLevel.getGameRules().get(GameRules.KEEP_INVENTORY)) {
+		if (player.level().isClientSide() || player instanceof FakePlayer) return;
+		if (player.level() instanceof ServerLevel serverLevel && !serverLevel.getGameRules().get(GameRules.KEEP_INVENTORY)) {
+			TwilightForestMod.LOGGER.info("[CharmEvents] handleDeathSave called for {} (keepInventory OFF, creative={}, spectator={})",
+				player.getName().getString(), player.isCreative(), player.isSpectator());
+			if (!player.isCreative() && !player.isSpectator()) {
+				// Survival: full keeping behavior (charm of keeping + KEPT_ON_DEATH tag + keepsake casket)
 				handleCharmOfKeeping(player);
 				stockKeepsakeCasket(player);
+			} else {
+				// Creative/spectator: MC 26.2 still drops worn equipment on death in creative (no creative
+				// check in the equipment drop path), so honor the KEPT_ON_DEATH tag here too to keep
+				// tagged items (e.g. Phantom armor) from dropping. Charm/casket mechanics stay survival-only.
+				saveKeptOnDeathItemsOnly(player);
+			}
+		}
+	}
+
+	/**
+	 * Saves every {@code kept_on_death} tagged item (inventory, armor, offhand) to the player's
+	 * persistent data and clears it from the player so it is never dropped on death. Used for
+	 * creative/spectator deaths where the charm-of-keeping/casket mechanics do not apply.
+	 */
+	private static void saveKeptOnDeathItemsOnly(Player player) {
+		Inventory keepInventory = new Inventory(player, new EntityEquipment());
+		ListTag tagList = new ListTag();
+		boolean saved = false;
+
+		// Main inventory + hotbar slots
+		NonNullList<ItemStack> items = player.getInventory().getNonEquipmentItems();
+		for (int slot = 0; slot < items.size(); slot++) {
+			ItemStack stack = items.get(slot);
+			if (stack.is(TFItemTags.KEPT_ON_DEATH)) {
+				keepInventory.getNonEquipmentItems().set(slot, stack.copy());
+				items.set(slot, ItemStack.EMPTY);
+				saved = true;
+				TwilightForestMod.LOGGER.info("[CharmEvents] KEPT_ON_DEATH inventory item saved {} -> slot {}", stack, slot);
+			}
+		}
+
+		// Armor slots (native inventory slots 36-39)
+		for (EquipmentSlot slot : List.of(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD)) {
+			ItemStack armor = player.getItemBySlot(slot);
+			int invSlot = 36 + slot.getIndex();
+			if (armor.is(TFItemTags.KEPT_ON_DEATH)) {
+				keepInventory.setItem(invSlot, armor.copy());
+				clearEquipmentSlotTriple(player, slot, invSlot);
+				saved = true;
+				TwilightForestMod.LOGGER.info("[CharmEvents] KEPT_ON_DEATH armor saved {} -> native slot {}", armor, invSlot);
+			}
+		}
+
+		// Offhand slot (native inventory slot 40)
+		ItemStack offhand = player.getItemBySlot(EquipmentSlot.OFFHAND);
+		if (offhand.is(TFItemTags.KEPT_ON_DEATH)) {
+			keepInventory.setItem(40, offhand.copy());
+			clearEquipmentSlotTriple(player, EquipmentSlot.OFFHAND, 40);
+			saved = true;
+			TwilightForestMod.LOGGER.info("[CharmEvents] KEPT_ON_DEATH offhand saved {} -> native slot 40", offhand);
+		}
+
+		if (saved && !keepInventory.isEmpty()) {
+			saveInventoryToListTag(player.registryAccess(), keepInventory, tagList);
+			getPlayerData(player).put(CHARM_INV_TAG, tagList);
+			TwilightForestMod.LOGGER.info("[CharmEvents] saved {} KEPT_ON_DEATH item(s) to persistent data", tagList.size());
+		}
+	}
+
+	private static void checkKeptOnDeathTag(String phase) {
+		try {
+			net.minecraft.resources.Identifier[] check = {
+				net.minecraft.resources.Identifier.fromNamespaceAndPath("twilightforest", "tower_key"),
+				net.minecraft.resources.Identifier.fromNamespaceAndPath("twilightforest", "phantom_helmet"),
+				net.minecraft.resources.Identifier.fromNamespaceAndPath("twilightforest", "phantom_chestplate")
+			};
+			StringBuilder sb = new StringBuilder();
+			for (net.minecraft.resources.Identifier loc : check) {
+				var holder = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(loc);
+				boolean inTag = holder != null && holder.isPresent() && holder.get().is(TFItemTags.KEPT_ON_DEATH);
+				sb.append(loc).append(" inTag=").append(inTag).append("; ");
+			}
+			TwilightForestMod.LOGGER.info("[CharmEvents-DIAG] kept_on_death tag check [{}]: {}", phase, sb);
+		} catch (Exception ex) {
+			TwilightForestMod.LOGGER.error("[CharmEvents-DIAG] Failed to inspect kept_on_death tag [{}]", phase, ex);
+		}
+	}
+
+	/**
+	 * Called from PlayerMixin.dropEquipment HEAD as a LAST-MINUTE safety sweep.
+	 * This runs IMMEDIATELY before {@link Player#dropEquipment} would call
+	 * {@code destroyVanishingCursedItems()} and {@code inventory.dropAll()}.
+	 * <p>
+	 * If any KEPT_ON_DEATH item somehow survived the earlier clear (e.g. through an
+	 * unexpected code path restoring it, or a different mod overwriting the slot),
+	 * this method will:
+	 * 1) read the already-saved CHARM_INV_TAG from persistent data,
+	 * 2) merge the surviving item on top of it (so we never lose the saved copy),
+	 * 3) write back the merged inventory, and
+	 * 4) do the triple-clear on the player slot so inventory.dropAll finds nothing.
+	 * <p>
+	 * If the slot is already empty this is a fast no-op.
+	 */
+	public static void sweepKeptOnDeathItemsBeforeDrop(Player player) {
+		// Keep the KEPT_ON_DEATH safety net for every game mode (MC 26.2 drops equipment in
+		// creative too); only client-side / fake players are excluded.
+		if (player.level().isClientSide() || player instanceof FakePlayer) return;
+
+		// Armor slots (FEET 0, LEGS 1, CHEST 2, HEAD 3 => native inventory slots 36..39)
+		for (EquipmentSlot slot : List.of(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD)) {
+			ItemStack worn = player.getItemBySlot(slot);
+			if (!worn.isEmpty() && worn.is(TFItemTags.KEPT_ON_DEATH)) {
+				int invSlot = 36 + slot.getIndex();
+				TwilightForestMod.LOGGER.info("[CharmEvents] SWEEP found residual KEPT_ON_DEATH armor {} on {}, persisting to slot {}", worn, slot, invSlot);
+				persistResidualKeptItem(player, worn.copy(), invSlot);
+				clearEquipmentSlotTriple(player, slot, invSlot);
+			}
+		}
+		// Offhand slot (native inventory slot 40)
+		ItemStack offhand = player.getItemBySlot(EquipmentSlot.OFFHAND);
+		if (!offhand.isEmpty() && offhand.is(TFItemTags.KEPT_ON_DEATH)) {
+			TwilightForestMod.LOGGER.info("[CharmEvents] SWEEP found residual KEPT_ON_DEATH offhand {}, persisting to slot 40", offhand);
+			persistResidualKeptItem(player, offhand.copy(), 40);
+			clearEquipmentSlotTriple(player, EquipmentSlot.OFFHAND, 40);
+		}
+	}
+
+	private static void persistResidualKeptItem(Player player, ItemStack keptCopy, int saveSlot) {
+		Inventory tmp = new Inventory(player, new EntityEquipment());
+		CompoundTag playerData = getPlayerData(player);
+		ListTag existing = playerData.contains(CHARM_INV_TAG)
+			? playerData.getListOrEmpty(CHARM_INV_TAG)
+			: new ListTag();
+		loadListTagToInventory(player.registryAccess(), existing, tmp);
+		// Overwrite only if the existing saveSlot is empty (don't clobber a previously-saved stack with the
+		// same KEPT_ON_DEATH item that was already saved in handleCharmOfKeeping). If the same slot
+		// already has a non-empty stack in tmp we assume that was the authoritative save and we just
+		// drop this residual duplicate.
+		if (tmp.getItem(saveSlot).isEmpty()) {
+			tmp.setItem(saveSlot, keptCopy);
+		}
+		ListTag out = new ListTag();
+		saveInventoryToListTag(player.registryAccess(), tmp, out);
+		playerData.put(CHARM_INV_TAG, out);
+	}
+
+	/**
+	 * Called from EntityEquipmentMixin.dropAll HEAD — the absolute lowest-level equipment-drop exit point.
+	 * {@code EntityEquipment.dropAll} iterates the equipment items map and spawns one ItemEntity per stack.
+	 * This is the last possible moment to intercept KEPT_ON_DEATH items. If a KEPT_ON_DEATH item reaches
+	 * here (e.g. Player.dropEquipment → inventory.dropAll → equipment.dropAll), we immediately:
+	 * <ol>
+	 *   <li>persist the item into the player's TF persistent data (CHARACTER_INV_TAG) using the
+	 *       standard loadNoClear slot conventions so {@code returnStoredItems} can restore it on respawn</li>
+	 *   <li>remove the item from the EntityEquipment map itself so the super dropAll loop finds nothing</li>
+	 *   <li>also remove it from the shared Player Inventory slots to avoid duplication</li>
+	 * </ol>
+	 *
+	 * @param dropper     the LivingEntity dropping equipment; we only act when this is a real Player in survival
+	 * @param equipment   the EntityEquipment instance that is about to dropAll (= the mixin target 'this')
+	 */
+	public static void interceptKeptOnDeathAtEquipmentDropAll(LivingEntity dropper, EntityEquipment equipment) {
+		if (!(dropper instanceof Player player)) return;
+		// Keep the KEPT_ON_DEATH safety net for every game mode (MC 26.2 drops equipment in
+		// creative too); only client-side / fake players are excluded.
+		if (player.level().isClientSide() || player instanceof FakePlayer) return;
+		if (player.level() instanceof ServerLevel sl && sl.getGameRules().get(GameRules.KEEP_INVENTORY)) return;
+
+		// Walk armor and offhand slots (the slots KEPT_ON_DEATH items typically occupy).
+		// We persist using the SAME native inventory slot id that loadNoClear understands,
+		// because keepInventory is a real Inventory: only 0-35 (items) and 36-42 (equipment)
+		// are valid. 36=FEET,37=LEGS,38=CHEST,39=HEAD,40=OFFHAND.
+		record SlotMapping(EquipmentSlot slot, int invSlot) {}
+		List<SlotMapping> mappings = List.of(
+			new SlotMapping(EquipmentSlot.FEET,  36),
+			new SlotMapping(EquipmentSlot.LEGS,  37),
+			new SlotMapping(EquipmentSlot.CHEST, 38),
+			new SlotMapping(EquipmentSlot.HEAD,  39),
+			new SlotMapping(EquipmentSlot.OFFHAND, 40)
+		);
+		for (SlotMapping m : mappings) {
+			ItemStack stack = equipment.get(m.slot());
+			if (!stack.isEmpty() && stack.is(TFItemTags.KEPT_ON_DEATH)) {
+				TwilightForestMod.LOGGER.info("[CharmEvents] EquipmentDropAll intercept: kept {} from {}, persisting to native slot {}", stack, m.slot(), m.invSlot());
+				persistResidualKeptItem(player, stack.copy(), m.invSlot());
+				// Remove from the equipment map DIRECTLY — this is what dropAll iterates.
+				equipment.set(m.slot(), ItemStack.EMPTY);
+				// Also clear from Player Inventory slots so Inventory.dropAll (for items list) / drop
+				// observers don't see it on the off-chance they also iterate the inventory.
+				player.getInventory().setItem(m.invSlot(), ItemStack.EMPTY);
+				player.getInventory().removeItemNoUpdate(m.invSlot());
 			}
 		}
 	}
@@ -201,29 +393,30 @@ public class CharmEvents {
 			}
 		}
 
-		// Armor slots: save to keepInventory using slot ids 100-103 (matching loadNoClear convention: 100=FEET, 101=LEGS, 102=CHEST, 103=HEAD)
+		// Armor slots: save to keepInventory using Inventory's native equipment slots 36-39
+	// (36=FEET, 37=LEGS, 38=CHEST, 39=HEAD per Inventory.EQUIPMENT_SLOT_MAPPING).
+	// NOTE: keepInventory is a real Inventory whose setItem() only understands 0-35 (items)
+	// and 36-42 (equipment via EQUIPMENT_SLOT_MAPPING). Using 100-103 here would silently drop items!
 		for (EquipmentSlot equipmentSlot : List.of(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD)) {
 			ItemStack armor = player.getItemBySlot(equipmentSlot);
+			int invSlot = 36 + equipmentSlot.getIndex(); // 36=FEET,37=LEGS,38=CHEST,39=HEAD
 			if (armor.is(TFItemTags.KEPT_ON_DEATH)) {
-				int saveSlot = switch (equipmentSlot) {
-					case FEET -> 100;
-					case LEGS -> 101;
-					case CHEST -> 102;
-					case HEAD -> 103;
-					default -> -1;
-				};
-				if (saveSlot >= 0) {
-					keepInventory.setItem(saveSlot, armor.copy());
-				}
-				player.setItemSlot(equipmentSlot, ItemStack.EMPTY);
+				keepInventory.setItem(invSlot, armor.copy());
+				clearEquipmentSlotTriple(player, equipmentSlot, invSlot);
+				TwilightForestMod.LOGGER.info("[CharmEvents] KEPT_ON_DEATH armor saved {} -> native slot {}", armor, invSlot);
+			} else {
+				TwilightForestMod.LOGGER.info("[CharmEvents] armor {} on {} NOT in kept_on_death tag (empty={})", armor, equipmentSlot, armor.isEmpty());
 			}
 		}
 
-		// Offhand slot: save to keepInventory using slot id 150 (matching loadNoClear convention -> inventory.setItem(40))
+		// Offhand slot: save to keepInventory using native slot 40 (Inventory.SLOT_OFFHAND)
 		ItemStack offhand = player.getItemBySlot(EquipmentSlot.OFFHAND);
 		if (offhand.is(TFItemTags.KEPT_ON_DEATH)) {
-			keepInventory.setItem(150, offhand.copy());
-			player.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+			keepInventory.setItem(40, offhand.copy());
+			clearEquipmentSlotTriple(player, EquipmentSlot.OFFHAND, 40);
+			TwilightForestMod.LOGGER.info("[CharmEvents] KEPT_ON_DEATH offhand saved {} -> native slot 40", offhand);
+		} else {
+			TwilightForestMod.LOGGER.info("[CharmEvents] offhand {} NOT in kept_on_death tag (empty={})", offhand, offhand.isEmpty());
 		}
 
 		//take our fake inventory and save it to the persistent player data.
@@ -263,25 +456,28 @@ public class CharmEvents {
 			player.getItemBySlot(EquipmentSlot.CHEST),
 			player.getItemBySlot(EquipmentSlot.HEAD)
 		);
-		boolean keptCasket = true;
+		boolean keptCasket = false;
 		for (int i = 0; i < armorItems.size(); i++) {
 			var item = armorItems.get(i).copy();
+			EquipmentSlot slot = switch (i) {
+				case 0 -> EquipmentSlot.FEET;
+				case 1 -> EquipmentSlot.LEGS;
+				case 2 -> EquipmentSlot.CHEST;
+				case 3 -> EquipmentSlot.HEAD;
+				default -> null;
+			};
+			if (slot == null) continue;
+			int invSlot = 36 + slot.getIndex(); // 36=FEET,37=LEGS,38=CHEST,39=HEAD (native Inventory equipment slots)
 			if (skipCasketCheck || (!item.is(TFItems.KEEPSAKE_CASKET) || keptCasket)) {
-				EquipmentSlot slot = switch (i) {
-					case 0 -> EquipmentSlot.FEET;
-					case 1 -> EquipmentSlot.LEGS;
-					case 2 -> EquipmentSlot.CHEST;
-					case 3 -> EquipmentSlot.HEAD;
-					default -> null;
-				};
-				if (slot != null) {
-					player.setItemSlot(slot, ItemStack.EMPTY);
-				}
+				keptInventory.setItem(invSlot, item);
+				clearEquipmentSlotTriple(player, slot, invSlot);
 			} else {
 				keptCasket = true;
 				if (item.getCount() > 1) {
 					item.shrink(1);
-					player.setItemSlot(EquipmentSlot.FEET, item.copyWithCount(1));
+					keptInventory.setItem(invSlot, item);
+					player.setItemSlot(slot, item.copyWithCount(1));
+					player.getInventory().setItem(invSlot, item.copyWithCount(1));
 				}
 			}
 		}
@@ -293,12 +489,21 @@ public class CharmEvents {
 		if (!skipCasketCheck && offhand.is(TFItems.KEEPSAKE_CASKET)) {
 			if (offhand.getCount() > 1) {
 				offhand.shrink(1);
+				keptInventory.setItem(40, offhand); // 40=OFFHAND (native Inventory equipment slot)
 				player.setItemSlot(EquipmentSlot.OFFHAND, offhand.copyWithCount(1));
+				player.getInventory().setItem(40, offhand.copyWithCount(1));
 			}
 		} else {
-			player.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+			keptInventory.setItem(40, offhand);
+			clearEquipmentSlotTriple(player, EquipmentSlot.OFFHAND, 40);
 		}
 		return true;
+	}
+
+	private static void clearEquipmentSlotTriple(Player player, EquipmentSlot slot, int invSlot) {
+		player.setItemSlot(slot, ItemStack.EMPTY);
+		player.getInventory().setItem(invSlot, ItemStack.EMPTY);
+		player.getInventory().removeItemNoUpdate(invSlot);
 	}
 
 	private static void stockKeepsakeCasket(Player player) {
@@ -375,9 +580,12 @@ public class CharmEvents {
 
 			// lets add our inventory exactly how it was on us
 			list.addAll(TFItemStackUtils.sortArmorForCasket(player));
+			for (EquipmentSlot slot : List.of(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD)) {
+				clearEquipmentSlotTriple(player, slot, 36 + slot.getIndex());
+			}
 			list.addAll(filler);
 			list.add(player.getItemBySlot(EquipmentSlot.OFFHAND));
-			player.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+			clearEquipmentSlotTriple(player, EquipmentSlot.OFFHAND, 40);
 			list.addAll(TFItemStackUtils.sortInvForCasket(player));
 			player.getInventory().getNonEquipmentItems().clear();
 
@@ -472,8 +680,9 @@ public class CharmEvents {
 				tagList.add(tag);
 			}
 		}
-		// Save armor slots using the same convention as loadNoClear: 100=FEET, 101=LEGS, 102=CHEST, 103=HEAD
-		for (int saveSlot = 100; saveSlot <= 103; saveSlot++) {
+		// Save equipment slots using Inventory's NATIVE slot ids so loadNoClear can restore them:
+		// 36=FEET, 37=LEGS, 38=CHEST, 39=HEAD, 40=OFFHAND
+		for (int saveSlot = 36; saveSlot <= 40; saveSlot++) {
 			ItemStack stack = inventory.getItem(saveSlot);
 			if (!stack.isEmpty()) {
 				CompoundTag tag = new CompoundTag();
@@ -481,14 +690,6 @@ public class CharmEvents {
 				tag.merge((CompoundTag) ItemStack.CODEC.encodeStart(registryAccess.createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow());
 				tagList.add(tag);
 			}
-		}
-		// Save offhand slot using convention 150 (mapped to inventory.setItem(40) on load)
-		ItemStack offhand = inventory.getItem(150);
-		if (!offhand.isEmpty()) {
-			CompoundTag tag = new CompoundTag();
-			tag.putByte("Slot", (byte) 150);
-			tag.merge((CompoundTag) ItemStack.CODEC.encodeStart(registryAccess.createSerializationContext(NbtOps.INSTANCE), offhand).getOrThrow());
-			tagList.add(tag);
 		}
 	}
 
@@ -505,15 +706,24 @@ public class CharmEvents {
 				} else {
 					inventory.add(stack);
 				}
-			} else if (slot >= 100 && slot <= 103) {
-				// Armor slots: mirror loadNoClear convention (100-103 -> FEET, LEGS, CHEST, HEAD)
+			} else if (slot >= 36 && slot <= 40) {
+				// Native equipment slots: 36=FEET,37=LEGS,38=CHEST,39=HEAD,40=OFFHAND.
+				// Inventory.setItem(36..40) maps to the shared EntityEquipment.
 				if (inventory.getItem(slot).isEmpty()) {
 					inventory.setItem(slot, stack);
 				} else {
 					inventory.add(stack);
 				}
+			} else if (slot >= 100 && slot <= 103) {
+				// Legacy armor slots (100-103): map to 36-39 for backward compatibility
+				int nativeSlot = 36 + (slot - 100);
+				if (inventory.getItem(nativeSlot).isEmpty()) {
+					inventory.setItem(nativeSlot, stack);
+				} else {
+					inventory.add(stack);
+				}
 			} else if (slot == 150) {
-				// Offhand: slot 150 maps to inventory.setItem(40) per loadNoClear convention
+				// Legacy offhand slot 150: map to 40
 				if (inventory.getItem(40).isEmpty()) {
 					inventory.setItem(40, stack);
 				} else {

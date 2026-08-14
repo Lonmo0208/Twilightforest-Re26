@@ -2,6 +2,7 @@
 	"required": true,
 	"package": "twilightforest.mixin",
 	"compatibilityLevel": "JAVA_25",
+	"verbose": true,
 	"mixins": [
 		"AbstractArrowMixin",
 		"AbstractFurnaceBlockEntityMixin",
@@ -15,6 +16,7 @@
 		"ChunkStatusTasksMixin",
 		"BlockStateMixin",
 		"EnderManMixin",
+		"EntityEquipmentMixin",
 		"EntityMixin",
 		"EntityStopRidingMixin",
 		"EntityTeleportMixin",
