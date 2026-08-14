@@ -1,7 +1,9 @@
 package twilightforest.item;
 
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -11,25 +13,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
-import net.minecraft.world.item.ToolMaterial;
-import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jspecify.annotations.Nullable;
 import twilightforest.entity.projectile.ChainBlock;
 import twilightforest.init.TFDataComponents;
+import twilightforest.init.TFEnchantments;
 import twilightforest.init.TFEntities;
 import twilightforest.init.TFSounds;
 import twilightforest.tags.TFBlockTags;
 
-import java.util.List;
 import java.util.UUID;
 
 public class ChainBlockItem extends Item {
-
-	@Nullable
-	private List<List<Tool.Rule>> tierRules;
 
 	public ChainBlockItem(Properties properties) {
 		super(properties);
@@ -88,24 +87,25 @@ public class ChainBlockItem extends Item {
 
 	@Override
 	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-		//dont try to check harvest level if we arent thrown
+		// don't treat the chain block as a harvesting tool unless it is thrown
 		if (stack.get(TFDataComponents.THROWN_PROJECTILE) == null || !state.is(TFBlockTags.MINEABLE_WITH_BLOCK_AND_CHAIN)) return false;
-		return false;
+		int destruction = getDestructionLevel(stack);
+		if (destruction <= 0) return false;
+		// the destruction enchant grants a harvest tier: 1 = wood, 2 = stone, 3+ = iron
+		// this mirrors vanilla's incorrect_for_<tier>_tool tags (denied blocks first)
+		if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) return false;
+		if (destruction < 3 && state.is(BlockTags.NEEDS_IRON_TOOL)) return false;
+		if (destruction < 2 && state.is(BlockTags.NEEDS_STONE_TOOL)) return false;
+		return true;
 	}
 
-	public boolean canHarvest(RegistryAccess access, BlockState state, int destruction) {
-		if (this.tierRules == null) {
-			this.tierRules = List.of(
-				List.of(Tool.Rule.deniesDrops(access.getOrThrow(ToolMaterial.WOOD.incorrectBlocksForDrops())), Tool.Rule.minesAndDrops(access.getOrThrow(TFBlockTags.MINEABLE_WITH_BLOCK_AND_CHAIN), 2.0F)),
-				List.of(Tool.Rule.deniesDrops(access.getOrThrow(ToolMaterial.STONE.incorrectBlocksForDrops())), Tool.Rule.minesAndDrops(access.getOrThrow(TFBlockTags.MINEABLE_WITH_BLOCK_AND_CHAIN), 4.0F)),
-				List.of(Tool.Rule.deniesDrops(access.getOrThrow(ToolMaterial.IRON.incorrectBlocksForDrops())), Tool.Rule.minesAndDrops(access.getOrThrow(TFBlockTags.MINEABLE_WITH_BLOCK_AND_CHAIN), 6.0F))
-			);
-		}
-		for (Tool.Rule rule : this.tierRules.get(Math.min(destruction - 1, 2))) {
-			if (rule.correctForDrops().isPresent() && state.is(rule.blocks())) {
-				return rule.correctForDrops().get();
+	public static int getDestructionLevel(ItemStack stack) {
+		ItemEnchantments enchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+		for (Holder<Enchantment> holder : enchantments.keySet()) {
+			if (holder.is(TFEnchantments.DESTRUCTION)) {
+				return enchantments.getLevel(holder);
 			}
 		}
-		return false;
+		return 0;
 	}
 }
