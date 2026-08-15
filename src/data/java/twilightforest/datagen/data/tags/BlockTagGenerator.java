@@ -72,19 +72,11 @@ public class BlockTagGenerator extends ModdedBlockTagGenerator {
 			Blocks.DEEPSLATE, Blocks.TUFF, Blocks.CALCITE, Blocks.DIRT, Blocks.GRASS_BLOCK,
 			Blocks.PODZOL, Blocks.MYCELIUM, Blocks.SAND, Blocks.RED_SAND, Blocks.GRAVEL,
 			Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.PACKED_MUD, Blocks.MUD, Blocks.SNOW_BLOCK);
-		this.valueLookupBuilder(BlockTags.INCORRECT_FOR_IRON_TOOL).add(Blocks.DIAMOND_BLOCK, Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE,
-			Blocks.EMERALD_ORE, Blocks.DEEPSLATE_EMERALD_ORE, Blocks.GOLD_BLOCK, Blocks.RAW_GOLD_BLOCK,
-			Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE, Blocks.REDSTONE_ORE, Blocks.DEEPSLATE_REDSTONE_ORE);
-		this.valueLookupBuilder(BlockTags.INCORRECT_FOR_NETHERITE_TOOL).add(Blocks.OBSIDIAN, Blocks.CRYING_OBSIDIAN, Blocks.ANCIENT_DEBRIS,
-			Blocks.RESPAWN_ANCHOR, Blocks.ENDER_CHEST);
-		this.valueLookupBuilder(BlockTags.INCORRECT_FOR_DIAMOND_TOOL).add(Blocks.OBSIDIAN, Blocks.CRYING_OBSIDIAN, Blocks.NETHERITE_BLOCK,
-			Blocks.ANCIENT_DEBRIS, Blocks.RESPAWN_ANCHOR);
-		this.valueLookupBuilder(BlockTags.INCORRECT_FOR_STONE_TOOL).add(Blocks.IRON_BLOCK, Blocks.RAW_IRON_BLOCK, Blocks.IRON_ORE,
-			Blocks.DEEPSLATE_IRON_ORE, Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE,
-			Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE);
-		this.valueLookupBuilder(BlockTags.INCORRECT_FOR_WOODEN_TOOL).add(Blocks.IRON_BLOCK, Blocks.RAW_IRON_BLOCK, Blocks.IRON_ORE,
-			Blocks.DEEPSLATE_IRON_ORE, Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE,
-			Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE);
+		// [VanillaCopy] VanillaBlockTagsProvider - incorrect_for_<tier>_tool tags must mirror the needs_<tier>_tool tiers.
+		// Diamond and netherite can mine everything below them, so their incorrect tags are empty (vanilla default).
+		this.valueLookupBuilder(BlockTags.INCORRECT_FOR_IRON_TOOL).addTag(BlockTags.NEEDS_DIAMOND_TOOL);
+		this.valueLookupBuilder(BlockTags.INCORRECT_FOR_STONE_TOOL).addTag(BlockTags.NEEDS_DIAMOND_TOOL).addTag(BlockTags.NEEDS_IRON_TOOL);
+		this.valueLookupBuilder(BlockTags.INCORRECT_FOR_WOODEN_TOOL).addTag(BlockTags.NEEDS_DIAMOND_TOOL).addTag(BlockTags.NEEDS_IRON_TOOL).addTag(BlockTags.NEEDS_STONE_TOOL);
 		this.valueLookupBuilder(BlockTags.SUBSTRATE_OVERWORLD).add(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.PODZOL, Blocks.MYCELIUM).addTag(BlockTags.MOSS_BLOCKS).addTag(BlockTags.MUD);
 
 		// TF-specific tags
@@ -679,21 +671,9 @@ public class BlockTagGenerator extends ModdedBlockTagGenerator {
 			TFBlocks.TROLLSTEINN
 		);
 
-		this.valueLookupBuilder(BlockTags.NEEDS_STONE_TOOL).add(
-			TFBlocks.UNDERBRICK,
-			TFBlocks.CRACKED_UNDERBRICK,
-			TFBlocks.MOSSY_UNDERBRICK,
-			TFBlocks.UNDERBRICK_FLOOR,
-			TFBlocks.IRON_LADDER
-		);
-
-		this.valueLookupBuilder(BlockTags.NEEDS_IRON_TOOL).add(
-			TFBlocks.FIERY_BLOCK,
-			TFBlocks.KNIGHTMETAL_BLOCK
-		);
-
-		this.valueLookupBuilder(BlockTags.NEEDS_DIAMOND_TOOL).add(TFBlocks.AURORA_BLOCK).addTag(TFBlockTags.CASTLE_BLOCKS).addTag(TFBlockTags.MAZESTONE).addTag(TFBlockTags.DEADROCK);
-
+		// Vanilla needs_<tier>_tool tags are provided as complete files in src/main/resources
+		// (vanilla blocks + TF blocks) so that the vanilla mining tiers are preserved.
+		// They must NOT be regenerated here, or the vanilla entries would be replaced.
 		this.valueLookupBuilder(BlockTags.HUGE_BROWN_MUSHROOM_CAN_PLACE_ON).add(TFBlocks.UBEROUS_SOIL);
 		this.valueLookupBuilder(BlockTags.HUGE_RED_MUSHROOM_CAN_PLACE_ON).add(TFBlocks.UBEROUS_SOIL);
 
