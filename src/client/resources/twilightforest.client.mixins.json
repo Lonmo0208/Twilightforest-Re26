@@ -16,6 +16,7 @@
     "client.ModelBlockRendererMixin",
     "client.ModelBlockRendererAccessor",
     "client.LevelRendererMixin",
+    "client.SkyRendererMixin",
     "client.TFLightmapStateMixin",
     "client.TFLightmapMixin"
 	],
