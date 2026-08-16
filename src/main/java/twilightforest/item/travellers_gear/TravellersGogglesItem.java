@@ -63,20 +63,26 @@ public class TravellersGogglesItem extends TravellersArmorItem {
 		if (contents == null)
 			return false;
 
-		ItemDisplayContents.Mutable mutableContents = new ItemDisplayContents.Mutable(contents);
-		ItemStack itemstack = slot.getItem();
-		if (itemstack.isEmpty()) {
+		ItemStack targetStack = slot.getItem();
+		if (targetStack.isEmpty()) {
+			ItemDisplayContents.Mutable mutableContents = new ItemDisplayContents.Mutable(contents);
 			ItemStack removedStack = mutableContents.removeFirstFree(slot);
 			if (removedStack != null) {
 				slot.safeInsert(removedStack);
 				this.playRemoveOneSound(player);
+				stack.set(TFDataComponents.ITEM_DISPLAY, mutableContents.toImmutable());
 			}
-		} else if (canFitInsideContainerItems(itemstack)) {
-			if (mutableContents.trySwap(SlotAccess.of(slot::getItem, slot::set), player))
-				this.playInsertSound(player);
+			return true;
 		}
 
-		stack.set(TFDataComponents.ITEM_DISPLAY, mutableContents.toImmutable());
+		if (!TravellersArmorItem.canFitInsideContainerItems(targetStack))
+			return false;
+
+		ItemDisplayContents.Mutable mutableContents = new ItemDisplayContents.Mutable(contents);
+		if (mutableContents.trySwap(SlotAccess.of(slot::getItem, slot::set), player)) {
+			this.playInsertSound(player);
+			stack.set(TFDataComponents.ITEM_DISPLAY, mutableContents.toImmutable());
+		}
 		return true;
 	}
 
@@ -89,19 +95,25 @@ public class TravellersGogglesItem extends TravellersArmorItem {
 		if (contents == null)
 			return false;
 
-		ItemDisplayContents.Mutable mutableContents = new ItemDisplayContents.Mutable(contents);
 		if (other.isEmpty()) {
+			ItemDisplayContents.Mutable mutableContents = new ItemDisplayContents.Mutable(contents);
 			ItemStack itemstack = mutableContents.removeFirstFree(null);
 			if (itemstack != null) {
 				this.playRemoveOneSound(player);
 				access.set(itemstack);
+				stack.set(TFDataComponents.ITEM_DISPLAY, mutableContents.toImmutable());
 			}
-		} else {
-			if (mutableContents.trySwap(access, player))
-				this.playInsertSound(player);
+			return true;
 		}
 
-		stack.set(TFDataComponents.ITEM_DISPLAY, mutableContents.toImmutable());
+		if (!TravellersArmorItem.canFitInsideContainerItems(other))
+			return false;
+
+		ItemDisplayContents.Mutable mutableContents = new ItemDisplayContents.Mutable(contents);
+		if (mutableContents.trySwap(access, player)) {
+			this.playInsertSound(player);
+			stack.set(TFDataComponents.ITEM_DISPLAY, mutableContents.toImmutable());
+		}
 		return true;
 	}
 
