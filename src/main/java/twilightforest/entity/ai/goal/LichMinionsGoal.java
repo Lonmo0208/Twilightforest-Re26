@@ -57,8 +57,8 @@ public class LichMinionsGoal extends Goal {
 		LivingEntity targetedEntity = this.lich.getTarget();
 		if (targetedEntity == null) return;
 		float dist = this.lich.distanceTo(targetedEntity);
-		// spawn minions every so often
-		if (this.lich.getAttackCooldown() % 15 == 0) this.checkAndSpawnMinions();
+		// spawn minions every so often, or immediately if no minions exist
+		if (this.lich.getAttackCooldown() % 15 == 0 || this.lich.countMyMinions() == 0) this.checkAndSpawnMinions();
 
 		boolean hasLineOfSight = this.lich.getSensing().hasLineOfSight(targetedEntity);
 		if (hasLineOfSight != this.seeTime > 0) this.seeTime = 0;
@@ -112,18 +112,37 @@ public class LichMinionsGoal extends Goal {
 		if (!this.lich.level().isClientSide() && this.lich.getMinionsToSummon() > 0) {
 			int minions = this.lich.countMyMinions();
 
-			// if not, spawn one!
 			if (minions < Lich.MAX_ACTIVE_MINIONS) {
-				this.spawnMinionAt();
-				this.lich.setMinionsToSummon(this.lich.getMinionsToSummon() - 1);
+				if (this.spawnMinionAt()) {
+					this.lich.setMinionsToSummon(this.lich.getMinionsToSummon() - 1);
+				}
 			}
 		}
 	}
 
-	private void spawnMinionAt() {
+	private boolean spawnMinionAt() {
 		// find a good spot
 		LivingEntity targetedEntity = this.lich.getTarget();
 		Vec3 minionSpot = this.lich.findVecInLOSOf(targetedEntity);
+
+		// Fallback: try to spawn near the target without requiring line of sight
+		if (minionSpot == null && targetedEntity != null) {
+			for (int i = 0; i < 20; i++) {
+				double tx = targetedEntity.getX() + this.lich.getRandom().nextGaussian() * 8D;
+				double ty = targetedEntity.getY() + 1;
+				double tz = targetedEntity.getZ() + this.lich.getRandom().nextGaussian() * 8D;
+				BlockPos pos = BlockPos.containing(tx, ty, tz);
+				if (this.lich.level().getBlockState(pos).isAir() && this.lich.level().getBlockState(pos.below()).isSolid()
+					&& pos.distSqr(targetedEntity.blockPosition()) >= 9.0F) {
+					minionSpot = new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+					break;
+				}
+			}
+			// Last resort: spawn at lich's position
+			if (minionSpot == null) {
+				minionSpot = this.lich.position();
+			}
+		}
 
 		if (minionSpot != null && this.lich.level() instanceof ServerLevelAccessor accessor) {
 			// put a clone there
@@ -140,7 +159,9 @@ public class LichMinionsGoal extends Goal {
 			this.lich.swing(InteractionHand.MAIN_HAND);
 			// make sparkles leading to it
 			this.lich.makeMagicTrail(this.lich.getEyePosition(), minion.getEyePosition(), this.lich.getRandom().nextFloat() * 0.0625F + 0.125F, this.lich.getRandom().nextFloat() * 0.0625F + 0.125F, this.lich.getRandom().nextFloat() * 0.0625F + 0.125F);
+			return true;
 		}
+		return false;
 	}
 
 }
