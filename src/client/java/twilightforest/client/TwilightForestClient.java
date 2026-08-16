@@ -40,6 +40,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
 import twilightforest.TwilightForestMod;
+import net.minecraft.core.registries.BuiltInRegistries;
+import twilightforest.client.event.CloudEvents;
 import twilightforest.client.event.ColorHandler;
 import twilightforest.client.event.ClientGameEvents;
 import twilightforest.client.model.TFModelLayers;
@@ -167,6 +169,11 @@ public class TwilightForestClient implements ClientModInitializer {
 
 		// Register jar lid model cache reload listener
 		JarRenderer.registerReloadListener();
+
+		// Register cloud block precipitation tick handler
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			CloudEvents.tickWeatherEffects();
+		});
 
 		// Register client-side packet handlers (payload types already registered in TwilightForestMod)
 		registerClientHandlers();
