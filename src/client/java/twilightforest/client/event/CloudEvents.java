@@ -44,7 +44,7 @@ public class CloudEvents {
 
 	// TODO: Port to Fabric - ClientTickEvent is NeoForge-specific
 	//protected static void tickWeatherEffects(ClientTickEvent.Post event) {
-	protected static void tickWeatherEffects() {
+	public static void tickWeatherEffects() {
 		Minecraft mc = Minecraft.getInstance();
 
 		if (!mc.isPaused()) {

@@ -82,6 +82,8 @@ public class TFDimensionData {
 				.set(EnvironmentAttributes.SKY_LIGHT_COLOR, 0x9292FF)
 				.set(EnvironmentAttributes.SKY_COLOR, 0x7B7B7B)
 				.set(EnvironmentAttributes.FOG_COLOR, 0x838387)
+				.set(EnvironmentAttributes.CLOUD_COLOR, 0xFFDBE4EC)
+				.set(EnvironmentAttributes.CLOUD_HEIGHT, 128.0F)
 				.build(),
 			timelines.getOrThrow(TWILIGHT_TIMELINES), //timelines
 			overworldClock //clock - overworld clock so time flows for moon phase and clock item
