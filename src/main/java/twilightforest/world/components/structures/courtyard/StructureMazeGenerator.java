@@ -394,8 +394,8 @@ public abstract class StructureMazeGenerator extends TFStructureComponent {
 			// Walls at corner notches going with X Axis, crossing Z Axis. Sideways.
 
 			int zBoundX = (diagonal.isTop()
-				? this.sizeConstraints.minZ() + (cornerClipping[diagonal.ordinal()][0] * 12) - 3
-				: this.sizeConstraints.maxZ() - (cornerClipping[diagonal.ordinal()][0] * 12) + 1);
+				? this.sizeConstraints.minZ() + (cornerClipping[diagonal.ordinal()][0] * 12) + 2
+				: this.sizeConstraints.maxZ() - (cornerClipping[diagonal.ordinal()][0] * 12) - 2);
 
 			CourtyardWallPadder paddingStartX =
 				new CourtyardWallPadder(
@@ -411,7 +411,7 @@ public abstract class StructureMazeGenerator extends TFStructureComponent {
 
 			int xPadOffset = diagonal.isLeft() ? 11 : -1;
 
-			for (int i = 0; i < cornerClipping[diagonal.ordinal()][1] - 1; i++) {
+			for (int i = 0; i < cornerClipping[diagonal.ordinal()][1]; i++) {
 				int xBound = (diagonal.isLeft() ? this.sizeConstraints.minX() + (i * 12) + 3 : this.sizeConstraints.maxX() - (i * 12) - 13);
 
 				CourtyardWall wall = new CourtyardWall(i * 2, xBound, this.sizeConstraints.minY() + 1, zBoundX, Rotation.NONE, this.structureManager);
@@ -426,8 +426,8 @@ public abstract class StructureMazeGenerator extends TFStructureComponent {
 			// Walls at corner notches going with Z Axis, crossing X Axis. Up/Down.
 
 			int xBoundZ = (diagonal.isLeft()
-				? this.sizeConstraints.minX() + (cornerClipping[diagonal.ordinal()][1] * 12) - 1
-				: this.sizeConstraints.maxX() - (cornerClipping[diagonal.ordinal()][1] * 12) + 3);
+				? this.sizeConstraints.minX() + (cornerClipping[diagonal.ordinal()][1] * 12) + 2
+				: this.sizeConstraints.maxX() - (cornerClipping[diagonal.ordinal()][1] * 12) - 2);
 
 			CourtyardWallPadder paddingStartZ =
 				new CourtyardWallPadder(
@@ -443,7 +443,7 @@ public abstract class StructureMazeGenerator extends TFStructureComponent {
 
 			int zPadOffset = diagonal.isTop() ? 11 : -1;
 
-			for (int i = 0; i < cornerClipping[diagonal.ordinal()][0] - 1; i++) {
+			for (int i = 0; i < cornerClipping[diagonal.ordinal()][0]; i++) {
 				int zBound = (diagonal.isTop() ? this.sizeConstraints.minZ() + (i * 12) + 3 : this.sizeConstraints.maxZ() - (i * 12) - 13);
 
 				CourtyardWall wall = new CourtyardWall(i * 2, xBoundZ, this.sizeConstraints.minY() + 1, zBound, Rotation.CLOCKWISE_90, this.structureManager);
