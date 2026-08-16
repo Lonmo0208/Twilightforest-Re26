@@ -54,8 +54,7 @@ public class TravellersArmorItem extends Item implements TravellersModifiable {
 	public static Properties gogglesProperties(Properties properties) {
 		return properties
 			.attributes(defaultArmorProperties(ArmorType.HELMET).build())
-			.component(TFDataComponents.ZOOM_ABILITY_MODIFIER, 0.3F)
-			.component(TFDataComponents.ITEM_DISPLAY, twilightforest.components.item.ItemDisplayContents.EMPTY);
+			.component(TFDataComponents.ZOOM_ABILITY_MODIFIER, 0.3F);
 	}
 
 	public static Properties chestProperties(Properties properties) {
