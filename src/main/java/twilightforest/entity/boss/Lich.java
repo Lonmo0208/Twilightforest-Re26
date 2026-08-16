@@ -182,14 +182,14 @@ public class Lich extends BaseTFBoss {
 			@Override
 			public boolean canUse() {
 				if (Lich.this.getPhase() != 3) return false;
-				LivingEntity target = this.mob.getTarget();
+				LivingEntity target = (LivingEntity) this.mob.getTarget();
 				return target != null && target.isAlive();
 			}
 
 			@Override
 			public void tick() {
 				if (((Lich)this.mob).getTeleportInvisibility() > 0) return;
-				LivingEntity target = this.mob.getTarget();
+				LivingEntity target = (LivingEntity) this.mob.getTarget();
 				if (target == null || !target.isAlive()) return;
 
 				if (this.mob.isWithinMeleeAttackRange(target)) {
