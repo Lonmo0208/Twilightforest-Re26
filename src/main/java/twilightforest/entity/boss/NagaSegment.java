@@ -28,6 +28,9 @@ public class NagaSegment extends TFPart<Naga> {
 	@SuppressWarnings("this-escape")
 	public NagaSegment(Naga naga) {
 		super(naga, TFEntities.NAGA_SEGMENT.get(), naga.level());
+		// The body segments track the head on the client via Naga.moveSegments() so they stay
+		// glued behind the head during high-speed charges; ignore packet positions for them.
+		this.localPosition = true;
 		this.setPos(naga.getX(), naga.getY(), naga.getZ());
 		this.setOldPosAndRot();
 		this.deactivate();
