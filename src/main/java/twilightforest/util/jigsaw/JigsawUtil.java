@@ -2,6 +2,7 @@ package twilightforest.util.jigsaw;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
@@ -54,6 +55,14 @@ if (random != null) {
 Util.shuffle(jigsaws, random);
 SinglePoolElement.sortBySelectionPriority(jigsaws);
 }
-return jigsaws.stream().map(StructureTemplate.JigsawBlockInfo::info).collect(Collectors.toCollection(ArrayList::new));
+return jigsaws.stream().map(JigsawUtil::toStructureBlockInfo).collect(Collectors.toCollection(ArrayList::new));
+}
+private static StructureTemplate.StructureBlockInfo toStructureBlockInfo(StructureTemplate.JigsawBlockInfo info) {
+CompoundTag nbt = new CompoundTag();
+nbt.putInt("selection_priority", info.selectionPriority());
+nbt.putString("pool", info.pool().identifier().toString());
+nbt.putString("name", info.name().toString());
+nbt.putString("target", info.target().toString());
+return new StructureTemplate.StructureBlockInfo(info.pos(), info.state(), nbt);
 }
 }

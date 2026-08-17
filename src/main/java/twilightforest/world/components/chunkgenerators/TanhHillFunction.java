@@ -3,12 +3,11 @@ package twilightforest.world.components.chunkgenerators;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 
 // Negative radius values cause a bowling-up shaped zero-threshold over this DensityFunction's field, making it useful for the hollow hill's floor alongside as its regular mound shape
-public record TanhHillFunction(float centerX, float bottomY, float centerZ, float radius, float heightScale, float cosAngleBiasDirection, float sinAngleBiasDirection, boolean isXOriented, boolean isOnRightSide) implements DensityFunction.SimpleFunction {
+public record TanhHillFunction(float centerX, float bottomY, float centerZ, float radius, float heightScale, float cosAngleBiasDirection, float sinAngleBiasDirection, boolean isXOriented, boolean isOnRightSide) implements DensityFunction {
 	public static final MapCodec<TanhHillFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 		Codec.FLOAT.fieldOf("x_center").forGetter(TanhHillFunction::centerX),
 		Codec.FLOAT.fieldOf("y_bottom").forGetter(TanhHillFunction::bottomY),
@@ -20,16 +19,14 @@ public record TanhHillFunction(float centerX, float bottomY, float centerZ, floa
 		Codec.BOOL.fieldOf("is_x_oriented").forGetter(TanhHillFunction::isXOriented),
 		Codec.BOOL.fieldOf("is_on_right_side").forGetter(TanhHillFunction::isOnRightSide)
 	).apply(instance, TanhHillFunction::new));
-	public static final KeyDispatchDataCodec<TanhHillFunction> KEY_CODEC = KeyDispatchDataCodec.of(CODEC);
 	private static final float PERPENDICULAR_BIAS = 1.3F;
 
 	public TanhHillFunction(float centerX, float bottomY, float centerZ, float radius, float heightScale, float angleBiasDirection, boolean isXOriented, boolean isOnRightSide) {
 		this(centerX, bottomY, centerZ, radius, heightScale, Mth.cos(angleBiasDirection), Mth.sin(angleBiasDirection), isXOriented, isOnRightSide);
 	}
 
-
-		@Override
-	public double compute(FunctionContext context) {
+	@Override
+	public float compute(FunctionContext context) {
 		float dX = context.blockX() - this.centerX;
 		float dY = context.blockY() - this.bottomY;
 		float dZ = context.blockZ() - this.centerZ;
@@ -37,7 +34,7 @@ public record TanhHillFunction(float centerX, float bottomY, float centerZ, floa
 			dZ *= PERPENDICULAR_BIAS;
 		else
 			dX *= PERPENDICULAR_BIAS;
-		return compute(dX, dY, dZ);
+		return (float) compute(dX, dY, dZ);
 	}
 
 	public double compute(float dX, float dY, float dZ) {
@@ -81,17 +78,29 @@ public record TanhHillFunction(float centerX, float bottomY, float centerZ, floa
 	}
 
 	@Override
-	public double minValue() {
-		return -1;
+	public net.minecraft.util.Interval range() {
+		return net.minecraft.util.Interval.of(-1.0f, 1.0f);
 	}
 
 	@Override
-	public double maxValue() {
-		return 1;
+	public com.mojang.serialization.MapCodec<? extends DensityFunction> codec() {
+		return CODEC;
 	}
 
 	@Override
-	public KeyDispatchDataCodec<? extends DensityFunction> codec() {
-		return KEY_CODEC;
+	public int domainAxes() {
+		return DensityFunction.ALL_AXES;
+	}
+
+	@Override
+	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
+		for (int i = 0; i < ds.length; i++) {
+			ds[i] = this.compute(contextProvider.forIndex(i));
+		}
+	}
+
+	@Override
+	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
+		return this;
 	}
 }

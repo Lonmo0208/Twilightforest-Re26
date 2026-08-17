@@ -57,25 +57,25 @@ public class FinalCastleStructure extends ControlledSpawningStructure {
 		return new FinalCastleStructure( // TODO Re-enable mob spawns when proper castle mobs are created
 			ControlledSpawningConfig.create(List.of(WeightedList.<MobSpawnSettings.SpawnerData>builder()
 				// plain parts of the castle, like the tower maze
-				//.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), 1, 2), 10)
-				//.add(new MobSpawnSettings.SpawnerData(TFEntities.ADHERENT.get(), 1, 1), 10)
-				//.add(new MobSpawnSettings.SpawnerData(TFEntities.HARBINGER_CUBE.get(), 1, 1), 10)
-				//.add(new MobSpawnSettings.SpawnerData(EntityType.ENDERMAN, 1, 1), 10)
+				//.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), UniformInt.of(1, 2)), 10)
+				//.add(new MobSpawnSettings.SpawnerData(TFEntities.ADHERENT.get(), UniformInt.of(1, 1)), 10)
+				//.add(new MobSpawnSettings.SpawnerData(TFEntities.HARBINGER_CUBE.get(), UniformInt.of(1, 1)), 10)
+				//.add(new MobSpawnSettings.SpawnerData(EntityType.ENDERMAN, UniformInt.of(1, 1)), 10)
 				.build()
 			, WeightedList.<MobSpawnSettings.SpawnerData>builder()
 				// internal castle
-				//.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), 1, 2), 10)
-				//.add(new MobSpawnSettings.SpawnerData(TFEntities.ADHERENT.get(), 1, 1), 10)
-				//.add(new MobSpawnSettings.SpawnerData(TFEntities.HARBINGER_CUBE.get(), 1, 1), 10)
-				//.add(new MobSpawnSettings.SpawnerData(TFEntities.ARMORED_GIANT.get(), 1, 1), 10)
+				//.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), UniformInt.of(1, 2)), 10)
+				//.add(new MobSpawnSettings.SpawnerData(TFEntities.ADHERENT.get(), UniformInt.of(1, 1)), 10)
+				//.add(new MobSpawnSettings.SpawnerData(TFEntities.HARBINGER_CUBE.get(), UniformInt.of(1, 1)), 10)
+				//.add(new MobSpawnSettings.SpawnerData(TFEntities.ARMORED_GIANT.get(), UniformInt.of(1, 1)), 10)
 				.build()
 			, WeightedList.<MobSpawnSettings.SpawnerData>builder()
 				// dungeons
-				//.add(new MobSpawnSettings.SpawnerData(TFEntities.ADHERENT.get(), 1, 1), 10)
+				//.add(new MobSpawnSettings.SpawnerData(TFEntities.ADHERENT.get(), UniformInt.of(1, 1)), 10)
 				.build()
 			, WeightedList.<MobSpawnSettings.SpawnerData>builder()
 				// forge
-				//.add(new MobSpawnSettings.SpawnerData(EntityType.BLAZE, 1, 1), 10)
+				//.add(new MobSpawnSettings.SpawnerData(EntityType.BLAZE, UniformInt.of(1, 1)), 10)
 				.build()
 			), WeightedList.of(), WeightedList.of()),
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_troll"))),

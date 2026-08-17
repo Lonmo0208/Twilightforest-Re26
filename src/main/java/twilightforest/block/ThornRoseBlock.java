@@ -17,7 +17,6 @@ import twilightforest.init.TFBlocks;
 
 public class ThornRoseBlock extends VegetationBlock {
 
-	public static final MapCodec<ThornRoseBlock> CODEC = simpleCodec(ThornRoseBlock::new);
 	private static final float RADIUS = 0.4F;
 	private static final VoxelShape AABB = Shapes.create(new AABB(0.5F - RADIUS, 0.5F - RADIUS, 0.5F - RADIUS, 0.5F + RADIUS, .5F + RADIUS, 0.5F + RADIUS));
 
@@ -26,10 +25,7 @@ public class ThornRoseBlock extends VegetationBlock {
 		this.registerDefaultState(this.getStateDefinition().any().setValue(DirectionalBlock.FACING, Direction.UP));
 	}
 
-	@Override
-	protected MapCodec<? extends VegetationBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {

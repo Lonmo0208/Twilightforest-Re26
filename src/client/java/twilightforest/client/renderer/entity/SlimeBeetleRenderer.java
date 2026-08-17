@@ -44,7 +44,7 @@ public class SlimeBeetleRenderer extends MobRenderer<SlimeBeetle, LivingEntityRe
 		public void submit(PoseStack stack, SubmitNodeCollector collector, int light, LivingEntityRenderState state, float yRot, float xRot) {
 			if (!state.isInvisible) {
 				this.getParentModel().setupAnim(state);
-				collector.submitModel(this.getParentModel(), state, stack, RenderTypes.entityTranslucent(TEXTURE), light, LivingEntityRenderer.getOverlayCoords(state, 0), state.outlineColor, null);
+				collector.submitModel(this.getParentModel(), state, stack, RenderTypes.entityTranslucent(TEXTURE), light, LivingEntityRenderer.getOverlayCoords(state, 0), state.outlineColor);
 			}
 		}
 	}

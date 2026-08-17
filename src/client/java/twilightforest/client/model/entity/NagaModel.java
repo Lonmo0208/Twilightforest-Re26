@@ -47,7 +47,7 @@ public class NagaModel<T extends EntityRenderState> extends EntityModel<T> imple
 		} else {
 			stack.translate(0.0F, -0.25F, 0.0F);
 		}
-		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(NagaRenderer.TEXTURE), light, overlay, null, -1, breakProgress);
+		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(NagaRenderer.TEXTURE), light, overlay, null, -1, breakProgress != null ? breakProgress.progress() : 0);
 	}
 
 	@Override

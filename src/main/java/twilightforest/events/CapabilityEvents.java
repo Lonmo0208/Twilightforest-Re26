@@ -78,10 +78,10 @@ public class CapabilityEvents {
 			FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(living, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 			if (attachment != null && attachment.shieldsLeft() > 0) {
 				boolean isCreativePlayer = living instanceof Player player && player.getAbilities().invulnerable;
-				if (!isCreativePlayer && living.invulnerableTime <= 0) {
+				if (!isCreativePlayer && !living.isTemporarilyInvulnerable()) {
 					attachment.breakShield(living, false);
 					FortificationShieldAttachment.addShieldBreakParticles(event.getSource(), living);
-					living.invulnerableTime = 20;
+					living.setInvulnerableTime(20);
 				}
 				event.setCanceled(true);
 			}

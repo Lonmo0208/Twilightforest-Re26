@@ -1,4 +1,4 @@
 {
-    "type": "minecraft:entity",
-    "random_sequence": "twilightforest:entities/squirrel"
+  "type": "minecraft:entity",
+  "random_sequence": "twilightforest:entities/squirrel"
 }

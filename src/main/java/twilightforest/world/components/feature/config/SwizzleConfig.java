@@ -5,11 +5,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.ProcessorRule;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import org.jetbrains.annotations.NotNull;
@@ -22,13 +21,13 @@ import twilightforest.world.components.processors.WoodPaletteSwizzle;
 import java.util.Collections;
 import java.util.List;
 
-public record SwizzleConfig(HolderSet<WoodPalette> targets, WeightedList<HolderSet<WoodPalette>> paletteChoices, List<ProcessorRule> preprocessingRules) implements FeatureConfiguration {
+public record SwizzleConfig(HolderSet<WoodPalette> targets, WeightedList<HolderSet<WoodPalette>> paletteChoices, List<ProcessorRule> preprocessingRules)  {
 	private static Codec<WeightedList<HolderSet<WoodPalette>>> makePaletteChoicesCodec() {
-		return WeightedList.codec(RegistryCodecs.homogeneousList(TFRegistries.Keys.WOOD_PALETTES));
+		return WeightedList.codec(RegistryCodecs.holderSet(TFRegistries.Keys.WOOD_PALETTES));
 	}
 
 	public static final Codec<SwizzleConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		RegistryCodecs.homogeneousList(TFRegistries.Keys.WOOD_PALETTES).fieldOf("target_palettes").forGetter(SwizzleConfig::targets),
+		RegistryCodecs.holderSet(TFRegistries.Keys.WOOD_PALETTES).fieldOf("target_palettes").forGetter(SwizzleConfig::targets),
 		makePaletteChoicesCodec().fieldOf("palette_choices").forGetter(SwizzleConfig::paletteChoices),
 		ProcessorRule.CODEC.listOf().fieldOf("preprocessing_rules").orElseGet(Collections::emptyList).forGetter(SwizzleConfig::preprocessingRules)
 	).apply(instance, SwizzleConfig::new));

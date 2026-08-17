@@ -50,7 +50,7 @@ public class TrunkUnderDensityFunction extends Beardifier {
 	}
 
 	@Override
-	public double compute(FunctionContext context) {
+	public float compute(FunctionContext context) {
 		int x = context.blockX();
 		int y = context.blockY();
 		int z = context.blockZ();
@@ -63,8 +63,8 @@ public class TrunkUnderDensityFunction extends Beardifier {
 
 		double moundContribution = computeMoundsContribution(context);
 		if (moundContribution > 0)
-			return moundContribution;
-		return flatSurroundingTerrain(horizontalDistanceX, verticalDistance, horizontalDistanceZ);
+			return (float) moundContribution;
+		return (float) flatSurroundingTerrain(horizontalDistanceX, verticalDistance, horizontalDistanceZ);
 	}
 
 	public static double flatSurroundingTerrain(double x, double y, double z) {

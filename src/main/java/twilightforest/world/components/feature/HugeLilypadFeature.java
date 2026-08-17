@@ -10,8 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import twilightforest.init.TFBlocks;
 
 import static twilightforest.block.HugeLilyPadBlock.FACING;
@@ -23,18 +22,21 @@ import static twilightforest.enums.HugeLilypadPiece.*;
  *
  * @author Ben
  */
-public class HugeLilypadFeature extends Feature<NoneFeatureConfiguration> {
+public class HugeLilypadFeature implements Feature {
 
-	public HugeLilypadFeature(Codec<NoneFeatureConfiguration> config) {
-		super(config);
+	public HugeLilypadFeature() {
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
-		WorldGenLevel world = ctx.level();
-		BlockPos pos = ctx.origin();
-		RandomSource random = ctx.random();
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.levelgen.feature.Feature> codec() {
+		return com.mojang.serialization.MapCodec.unit(this);
+	}
 
+	@Override
+	public boolean place(net.minecraft.world.level.WorldGenLevel level, net.minecraft.world.level.chunk.ChunkGenerator chunkGenerator, net.minecraft.util.RandomSource random, net.minecraft.core.BlockPos pos) {
+		// ===== 26.3 过渡变量：原 ctx 引用迁移 =====
+		@SuppressWarnings("unused") Object _cfg = null; /* _cfg 原本从此处取，现为 Feature 字段 TODO */
+		WorldGenLevel world = level;
 		for (int i = 0; i < 10; i++) {
 			BlockPos dPos = pos.offset(
 				random.nextInt(8) - random.nextInt(8),

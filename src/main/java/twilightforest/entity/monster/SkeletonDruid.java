@@ -18,7 +18,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.monster.skeleton.AbstractSkeleton;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -78,7 +77,7 @@ public class SkeletonDruid extends AbstractSkeleton {
 		if (!this.level().isClientSide()) {
 			this.goalSelector.removeGoal(this.rangedAttackGoal);
 
-			if (this.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof HoeItem) {
+			if (this.getItemInHand(InteractionHand.MAIN_HAND).is(net.minecraft.tags.ItemTags.HOES)) {
 				this.goalSelector.addGoal(4, this.rangedAttackGoal);
 			} else {
 				super.reassessWeaponGoal();
@@ -99,7 +98,7 @@ public class SkeletonDruid extends AbstractSkeleton {
 
 	@Override
 	public void performRangedAttack(LivingEntity attackTarget, float extraDamage) {
-		if (this.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof HoeItem) {
+		if (this.getItemInHand(InteractionHand.MAIN_HAND).is(net.minecraft.tags.ItemTags.HOES)) {
 			NatureBolt natureBolt = new NatureBolt(this.level(), this);
 			playSound(TFSounds.SKELETON_DRUID_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
 

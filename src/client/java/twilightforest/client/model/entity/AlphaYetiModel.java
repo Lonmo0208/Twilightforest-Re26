@@ -218,7 +218,7 @@ public class AlphaYetiModel extends HumanoidModel<AlphaYetiRenderState> implemen
 		}
 		stack.scale(0.2F, 0.2F, 0.2F);
 		stack.translate(0.0F, -1.5F, 0.0F);
-		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(AlphaYetiRenderer.TEXTURE), light, overlay, null, -1, breakProgress);
+		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(AlphaYetiRenderer.TEXTURE), light, overlay, null, -1, breakProgress != null ? breakProgress.progress() : 0);
 	}
 
 	@Override

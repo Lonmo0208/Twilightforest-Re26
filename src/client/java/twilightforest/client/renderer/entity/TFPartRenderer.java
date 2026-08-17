@@ -45,7 +45,7 @@ public abstract class TFPartRenderer<T extends TFPart<?>, S extends PartEntitySt
 			int overlay = this.getOverlayCoords(state);
 			int j = ghostly ? 654311423 : -1;
 			int k = ARGB.multiply(j, this.getModelTint(state));
-			buffer.submitModel(this.model, state, stack, rendertype, state.lightCoords, overlay, k, null, state.outlineColor, null);
+			buffer.submitModel(this.model, state, stack, rendertype, state.lightCoords, overlay, k, null, state.outlineColor);
 		}
 
 		stack.popPose();

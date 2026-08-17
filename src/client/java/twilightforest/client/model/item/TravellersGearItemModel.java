@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.cuboid.ItemTransforms;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.MaterialBaker;
@@ -127,7 +128,7 @@ public class TravellersGearItemModel implements ItemModel {
 			layer.setParticleMaterial(this.particleMaterial);
 			layer.setItemTransform(this.itemTransforms.getTransform(displayContext));
 			layer.setLocalTransform(this.localTransform);
-			layer.prepareQuadList().addAll(this.quads.getAll());
+			layer.setQuads(ItemQuads.split(this.quads.getAll()));
 
 			if (this.quads.hasMaterialFlag(2)) {
 				output.setAnimated();

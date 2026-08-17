@@ -6,21 +6,21 @@ import twilightforest.TwilightForestMod;
 import net.minecraft.core.Registry;
 
 public class TFMapDecorations {
-	public static final MapDecorationType HEDGE_MAZE = new MapDecorationType(TwilightForestMod.prefix("hedge_maze"), true, -1, false, true);
-	public static final MapDecorationType SMALL_HOLLOW_HILL = new MapDecorationType(TwilightForestMod.prefix("small_hollow_hill"), true, -1, false, true);
-	public static final MapDecorationType MEDIUM_HOLLOW_HILL = new MapDecorationType(TwilightForestMod.prefix("medium_hollow_hill"), true, -1, false, true);
-	public static final MapDecorationType LARGE_HOLLOW_HILL = new MapDecorationType(TwilightForestMod.prefix("large_hollow_hill"), true, -1, false, true);
-	public static final MapDecorationType QUEST_GROVE = new MapDecorationType(TwilightForestMod.prefix("quest_grove"), true, -1, false, true);
-	public static final MapDecorationType NAGA_COURTYARD = new MapDecorationType(TwilightForestMod.prefix("naga_courtyard"), true, -1, false, true);
-	public static final MapDecorationType LICH_TOWER = new MapDecorationType(TwilightForestMod.prefix("lich_tower"), true, -1, false, true);
-	public static final MapDecorationType LABYRINTH = new MapDecorationType(TwilightForestMod.prefix("labyrinth"), true, -1, false, true);
-	public static final MapDecorationType HYDRA_LAIR = new MapDecorationType(TwilightForestMod.prefix("hydra_lair"), true, -1, false, true);
-	public static final MapDecorationType KNIGHT_STRONGHOLD = new MapDecorationType(TwilightForestMod.prefix("knight_stronghold"), true, -1, false, true);
-	public static final MapDecorationType DARK_TOWER = new MapDecorationType(TwilightForestMod.prefix("dark_tower"), true, -1, false, true);
-	public static final MapDecorationType YETI_LAIR = new MapDecorationType(TwilightForestMod.prefix("yeti_lair"), true, -1, false, true);
-	public static final MapDecorationType AURORA_PALACE = new MapDecorationType(TwilightForestMod.prefix("aurora_palace"), true, -1, false, true);
-	public static final MapDecorationType TROLL_CAVES = new MapDecorationType(TwilightForestMod.prefix("troll_caves"), true, -1, false, true);
-	public static final MapDecorationType FINAL_CASTLE = new MapDecorationType(TwilightForestMod.prefix("final_castle"), true, -1, false, true);
+	public static final MapDecorationType HEDGE_MAZE = new MapDecorationType(TwilightForestMod.prefix("hedge_maze"), true, true);
+	public static final MapDecorationType SMALL_HOLLOW_HILL = new MapDecorationType(TwilightForestMod.prefix("small_hollow_hill"), true, true);
+	public static final MapDecorationType MEDIUM_HOLLOW_HILL = new MapDecorationType(TwilightForestMod.prefix("medium_hollow_hill"), true, true);
+	public static final MapDecorationType LARGE_HOLLOW_HILL = new MapDecorationType(TwilightForestMod.prefix("large_hollow_hill"), true, true);
+	public static final MapDecorationType QUEST_GROVE = new MapDecorationType(TwilightForestMod.prefix("quest_grove"), true, true);
+	public static final MapDecorationType NAGA_COURTYARD = new MapDecorationType(TwilightForestMod.prefix("naga_courtyard"), true, true);
+	public static final MapDecorationType LICH_TOWER = new MapDecorationType(TwilightForestMod.prefix("lich_tower"), true, true);
+	public static final MapDecorationType LABYRINTH = new MapDecorationType(TwilightForestMod.prefix("labyrinth"), true, true);
+	public static final MapDecorationType HYDRA_LAIR = new MapDecorationType(TwilightForestMod.prefix("hydra_lair"), true, true);
+	public static final MapDecorationType KNIGHT_STRONGHOLD = new MapDecorationType(TwilightForestMod.prefix("knight_stronghold"), true, true);
+	public static final MapDecorationType DARK_TOWER = new MapDecorationType(TwilightForestMod.prefix("dark_tower"), true, true);
+	public static final MapDecorationType YETI_LAIR = new MapDecorationType(TwilightForestMod.prefix("yeti_lair"), true, true);
+	public static final MapDecorationType AURORA_PALACE = new MapDecorationType(TwilightForestMod.prefix("aurora_palace"), true, true);
+	public static final MapDecorationType TROLL_CAVES = new MapDecorationType(TwilightForestMod.prefix("troll_caves"), true, true);
+	public static final MapDecorationType FINAL_CASTLE = new MapDecorationType(TwilightForestMod.prefix("final_castle"), true, true);
 
 	public static void init() {
 		Registry.register(BuiltInRegistries.MAP_DECORATION_TYPE, TwilightForestMod.prefix("hedge_maze"), HEDGE_MAZE);

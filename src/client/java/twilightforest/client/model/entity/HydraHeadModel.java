@@ -114,7 +114,7 @@ public class HydraHeadModel extends EntityModel<HydraHeadRenderState> implements
 		float Z = (context == ItemDisplayContext.HEAD) ? 0.125F : (itemForm ? -1.0F : 0.0F);
 		float Y = (context == ItemDisplayContext.HEAD) ? -1.5F : (-1.0F);
 		stack.translate(0.0F, Y, Z);
-		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(HydraRenderer.TEXTURE), light, overlay, null, -1, breakProgress);
+		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(HydraRenderer.TEXTURE), light, overlay, null, -1, breakProgress != null ? breakProgress.progress() : 0);
 	}
 
 	@Override

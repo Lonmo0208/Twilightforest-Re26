@@ -60,7 +60,7 @@ public class ClientProxyInitializer {
 
 			@Override
 			public Vec3 getPlayerHandPos(LivingEntity living, float partialTicks) {
-				float armSwing = Mth.sin(Mth.sqrt(living.getAttackAnim(partialTicks)) * (float) Math.PI);
+				float armSwing = Mth.sin(Mth.sqrt(living.getSwingAnimation(partialTicks)) * (float) Math.PI);
 				int invert = living.getMainArm() == HumanoidArm.RIGHT ? 1 : -1;
 				if (!(living.getMainHandItem().getItem() instanceof LifedrainScepterItem)) invert = -invert;
 

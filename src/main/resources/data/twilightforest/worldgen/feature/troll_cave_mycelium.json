@@ -1,0 +1,22 @@
+{
+    "type":  "twilightforest:mycelium_blob",
+    "half_height":  0,
+    "radius":  {
+                   "type":  "minecraft:uniform",
+                   "max_inclusive":  5,
+                   "min_inclusive":  3
+               },
+    "state_provider":  {
+                           "type":  "minecraft:simple_state_provider",
+                           "state":  {
+                                         "id":  "minecraft:mycelium"
+                                     }
+                       },
+    "target":  {
+                   "type":  "minecraft:matching_blocks",
+                   "blocks":  [
+                                  "minecraft:stone",
+                                  "twilightforest:deadrock"
+                              ]
+               }
+}

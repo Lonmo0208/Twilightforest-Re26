@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.RegistryFixedCodec;
+import net.minecraft.core.registries.codec.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -137,7 +137,7 @@ public class HollowTreeStructure extends Structure implements DecorationClearanc
 
 		if (height < 16 || (!this.allowInWater && seaFloorY < worldY))
 			return Optional.empty();
-		if (!this.biomes().contains(context.chunkGenerator().getBiomeSource().getNoiseBiome(x >> 2, worldY >> 2, z >> 2, context.randomState().sampler())))
+		if (!this.biomes().contains(context.chunkGenerator().getBiomeSource().createResolver(context.randomState().sampler()).getNoiseBiome(x >> 2, worldY >> 2, z >> 2)))
 			return Optional.empty();
 
 		int radius = this.radius.sample(random);

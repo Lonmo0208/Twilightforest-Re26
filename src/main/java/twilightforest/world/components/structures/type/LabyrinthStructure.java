@@ -9,12 +9,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
@@ -64,14 +65,14 @@ public class LabyrinthStructure extends ControlledSpawningStructure implements C
 	public static LabyrinthStructure buildLabyrinthConfig(BootstrapContext<Structure> context) {
 		return new LabyrinthStructure(
 			ControlledSpawningConfig.firstIndexMonsters(WeightedList.<MobSpawnSettings.SpawnerData>builder()
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.MINOTAUR.get(), 2, 3), 20)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CAVE_SPIDER, 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.MAZE_SLIME.get(), 2, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.ENDERMAN, 1, 2), 1)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.FIRE_BEETLE.get(), 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.SLIME_BEETLE.get(), 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.PINCH_BEETLE.get(), 1, 1), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.MINOTAUR.get(), UniformInt.of(2, 3)), 20)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CAVE_SPIDER, UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.MAZE_SLIME.get(), UniformInt.of(2, 4)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.ENDERMAN, UniformInt.of(1, 2)), 1)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.FIRE_BEETLE.get(), UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.SLIME_BEETLE.get(), UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.PINCH_BEETLE.get(), UniformInt.of(1, 1)), 10)
 				.build()
 			),
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_lich"))),
@@ -88,14 +89,14 @@ public class LabyrinthStructure extends ControlledSpawningStructure implements C
 	}
 
 	@Override
-	public DensityFunction getStructureTerraformer(ChunkPos chunkSliceAt, StructureStart structurePieceSource) {
+	public net.minecraft.world.level.levelgen.densityfunction.DensityFunction getStructureTerraformer(ChunkPos chunkSliceAt, StructureStart structurePieceSource) {
 		final float radius = 35;
 
 		final BoundingBox structureBox = structurePieceSource.getBoundingBox();
 		final BlockPos hillCenter = structureBox.getCenter();
 		final int yCeilingFocus = hillCenter.getY();
 
-		DensityFunction hillMound = new HollowHillFunction(hillCenter.getX() + 1, hillCenter.getY() + 7, hillCenter.getZ() + 2f, radius, 0.8f)
+		DensityFunction hillMound = ((DensityFunction) new HollowHillFunction(hillCenter.getX() + 1, hillCenter.getY() + 7, hillCenter.getZ() + 2f, radius, 0.8f))
 			.clamp(0, 2);
 
 		DensityFunction ceilingCapped = DensityFunctions.yClampedGradient(5, 6, -1, 1);
@@ -105,7 +106,7 @@ public class LabyrinthStructure extends ControlledSpawningStructure implements C
 			DensityFunctions.yClampedGradient(-4, 3, 26, -1),
 			DensityFunctions.mul(
 				DensityFunctions.constant(-1),
-				new AbsoluteDifferenceFunction.Max(32, pos.getX() + 0.5f, pos.getZ() + 0.5f)
+				(DensityFunction) new AbsoluteDifferenceFunction.Max(32, pos.getX() + 0.5f, pos.getZ() + 0.5f)
 			)
 		);
 
@@ -113,13 +114,13 @@ public class LabyrinthStructure extends ControlledSpawningStructure implements C
 			ceilingCapped,
 			DensityFunctions.add(
 				DensityFunctions.constant(-2),
-				new AbsoluteDifferenceFunction.Min(32, pos.getX() + 0.5f, pos.getZ() + 0.5f)
+				(DensityFunction) new AbsoluteDifferenceFunction.Min(32, pos.getX() + 0.5f, pos.getZ() + 0.5f)
 			)
 		);
 
 		DensityFunction interior = DensityFunctions.max(entrances, innerFloor).clamp(0, 1);
 
-		DensityFunction interiorMask = FocusedDensityFunction.fromPos(hillCenter.atY(yCeilingFocus), radius * 0.7f, radius, 0);
+		DensityFunction interiorMask = (DensityFunction) FocusedDensityFunction.fromPos(hillCenter.atY(yCeilingFocus), radius * 0.7f, radius, 0);
 
 		DensityFunction interiorMasked = DensityFunctions.lerp(interiorMask.clamp(0, 1), DensityFunctions.zero(), interior);
 

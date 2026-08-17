@@ -10,7 +10,7 @@ import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
@@ -57,10 +57,10 @@ public class LeafSpheroidFoliagePlacer extends FoliagePlacer {
 	}
 
 	@Override
-	protected void createFoliage(WorldGenLevel worldReader, FoliageSetter setter, RandomSource random, TreeConfiguration baseTreeFeatureConfig, int trunkHeight, FoliageAttachment foliage, int foliageHeight, int radius, int offset) {
+	protected void createFoliage(WorldGenLevel worldReader, FoliageSetter setter, RandomSource random, TreeFeature baseTreeFeatureConfig, int trunkHeight, FoliageAttachment foliage, int foliageHeight, int radius, int offset) {
 		BlockPos center = foliage.pos().above(offset); // foliage.getCenter
 
-		FeaturePlacers.placeSpheroid(worldReader, setter, FeaturePlacers.VALID_TREE_POS, random, center, foliage.radiusOffset() + this.horizontalRadius + random.nextInt(this.randomHorizontal + 1), foliage.radiusOffset() + this.verticalRadius + random.nextInt(this.randomVertical + 1), this.verticalBias, baseTreeFeatureConfig.foliageProvider);
+		FeaturePlacers.placeSpheroid(worldReader, setter, FeaturePlacers.VALID_TREE_POS, random, center, foliage.radiusOffsetXZ() + this.horizontalRadius + random.nextInt(this.randomHorizontal + 1), foliage.radiusOffsetXZ() + this.verticalRadius + random.nextInt(this.randomVertical + 1), this.verticalBias, baseTreeFeatureConfig.foliageProvider());
 
 		if (this.shag_factor > 0) {
 			for (int i = 0; i < this.shag_factor; i++) {
@@ -72,7 +72,7 @@ public class LeafSpheroidFoliagePlacer extends FoliagePlacer {
 
 				BlockPos placement = center.offset((int) (xCircleOffset + ((int) xCircleOffset >> 31)), (int) (randomPitch * (this.verticalRadius + 0.25f) + this.verticalBias), (int) (zCircleOffset + ((int) zCircleOffset >> 31)));
 
-				placeLeafCluster(worldReader, setter, random, placement.immutable(), baseTreeFeatureConfig.foliageProvider);
+				placeLeafCluster(worldReader, setter, random, placement.immutable(), baseTreeFeatureConfig.foliageProvider());
 			}
 		}
 	}
@@ -85,7 +85,7 @@ public class LeafSpheroidFoliagePlacer extends FoliagePlacer {
 	}
 
 	@Override // foliage Height
-	public int foliageHeight(RandomSource random, int i, TreeConfiguration baseTreeFeatureConfig) {
+	public int foliageHeight(RandomSource random, int i, TreeFeature baseTreeFeatureConfig) {
 		return 0;
 	}
 

@@ -209,7 +209,7 @@ public class PatchModel implements BlockStateModel, LevelAwareBlockStateModel {
                         ? Transparency.TRANSLUCENT
                         : this.texture.sprite().transparency();
 
-                BakedQuad.MaterialInfo materialInfo = BakedQuad.MaterialInfo.of(this.texture, transparency, 0, true, 0);
+                BakedQuad.MaterialInfo materialInfo = BakedQuad.MaterialInfo.of(this.texture, transparency, 0, null, 0);
 
                 return FaceBakery.bakeQuad(
                         IDENTITY_INTERNER,

@@ -3,17 +3,16 @@ package twilightforest.world.components.chunkgenerators;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.levelgen.Beardifier;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.util.Util;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 
 import java.util.List;
 
-public class BoxDensityFunction implements DensityFunction.SimpleFunction {
+public class BoxDensityFunction implements DensityFunction {
 	public static final MapCodec<BoxDensityFunction> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 		Codec.INT.fieldOf("minX").forGetter(f -> f.minX),
 		Codec.INT.fieldOf("minY").forGetter(f -> f.minY),
@@ -25,7 +24,6 @@ public class BoxDensityFunction implements DensityFunction.SimpleFunction {
 		Codec.DOUBLE.fieldOf("maxValue").forGetter(f -> f.maxValue),
 		TerrainAdjustment.CODEC.fieldOf("beardifier").forGetter(f -> f.terrainAdjustment)
 	).apply(inst, BoxDensityFunction::new));
-	public static final KeyDispatchDataCodec<BoxDensityFunction> KEY_CODEC = KeyDispatchDataCodec.of(CODEC);
 
 	private final int minX, minY, minZ, maxX, maxY, maxZ;
 	private final double minValue, maxValue;
@@ -60,7 +58,7 @@ public class BoxDensityFunction implements DensityFunction.SimpleFunction {
 	}
 
 	@Override // Parallels vanilla Beardifier behavior
-	public double compute(FunctionContext context) {
+	public float compute(FunctionContext context) {
 		int blockX = context.blockX();
 		int blockY = context.blockY();
 		int blockZ = context.blockZ();
@@ -76,28 +74,74 @@ public class BoxDensityFunction implements DensityFunction.SimpleFunction {
 			default -> 0;
 		};
 
-		double densityValue = switch (this.terrainAdjustment) {
-			case BURY -> Beardifier.getBuryContribution(xDist, yDist * 0.5, zDist);
-			case BEARD_THIN, BEARD_BOX -> Beardifier.getBeardContribution(xDist, yDist, zDist, distAboveBottom) * 0.8;
-			case ENCAPSULATE -> Beardifier.getBuryContribution(xDist * 0.5, yDist * 0.5, zDist * 0.5) * 0.8;
+		float densityValue = switch (this.terrainAdjustment) {
+			case BURY -> getBuryContribution((float) xDist, (float) (yDist * 0.5), (float) zDist);
+			case BEARD_THIN, BEARD_BOX -> getBeardContribution(xDist, yDist, zDist, distAboveBottom) * 0.8F;
+			case ENCAPSULATE -> getBuryContribution((float) (xDist * 0.5), (float) (yDist * 0.5), (float) (zDist * 0.5)) * 0.8F;
 			default -> 0;
 		};
 
-		return Mth.clamp(densityValue, this.minValue, this.maxValue);
+		return Mth.clamp(densityValue, (float) this.minValue, (float) this.maxValue);
 	}
 
 	@Override
-	public double minValue() {
-		return this.minValue;
+	public net.minecraft.util.Interval range() {
+		return net.minecraft.util.Interval.of((float) this.minValue, (float) this.maxValue);
 	}
 
 	@Override
-	public double maxValue() {
-		return this.maxValue;
+	public MapCodec<? extends DensityFunction> codec() {
+		return CODEC;
 	}
 
 	@Override
-	public KeyDispatchDataCodec<? extends DensityFunction> codec() {
-		return KEY_CODEC;
+	public int domainAxes() {
+		return DensityFunction.ALL_AXES;
+	}
+
+	@Override
+	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
+		for (int i = 0; i < ds.length; i++) {
+			ds[i] = this.compute(contextProvider.forIndex(i));
+		}
+	}
+
+	@Override
+	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
+		return this;
+	}
+
+	// Replicates the (now private) Beardifier contribution functions so box-based terrain shaping still works in 26.3
+	private static final float[] BEARD_KERNEL = Util.make(new float[13824], p -> {
+		for (int i = 0; i < 24; i++)
+			for (int j = 0; j < 24; j++)
+				for (int k = 0; k < 24; k++)
+					p[i * 24 * 24 + j * 24 + k] = (float) computeBeardContribution(j - 12, k - 12, i - 12);
+	});
+
+	private static boolean isInKernelRange(int value) {
+		return value >= 0 && value < 24;
+	}
+
+	private static float getBuryContribution(float x, float y, float z) {
+		float distSq = Mth.lengthSquared(x, y, z);
+		if (distSq >= 36.0F) return 0.0F;
+		return 1.0F - Mth.sqrt(distSq) / 6.0F;
+	}
+
+	private static double computeBeardContribution(int x, double y, int z) {
+		double d = Mth.lengthSquared((double) x, y, (double) z);
+		return Math.pow(2.718281828459045D, -d / 16.0D);
+	}
+
+	private static float getBeardContribution(int x, int y, int z, int groundLevelDelta) {
+		int i = x + 12, j = y + 12, k = z + 12;
+		if (isInKernelRange(i) && isInKernelRange(j) && isInKernelRange(k)) {
+			float f = (float) groundLevelDelta + 0.5F;
+			float f1 = Mth.lengthSquared((float) x, f, (float) z);
+			float f2 = (-f) * (float) Mth.fastInvSqrt(f1 / 2.0F) / 2.0F;
+			return f2 * BEARD_KERNEL[k * 24 * 24 + j * 24 + i];
+		}
+		return 0.0F;
 	}
 }

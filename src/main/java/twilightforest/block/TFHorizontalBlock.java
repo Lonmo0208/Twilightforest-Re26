@@ -9,16 +9,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 
 public class TFHorizontalBlock extends HorizontalDirectionalBlock {
 
-	public static final MapCodec<TFHorizontalBlock> CODEC = simpleCodec(TFHorizontalBlock::new);
-
 	public TFHorizontalBlock(Properties properties) {
 		super(properties);
 	}
 
-	@Override
-	protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

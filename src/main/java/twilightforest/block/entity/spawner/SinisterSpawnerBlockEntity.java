@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Spawner;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -74,6 +75,12 @@ public class SinisterSpawnerBlockEntity extends BlockEntity implements Spawner {
 	@Override
 	public void setEntityId(EntityType<?> type, RandomSource random) {
 		this.spawner.setEntityId(type, this.level, random, this.worldPosition);
+		this.setChanged();
+	}
+
+	@Override
+	public void setEntityData(TypedEntityData<EntityType<?>> entityData, RandomSource random) {
+		this.spawner.setEntityData(entityData, this.level, random, this.worldPosition);
 		this.setChanged();
 	}
 

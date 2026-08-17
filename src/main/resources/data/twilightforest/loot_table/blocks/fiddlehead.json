@@ -1,24 +1,22 @@
 {
-    "type": "minecraft:block",
-    "pools": [
-        {
-            "bonus_rolls": 0.0,
-            "conditions": [
-                {
-                    "condition": "minecraft:match_tool",
-                    "predicate": {
-                        "items": "minecraft:shears"
-                    }
-                }
-            ],
-            "entries": [
-                {
-                    "type": "minecraft:item",
-                    "name": "twilightforest:fiddlehead"
-                }
-            ],
-            "rolls": 1.0
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "condition": {
+        "type": "minecraft:match_tool",
+        "predicate": {
+          "items": "minecraft:shears"
         }
-    ],
-    "random_sequence": "twilightforest:blocks/fiddlehead"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "twilightforest:fiddlehead"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "twilightforest:blocks/fiddlehead"
 }

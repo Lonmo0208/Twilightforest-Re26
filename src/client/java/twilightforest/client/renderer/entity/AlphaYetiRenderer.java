@@ -25,6 +25,7 @@ public class AlphaYetiRenderer extends HumanoidMobRenderer<AlphaYeti, AlphaYetiR
 	@Override
 	public void extractRenderState(AlphaYeti entity, AlphaYetiRenderState state, float partialTick) {
 		super.extractRenderState(entity, state, partialTick);
+		state.attackTime = entity.getSwingAnimation(partialTick);
 		state.isHoldingEntity = entity.isVehicle();
 		state.isRampaging = entity.isRampaging();
 		state.isTired = entity.isTired();

@@ -79,7 +79,7 @@ public class MazeSlimeRenderer extends MobRenderer<MazeSlime, SlimeRenderState, 
 				else renderType = RenderTypes.entityTranslucent(TEXTURE);
 
 				this.model.setupAnim(renderState);
-				submitNodeCollector.submitModel(this.model, renderState, poseStack, renderType, renderState.lightCoords, LivingEntityRenderer.getOverlayCoords(renderState, 0.0F), renderState.outlineColor, null);
+				submitNodeCollector.submitModel(this.model, renderState, poseStack, renderType, renderState.lightCoords, LivingEntityRenderer.getOverlayCoords(renderState, 0.0F), renderState.outlineColor);
 			}
 		}
 	}

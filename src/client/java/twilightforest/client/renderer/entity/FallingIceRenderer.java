@@ -24,8 +24,8 @@ public class FallingIceRenderer extends EntityRenderer<FallingIce, FallingBlockR
 	}
 
 	@Override
-	public boolean shouldRender(FallingIce entity, Frustum culler, double camX, double camY, double camZ) {
-		return super.shouldRender(entity, culler, camX, camY, camZ) && entity.getBlockState() != entity.level().getBlockState(entity.blockPosition());
+	public boolean shouldRender(FallingIce entity, Frustum culler, double camX, double camY, double camZ, float partialTick) {
+		return super.shouldRender(entity, culler, camX, camY, camZ, partialTick) && entity.getBlockState() != entity.level().getBlockState(entity.blockPosition());
 	}
 
 	@Override

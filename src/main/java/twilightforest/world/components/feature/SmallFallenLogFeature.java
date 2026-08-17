@@ -1,6 +1,7 @@
 package twilightforest.world.components.feature;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -11,7 +12,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.block.HorizontalHollowLogBlock;
 import twilightforest.enums.HollowLogVariants;
@@ -19,18 +20,32 @@ import twilightforest.init.TFBlocks;
 import twilightforest.util.features.FeatureUtil;
 import twilightforest.world.components.feature.config.HollowLogConfig;
 
-public class SmallFallenLogFeature extends Feature<HollowLogConfig> {
+public class SmallFallenLogFeature implements Feature {
 
-	public SmallFallenLogFeature(Codec<HollowLogConfig> configIn) {
-		super(configIn);
+	private final HollowLogConfig config;
+
+	public SmallFallenLogFeature(HollowLogConfig config) {
+		this.config = config;
+	}
+
+	public SmallFallenLogFeature() {
+		this.config = new HollowLogConfig(Blocks.OAK_LOG.defaultBlockState(), Blocks.AIR.defaultBlockState());
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<HollowLogConfig> ctx) {
-		WorldGenLevel world = ctx.level();
-		BlockPos pos = ctx.origin();
-		RandomSource rand = ctx.random();
-		HollowLogConfig config = ctx.config();
+	public MapCodec<? extends Feature> codec() {
+		// 26.3: 每个 JSON 需要解码出独立的实例，且每次注册的 codec 对象必须不同（MappedRegistry 按引用判重）
+		return RecordCodecBuilder.<SmallFallenLogFeature>mapCodec(instance -> instance.group(
+			BlockState.CODEC.fieldOf("normal").forGetter(f -> f.config.normal()),
+			BlockState.CODEC.fieldOf("hollow").forGetter(f -> f.config.hollow())
+		).apply(instance, (normal, hollow) -> new SmallFallenLogFeature(new HollowLogConfig(normal, hollow))));
+	}
+
+	@Override
+	public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos pos) {
+		WorldGenLevel world = level;
+		RandomSource rand = random;
+		HollowLogConfig config = this.config;
 		boolean shouldMakeAllHollow = rand.nextBoolean();
 
 		// determine direction

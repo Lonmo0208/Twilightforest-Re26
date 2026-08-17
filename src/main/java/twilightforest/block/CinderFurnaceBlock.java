@@ -21,16 +21,11 @@ import twilightforest.init.TFBlockEntities;
 
 public class CinderFurnaceBlock extends AbstractFurnaceBlock {
 
-	public static final MapCodec<CinderFurnaceBlock> CODEC = simpleCodec(CinderFurnaceBlock::new);
-
 	public CinderFurnaceBlock(BlockBehaviour.Properties properties) {
 		super(properties);
 	}
 
-	@Override
-	protected MapCodec<? extends AbstractFurnaceBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	protected void openContainer(Level level, BlockPos pos, Player player) {

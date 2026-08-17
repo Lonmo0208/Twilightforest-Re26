@@ -1,0 +1,20 @@
+{
+    "type":  "minecraft:random_selector",
+    "default":  {
+                    "feature":  "twilightforest:simple_well",
+                    "placement":  [
+
+                                  ]
+                },
+    "features":  [
+                     {
+                         "chance":  0.05,
+                         "feature":  {
+                                         "feature":  "twilightforest:fancy_well",
+                                         "placement":  [
+
+                                                       ]
+                                     }
+                     }
+                 ]
+}

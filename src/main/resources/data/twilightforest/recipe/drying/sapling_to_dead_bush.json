@@ -1,8 +1,8 @@
 {
-  "type": "twilightforest:drying",
-  "filter_time": 7200,
-  "input": "#minecraft:saplings",
-  "result": {
-    "id": "minecraft:dead_bush"
-  }
+    "type":  "twilightforest:drying",
+    "filter_time":  7200,
+    "input":  "#minecraft:saplings",
+    "result":  {
+                   "id":  "minecraft:dead_bush"
+               }
 }

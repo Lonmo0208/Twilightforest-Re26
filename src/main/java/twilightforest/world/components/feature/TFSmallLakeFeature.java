@@ -1,6 +1,6 @@
 package twilightforest.world.components.feature;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
@@ -10,28 +10,52 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.tags.TFBlockTags;
 
 import java.util.Optional;
 
 @SuppressWarnings("deprecation")
-public class TFSmallLakeFeature extends Feature<TFSmallLakeFeature.Configuration> {
+public class TFSmallLakeFeature implements Feature {
 	private static final BlockState AIR = Blocks.CAVE_AIR.defaultBlockState();
 
-	public TFSmallLakeFeature(Codec<TFSmallLakeFeature.Configuration> codec) {
-		super(codec);
+	public static final MapCodec<TFSmallLakeFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+		BlockStateProvider.CODEC.fieldOf("fluid").forGetter(f -> f.fluid),
+		BlockStateProvider.CODEC.optionalFieldOf("barrier").forGetter(f -> Optional.ofNullable(f.barrier)),
+		BlockStateProvider.CODEC.optionalFieldOf("ice").forGetter(f -> Optional.ofNullable(f.ice))
+	).apply(instance, TFSmallLakeFeature::new));
+
+	private final BlockStateProvider fluid;
+	private final @Nullable BlockStateProvider barrier;
+	private final @Nullable BlockStateProvider ice;
+
+	public TFSmallLakeFeature(BlockStateProvider fluid, @Nullable BlockStateProvider barrier, @Nullable BlockStateProvider ice) {
+		this.fluid = fluid;
+		this.barrier = barrier;
+		this.ice = ice;
+	}
+
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Vanilla does this shit too
+	private TFSmallLakeFeature(BlockStateProvider fluid, Optional<BlockStateProvider> barrier, Optional<BlockStateProvider> ice) {
+		this(fluid, barrier.orElse(null), ice.orElse(null));
+	}
+
+	public TFSmallLakeFeature() {
+		this(BlockStateProvider.simple(Blocks.WATER), (BlockStateProvider) null, (BlockStateProvider) null);
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<TFSmallLakeFeature.Configuration> context) {
-		BlockPos blockpos = context.origin();
-		WorldGenLevel worldgenlevel = context.level();
-		RandomSource randomsource = context.random();
-		TFSmallLakeFeature.Configuration config = context.config();
+	public MapCodec<? extends Feature> codec() {
+		return CODEC;
+	}
+
+	@Override
+	public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos pos) {
+		BlockPos blockpos = pos;
+		WorldGenLevel worldgenlevel = level;
+		RandomSource randomsource = random;
 
 		if (blockpos.getY() <= worldgenlevel.getMinY() + 4) {
 			return false;
@@ -63,7 +87,7 @@ public class TFSmallLakeFeature extends Feature<TFSmallLakeFeature.Configuration
 				}
 			}
 
-			BlockState fluidState = config.fluid().getState(worldgenlevel, randomsource, blockpos);
+			BlockState fluidState = this.fluid.getState(worldgenlevel, randomsource, blockpos);
 
 			for (int x = 0; x < 16; x++) {
 				for (int z = 0; z < 16; z++) {
@@ -91,7 +115,7 @@ public class TFSmallLakeFeature extends Feature<TFSmallLakeFeature.Configuration
 				}
 			}
 
-			BlockState iceState = config.ice != null ? config.ice.getState(worldgenlevel, randomsource, blockpos) : null;
+			BlockState iceState = this.ice != null ? this.ice.getState(worldgenlevel, randomsource, blockpos) : null;
 
 			for (int x = 0; x < 16; x++) {
 				for (int z = 0; z < 16; z++) {
@@ -119,8 +143,8 @@ public class TFSmallLakeFeature extends Feature<TFSmallLakeFeature.Configuration
 				}
 			}
 
-			if (config.barrier() != null) {
-				BlockState barrierState = config.barrier().getState(worldgenlevel, randomsource, blockpos);
+			if (this.barrier != null) {
+				BlockState barrierState = this.barrier.getState(worldgenlevel, randomsource, blockpos);
 				if (!barrierState.isAir()) {
 					for (int x = 0; x < 16; x++) {
 						for (int z = 0; z < 16; z++) {
@@ -149,22 +173,6 @@ public class TFSmallLakeFeature extends Feature<TFSmallLakeFeature.Configuration
 			}
 
 			return true;
-		}
-	}
-
-	public record Configuration(BlockStateProvider fluid, @Nullable BlockStateProvider barrier, @Nullable BlockStateProvider ice) implements FeatureConfiguration {
-		public static final Codec<TFSmallLakeFeature.Configuration> CODEC = RecordCodecBuilder.create(
-			instance -> instance.group(
-					BlockStateProvider.CODEC.fieldOf("fluid").forGetter(Configuration::fluid),
-					BlockStateProvider.CODEC.optionalFieldOf("barrier").forGetter(configuration -> Optional.ofNullable(configuration.barrier())),
-					BlockStateProvider.CODEC.optionalFieldOf("ice").forGetter(configuration -> Optional.ofNullable(configuration.ice()))
-				)
-				.apply(instance, TFSmallLakeFeature.Configuration::new)
-		);
-
-		@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Vanilla does this shit too
-		private Configuration(BlockStateProvider fluid, Optional<BlockStateProvider> barrier, Optional<BlockStateProvider> ice) {
-			this(fluid, barrier.orElse(null), ice.orElse(null));
 		}
 	}
 }

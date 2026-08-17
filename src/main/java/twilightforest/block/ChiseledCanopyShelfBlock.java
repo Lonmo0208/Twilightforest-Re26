@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -70,8 +71,8 @@ public class ChiseledCanopyShelfBlock extends ChiseledBookShelfBlock {
 	}
 
 	@Override
-	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
-		if (level instanceof ServerLevel serverLevel && state.getValue(SPAWNER)) {
+	public void playerDestroy(ServerLevel level, ServerPlayer player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
+		if (state.getValue(SPAWNER)) {
 			level.playSound(null, pos, TFSounds.DEATH_TOME_DEATH, SoundSource.BLOCKS, 1.0F, 1.0F);
 			ParticlePacket particlePacket = new ParticlePacket();
 			for (int i = 0; i < 20; ++i) {
@@ -81,7 +82,7 @@ public class ChiseledCanopyShelfBlock extends ChiseledBookShelfBlock {
 					(double) pos.getZ() + 0.5D + level.getRandom().nextGaussian() * 0.02D * level.getRandom().nextGaussian(),
 					0.15F * level.getRandom().nextGaussian(), 0.15F * level.getRandom().nextGaussian(), 0.15F * level.getRandom().nextGaussian());
 			}
-			PacketDistributor.sendToPlayersNear(serverLevel, null, pos.getX(), pos.getY(), pos.getZ(), 32.0D, particlePacket);
+			PacketDistributor.sendToPlayersNear(level, null, pos.getX(), pos.getY(), pos.getZ(), 32.0D, particlePacket);
 		}
 		super.playerDestroy(level, player, pos, state, entity, stack);
 	}

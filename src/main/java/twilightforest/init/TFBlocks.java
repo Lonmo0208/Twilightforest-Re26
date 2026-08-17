@@ -36,14 +36,14 @@ public class TFBlocks {
 public static final TFPortalBlock TWILIGHT_PORTAL = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_portal")),
-		new TFPortalBlock(BlockBehaviour.Properties.of().pushReaction(PushReaction.BLOCK).strength(-1.0F).sound(SoundType.GLASS).lightLevel((state) -> 11).noCollision().noOcclusion().noLootTable().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_portal"))))
+		new TFPortalBlock(BlockBehaviour.Properties.of().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F).sound(SoundType.GLASS).lightLevel((state) -> 11).noCollision().noOcclusion().noLootTable().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_portal"))))
 	);
 
 	//misc.
 public static final Block HEDGE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hedge")),
-		new HedgeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS).strength(2.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hedge"))))
+		new HedgeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.GRASS).strength(2.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hedge"))))
 	);
 public static final MasonJarBlock MASON_JAR = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -68,42 +68,42 @@ public static final JarBlock CICADA_JAR = Registry.register(
 public static final Block MOSS_PATCH = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("moss_patch")),
-		new MossPatchBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().pushReaction(PushReaction.DESTROY).sound(SoundType.MOSS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("moss_patch"))))
+		new MossPatchBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.MOSS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("moss_patch"))))
 	);
 public static final Block MAYAPPLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mayapple")),
-		new MayappleBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mayapple"))))
+		new MayappleBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.GRASS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mayapple"))))
 	);
 public static final Block CLOVER_PATCH = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("clover_patch")),
-		new PatchBlock(BlockBehaviour.Properties.of().ignitedByLava().noCollision().noOcclusion().instabreak().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("clover_patch"))))
+		new PatchBlock(BlockBehaviour.Properties.of().ignitedByLava().noCollision().noOcclusion().instabreak().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.GRASS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("clover_patch"))))
 	);
 public static final Block FIDDLEHEAD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fiddlehead")),
-		new FiddleheadBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().pushReaction(PushReaction.DESTROY).replaceable().sound(SoundType.GRASS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fiddlehead"))))
+		new FiddleheadBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).replaceable().sound(SoundType.GRASS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fiddlehead"))))
 	);
 public static final Block MUSHGLOOM = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mushgloom")),
-		new MushgloomBlock(BlockBehaviour.Properties.of().instabreak().lightLevel((state) -> 3).noCollision().noOcclusion().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).sound(SoundType.FUNGUS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mushgloom"))))
+		new MushgloomBlock(BlockBehaviour.Properties.of().instabreak().lightLevel((state) -> 3).noCollision().noOcclusion().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.FUNGUS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mushgloom"))))
 	);
 public static final Block TORCHBERRY_PLANT = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("torchberry_plant")),
-		new TorchberryPlantBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().lightLevel(value -> value.getValue(TorchberryPlantBlock.HAS_BERRIES) ? 7 : 1).noCollision().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).sound(SoundType.HANGING_ROOTS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("torchberry_plant"))))
+		new TorchberryPlantBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().lightLevel(value -> value.getValue(TorchberryPlantBlock.HAS_BERRIES) ? 7 : 1).noCollision().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.HANGING_ROOTS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("torchberry_plant"))))
 	);
 public static final Block ROOT_STRAND = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("root_strand")),
-		new RootStrandBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().pushReaction(PushReaction.DESTROY).sound(SoundType.HANGING_ROOTS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("root_strand"))))
+		new RootStrandBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.HANGING_ROOTS).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("root_strand"))))
 	);
 public static final Block FALLEN_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fallen_leaves")),
-		new FallenLeavesBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().replaceable().pushReaction(PushReaction.DESTROY).sound(SoundType.AZALEA_LEAVES).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fallen_leaves"))))
+		new FallenLeavesBlock(BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().replaceable().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.AZALEA_LEAVES).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fallen_leaves"))))
 	);
 public static final Block ROOT_BLOCK = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -143,27 +143,27 @@ public static final Block ENCASED_FIRE_JET = Registry.register(
 public static final Block FIREFLY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("firefly")),
-		new FireflyBlock(BlockBehaviour.Properties.of().instabreak().lightLevel((state) -> 15).noCollision().pushReaction(PushReaction.DESTROY).sound(SoundType.SLIME_BLOCK).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("firefly"))))
+		new FireflyBlock(BlockBehaviour.Properties.of().instabreak().lightLevel((state) -> 15).noCollision().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.SLIME_BLOCK).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("firefly"))))
 	);
 public static final Block CICADA = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("cicada")),
-		new CicadaBlock(BlockBehaviour.Properties.of().instabreak().noCollision().pushReaction(PushReaction.DESTROY).sound(SoundType.SLIME_BLOCK).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("cicada"))))
+		new CicadaBlock(BlockBehaviour.Properties.of().instabreak().noCollision().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.SLIME_BLOCK).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("cicada"))))
 	);
 public static final Block MOONWORM = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("moonworm")),
-		new MoonwormBlock(BlockBehaviour.Properties.of().forceSolidOff().instabreak().lightLevel((state) -> 14).noCollision().pushReaction(PushReaction.DESTROY).sound(SoundType.SLIME_BLOCK).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("moonworm"))))
+		new MoonwormBlock(BlockBehaviour.Properties.of().forceSolidOff().instabreak().lightLevel((state) -> 14).noCollision().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.SLIME_BLOCK).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("moonworm"))))
 	);
 public static final Block HUGE_LILY_PAD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("huge_lily_pad")),
-		new HugeLilyPadBlock(BlockBehaviour.Properties.of().instabreak().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).sound(SoundType.LILY_PAD).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("huge_lily_pad"))))
+		new HugeLilyPadBlock(BlockBehaviour.Properties.of().instabreak().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.LILY_PAD).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("huge_lily_pad"))))
 	);
 public static final Block HUGE_WATER_LILY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("huge_water_lily")),
-		new HugeWaterLilyBlock(BlockBehaviour.Properties.of().instabreak().mapColor(MapColor.PLANT).noCollision().pushReaction(PushReaction.DESTROY).sound(SoundType.LILY_PAD).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("huge_water_lily"))))
+		new HugeWaterLilyBlock(BlockBehaviour.Properties.of().instabreak().mapColor(MapColor.PLANT).noCollision().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.LILY_PAD).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("huge_water_lily"))))
 	);
 public static final Block SLIDER = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -173,17 +173,17 @@ public static final Block SLIDER = Registry.register(
 public static final Block IRON_LADDER = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("iron_ladder")),
-		new IronLadderBlock(BlockBehaviour.Properties.of().forceSolidOff().noOcclusion().pushReaction(PushReaction.DESTROY).requiresCorrectToolForDrops().sound(SoundType.METAL).strength(5.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("iron_ladder"))))
+		new IronLadderBlock(BlockBehaviour.Properties.of().forceSolidOff().noOcclusion().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).requiresCorrectToolForDrops().sound(SoundType.METAL).strength(5.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("iron_ladder"))))
 	);
 public static final Block ROPE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rope")),
-		new RopeBlock(BlockBehaviour.Properties.of().forceSolidOff().noOcclusion().pushReaction(PushReaction.DESTROY).sound(SoundType.WOOL).strength(0.3F, 3.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rope"))))
+		new RopeBlock(BlockBehaviour.Properties.of().forceSolidOff().noOcclusion().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.WOOL).strength(0.3F, 3.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rope"))))
 	);
 public static final TransparentBlock CANOPY_WINDOW = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_window")),
-		new TransparentBlock(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).strength(0.3F).sound(SoundType.GLASS).noOcclusion().isValidSpawn((pState, pLevel, pPos, pValue) -> false).isRedstoneConductor((pState, pLevel, pPos) -> false).isSuffocating((pState, pLevel, pPos) -> false).isViewBlocking((pState, pLevel, pPos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_window"))))
+		new TransparentBlock(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).strength(0.3F).sound(SoundType.GLASS).noOcclusion().isValidSpawn((pState, pLevel, pPos, pValue) -> false).isRedstoneConductor((pState, pLevel, pPos) -> false).isSuffocating((pState, pLevel, pPos) -> false).isViewBlocking((pState, pLevel, pPos, aabb) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_window"))))
 	);
 public static final IronBarsBlock CANOPY_WINDOW_PANE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -198,7 +198,7 @@ public static final Block SINISTER_SPAWNER = Registry.register(
 public static final Block BRAZIER = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("brazier")),
-		new BrazierBlock(BlockBehaviour.Properties.of().sound(SoundType.WOOD).lightLevel(state -> state.getValue(BrazierBlock.HALF) == DoubleBlockHalf.UPPER ? state.getValue(BrazierBlock.LIGHT).getLight() : 0).pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("brazier"))))
+		new BrazierBlock(BlockBehaviour.Properties.of().sound(SoundType.WOOD).lightLevel(state -> state.getValue(BrazierBlock.HALF) == DoubleBlockHalf.UPPER ? state.getValue(BrazierBlock.LIGHT).getLight() : 0).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("brazier"))))
 	);
 
 	// bushes
@@ -354,12 +354,12 @@ public static final Block TWISTED_STONE_PILLAR = Registry.register(
 public static final Block SKULL_CHEST = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("skull_chest")),
-		new SkullChestBlock(BlockBehaviour.Properties.of().lightLevel(state -> state.getValue(BlockLoggingEnum.MULTILOGGED) == BlockLoggingEnum.LAVA ? 15 : 0).mapColor(MapColor.COLOR_LIGHT_GRAY).noOcclusion().pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK).strength(3.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("skull_chest"))))
+		new SkullChestBlock(BlockBehaviour.Properties.of().lightLevel(state -> state.getValue(BlockLoggingEnum.MULTILOGGED) == BlockLoggingEnum.LAVA ? 15 : 0).mapColor(MapColor.COLOR_LIGHT_GRAY).noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK).strength(3.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("skull_chest"))))
 	);
 public static final Block KEEPSAKE_CASKET = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("keepsake_casket")),
-		new KeepsakeCasketBlock(BlockBehaviour.Properties.of().lightLevel(state -> state.getValue(BlockLoggingEnum.MULTILOGGED) == BlockLoggingEnum.LAVA ? 15 : 0).mapColor(MapColor.COLOR_BLACK).noOcclusion().pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK).strength(5.0F, 1200.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("keepsake_casket"))))
+		new KeepsakeCasketBlock(BlockBehaviour.Properties.of().lightLevel(state -> state.getValue(BlockLoggingEnum.MULTILOGGED) == BlockLoggingEnum.LAVA ? 15 : 0).mapColor(MapColor.COLOR_BLACK).noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK).strength(5.0F, 1200.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("keepsake_casket"))))
 	);
 public static final RotatedPillarBlock BOLD_STONE_PILLAR = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -384,7 +384,7 @@ public static final AbstractSkullCandleBlock ZOMBIE_SKULL_CANDLE = Registry.regi
 public static final AbstractSkullCandleBlock ZOMBIE_WALL_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("zombie_wall_skull_candle")),
-		new WallSkullCandleBlock(SkullBlock.Types.ZOMBIE, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("zombie_wall_skull_candle"))))
+		new WallSkullCandleBlock(SkullBlock.Types.ZOMBIE, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("zombie_wall_skull_candle"))))
 	);
 public static final AbstractSkullCandleBlock SKELETON_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -394,7 +394,7 @@ public static final AbstractSkullCandleBlock SKELETON_SKULL_CANDLE = Registry.re
 public static final AbstractSkullCandleBlock SKELETON_WALL_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("skeleton_wall_skull_candle")),
-		new WallSkullCandleBlock(SkullBlock.Types.SKELETON, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("skeleton_wall_skull_candle"))))
+		new WallSkullCandleBlock(SkullBlock.Types.SKELETON, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("skeleton_wall_skull_candle"))))
 	);
 public static final AbstractSkullCandleBlock WITHER_SKELE_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -404,7 +404,7 @@ public static final AbstractSkullCandleBlock WITHER_SKELE_SKULL_CANDLE = Registr
 public static final AbstractSkullCandleBlock WITHER_SKELE_WALL_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("wither_skele_wall_skull_candle")),
-		new WallSkullCandleBlock(SkullBlock.Types.WITHER_SKELETON, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("wither_skele_wall_skull_candle"))))
+		new WallSkullCandleBlock(SkullBlock.Types.WITHER_SKELETON, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("wither_skele_wall_skull_candle"))))
 	);
 public static final AbstractSkullCandleBlock CREEPER_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -414,7 +414,7 @@ public static final AbstractSkullCandleBlock CREEPER_SKULL_CANDLE = Registry.reg
 public static final AbstractSkullCandleBlock CREEPER_WALL_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("creeper_wall_skull_candle")),
-		new WallSkullCandleBlock(SkullBlock.Types.CREEPER, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("creeper_wall_skull_candle"))))
+		new WallSkullCandleBlock(SkullBlock.Types.CREEPER, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("creeper_wall_skull_candle"))))
 	);
 public static final AbstractSkullCandleBlock PLAYER_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -424,7 +424,7 @@ public static final AbstractSkullCandleBlock PLAYER_SKULL_CANDLE = Registry.regi
 public static final AbstractSkullCandleBlock PLAYER_WALL_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("player_wall_skull_candle")),
-		new WallSkullCandleBlock(SkullBlock.Types.PLAYER, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("player_wall_skull_candle"))))
+		new WallSkullCandleBlock(SkullBlock.Types.PLAYER, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("player_wall_skull_candle"))))
 	);
 public static final AbstractSkullCandleBlock PIGLIN_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -434,7 +434,7 @@ public static final AbstractSkullCandleBlock PIGLIN_SKULL_CANDLE = Registry.regi
 public static final AbstractSkullCandleBlock PIGLIN_WALL_SKULL_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("piglin_wall_skull_candle")),
-		new WallSkullCandleBlock(SkullBlock.Types.PIGLIN, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("piglin_wall_skull_candle"))))
+		new WallSkullCandleBlock(SkullBlock.Types.PIGLIN, BlockBehaviour.Properties.of().strength(1.0F).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("piglin_wall_skull_candle"))))
 	);
 public static final WroughtIronFenceBlock WROUGHT_IRON_FENCE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -466,7 +466,7 @@ public static final CarpetBlock CORONATION_CARPET = Registry.register(
 public static final OminousFireBlock OMINOUS_FIRE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_fire")),
-		new OminousFireBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).replaceable().noCollision().instabreak().lightLevel((state) -> 15).sound(SoundType.WOOL).pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_fire"))))
+		new OminousFireBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).replaceable().noCollision().instabreak().lightLevel((state) -> 15).sound(SoundType.WOOL).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ominous_fire"))))
 	);
 public static final OminousCandleBlock OMINOUS_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -477,7 +477,7 @@ public static final OminousCandleBlock OMINOUS_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_WHITE_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -488,7 +488,7 @@ public static final OminousCandleBlock OMINOUS_WHITE_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_ORANGE_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -499,7 +499,7 @@ public static final OminousCandleBlock OMINOUS_ORANGE_CANDLE = Registry.register
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_MAGENTA_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -510,7 +510,7 @@ public static final OminousCandleBlock OMINOUS_MAGENTA_CANDLE = Registry.registe
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_LIGHT_BLUE_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -521,7 +521,7 @@ public static final OminousCandleBlock OMINOUS_LIGHT_BLUE_CANDLE = Registry.regi
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_YELLOW_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -532,7 +532,7 @@ public static final OminousCandleBlock OMINOUS_YELLOW_CANDLE = Registry.register
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_LIME_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -543,7 +543,7 @@ public static final OminousCandleBlock OMINOUS_LIME_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_PINK_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -554,7 +554,7 @@ public static final OminousCandleBlock OMINOUS_PINK_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_GRAY_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -565,7 +565,7 @@ public static final OminousCandleBlock OMINOUS_GRAY_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_LIGHT_GRAY_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -576,7 +576,7 @@ public static final OminousCandleBlock OMINOUS_LIGHT_GRAY_CANDLE = Registry.regi
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_CYAN_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -587,7 +587,7 @@ public static final OminousCandleBlock OMINOUS_CYAN_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_PURPLE_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -598,7 +598,7 @@ public static final OminousCandleBlock OMINOUS_PURPLE_CANDLE = Registry.register
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_BLUE_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -609,7 +609,7 @@ public static final OminousCandleBlock OMINOUS_BLUE_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_BROWN_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -620,7 +620,7 @@ public static final OminousCandleBlock OMINOUS_BROWN_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_GREEN_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -631,7 +631,7 @@ public static final OminousCandleBlock OMINOUS_GREEN_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_RED_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -642,7 +642,7 @@ public static final OminousCandleBlock OMINOUS_RED_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 public static final OminousCandleBlock OMINOUS_BLACK_CANDLE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -653,7 +653,7 @@ public static final OminousCandleBlock OMINOUS_BLACK_CANDLE = Registry.register(
 		.strength(0.1F)
 		.sound(SoundType.CANDLE)
 		.lightLevel(state -> 2 * state.getValue(OminousCandleBlock.CANDLES))
-		.pushReaction(PushReaction.DESTROY))
+		.pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */))
 	);
 
 	//labyrinth
@@ -700,7 +700,7 @@ public static final Block MAZESTONE_BORDER = Registry.register(
 public static final Block RED_THREAD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("red_thread")),
-		new RedThreadBlock(BlockBehaviour.Properties.of().instabreak().mapColor(MapColor.FIRE).isValidSpawn(TFBlocks::noSpawning).noCollision().noOcclusion().pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("red_thread"))))
+		new RedThreadBlock(BlockBehaviour.Properties.of().instabreak().mapColor(MapColor.FIRE).isValidSpawn(TFBlocks::noSpawning).noCollision().noOcclusion().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("red_thread"))))
 	);
 public static final Block MAZE_SLIME_BLOCK = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -712,12 +712,12 @@ public static final Block MAZE_SLIME_BLOCK = Registry.register(
 public static final Block STRONGHOLD_SHIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("stronghold_shield")),
-		new StrongholdShieldBlock(BlockBehaviour.Properties.of().noLootTable().mapColor(MapColor.STONE).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.METAL).strength(-1.0F, 6000000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("stronghold_shield"))))
+		new StrongholdShieldBlock(BlockBehaviour.Properties.of().noLootTable().mapColor(MapColor.STONE).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.METAL).strength(-1.0F, 6000000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("stronghold_shield"))))
 	);
 public static final Block TROPHY_PEDESTAL = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("trophy_pedestal")),
-		new TrophyPedestalBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.STONE).strength(2.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("trophy_pedestal"))))
+		new TrophyPedestalBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.STONE).strength(2.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("trophy_pedestal"))))
 	);
 public static final Block UNDERBRICK = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -769,12 +769,12 @@ public static final Block INFESTED_TOWERWOOD = Registry.register(
 public static final Block REAPPEARING_BLOCK = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("reappearing_block")),
-		new ReappearingBlock(BlockBehaviour.Properties.of().forceSolidOn().lightLevel((state) -> 4).mapColor(MapColor.SAND).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(10.0F, 35.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("reappearing_block"))))
+		new ReappearingBlock(BlockBehaviour.Properties.of().forceSolidOn().lightLevel((state) -> 4).mapColor(MapColor.SAND).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(10.0F, 35.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("reappearing_block"))))
 	);
 public static final Block VANISHING_BLOCK = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("vanishing_block")),
-		new VanishingBlock(BlockBehaviour.Properties.of().lightLevel((state) -> state.getValue(VanishingBlock.ACTIVE) ? 4 : 0).mapColor(MapColor.SAND).pushReaction(PushReaction.BLOCK).sound(SoundType.WOOD).strength(10.0F, 35.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("vanishing_block"))))
+		new VanishingBlock(BlockBehaviour.Properties.of().lightLevel((state) -> state.getValue(VanishingBlock.ACTIVE) ? 4 : 0).mapColor(MapColor.SAND).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).sound(SoundType.WOOD).strength(10.0F, 35.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("vanishing_block"))))
 	);
 public static final Block UNBREAKABLE_VANISHING_BLOCK = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -784,57 +784,57 @@ public static final Block UNBREAKABLE_VANISHING_BLOCK = Registry.register(
 public static final Block LOCKED_VANISHING_BLOCK = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("locked_vanishing_block")),
-		new LockedVanishingBlock(BlockBehaviour.Properties.of().pushReaction(PushReaction.BLOCK).mapColor(MapColor.SAND).sound(SoundType.WOOD).strength(-1.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("locked_vanishing_block"))))
+		new LockedVanishingBlock(BlockBehaviour.Properties.of().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).mapColor(MapColor.SAND).sound(SoundType.WOOD).strength(-1.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("locked_vanishing_block"))))
 	);
 public static final Block CARMINITE_BUILDER = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("carminite_builder")),
-		new BuilderBlock(BlockBehaviour.Properties.of().lightLevel((state) -> state.getValue(BuilderBlock.STATE) == TowerDeviceVariant.BUILDER_ACTIVE ? 4 : 0).mapColor(MapColor.SAND).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(10.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("carminite_builder"))))
+		new BuilderBlock(BlockBehaviour.Properties.of().lightLevel((state) -> state.getValue(BuilderBlock.STATE) == TowerDeviceVariant.BUILDER_ACTIVE ? 4 : 0).mapColor(MapColor.SAND).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(10.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("carminite_builder"))))
 	);
 public static final Block BUILT_BLOCK = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("built_block")),
-		new TranslucentBuiltBlock(BlockBehaviour.Properties.of().noLootTable().noOcclusion().pushReaction(PushReaction.BLOCK).sound(SoundType.WOOD).strength(50.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("built_block"))))
+		new TranslucentBuiltBlock(BlockBehaviour.Properties.of().noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).sound(SoundType.WOOD).strength(50.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("built_block"))))
 	);
 public static final Block ANTIBUILDER = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("antibuilder")),
-		new AntibuilderBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 10).noLootTable().pushReaction(PushReaction.BLOCK).mapColor(MapColor.SAND).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(10.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("antibuilder"))))
+		new AntibuilderBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 10).noLootTable().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).mapColor(MapColor.SAND).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(10.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("antibuilder"))))
 	);
 public static final Block ANTIBUILT_BLOCK = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("antibuilt_block")),
-		new Block(BlockBehaviour.Properties.of().noLootTable().noOcclusion().pushReaction(PushReaction.BLOCK).sound(SoundType.WOOD).strength(0.3F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("antibuilt_block"))))
+		new Block(BlockBehaviour.Properties.of().noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).sound(SoundType.WOOD).strength(0.3F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("antibuilt_block"))))
 	);
 public static final GhastTrapBlock GHAST_TRAP = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ghast_trap")),
-		new GhastTrapBlock(BlockBehaviour.Properties.of().lightLevel((state) -> state.getValue(GhastTrapBlock.ACTIVE) ? 15 : 0).mapColor(MapColor.SAND).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(10.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ghast_trap"))))
+		new GhastTrapBlock(BlockBehaviour.Properties.of().lightLevel((state) -> state.getValue(GhastTrapBlock.ACTIVE) ? 15 : 0).mapColor(MapColor.SAND).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(10.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ghast_trap"))))
 	);
 public static final Block CARMINITE_REACTOR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("carminite_reactor")),
-		new CarminiteReactorBlock(BlockBehaviour.Properties.of().lightLevel((state) -> state.getValue(CarminiteReactorBlock.ACTIVE) ? 15 : 0).mapColor(MapColor.SAND).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(10.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("carminite_reactor"))))
+		new CarminiteReactorBlock(BlockBehaviour.Properties.of().lightLevel((state) -> state.getValue(CarminiteReactorBlock.ACTIVE) ? 15 : 0).mapColor(MapColor.SAND).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(10.0F, 6.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("carminite_reactor"))))
 	);
 public static final Block REACTOR_DEBRIS = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("reactor_debris")),
-		new ReactorDebrisBlock(BlockBehaviour.Properties.of().noLootTable().noOcclusion().pushReaction(PushReaction.BLOCK).sound(SoundType.ANCIENT_DEBRIS).strength(0.3F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("reactor_debris"))))
+		new ReactorDebrisBlock(BlockBehaviour.Properties.of().noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).sound(SoundType.ANCIENT_DEBRIS).strength(0.3F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("reactor_debris"))))
 	);
 public static final Block FAKE_GOLD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fake_gold")),
-		new Block(BlockBehaviour.Properties.of().noLootTable().pushReaction(PushReaction.BLOCK).sound(SoundType.METAL).strength(50.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fake_gold"))))
+		new Block(BlockBehaviour.Properties.of().noLootTable().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).sound(SoundType.METAL).strength(50.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fake_gold"))))
 	);
 public static final Block FAKE_DIAMOND = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fake_diamond")),
-		new Block(BlockBehaviour.Properties.of().noLootTable().pushReaction(PushReaction.BLOCK).sound(SoundType.METAL).strength(50.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fake_diamond"))))
+		new Block(BlockBehaviour.Properties.of().noLootTable().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).sound(SoundType.METAL).strength(50.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fake_diamond"))))
 	);
 public static final Block EXPERIMENT_115 = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("experiment_115")),
-		new Experiment115Block(BlockBehaviour.Properties.of().noLootTable().pushReaction(PushReaction.DESTROY).randomTicks().sound(SoundType.WOOL).strength(0.5F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("experiment_115"))))
+		new Experiment115Block(BlockBehaviour.Properties.of().noLootTable().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).randomTicks().sound(SoundType.WOOL).strength(0.5F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("experiment_115"))))
 	);
 
 	//aurora palace
@@ -863,32 +863,32 @@ public static final Block AURORALIZED_GLASS = Registry.register(
 public static final Block BROWN_THORNS = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("brown_thorns")),
-		new ThornsBlock(BlockBehaviour.Properties.of().noLootTable().mapColor(MapColor.PODZOL).pushReaction(PushReaction.BLOCK).sound(SoundType.WOOD).strength(50.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("brown_thorns"))))
+		new ThornsBlock(BlockBehaviour.Properties.of().noLootTable().mapColor(MapColor.PODZOL).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).sound(SoundType.WOOD).strength(50.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("brown_thorns"))))
 	);
 public static final Block GREEN_THORNS = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("green_thorns")),
-		new ThornsBlock(BlockBehaviour.Properties.of().noLootTable().mapColor(MapColor.PLANT).pushReaction(PushReaction.BLOCK).sound(SoundType.WOOD).strength(50.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("green_thorns"))))
+		new ThornsBlock(BlockBehaviour.Properties.of().noLootTable().mapColor(MapColor.PLANT).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).sound(SoundType.WOOD).strength(50.0F, 2000.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("green_thorns"))))
 	);
 public static final Block BURNT_THORNS = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("burnt_thorns")),
-		new BurntThornsBlock(BlockBehaviour.Properties.of().instabreak().noLootTable().mapColor(MapColor.STONE).pushReaction(PushReaction.DESTROY).sound(SoundType.SAND).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("burnt_thorns"))))
+		new BurntThornsBlock(BlockBehaviour.Properties.of().instabreak().noLootTable().mapColor(MapColor.STONE).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.SAND).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("burnt_thorns"))))
 	);
 public static final Block THORN_ROSE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("thorn_rose")),
-		new ThornRoseBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS).strength(10.0F, 0.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("thorn_rose"))))
+		new ThornRoseBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.GRASS).strength(10.0F, 0.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("thorn_rose"))))
 	);
 public static final Block THORN_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("thorn_leaves")),
-		new SpecialStemLeavesBlock(state -> state.is(TFBlocks.BROWN_THORNS) || state.is(TFBlocks.GREEN_THORNS), BlockBehaviour.Properties.of().ignitedByLava().mapColor(MapColor.PLANT).noOcclusion().pushReaction(PushReaction.DESTROY).randomTicks().sound(SoundType.AZALEA_LEAVES).strength(0.2F).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("thorn_leaves"))))
+		new SpecialStemLeavesBlock(state -> state.is(TFBlocks.BROWN_THORNS) || state.is(TFBlocks.GREEN_THORNS), BlockBehaviour.Properties.of().ignitedByLava().mapColor(MapColor.PLANT).noOcclusion().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).randomTicks().sound(SoundType.AZALEA_LEAVES).strength(0.2F).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("thorn_leaves"))))
 	);
 public static final Block BEANSTALK_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("beanstalk_leaves")),
-		new SpecialStemLeavesBlock(state -> state.is(TFBlocks.HUGE_STALK), BlockBehaviour.Properties.of().ignitedByLava().mapColor(MapColor.PLANT).noOcclusion().pushReaction(PushReaction.DESTROY).randomTicks().sound(SoundType.AZALEA_LEAVES).strength(0.2F).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("beanstalk_leaves"))))
+		new SpecialStemLeavesBlock(state -> state.is(TFBlocks.HUGE_STALK), BlockBehaviour.Properties.of().ignitedByLava().mapColor(MapColor.PLANT).noOcclusion().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).randomTicks().sound(SoundType.AZALEA_LEAVES).strength(0.2F).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("beanstalk_leaves"))))
 	);
 public static final Block DEADROCK = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -914,43 +914,43 @@ public static final Block TROLLSTEINN = Registry.register(
 public static final Block WISPY_CLOUD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("wispy_cloud")),
-		new WispyCloudBlock(Biome.Precipitation.NONE, BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).mapColor(MapColor.SNOW).noOcclusion().pushReaction(PushReaction.DESTROY).replaceable().sound(SoundType.WOOL).strength(0.3F, 0.0F).forceSolidOff().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("wispy_cloud"))))
+		new WispyCloudBlock(Biome.Precipitation.NONE, BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).mapColor(MapColor.SNOW).noOcclusion().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).replaceable().sound(SoundType.WOOL).strength(0.3F, 0.0F).forceSolidOff().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("wispy_cloud"))))
 	);
 public static final Block FLUFFY_CLOUD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fluffy_cloud")),
-		new CloudBlock(null, BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).mapColor(MapColor.ICE).pushReaction(PushReaction.DESTROY).sound(SoundType.WOOL).strength(0.8F, 0.0F).randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fluffy_cloud"))))
+		new CloudBlock(null, BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).mapColor(MapColor.ICE).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.WOOL).strength(0.8F, 0.0F).randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("fluffy_cloud"))))
 	);
 public static final Block RAINY_CLOUD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainy_cloud")),
-		new CloudBlock(Biome.Precipitation.RAIN, BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).mapColor(MapColor.ICE).pushReaction(PushReaction.DESTROY).sound(SoundType.WOOL).strength(0.8F, 0.0F).randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainy_cloud"))))
+		new CloudBlock(Biome.Precipitation.RAIN, BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).mapColor(MapColor.ICE).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.WOOL).strength(0.8F, 0.0F).randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainy_cloud"))))
 	);
 public static final Block SNOWY_CLOUD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("snowy_cloud")),
-		new CloudBlock(Biome.Precipitation.SNOW, BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).mapColor(MapColor.ICE).pushReaction(PushReaction.DESTROY).sound(SoundType.WOOL).strength(0.8F, 0.0F).randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("snowy_cloud"))))
+		new CloudBlock(Biome.Precipitation.SNOW, BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).mapColor(MapColor.ICE).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.WOOL).strength(0.8F, 0.0F).randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("snowy_cloud"))))
 	);
 
 public static final Block GIANT_COBBLESTONE = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_cobblestone")),
-		new GiantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().strength(128.0F, 50.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_cobblestone"))))
+		new GiantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().strength(128.0F, 50.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_cobblestone"))))
 	);
 public static final Block GIANT_LOG = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_log")),
-		new GiantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().strength(128.0F, 30.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_log"))))
+		new GiantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().strength(128.0F, 30.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_log"))))
 	);
 public static final Block GIANT_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_leaves")),
-		new GiantLeavesBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES).noOcclusion().pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.AZALEA_LEAVES).strength(0.2F * 64.0F, 15.0F).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isValidSpawn(TFBlocks::noSpawning).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_leaves"))))
+		new GiantLeavesBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES).noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.AZALEA_LEAVES).strength(0.2F * 64.0F, 15.0F).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isValidSpawn(TFBlocks::noSpawning).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_leaves"))))
 	);
 public static final Block GIANT_OBSIDIAN = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_obsidian")),
-		new GiantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OBSIDIAN).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().strength(50.0F * 64.0F * 64.0F, 2000.0F * 64.0F * 64.0F).isValidSpawn(TFBlocks::noSpawning).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_obsidian"))))
+		new GiantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OBSIDIAN).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().strength(50.0F * 64.0F * 64.0F, 2000.0F * 64.0F * 64.0F).isValidSpawn(TFBlocks::noSpawning).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("giant_obsidian"))))
 	);
 public static final Block UBEROUS_SOIL = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -980,17 +980,17 @@ public static final Block HUGE_MUSHGLOOM_STEM = Registry.register(
 public static final Block TROLLVIDR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("trollvidr")),
-		new TrollRootBlock(BlockBehaviour.Properties.of().instabreak().mapColor(MapColor.PLANT).noCollision().pushReaction(PushReaction.DESTROY).sound(SoundType.FLOWERING_AZALEA).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("trollvidr"))))
+		new TrollRootBlock(BlockBehaviour.Properties.of().instabreak().mapColor(MapColor.PLANT).noCollision().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.FLOWERING_AZALEA).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("trollvidr"))))
 	);
 public static final Block UNRIPE_TROLLBER = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("unripe_trollber")),
-		new UnripeTorchClusterBlock(BlockBehaviour.Properties.of().instabreak().mapColor(MapColor.PLANT).noCollision().pushReaction(PushReaction.DESTROY).randomTicks().sound(SoundType.FLOWERING_AZALEA).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("unripe_trollber"))))
+		new UnripeTorchClusterBlock(BlockBehaviour.Properties.of().instabreak().mapColor(MapColor.PLANT).noCollision().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).randomTicks().sound(SoundType.FLOWERING_AZALEA).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("unripe_trollber"))))
 	);
 public static final Block TROLLBER = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("trollber")),
-		new TrollRootBlock(BlockBehaviour.Properties.of().instabreak().lightLevel((state) -> 15).mapColor(MapColor.PLANT).noCollision().pushReaction(PushReaction.DESTROY).sound(SoundType.FLOWERING_AZALEA).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("trollber"))))
+		new TrollRootBlock(BlockBehaviour.Properties.of().instabreak().lightLevel((state) -> 15).mapColor(MapColor.PLANT).noCollision().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).sound(SoundType.FLOWERING_AZALEA).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("trollber"))))
 	);
 
 	//plateau castle
@@ -1097,27 +1097,27 @@ public static final Block VIOLET_CASTLE_RUNE_BRICK = Registry.register(
 public static final Block VIOLET_FORCE_FIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_force_field")),
-		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(DyeColor.PURPLE).noLootTable().noOcclusion().pushReaction(PushReaction.BLOCK).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_force_field"))))
+		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(DyeColor.PURPLE).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_force_field"))))
 	);
 public static final Block PINK_FORCE_FIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_force_field")),
-		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(DyeColor.MAGENTA).noLootTable().noOcclusion().pushReaction(PushReaction.BLOCK).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_force_field"))))
+		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(DyeColor.MAGENTA).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_force_field"))))
 	);
 public static final Block ORANGE_FORCE_FIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("orange_force_field")),
-		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(DyeColor.ORANGE).noLootTable().noOcclusion().pushReaction(PushReaction.BLOCK).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("orange_force_field"))))
+		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(DyeColor.ORANGE).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("orange_force_field"))))
 	);
 public static final Block GREEN_FORCE_FIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("green_force_field")),
-		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(DyeColor.GREEN).noLootTable().noOcclusion().pushReaction(PushReaction.BLOCK).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("green_force_field"))))
+		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(DyeColor.GREEN).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("green_force_field"))))
 	);
 public static final Block BLUE_FORCE_FIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_force_field")),
-		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(DyeColor.LIGHT_BLUE).noLootTable().noOcclusion().pushReaction(PushReaction.BLOCK).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_force_field"))))
+		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(DyeColor.LIGHT_BLUE).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_force_field"))))
 	);
 public static final Block CINDER_FURNACE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -1137,22 +1137,22 @@ public static final Block CINDER_WOOD = Registry.register(
 public static final Block YELLOW_CASTLE_DOOR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("yellow_castle_door")),
-		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : DyeColor.YELLOW.getMapColor()).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("yellow_castle_door"))))
+		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : DyeColor.YELLOW.getMapColor()).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("yellow_castle_door"))))
 	);
 public static final Block VIOLET_CASTLE_DOOR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_castle_door")),
-		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : DyeColor.LIGHT_BLUE.getMapColor()).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_castle_door"))))
+		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : DyeColor.LIGHT_BLUE.getMapColor()).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_castle_door"))))
 	);
 public static final Block PINK_CASTLE_DOOR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_castle_door")),
-		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : DyeColor.MAGENTA.getMapColor()).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_castle_door"))))
+		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : DyeColor.MAGENTA.getMapColor()).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_castle_door"))))
 	);
 public static final Block BLUE_CASTLE_DOOR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_castle_door")),
-		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : DyeColor.PURPLE.getMapColor()).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_castle_door"))))
+		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : DyeColor.PURPLE.getMapColor()).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_castle_door"))))
 	);
 
 	//mini structures
@@ -1358,47 +1358,47 @@ public static final TrophyBlock QUEST_RAM_TROPHY = Registry.register(
 public static final TrophyWallBlock NAGA_WALL_TROPHY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("naga_wall_trophy")),
-		new TrophyWallBlock(BossVariant.NAGA, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("naga_wall_trophy"))))
+		new TrophyWallBlock(BossVariant.NAGA, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("naga_wall_trophy"))))
 	);
 public static final TrophyWallBlock LICH_WALL_TROPHY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("lich_wall_trophy")),
-		new TrophyWallBlock(BossVariant.LICH, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("lich_wall_trophy"))))
+		new TrophyWallBlock(BossVariant.LICH, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("lich_wall_trophy"))))
 	);
 public static final TrophyWallBlock HYDRA_WALL_TROPHY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hydra_wall_trophy")),
-		new TrophyWallBlock(BossVariant.HYDRA, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hydra_wall_trophy"))))
+		new TrophyWallBlock(BossVariant.HYDRA, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hydra_wall_trophy"))))
 	);
 public static final TrophyWallBlock UR_GHAST_WALL_TROPHY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ur_ghast_wall_trophy")),
-		new TrophyWallBlock(BossVariant.UR_GHAST, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ur_ghast_wall_trophy"))))
+		new TrophyWallBlock(BossVariant.UR_GHAST, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("ur_ghast_wall_trophy"))))
 	);
 public static final TrophyWallBlock KNIGHT_PHANTOM_WALL_TROPHY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("knight_phantom_wall_trophy")),
-		new TrophyWallBlock(BossVariant.KNIGHT_PHANTOM, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("knight_phantom_wall_trophy"))))
+		new TrophyWallBlock(BossVariant.KNIGHT_PHANTOM, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("knight_phantom_wall_trophy"))))
 	);
 public static final TrophyWallBlock SNOW_QUEEN_WALL_TROPHY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("snow_queen_wall_trophy")),
-		new TrophyWallBlock(BossVariant.SNOW_QUEEN, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("snow_queen_wall_trophy"))))
+		new TrophyWallBlock(BossVariant.SNOW_QUEEN, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("snow_queen_wall_trophy"))))
 	);
 public static final TrophyWallBlock MINOSHROOM_WALL_TROPHY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("minoshroom_wall_trophy")),
-		new TrophyWallBlock(BossVariant.MINOSHROOM, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("minoshroom_wall_trophy"))))
+		new TrophyWallBlock(BossVariant.MINOSHROOM, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("minoshroom_wall_trophy"))))
 	);
 public static final TrophyWallBlock ALPHA_YETI_WALL_TROPHY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("alpha_yeti_wall_trophy")),
-		new TrophyWallBlock(BossVariant.ALPHA_YETI, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("alpha_yeti_wall_trophy"))))
+		new TrophyWallBlock(BossVariant.ALPHA_YETI, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("alpha_yeti_wall_trophy"))))
 	);
 public static final TrophyWallBlock QUEST_RAM_WALL_TROPHY = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("quest_ram_wall_trophy")),
-		new TrophyWallBlock(BossVariant.QUEST_RAM, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.DESTROY).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("quest_ram_wall_trophy"))))
+		new TrophyWallBlock(BossVariant.QUEST_RAM, BlockBehaviour.Properties.of().instabreak().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("quest_ram_wall_trophy"))))
 	);
 
 	// TODO Enumify all of the dang tree stuff
@@ -1932,58 +1932,58 @@ public static final Block MANGROVE_ROOT = Registry.register(
 public static final Block TWILIGHT_OAK_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_oak_leaves")),
-		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).randomTicks().noOcclusion().sound(SoundType.AZALEA_LEAVES).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_oak_leaves"))))
+		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).strength(0.2F).randomTicks().noOcclusion().sound(SoundType.AZALEA_LEAVES).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_oak_leaves"))))
 	);
 public static final Block CANOPY_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_leaves")),
-		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).randomTicks().noOcclusion().sound(SoundType.AZALEA_LEAVES).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_leaves"))))
+		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).strength(0.2F).randomTicks().noOcclusion().sound(SoundType.AZALEA_LEAVES).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_leaves"))))
 	);
 public static final Block MANGROVE_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mangrove_leaves")),
-		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).randomTicks().noOcclusion().sound(SoundType.AZALEA_LEAVES).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mangrove_leaves"))))
+		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).strength(0.2F).randomTicks().noOcclusion().sound(SoundType.AZALEA_LEAVES).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mangrove_leaves"))))
 	);
 public static final Block DARK_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("dark_leaves")),
-		new DarkLeavesBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(2.0F, 10.0F).sound(SoundType.AZALEA_LEAVES).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("dark_leaves"))))
+		new DarkLeavesBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).strength(2.0F, 10.0F).sound(SoundType.AZALEA_LEAVES).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("dark_leaves"))))
 	);
 public static final Block HARDENED_DARK_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hardened_dark_leaves")),
-		new HardenedDarkLeavesBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(2.0F, 10.0F).sound(SoundType.AZALEA_LEAVES).isValidSpawn(TFBlocks::noSpawning).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hardened_dark_leaves"))))
+		new HardenedDarkLeavesBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).strength(2.0F, 10.0F).sound(SoundType.AZALEA_LEAVES).isValidSpawn(TFBlocks::noSpawning).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hardened_dark_leaves"))))
 	);
 public static final Block RAINBOW_OAK_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainbow_oak_leaves")),
-		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).randomTicks().noOcclusion().sound(SoundType.AZALEA_LEAVES).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainbow_oak_leaves"))))
+		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).strength(0.2F).randomTicks().noOcclusion().sound(SoundType.AZALEA_LEAVES).isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainbow_oak_leaves"))))
 	);
 public static final Block TIME_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("time_leaves")),
-		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).sound(SoundType.AZALEA_LEAVES).randomTicks().noOcclusion().isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("time_leaves"))))
+		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).strength(0.2F).sound(SoundType.AZALEA_LEAVES).randomTicks().noOcclusion().isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("time_leaves"))))
 	);
 public static final Block TRANSFORMATION_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("transformation_leaves")),
-		new TransformationLeavesBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).sound(SoundType.AZALEA_LEAVES).randomTicks().noOcclusion().isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("transformation_leaves"))))
+		new TransformationLeavesBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).strength(0.2F).sound(SoundType.AZALEA_LEAVES).randomTicks().noOcclusion().isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("transformation_leaves"))))
 	);
 public static final Block MINING_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mining_leaves")),
-		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).sound(SoundType.AZALEA_LEAVES).randomTicks().noOcclusion().isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mining_leaves"))))
+		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).strength(0.2F).sound(SoundType.AZALEA_LEAVES).randomTicks().noOcclusion().isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mining_leaves"))))
 	);
 public static final Block SORTING_LEAVES = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("sorting_leaves")),
-		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).sound(SoundType.AZALEA_LEAVES).randomTicks().noOcclusion().isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("sorting_leaves"))))
+		new TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).ignitedByLava().pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).strength(0.2F).sound(SoundType.AZALEA_LEAVES).randomTicks().noOcclusion().isSuffocating((state, getter, pos) -> false).isViewBlocking((state, getter, pos, aabb) -> false).isRedstoneConductor((state, level, pos) -> false).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("sorting_leaves"))))
 	);
 
 public static final SaplingBlock TWILIGHT_OAK_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_oak_sapling")),
-		new TFSaplingBlock(TFTreeGrowers.TWILIGHT_OAK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_oak_sapling"))),
+		new TFSaplingBlock(TFTreeGrowers.TWILIGHT_OAK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("twilight_oak_sapling"))),
 			new TFSaplingBlock.TreePlacement(
 				() -> {
 					// secondaryChance 0.1 : 90% normal oak, 10% large oak
@@ -2003,53 +2003,53 @@ public static final SaplingBlock TWILIGHT_OAK_SAPLING = Registry.register(
 public static final SaplingBlock CANOPY_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_sapling")),
-		new TFSaplingBlock(TFTreeGrowers.CANOPY, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_sapling"))),
+		new TFSaplingBlock(TFTreeGrowers.CANOPY, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("canopy_sapling"))),
 			new TFSaplingBlock.TreePlacement(TFSaplingBlock.CANOPY_TREE, TFSaplingBlock.MEGA_CANOPY_TREE))
 	);
 public static final SaplingBlock MANGROVE_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mangrove_sapling")),
-		new MangroveSaplingBlock(TFTreeGrowers.MANGROVE, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mangrove_sapling"))))
+		new MangroveSaplingBlock(TFTreeGrowers.MANGROVE, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mangrove_sapling"))))
 	);
 public static final SaplingBlock DARKWOOD_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("darkwood_sapling")),
-		new TFSaplingBlock(TFTreeGrowers.DARK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("darkwood_sapling"))),
+		new TFSaplingBlock(TFTreeGrowers.DARK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("darkwood_sapling"))),
 			TFSaplingBlock.TreePlacement.single(TFSaplingBlock.DARKWOOD_TREE))
 	);
 public static final SaplingBlock HOLLOW_OAK_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hollow_oak_sapling")),
-		new HollowOakSaplingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hollow_oak_sapling"))))
+		new HollowOakSaplingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("hollow_oak_sapling"))))
 	);
 public static final SaplingBlock TIME_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("time_sapling")),
-		new TFSaplingBlock(TFTreeGrowers.TIME, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("time_sapling"))),
+		new TFSaplingBlock(TFTreeGrowers.TIME, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("time_sapling"))),
 			TFSaplingBlock.TreePlacement.single(TFSaplingBlock.TIME_TREE))
 	);
 public static final SaplingBlock TRANSFORMATION_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("transformation_sapling")),
-		new TFSaplingBlock(TFTreeGrowers.TRANSFORMATION, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("transformation_sapling"))),
+		new TFSaplingBlock(TFTreeGrowers.TRANSFORMATION, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("transformation_sapling"))),
 			TFSaplingBlock.TreePlacement.single(TFSaplingBlock.TRANSFORMATION_TREE))
 	);
 public static final SaplingBlock MINING_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mining_sapling")),
-		new TFSaplingBlock(TFTreeGrowers.MINING, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mining_sapling"))),
+		new TFSaplingBlock(TFTreeGrowers.MINING, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("mining_sapling"))),
 			TFSaplingBlock.TreePlacement.single(TFSaplingBlock.MINING_TREE))
 	);
 public static final SaplingBlock SORTING_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("sorting_sapling")),
-		new TFSaplingBlock(TFTreeGrowers.SORTING, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("sorting_sapling"))),
+		new TFSaplingBlock(TFTreeGrowers.SORTING, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("sorting_sapling"))),
 			TFSaplingBlock.TreePlacement.single(TFSaplingBlock.SORTING_TREE))
 	);
 public static final SaplingBlock RAINBOW_OAK_SAPLING = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainbow_oak_sapling")),
-		new TFSaplingBlock(TFTreeGrowers.RAINBOW_OAK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainbow_oak_sapling"))),
+		new TFSaplingBlock(TFTreeGrowers.RAINBOW_OAK, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.PUSH_PULL /* TODO-263: was DESTROY */).instabreak().sound(SoundType.GRASS).noCollision().randomTicks().setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("rainbow_oak_sapling"))),
 			new TFSaplingBlock.TreePlacement(
 				() -> {
 					// 10% tall rainbow oak chance, matching the secondaryChance=0.1 of the grower

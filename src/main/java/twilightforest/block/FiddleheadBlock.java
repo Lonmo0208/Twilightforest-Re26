@@ -11,17 +11,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class FiddleheadBlock extends TFPlantBlock {
 
-	public static final MapCodec<FiddleheadBlock> CODEC = simpleCodec(FiddleheadBlock::new);
 	private static final VoxelShape FIDDLEHEAD_SHAPE = Block.box(3, 0, 3, 13, 14, 13);
 
 	public FiddleheadBlock(Properties properties) {
 		super(properties);
 	}
 
-	@Override
-	protected MapCodec<? extends VegetationBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {

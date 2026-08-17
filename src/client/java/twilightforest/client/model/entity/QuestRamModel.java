@@ -216,7 +216,7 @@ public class QuestRamModel extends EntityModel<QuestingRamRenderState> implement
 	public void renderTrophy(PoseStack stack, SubmitNodeCollector collector, int light, int overlay, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress, ItemDisplayContext context) {
 		stack.scale(0.67F, 0.67F, 0.67F);
 		stack.translate(0.0F, context == ItemDisplayContext.HEAD ? 0.335F : context == ItemDisplayContext.GUI ? 0.45F : 0.5F, context == ItemDisplayContext.HEAD ? 0.85F : context != ItemDisplayContext.NONE ? 0.5F : 0.85F);
-		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(QuestRamRenderer.TEXTURE), light, overlay, null, -1, breakProgress);
+		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(QuestRamRenderer.TEXTURE), light, overlay, null, -1, breakProgress != null ? breakProgress.progress() : 0);
 		stack.pushPose();
 		stack.scale(1.025F, 1.025F, 1.025F);
 		collector.order(1).submitModelPart(this.head, stack, RenderTypes.entityTranslucent(QuestRamRenderer.TEXTURE), LightCoordsUtil.FULL_BRIGHT, overlay, null);

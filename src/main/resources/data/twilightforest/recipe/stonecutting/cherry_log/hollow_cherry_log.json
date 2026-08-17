@@ -1,7 +1,7 @@
 {
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:cherry_log",
-  "result": {
-    "id": "twilightforest:hollow_cherry_log"
-  }
+    "type":  "minecraft:stonecutting",
+    "ingredient":  "minecraft:cherry_log",
+    "result":  {
+                   "id":  "twilightforest:hollow_cherry_log"
+               }
 }

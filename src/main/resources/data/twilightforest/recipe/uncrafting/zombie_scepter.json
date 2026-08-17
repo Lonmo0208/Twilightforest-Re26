@@ -1,23 +1,23 @@
 {
-  "type": "twilightforest:uncrafting",
-  "cost": 3,
-  "input": "twilightforest:zombie_scepter",
-  "input_count": 1,
-  "key": {
-    "R": "minecraft:rotten_flesh",
-    "S": {
-      "fabric:type": "fabric:components",
-      "base": "minecraft:potion",
-      "components": {
-        "minecraft:potion_contents": {
-          "potion": "minecraft:long_strength"
-        }
-      }
-    }
-  },
-  "pattern": [
-    "R  ",
-    " S ",
-    "   "
-  ]
+    "type":  "twilightforest:uncrafting",
+    "cost":  3,
+    "input":  "twilightforest:zombie_scepter",
+    "input_count":  1,
+    "key":  {
+                "R":  "minecraft:rotten_flesh",
+                "S":  {
+                          "fabric:type":  "fabric:components",
+                          "base":  "minecraft:potion",
+                          "components":  {
+                                             "minecraft:potion_contents":  {
+                                                                               "potion":  "minecraft:long_strength"
+                                                                           }
+                                         }
+                      }
+            },
+    "pattern":  [
+                    "R  ",
+                    " S ",
+                    "   "
+                ]
 }

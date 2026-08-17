@@ -3,8 +3,8 @@ package twilightforest.world.components.feature.config;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
 
@@ -13,8 +13,22 @@ import java.util.List;
 /**
  * Follows similar structure to HugeTreeFeatureConfig
  */
-public class TFTreeFeatureConfig implements FeatureConfiguration {
+public class TFTreeFeatureConfig  {
 	public static final Codec<TFTreeFeatureConfig> codecTFTreeConfig = RecordCodecBuilder.create(instance -> instance.group(
+		BlockStateProvider.CODEC.fieldOf("trunk_provider").forGetter(obj -> obj.trunkProvider),
+		BlockStateProvider.CODEC.fieldOf("leaves_provider").forGetter(obj -> obj.leavesProvider),
+		BlockStateProvider.CODEC.fieldOf("branch_provider").forGetter(obj -> obj.branchProvider),
+		BlockStateProvider.CODEC.fieldOf("roots_provider").forGetter(obj -> obj.rootsProvider),
+		Codec.INT.fieldOf("minimum_size").orElse(20).forGetter(obj -> obj.minHeight),
+		Codec.INT.fieldOf("add_first_five_chance").orElse(1).forGetter(obj -> obj.chanceAddFiveFirst),
+		Codec.INT.fieldOf("add_second_five_chance").orElse(1).forGetter(obj -> obj.chanceAddFiveSecond),
+		Codec.BOOL.fieldOf("has_leaves").orElse(true).forGetter(obj -> obj.hasLeaves),
+		Codec.BOOL.fieldOf("check_water").orElse(false).forGetter(obj -> obj.checkWater),
+		TreeDecorator.CODEC.listOf().fieldOf("decorators").orElseGet(ImmutableList::of).forGetter(obj -> obj.decorators)
+	).apply(instance, TFTreeFeatureConfig::new));
+
+	// 26.3: map codec form, used by feature codecs to deserialize the flat JSON fields directly
+	public static final MapCodec<TFTreeFeatureConfig> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 		BlockStateProvider.CODEC.fieldOf("trunk_provider").forGetter(obj -> obj.trunkProvider),
 		BlockStateProvider.CODEC.fieldOf("leaves_provider").forGetter(obj -> obj.leavesProvider),
 		BlockStateProvider.CODEC.fieldOf("branch_provider").forGetter(obj -> obj.branchProvider),

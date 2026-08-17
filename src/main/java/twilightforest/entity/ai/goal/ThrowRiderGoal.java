@@ -57,7 +57,7 @@ public class ThrowRiderGoal extends MeleeAttackGoal {
 		if (this.canPerformAttack(victim) && this.getTicksUntilNextAttack() <= 0 && this.mob.getPassengers().isEmpty() && this.cooldown-- == 0) {
 			this.cooldown = 3; // Gives the thrower a pause so it doesn't pick the target back up immediately after throwing; for whatever reason the attack cooldown isn't enough...
 			this.resetAttackCooldown();
-			this.mob.swing(InteractionHand.MAIN_HAND);
+			this.mob.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 			if (this.mob.getPassengers().isEmpty()) {
 				var v = victim.getVehicle();
 

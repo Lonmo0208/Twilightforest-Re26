@@ -39,7 +39,7 @@ public class FieryToolSmeltingModifier implements LootItemCondition {
 	}
 
 	public static @NotNull ObjectArrayList<ItemStack> apply(ObjectArrayList<ItemStack> generatedLoot, LootParams context) {
-		ItemInstance tool = context.contextMap().getOptional(LootContextParams.TOOL);
+		ItemInstance tool = context.contextMap().get(LootContextParams.TOOL);
 		if (tool == null || !tool.is(TFItems.FIERY_PICKAXE) || generatedLoot.isEmpty()) {
 			return generatedLoot;
 		}
@@ -59,7 +59,7 @@ public class FieryToolSmeltingModifier implements LootItemCondition {
 			result.add(stack);
 		}
 
-		Entity entity = context.contextMap().getOptional(LootContextParams.THIS_ENTITY);
+		Entity entity = context.contextMap().get(LootContextParams.THIS_ENTITY);
 		if (xp > 0.0F && entity != null) {
 			ExperienceOrb.award(context.getLevel(), entity.position(), Math.round(xp));
 		}

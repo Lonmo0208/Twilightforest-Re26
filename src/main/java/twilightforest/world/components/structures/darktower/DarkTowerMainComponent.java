@@ -23,12 +23,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.*;
@@ -1082,12 +1087,12 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent implements Pi
 			// Only use the smaller jungle tree variant designed for indoor planters
 			// Standard trees (oak, birch, etc.) can grow 5-7 blocks tall and would
 			// break through the tower ceiling since rooms are only 5 blocks high
-			ResourceKey<ConfiguredFeature<?, ?>> treeGen = TFConfiguredFeatures.SMALLER_JUNGLE_TREE;
+			ResourceKey<Feature> treeGen = TFConfiguredFeatures.SMALLER_JUNGLE_TREE;
 			// grow a tree
 
 			boolean treePlaced = false;
 			for (int i = 0; i < 100; i++) {
-				if (world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).get(treeGen).get().value().place(world, generator, world.getRandom(), new BlockPos(dx, dy, dz))) {
+				if (world.registryAccess().lookupOrThrow(Registries.FEATURE).get(treeGen).get().value().place(world, generator, world.getRandom(), new BlockPos(dx, dy, dz))) {
 					treePlaced = true;
 					break;
 				}

@@ -53,7 +53,7 @@ public class QuestRamRenderer extends MobRenderer<QuestRam, QuestingRamRenderSta
 			if (state.isInvisible) return;
 			stack.pushPose();
 			stack.scale(1.025F, 1.025F, 1.025F);
-			collector.submitModel(this.getParentModel(), state, stack, RenderTypes.entityTranslucent(LINE_TEXTURE), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor, null);
+			collector.submitModel(this.getParentModel(), state, stack, RenderTypes.entityTranslucent(LINE_TEXTURE), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor);
 			stack.popPose();
 		}
 	}

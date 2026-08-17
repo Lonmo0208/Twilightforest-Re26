@@ -141,7 +141,7 @@ public class UnbakedConnectedTextureModel implements BlockStateModel.Unbaked {
 					CuboidFace face = this.baseFaces[dir.get3DDataValue()][i];
 
 					quadList.add(FaceBakery.bakeQuad(
-						baker, from, to, face, baseMaterial, dir, state, null, true, 0
+						baker, from, to, face, baseMaterial, dir, state, null, null, 0
 					));
 				}
 				baseQuads.put(dir, quadList.toArray(new BakedQuad[0]));
@@ -173,7 +173,7 @@ public class UnbakedConnectedTextureModel implements BlockStateModel.Unbaked {
 					Material.Baked material = type == 0 ? overlayMaterial : connectedMaterial;
 
 					dirQuads[quad][type] = FaceBakery.bakeQuad(
-						baker, from, to, face, material, dir, state, null, true, 0
+						baker, from, to, face, material, dir, state, null, null, 0
 					);
 				}
 			}
@@ -201,7 +201,7 @@ public class UnbakedConnectedTextureModel implements BlockStateModel.Unbaked {
 						CuboidFace face = this.baseFaces[dir.get3DDataValue()][i];
 
 						BakedQuad quad = FaceBakery.bakeQuad(
-							baker, from, to, face, baseBaked, dir, state, null, true, 0
+							baker, from, to, face, baseBaked, dir, state, null, null, 0
 						);
 
 						Direction cullDir = face.cullForDirection();
@@ -231,7 +231,7 @@ public class UnbakedConnectedTextureModel implements BlockStateModel.Unbaked {
 						CuboidFace face = this.connectedFacesArray[dir.get3DDataValue()][quad][0];
 
 						BakedQuad bakedQuad = FaceBakery.bakeQuad(
-							baker, from, to, face, overlayBaked, dir, state, null, true, 0
+							baker, from, to, face, overlayBaked, dir, state, null, null, 0
 						);
 
 						Direction cullDir = face.cullForDirection();

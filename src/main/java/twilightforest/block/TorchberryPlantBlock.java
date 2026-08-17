@@ -1,5 +1,6 @@
 package twilightforest.block;
 
+import net.minecraft.world.level.block.BonemealSource;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -29,7 +30,7 @@ import twilightforest.init.TFStats;
 public class TorchberryPlantBlock extends TFPlantBlock implements BonemealableBlock {
 
 	public static final BooleanProperty HAS_BERRIES = BooleanProperty.create("has_torchberries");
-	public static final MapCodec<TorchberryPlantBlock> CODEC = simpleCodec(TorchberryPlantBlock::new);
+
 	private static final VoxelShape TORCHBERRY_SHAPE = Block.box(1, 2, 1, 15, 16, 15);
 
 	public TorchberryPlantBlock(Properties properties) {
@@ -37,10 +38,7 @@ public class TorchberryPlantBlock extends TFPlantBlock implements BonemealableBl
 		this.registerDefaultState(this.getStateDefinition().any().setValue(HAS_BERRIES, false));
 	}
 
-	@Override
-	protected MapCodec<? extends VegetationBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader reader, BlockPos pos) {
@@ -67,17 +65,17 @@ public class TorchberryPlantBlock extends TFPlantBlock implements BonemealableBl
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(LevelReader getter, BlockPos pos, BlockState state) {
+	public boolean isValidBonemealTarget(LevelReader getter, BlockPos pos, BlockState state, BonemealSource source) {
 		return !state.getValue(HAS_BERRIES);
 	}
 
 	@Override
-	public boolean isBonemealSuccess(Level level, RandomSource rand, BlockPos pos, BlockState state) {
+	public boolean isBonemealSuccess(Level level, RandomSource rand, BlockPos pos, BlockState state, BonemealSource source) {
 		return true;
 	}
 
 	@Override
-	public void performBonemeal(ServerLevel level, RandomSource rand, BlockPos pos, BlockState state) {
+	public void performBonemeal(ServerLevel level, RandomSource rand, BlockPos pos, BlockState state, BonemealSource source) {
 		level.setBlock(pos, state.setValue(HAS_BERRIES, true), Block.UPDATE_CLIENTS);
 	}
 

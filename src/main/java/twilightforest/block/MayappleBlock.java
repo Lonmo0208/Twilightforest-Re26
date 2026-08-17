@@ -10,17 +10,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class MayappleBlock extends TFPlantBlock {
 
-	public static final MapCodec<MayappleBlock> CODEC = simpleCodec(MayappleBlock::new);
 	private static final VoxelShape MAYAPPLE_SHAPE = box(4, 0, 4, 13, 6, 13);
 
 	public MayappleBlock(Properties properties) {
 		super(properties);
 	}
 
-	@Override
-	protected MapCodec<? extends VegetationBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {

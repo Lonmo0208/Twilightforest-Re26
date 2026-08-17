@@ -12,16 +12,11 @@ import twilightforest.init.TFBlocks;
 
 public class RedThreadBlock extends MultifaceBlock implements EntityBlock {
 
-	public static final MapCodec<RedThreadBlock> CODEC = simpleCodec(RedThreadBlock::new);
-
 	public RedThreadBlock(Properties properties) {
 		super(properties);
 	}
 
-	@Override
-	protected MapCodec<? extends MultifaceBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public boolean canBeReplaced(BlockState state, BlockPlaceContext ctx) {

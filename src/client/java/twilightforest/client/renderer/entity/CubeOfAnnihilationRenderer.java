@@ -37,7 +37,7 @@ public class CubeOfAnnihilationRenderer extends EntityRenderer<CubeOfAnnihilatio
 		poseStack.scale(-1.0F, -1.0F, 1.0F);
 		poseStack.mulPose(Axis.YP.rotationDegrees(Mth.wrapDegrees(state.ageInTicks * 11.0F)));
 		poseStack.translate(0.0F, -0.5F, 0.0F);
-		submitNodeCollector.submitModel(this.model, state, poseStack, this.model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+		submitNodeCollector.submitModel(this.model, state, poseStack, this.model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
 		poseStack.popPose();
 	}
 

@@ -53,7 +53,7 @@ public class BlockChainGoblinRenderer extends HumanoidMobRenderer<BlockChainGobl
 		stack.mulPose(Axis.XP.rotationDegrees(state.xRot));
 
 		stack.scale(-1.0F, -1.0F, 1.0F);
-		collector.submitModel(this.model, STATE, stack, this.model.renderType(BLOCK_AND_CHAIN_TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+		collector.submitModel(this.model, STATE, stack, this.model.renderType(BLOCK_AND_CHAIN_TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
 		stack.popPose();
 
 		if (state.deathTime <= 0) {
@@ -81,8 +81,8 @@ public class BlockChainGoblinRenderer extends HumanoidMobRenderer<BlockChainGobl
 	}
 
 	@Override
-	public boolean shouldRender(BlockChainGoblin entity, Frustum frustum, double camX, double camY, double camZ) {
-		if (super.shouldRender(entity, frustum, camX, camY, camZ)) {
+	public boolean shouldRender(BlockChainGoblin entity, Frustum frustum, double camX, double camY, double camZ, float partialTick) {
+		if (super.shouldRender(entity, frustum, camX, camY, camZ, partialTick)) {
 			return true;
 		} else {
 			Vec3 vec3d = this.getPosition(entity.block, entity.block.getBbHeight() * 0.5D);

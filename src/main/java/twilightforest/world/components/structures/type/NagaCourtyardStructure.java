@@ -11,7 +11,7 @@ import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
@@ -58,7 +58,7 @@ public class NagaCourtyardStructure extends ConquerableStructure implements Cust
 	}
 
 	@Override
-	public DensityFunction getStructureTerraformer(ChunkPos chunkPosAt, StructureStart structurePieceSource) {
+	public net.minecraft.world.level.levelgen.densityfunction.DensityFunction getStructureTerraformer(ChunkPos chunkPosAt, StructureStart structurePieceSource) {
 		return CustomDensitySource.getInvertedPyramidTerraformer(structurePieceSource, 3, 4);
 	}
 

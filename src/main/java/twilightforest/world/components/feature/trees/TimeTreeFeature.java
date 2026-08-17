@@ -19,8 +19,16 @@ import twilightforest.world.components.feature.config.TFTreeFeatureConfig;
 import java.util.function.BiConsumer;
 
 public class TimeTreeFeature extends HollowTreeFeature {
-	public TimeTreeFeature(Codec<TFTreeFeatureConfig> config) {
+	public TimeTreeFeature() {
+	}
+
+	protected TimeTreeFeature(TFTreeFeatureConfig config) {
 		super(config);
+	}
+
+	@Override
+	protected TFTreeFeature create(TFTreeFeatureConfig config) {
+		return new TimeTreeFeature(config);
 	}
 
 	@Override

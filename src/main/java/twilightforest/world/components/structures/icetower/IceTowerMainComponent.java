@@ -61,7 +61,7 @@ public class IceTowerMainComponent extends IceTowerWingComponent {
 
 			// TODO: make this more general
 			BlockPos myDoor = this.openings.get(0);
-			BlockPos entranceDoor = new BlockPos(myDoor);
+			BlockPos entranceDoor = myDoor.immutable();
 
 
 			if (myDoor.getX() == 0) {

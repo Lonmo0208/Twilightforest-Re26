@@ -21,12 +21,8 @@ import twilightforest.init.TFDamageTypes;
 import twilightforest.init.TFItems;
 
 public class OminousFireBlock extends BaseFireBlock {
-	public static final MapCodec<OminousFireBlock> CODEC = simpleCodec(OminousFireBlock::new);
 
-	@Override
-	public MapCodec<OminousFireBlock> codec() {
-		return CODEC;
-	}
+	
 
 	public OminousFireBlock(BlockBehaviour.Properties properties) {
 		super(properties, 1.0F);

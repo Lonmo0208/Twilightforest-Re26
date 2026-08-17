@@ -2,38 +2,43 @@ package twilightforest.world.components.chunkgenerators;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.KeyDispatchDataCodec;
-import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 
-public record SqrtDensityFunction(DensityFunction input) implements DensityFunction.SimpleFunction {
+public record SqrtDensityFunction(DensityFunction input) implements DensityFunction {
 	public static final MapCodec<SqrtDensityFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 		DensityFunction.CODEC.fieldOf("input").forGetter(SqrtDensityFunction::input)
 	).apply(instance, SqrtDensityFunction::new));
-	public static final KeyDispatchDataCodec<SqrtDensityFunction> KEY_CODEC = KeyDispatchDataCodec.of(CODEC);
 
 	@Override
-	public double compute(FunctionContext context) {
+	public float compute(FunctionContext context) {
 		double sqrt = Math.sqrt(this.input.compute(context));
-		return sqrt;
+		return (float) sqrt;
 	}
 
 	@Override
-	public double minValue() {
-		return this.input.minValue();
+	public net.minecraft.util.Interval range() {
+		return net.minecraft.util.Interval.of(0.0f, Float.MAX_VALUE);
 	}
 
 	@Override
-	public double maxValue() {
-		return this.input.maxValue();
+	public com.mojang.serialization.MapCodec<? extends DensityFunction> codec() {
+		return CODEC;
 	}
 
 	@Override
-	public KeyDispatchDataCodec<? extends DensityFunction> codec() {
-		return KEY_CODEC;
+	public int domainAxes() {
+		return DensityFunction.ALL_AXES;
 	}
 
 	@Override
-	public DensityFunction mapAll(Visitor visitor) {
-		return visitor.apply(new SqrtDensityFunction(this.input.mapAll(visitor)));
+	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
+		for (int i = 0; i < ds.length; i++) {
+			ds[i] = this.compute(contextProvider.forIndex(i));
+		}
+	}
+
+	@Override
+	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
+		return visitor.apply(new SqrtDensityFunction(this.input.mapChildren(visitor)));
 	}
 }

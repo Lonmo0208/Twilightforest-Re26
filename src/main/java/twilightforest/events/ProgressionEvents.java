@@ -83,7 +83,7 @@ public class ProgressionEvents {
 		net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
 			if (entity instanceof net.minecraft.world.entity.monster.Enemy && !(entity instanceof twilightforest.entity.monster.Kobold)
 					&& source.getEntity() instanceof Player player && entity.level() instanceof ServerLevel serverLevel
-					&& isAreaProtected(serverLevel, player, new net.minecraft.core.BlockPos(entity.blockPosition()))) {
+					&& isAreaProtected(serverLevel, player, entity.blockPosition().immutable())) {
 				return false;
 			}
 			return true;
@@ -188,7 +188,7 @@ public class ProgressionEvents {
 		LivingEntity living = event.getEntity();
 		// cancel attacks in protected areas
 		if (living.level() instanceof ServerLevel serverLevel && living instanceof Enemy && event.getSource().getEntity() instanceof Player && !(living instanceof Kobold)
-			&& isAreaProtected(serverLevel, (Player) event.getSource().getEntity(), new BlockPos(living.blockPosition()))) {
+			&& isAreaProtected(serverLevel, (Player) event.getSource().getEntity(), living.blockPosition().immutable())) {
 
 			event.setCanceled(true);
 		}
@@ -270,7 +270,7 @@ public class ProgressionEvents {
 					if (!TFPortalBlock.isPlayerNotifiedOfRequirement(player)) {
 						// .doesPlayerHaveRequiredAdvancement null-checks already, so we can skip null-checking the `requirement`
 						DisplayInfo info = requirement.value().display().orElse(null);
-						PacketDistributor.sendToPlayer(player, info == null ? new MissingAdvancementToastPacket(net.minecraft.network.chat.Component.translatable("twilightforest.ui.advancement.no_title"), new ItemStack(TFBlocks.TWILIGHT_PORTAL_MINIATURE_STRUCTURE)) : new MissingAdvancementToastPacket(info.getTitle(), new ItemStack(info.getIcon().item(), info.getIcon().count())));
+						PacketDistributor.sendToPlayer(player, info == null ? new MissingAdvancementToastPacket(net.minecraft.network.chat.Component.translatable("twilightforest.ui.advancement.no_title"), new ItemStack(TFBlocks.TWILIGHT_PORTAL_MINIATURE_STRUCTURE)) : new MissingAdvancementToastPacket(info.title(), info.icon().create()));
 
 						TFPortalBlock.playerNotifiedOfRequirement(player);
 					}

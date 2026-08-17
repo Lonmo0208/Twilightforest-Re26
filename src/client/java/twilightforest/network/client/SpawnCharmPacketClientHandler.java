@@ -13,6 +13,7 @@ import twilightforest.config.TFConfig;
 import twilightforest.entity.CharmEffect;
 import twilightforest.init.TFEntities;
 import twilightforest.network.SpawnCharmPacket;
+import twilightforest.util.ClientEntityIdProvider;
 
 public class SpawnCharmPacketClientHandler {
 	public static void handle(SpawnCharmPacket packet, ClientPlayNetworking.Context context) {
@@ -20,14 +21,11 @@ public class SpawnCharmPacketClientHandler {
 			Player player = (Player) context.player();
 			ClientLevel level = (ClientLevel) player.level();
 			Entity camera = Minecraft.getInstance().getCameraEntity();
-			if (TFConfig.spawnCharmAnimationAsTotem) {
-				Minecraft.getInstance().gameRenderer.displayItemActivation(packet.charm());
-				Minecraft.getInstance().particleEngine.createTrackingEmitter(camera != null ? camera : player, new ItemParticleOption(ParticleTypes.ITEM, packet.charm().getItem()), 20);
-			} else {
-				CharmEffect effect = new CharmEffect(TFEntities.CHARM_EFFECT.get(), player.level(), player, packet.charm());
-				effect.offset = (float) Math.PI;
-				level.addEntity(effect);
-			}
+			// 26.3: gameRenderer.displayItemActivation() removed; use the charm effect entity animation instead
+			CharmEffect effect = new CharmEffect(TFEntities.CHARM_EFFECT.get(), player.level(), player, packet.charm());
+			effect.offset = (float) Math.PI;
+			ClientEntityIdProvider.assignLocalId(effect);
+			level.addEntity(effect);
 			SoundEvent event = BuiltInRegistries.SOUND_EVENT.getValue(packet.event());
 			if (camera != null && event != null) {
 				level.playLocalSound(camera.getX(), camera.getY(), camera.getZ(), event, player.getSoundSource(), 1.5F, 1.0F, false);

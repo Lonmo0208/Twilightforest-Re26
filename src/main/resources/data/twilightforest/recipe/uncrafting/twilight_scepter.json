@@ -1,15 +1,15 @@
 {
-  "type": "twilightforest:uncrafting",
-  "cost": 3,
-  "input": "twilightforest:twilight_scepter",
-  "input_count": 1,
-  "key": {
-    "E": "minecraft:ender_pearl",
-    "B": "minecraft:bone"
-  },
-  "pattern": [
-    "E  ",
-    " B ",
-    "   "
-  ]
+    "type":  "twilightforest:uncrafting",
+    "cost":  3,
+    "input":  "twilightforest:twilight_scepter",
+    "input_count":  1,
+    "key":  {
+                "E":  "minecraft:ender_pearl",
+                "B":  "minecraft:bone"
+            },
+    "pattern":  [
+                    "E  ",
+                    " B ",
+                    "   "
+                ]
 }

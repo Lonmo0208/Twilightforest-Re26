@@ -1,7 +1,7 @@
 {
-  "values": [
-    "minecraft:birch",
-    "minecraft:jungle",
-    "twilightforest:mangrove"
-  ]
+    "values":  [
+                   "minecraft:birch",
+                   "minecraft:jungle",
+                   "twilightforest:mangrove"
+               ]
 }

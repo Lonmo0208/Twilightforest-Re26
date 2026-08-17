@@ -20,12 +20,17 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.*;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 import org.jetbrains.annotations.Nullable;
@@ -292,7 +297,7 @@ public class LichYardBox extends StructurePiece implements SortablePiece, SpawnI
 	}
 
 	private void placeYardTrees(WorldGenLevel level, ChunkGenerator chunkGen, RandomSource random, BoundingBox area) {
-		Registry<ConfiguredFeature<?, ?>> featureRegistry = level.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+		Registry<Feature> featureRegistry = level.registryAccess().lookupOrThrow(Registries.FEATURE);
 
 		for (int i = 0; i < 6; i++) {
 			int treeX = area.minX() + random.nextInt(area.getXSpan());
@@ -312,7 +317,7 @@ public class LichYardBox extends StructurePiece implements SortablePiece, SpawnI
 			}
 
 			if (level.getBlockState(pos).isAir() && level.getBlockState(pos.below()).is(BlockTags.DIRT)) {
-				ResourceKey<ConfiguredFeature<?, ?>> treeKey = random.nextBoolean()
+				ResourceKey<Feature> treeKey = random.nextBoolean()
 					? TFConfiguredFeatures.TWILIGHT_OAK_TREE
 					: TFConfiguredFeatures.CANOPY_TREE;
 

@@ -18,16 +18,11 @@ import twilightforest.init.TFBlockEntities;
 
 public class GrowingBeanstalkBlock extends BaseEntityBlock {
 
-	public static final MapCodec<GrowingBeanstalkBlock> CODEC = simpleCodec(GrowingBeanstalkBlock::new);
-
 	public GrowingBeanstalkBlock(Properties properties) {
 		super(properties);
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	//dont touch me
 	@Override

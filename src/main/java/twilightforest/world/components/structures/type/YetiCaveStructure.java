@@ -9,11 +9,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
@@ -58,7 +59,7 @@ public class YetiCaveStructure extends ControlledSpawningStructure implements Cu
 
 	@SuppressWarnings("UnnecessaryLocalVariable")
 	@Override
-	public DensityFunction getStructureTerraformer(ChunkPos chunkPosAt, StructureStart structurePieceSource) {
+	public net.minecraft.world.level.levelgen.densityfunction.DensityFunction getStructureTerraformer(ChunkPos chunkPosAt, StructureStart structurePieceSource) {
 		int riser = 5;
 
 		BlockPos centerPos = structurePieceSource.getBoundingBox().getCenter().above(riser);
@@ -96,7 +97,7 @@ public class YetiCaveStructure extends ControlledSpawningStructure implements Cu
 		);
 		//if (true) return floorCeiling;
 
-		DensityFunction walls = DensityFunctions.yClampedGradient(-3 + riser, 21 + riser, -9.5, -2.5);
+		DensityFunction walls = DensityFunctions.yClampedGradient(-3 + riser, 21 + riser, -9.5f, -2.5f);
 
 		// Entrances & actual square interior, as a negative
 		DensityFunction interiorCarver = DensityFunctions.min(
@@ -160,7 +161,7 @@ public class YetiCaveStructure extends ControlledSpawningStructure implements Cu
 	public static YetiCaveStructure buildYetiCaveConfig(BootstrapContext<Structure> context) {
 		return new YetiCaveStructure(
 			ControlledSpawningConfig.firstIndexMonsters(WeightedList.<MobSpawnSettings.SpawnerData>builder()
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.YETI.get(), 1, 2), 5)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.YETI.get(), UniformInt.of(1, 2)), 5)
 				.build()
 			),
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_lich"))),

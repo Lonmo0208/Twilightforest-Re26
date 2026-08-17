@@ -1,45 +1,42 @@
-﻿{
-  "parent": "twilightforest:progress_merge",
-  "criteria": {
-    "troll": {
-      "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "entity_type": "twilightforest:troll",
-              "location": {
-                "structures": "twilightforest:troll_cave"
-              }
-            }
-          }
-        ]
-      },
-      "trigger": "minecraft:player_killed_entity"
-    }
-  },
-  "display": {
-    "background": "twilightforest:block/mazestone_large_brick",
-    "description": {
-      "translate": "advancement.twilightforest.troll.desc",
-      "with": [
-        {
-          "translate": "entity.twilightforest.troll"
-        }
-      ]
-    },
-    "icon": {
-      "id": "twilightforest:magic_beans"
-    },
-    "title": {
-      "translate": "advancement.twilightforest.troll"
-    }
-  },
-  "requirements": [
-    [
-      "troll"
-    ]
-  ],
-  "sends_telemetry_event": true
+{
+    "parent":  "twilightforest:progress_merge",
+    "criteria":  {
+                     "troll":  {
+                                   "conditions":  {
+                                                      "entity":  {
+                                                                     "type":  "minecraft:entity_properties",
+                                                                     "entity":  "this",
+                                                                     "predicate":  {
+                                                                                       "minecraft:entity_type":  "twilightforest:troll",
+                                                                                       "minecraft:location":  {
+                                                                                                                  "structures":  "twilightforest:troll_cave"
+                                                                                                              }
+                                                                                   }
+                                                                 }
+                                                  },
+                                   "trigger":  "minecraft:player_killed_entity"
+                               }
+                 },
+    "display":  {
+                    "description":  {
+                                        "translate":  "advancement.twilightforest.troll.desc",
+                                        "with":  [
+                                                     {
+                                                         "translate":  "entity.twilightforest.troll"
+                                                     }
+                                                 ]
+                                    },
+                    "icon":  {
+                                 "id":  "twilightforest:magic_beans"
+                             },
+                    "title":  {
+                                  "translate":  "advancement.twilightforest.troll"
+                              }
+                },
+    "requirements":  [
+                         [
+                             "troll"
+                         ]
+                     ],
+    "sends_telemetry_event":  true
 }

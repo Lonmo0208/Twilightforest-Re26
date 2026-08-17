@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public final class Codecs {
 	public static final Codec<BlockPos> STRING_POS = Codec.STRING.comapFlatMap(Codecs::parseString2BlockPos, Vec3i::toShortString);
@@ -141,6 +142,14 @@ public final class Codecs {
 		} catch (Throwable e) {
 			return DataResult.error(e::getMessage);
 		}
+	}
+
+	// 26.3: 为每次 codec() 调用都创建一个全新的 MapCodec 实例。
+	// MappedRegistry 按引用同一性(IdentityHashMap)判重，若多个 feature 类型注册同一个 codec 对象会抛
+	// "Adding duplicate value"。对于无配置(unit)或共享静态 codec 的 feature，必须保证每个实例有独立 codec。
+	// MapCodec.unit(Supplier) 每次 decode 都会调用 supplier 生成一个新实例，避免多个 JSON 解码出同一对象。
+	public static <T> MapCodec<T> freshUnit(Supplier<T> factory) {
+		return MapCodec.unit(factory);
 	}
 
 	public static <E> DataResult<Pair<E, E>> arrayToPair(List<E> list) {

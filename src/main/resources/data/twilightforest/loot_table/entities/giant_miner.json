@@ -1,21 +1,19 @@
 {
-    "type": "minecraft:entity",
-    "pools": [
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "condition": {
+        "type": "minecraft:killed_by_player"
+      },
+      "entries": [
         {
-            "bonus_rolls": 0.0,
-            "conditions": [
-                {
-                    "condition": "minecraft:killed_by_player"
-                }
-            ],
-            "entries": [
-                {
-                    "type": "minecraft:item",
-                    "name": "twilightforest:giant_pickaxe"
-                }
-            ],
-            "rolls": 1.0
+          "type": "minecraft:item",
+          "name": "twilightforest:giant_pickaxe"
         }
-    ],
-    "random_sequence": "twilightforest:entities/giant_miner"
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "twilightforest:entities/giant_miner"
 }

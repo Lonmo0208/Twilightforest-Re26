@@ -18,10 +18,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
@@ -33,12 +32,16 @@ import twilightforest.util.features.FeatureLogic;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GraveyardFeature extends Feature<NoneFeatureConfiguration> {
+public class GraveyardFeature implements Feature {
 	private static final Identifier GRAVEYARD = TwilightForestMod.prefix("feature/graveyard/graveyard");
 	private static final Identifier TRAP = TwilightForestMod.prefix("feature/graveyard/grave_trap");
 
-	public GraveyardFeature(Codec<NoneFeatureConfiguration> config) {
-		super(config);
+	public GraveyardFeature() {
+	}
+
+	@Override
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.levelgen.feature.Feature> codec() {
+		return com.mojang.serialization.MapCodec.unit(this);
 	}
 
 	private static boolean offsetToAverageGroundLevel(WorldGenLevel world, BlockPos.MutableBlockPos startPos, Vec3i size) {
@@ -81,10 +84,11 @@ public class GraveyardFeature extends Feature<NoneFeatureConfiguration> {
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
-		WorldGenLevel world = ctx.level();
-		BlockPos pos = ctx.origin();
-		RandomSource rand = ctx.random();
+	public boolean place(net.minecraft.world.level.WorldGenLevel level, net.minecraft.world.level.chunk.ChunkGenerator chunkGenerator, net.minecraft.util.RandomSource random, net.minecraft.core.BlockPos pos) {
+		// ===== 26.3 过渡变量：原 ctx 引用迁移 =====
+		@SuppressWarnings("unused") Object _cfg = null; /* _cfg 原本从此处取，现为 Feature 字段 TODO */
+		WorldGenLevel world = level;
+		RandomSource rand = random;
 
 		int flags = 16 | 2 | 1;
 

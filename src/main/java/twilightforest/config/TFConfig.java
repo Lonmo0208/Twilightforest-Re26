@@ -1,9 +1,6 @@
 package twilightforest.config;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.mojang.authlib.yggdrasil.ProfileResult;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -17,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 import twilightforest.util.PlayerHelper;
 
-import java.net.Proxy;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
@@ -225,18 +221,9 @@ public class TFConfig {
 				@Override
 				public void run() {
 					GAME_PROFILES.clear();
-					YggdrasilAuthenticationService service = new YggdrasilAuthenticationService(Proxy.NO_PROXY);
-					MinecraftSessionService session = service.createMinecraftSessionService();
-					for (String stringUUID : config.giantSkinUUIDs.get()) {
-						try {
-							ProfileResult result = session.fetchProfile(UUID.fromString(stringUUID), false);
-							if (result != null) {
-								GAME_PROFILES.add(result.profile());
-							}
-						} catch (IllegalArgumentException e) {
-							TwilightForestMod.LOGGER.error("\"{}\" is not a valid UUID!", stringUUID);
-						}
-					}
+					// ===== 26.3 TODO: YggdrasilAuthenticationService / MinecraftSessionService / ProfileResult 已从 MC 依赖中删除 =====
+					// ===== 如需恢复 skin fetch，请改为使用 com.mojang.authlib 独立库或 Minecraft 服务端 GameProfileRepository API =====
+					TwilightForestMod.LOGGER.warn("Skin fetching for giant mobs is temporarily disabled in 26.3 snapshot; skipping {} UUID entries.", config.giantSkinUUIDs.get().size());
 					super.run();
 				}
 			}.start();

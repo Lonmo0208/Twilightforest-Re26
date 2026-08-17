@@ -19,6 +19,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import net.minecraft.world.timeline.Timeline;
 import twilightforest.TFRegistries;
 import twilightforest.TwilightForestMod;
@@ -70,7 +72,7 @@ public class TFDimensionData {
 				.set(EnvironmentAttributes.BACKGROUND_MUSIC, new BackgroundMusic(new Music(Holder.direct(TFSounds.MUSIC), 1200, 12000, true)))
 				.set(EnvironmentAttributes.AMBIENT_SOUNDS, AmbientSounds.LEGACY_CAVE_SETTINGS)
 				.set(EnvironmentAttributes.CAN_PILLAGER_PATROL_SPAWN, false)
-				.set(EnvironmentAttributes.BED_RULE, new BedRule(BedRule.Rule.NEVER, BedRule.Rule.ALWAYS, false, Optional.empty()))
+				.set(EnvironmentAttributes.BED_RULE, new BedRule(BedRule.Rule.NEVER, BedRule.Rule.ALWAYS, false, false, Optional.empty()))
 				.set(EnvironmentAttributes.PIGLINS_ZOMBIFY, false)
 				.set(EnvironmentAttributes.CAN_PILLAGER_PATROL_SPAWN, false)
 				.set(EnvironmentAttributes.CAN_START_RAID, false)
@@ -92,7 +94,7 @@ public class TFDimensionData {
 
 	public static NoiseGeneratorSettings makeNoiseSettings(BootstrapContext<NoiseGeneratorSettings> context, boolean skylight) {
 		HolderGetter<DensityFunction> densityFunctions = context.lookup(Registries.DENSITY_FUNCTION);
-		DensityFunction finalDensity = new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(skylight ? TFDensityFunctions.SKYLIGHT_TERRAIN : TFDensityFunctions.FORESTED_TERRAIN));
+		DensityFunction finalDensity = densityFunctions.getOrThrow(skylight ? TFDensityFunctions.SKYLIGHT_TERRAIN : TFDensityFunctions.FORESTED_TERRAIN).value();
 
 		NoiseSettings tfNoise = NoiseSettings.create(
 			-32, //TODO Deliberate over this. For now it'll be -32
@@ -106,28 +108,21 @@ public class TFDimensionData {
 			Blocks.STONE.defaultBlockState(),
 			skylight ? Blocks.AIR.defaultBlockState() : Blocks.WATER.defaultBlockState(),
 			new NoiseRouter(
-				DensityFunctions.zero(),
-				DensityFunctions.zero(),
-				DensityFunctions.zero(),
-				DensityFunctions.zero(),
-				DensityFunctions.zero(),
-				DensityFunctions.zero(),
-				DensityFunctions.zero(),
-				DensityFunctions.zero(),
-				DensityFunctions.zero(),
-				DensityFunctions.zero(),
-				finalDensity,
-				finalDensity,
-				DensityFunctions.zero(),
-				DensityFunctions.zero(),
-				DensityFunctions.zero()
+				DensityFunctions.zero(), //temperature
+				DensityFunctions.zero(), //vegetation
+				DensityFunctions.zero(), //continents
+				DensityFunctions.zero(), //erosion
+				DensityFunctions.zero(), //depth
+				DensityFunctions.zero(), //ridges
+				DensityFunctions.zero(), //preliminarySurfaceLevel
+				finalDensity //finalDensity
 			),
-			TFSurfaceRules.tfSurface(context.lookup(Registries.BIOME)),
+			Holder.direct(TFSurfaceRules.tfSurface(context.lookup(Registries.BIOME))),
 			List.of(),
 			TFDimensionData.SEALEVEL,
 			false,
-			false,
-			false,
+			Optional.empty(),
+			List.of(),
 			false
 		);
 	}

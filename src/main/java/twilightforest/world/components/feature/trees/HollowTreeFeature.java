@@ -1,6 +1,7 @@
 package twilightforest.world.components.feature.trees;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -12,6 +13,7 @@ import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFEntities;
 import twilightforest.loot.TFLootTables;
@@ -24,12 +26,20 @@ import twilightforest.world.components.feature.config.TFTreeFeatureConfig;
 
 import java.util.function.BiConsumer;
 
-public abstract class HollowTreeFeature extends TFTreeFeature<TFTreeFeatureConfig> {
+public abstract class HollowTreeFeature extends TFTreeFeature {
 
 	private static final int LEAF_DUNGEON_CHANCE = 8;
 
-	public HollowTreeFeature(Codec<TFTreeFeatureConfig> config) {
+	public HollowTreeFeature() {
+	}
+
+	protected HollowTreeFeature(TFTreeFeatureConfig config) {
 		super(config);
+	}
+
+	@Override
+	public MapCodec<? extends Feature> codec() {
+		return TFTreeFeatureConfig.MAP_CODEC.xmap(cfg -> create(cfg), f -> f.config);
 	}
 
 	public static void makeHollowTree(WorldGenLevel world, RandomSource random, BlockPos pos, BiConsumer<BlockPos, BlockState> trunkPlacer, BiConsumer<BlockPos, BlockState> leavesPlacer, RootPlacer decorationPlacer, TFTreeFeatureConfig config) {

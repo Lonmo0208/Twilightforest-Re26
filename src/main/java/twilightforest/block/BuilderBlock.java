@@ -29,7 +29,6 @@ import java.util.Objects;
 public class BuilderBlock extends BaseEntityBlock {
 
 	public static final EnumProperty<TowerDeviceVariant> STATE = EnumProperty.create("state", TowerDeviceVariant.class);
-	public static final MapCodec<BuilderBlock> CODEC = simpleCodec(BuilderBlock::new);
 
 	public BuilderBlock(Properties properties) {
 		super(properties);
@@ -49,10 +48,7 @@ public class BuilderBlock extends BaseEntityBlock {
 		}
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

@@ -26,7 +26,7 @@ public class PatchBlock extends TFPlantBlock {
 	public static final BooleanProperty EAST = BlockStateProperties.EAST;
 	public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
 	public static final BooleanProperty WEST = BlockStateProperties.WEST;
-	public static final MapCodec<PatchBlock> CODEC = simpleCodec(PatchBlock::new);
+
 	private static final Map<Direction, BooleanProperty> PROPERTY_BY_DIRECTION = PipeBlock.PROPERTY_BY_DIRECTION.entrySet().stream().filter(directionPropertyPair -> directionPropertyPair.getKey().getAxis().isHorizontal()).collect(Util.toMap());
 
 	public PatchBlock(Properties properties) {
@@ -81,10 +81,7 @@ public class PatchBlock extends TFPlantBlock {
 		return AABBFromLong(random.nextLong());
 	}
 
-	@Override
-	protected MapCodec<? extends VegetationBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbor, BlockPos neighborPos, BlockState neighborState, RandomSource random) {

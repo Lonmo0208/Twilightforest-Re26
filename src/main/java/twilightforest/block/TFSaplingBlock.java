@@ -1,5 +1,6 @@
 package twilightforest.block;
 
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFFeatures;
@@ -20,7 +20,7 @@ import twilightforest.world.registration.TreeConfigurations;
 import java.util.function.Supplier;
 
 /**
- * A dedicated SaplingBlock that bypasses the dynamic Registry<ConfiguredFeature> lookup.
+ * A dedicated SaplingBlock that bypasses the dynamic Registry<Feature> lookup.
  *
  * <p>Vanilla {@link net.minecraft.world.level.block.SaplingBlock} delegates tree growth to its
  * {@link TreeGrower}, which in turn always resolves its configured features from the dynamic
@@ -81,7 +81,7 @@ public class TFSaplingBlock extends net.minecraft.world.level.block.SaplingBlock
 
 	/** Mirror of the grow path used by SaplingBlock.performBonemeal. */
 	@Override
-	public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+	public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
 		this.advanceTree(level, pos, state, random);
 	}
 
@@ -94,9 +94,9 @@ public class TFSaplingBlock extends net.minecraft.world.level.block.SaplingBlock
 		if (this.treePlacement == null) return false;
 
 		// Optional 2x2 mega placement
-		Supplier<ConfiguredFeature<?, ?>> mega = this.treePlacement.megaFeature();
+		Supplier<Feature> mega = this.treePlacement.megaFeature();
 		if (mega != null) {
-			ConfiguredFeature<?, ?> megaFeature = mega.get();
+			Feature megaFeature = mega.get();
 			if (megaFeature != null) {
 				for (int dx = 0; dx >= -1; dx--) {
 					for (int dz = 0; dz >= -1; dz--) {
@@ -121,9 +121,9 @@ public class TFSaplingBlock extends net.minecraft.world.level.block.SaplingBlock
 		}
 
 		// Normal single-sapling growth
-		Supplier<ConfiguredFeature<?, ?>> normal = this.treePlacement.normalFeature();
+		Supplier<Feature> normal = this.treePlacement.normalFeature();
 		if (normal == null) return growFallbackTree(level, pos, random);
-		ConfiguredFeature<?, ?> normalFeature = normal.get();
+		Feature normalFeature = normal.get();
 		if (normalFeature == null) return growFallbackTree(level, pos, random);
 
 		BlockState empty = level.getFluidState(pos).createLegacyBlock();
@@ -160,14 +160,14 @@ public class TFSaplingBlock extends net.minecraft.world.level.block.SaplingBlock
 
 	/**
 	 * Factory record that lets us express each TF tree as a pair of suppliers (mega + normal).
-	 * Suppliers avoid eager creation of the giant TreeConfiguration objects until a sapling
+	 * Suppliers avoid eager creation of the giant TreeFeature objects until a sapling
 	 * actually wants to grow.
 	 */
 	public record TreePlacement(
-		Supplier<ConfiguredFeature<?, ?>> normalFeature,
-		Supplier<ConfiguredFeature<?, ?>> megaFeature
+		Supplier<Feature> normalFeature,
+		Supplier<Feature> megaFeature
 	) {
-		public static TreePlacement single(Supplier<ConfiguredFeature<?, ?>> normal) {
+		public static TreePlacement single(Supplier<Feature> normal) {
 			return new TreePlacement(normal, null);
 		}
 	}
@@ -177,45 +177,45 @@ public class TFSaplingBlock extends net.minecraft.world.level.block.SaplingBlock
 	// is obvious which tree each sapling grows into).
 	// -------------------------------------------------------------------------
 
-	public static final Supplier<ConfiguredFeature<?, ?>> TWILIGHT_OAK_TREE =
-		() -> new ConfiguredFeature<>(Feature.TREE, TreeConfigurations.TWILIGHT_OAK);
+	public static final Supplier<Feature> TWILIGHT_OAK_TREE =
+		() -> TreeConfigurations.TWILIGHT_OAK;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> LARGE_TWILIGHT_OAK_TREE =
-		() -> new ConfiguredFeature<>(Feature.TREE, TreeConfigurations.LARGE_TWILIGHT_OAK);
+	public static final Supplier<Feature> LARGE_TWILIGHT_OAK_TREE =
+		() -> TreeConfigurations.LARGE_TWILIGHT_OAK;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> CANOPY_TREE =
-		() -> new ConfiguredFeature<>(Feature.TREE, TreeConfigurations.CANOPY_TREE);
+	public static final Supplier<Feature> CANOPY_TREE =
+		() -> TreeConfigurations.CANOPY_TREE;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> MEGA_CANOPY_TREE =
-		() -> new ConfiguredFeature<>(TFFeatures.MEGA_CANOPY, TreeConfigurations.MEGA_CANOPY);
+	public static final Supplier<Feature> MEGA_CANOPY_TREE =
+		() -> TFFeatures.MEGA_CANOPY;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> MANGROVE_TREE =
-		() -> new ConfiguredFeature<>(Feature.TREE, TreeConfigurations.MANGROVE_TREE);
+	public static final Supplier<Feature> MANGROVE_TREE =
+		() -> TreeConfigurations.MANGROVE_TREE;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> DARKWOOD_TREE =
-		() -> new ConfiguredFeature<>(Feature.TREE, TreeConfigurations.HOMEGROWN_DARKWOOD_TREE);
+	public static final Supplier<Feature> DARKWOOD_TREE =
+		() -> TreeConfigurations.HOMEGROWN_DARKWOOD_TREE;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> TIME_TREE =
-		() -> new ConfiguredFeature<>(TFFeatures.TREE_OF_TIME, TreeConfigurations.TIME_TREE);
+	public static final Supplier<Feature> TIME_TREE =
+		() -> TFFeatures.TREE_OF_TIME;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> TRANSFORMATION_TREE =
-		() -> new ConfiguredFeature<>(Feature.TREE, TreeConfigurations.TRANSFORM_TREE);
+	public static final Supplier<Feature> TRANSFORMATION_TREE =
+		() -> TreeConfigurations.TRANSFORM_TREE;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> MINING_TREE =
-		() -> new ConfiguredFeature<>(TFFeatures.MINERS_TREE, TreeConfigurations.MINING_TREE);
+	public static final Supplier<Feature> MINING_TREE =
+		() -> TFFeatures.MINERS_TREE;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> SORTING_TREE =
-		() -> new ConfiguredFeature<>(Feature.TREE, TreeConfigurations.SORT_TREE);
+	public static final Supplier<Feature> SORTING_TREE =
+		() -> TreeConfigurations.SORT_TREE;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> MEGA_TWILIGHT_OAK =
-		() -> new ConfiguredFeature<>(TFFeatures.MEGA_OAK, TreeConfigurations.FOREST_MEGA_OAK);
+	public static final Supplier<Feature> MEGA_TWILIGHT_OAK =
+		() -> TFFeatures.MEGA_OAK;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> SAVANNAH_MEGA_OAK =
-		() -> new ConfiguredFeature<>(TFFeatures.MEGA_OAK, TreeConfigurations.SAVANNAH_MEGA_OAK);
+	public static final Supplier<Feature> SAVANNAH_MEGA_OAK =
+		() -> TFFeatures.MEGA_OAK;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> RAINBOW_OAK_TREE =
-		() -> new ConfiguredFeature<>(Feature.TREE, TreeConfigurations.RAINBOAK_TREE);
+	public static final Supplier<Feature> RAINBOW_OAK_TREE =
+		() -> TreeConfigurations.RAINBOAK_TREE;
 
-	public static final Supplier<ConfiguredFeature<?, ?>> LARGE_RAINBOW_OAK_TREE =
-		() -> new ConfiguredFeature<>(Feature.TREE, TreeConfigurations.LARGE_RAINBOAK_TREE);
+	public static final Supplier<Feature> LARGE_RAINBOW_OAK_TREE =
+		() -> TreeConfigurations.LARGE_RAINBOAK_TREE;
 }

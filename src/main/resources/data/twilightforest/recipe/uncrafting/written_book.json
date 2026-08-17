@@ -1,11 +1,11 @@
 {
-  "type": "twilightforest:uncrafting",
-  "cost": 0,
-  "input": "minecraft:written_book",
-  "key": {
-    "B": "minecraft:book"
-  },
-  "pattern": [
-    "B"
-  ]
+    "type":  "twilightforest:uncrafting",
+    "cost":  0,
+    "input":  "minecraft:written_book",
+    "key":  {
+                "B":  "minecraft:book"
+            },
+    "pattern":  [
+                    "B"
+                ]
 }

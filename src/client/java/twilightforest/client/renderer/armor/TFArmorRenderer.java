@@ -79,9 +79,9 @@ public abstract class TFArmorRenderer implements ArmorRenderer {
 	protected static void renderTinted(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, ItemStack stack, HumanoidModel<HumanoidRenderState> model, HumanoidRenderState state, Identifier texture, int color) {
 		RenderType renderType = RenderTypes.armorCutoutNoCull(texture);
 		OrderedSubmitNodeCollector orderedCollector = submitNodeCollector.order(0);
-		ArmorRenderer.submitTransformCopyingModel(model, state, model, state, false, orderedCollector, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, null);
+		ArmorRenderer.submitTransformCopyingModel(model, state, model, state, false, orderedCollector, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor);
 		if (stack.hasFoil()) {
-			ArmorRenderer.submitTransformCopyingModel(model, state, model, state, false, submitNodeCollector.order(1), poseStack, RenderTypes.armorEntityGlint(), light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor, null);
+			ArmorRenderer.submitTransformCopyingModel(model, state, model, state, false, submitNodeCollector.order(1), poseStack, RenderTypes.armorCutoutNoCullGlint(texture), light, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor);
 		}
 	}
 }

@@ -27,7 +27,7 @@ public class CarminiteGolemRenderer extends MobRenderer<CarminiteGolem, IronGole
 	@Override
 	public void extractRenderState(CarminiteGolem golem, IronGolemRenderState state, float partialTick) {
 		super.extractRenderState(golem, state, partialTick);
-		state.attackTicksRemaining = golem.attackAnim > 0.0F ? golem.attackAnim - partialTick : 0.0F;
+		state.attackTicksRemaining = golem.getSwingAnimation(partialTick) > 0.0F ? golem.getSwingAnimation(partialTick) - partialTick : 0.0F;
 	}
 
 	/**

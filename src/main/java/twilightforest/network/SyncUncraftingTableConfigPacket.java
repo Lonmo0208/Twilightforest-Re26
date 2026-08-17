@@ -7,6 +7,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import twilightforest.TwilightForestMod;
 import twilightforest.config.TFConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public record SyncUncraftingTableConfigPacket(
@@ -21,8 +22,14 @@ public record SyncUncraftingTableConfigPacket(
 	public SyncUncraftingTableConfigPacket(FriendlyByteBuf buf) {
 		this(buf.readDouble(), buf.readDouble(),
 			buf.readBoolean(), buf.readBoolean(), buf.readBoolean(), buf.readBoolean(),
-			buf.readList(FriendlyByteBuf::readUtf), buf.readBoolean(),
-			buf.readList(FriendlyByteBuf::readUtf), buf.readBoolean());
+			readStringList(buf), buf.readBoolean(),
+			readStringList(buf), buf.readBoolean());
+	}
+
+	private static List<String> readStringList(FriendlyByteBuf buf) {
+		List<String> list = new ArrayList<>();
+		buf.readWithCount(b -> list.add(b.readUtf()));
+		return list;
 	}
 
 	public void write(FriendlyByteBuf buf) {
@@ -32,10 +39,15 @@ public record SyncUncraftingTableConfigPacket(
 		buf.writeBoolean(this.disableIngredientSwitching());
 		buf.writeBoolean(this.disabledUncrafting());
 		buf.writeBoolean(this.disabledTable());
-		buf.writeCollection(this.disabledRecipes(), FriendlyByteBuf::writeUtf);
+		writeStringList(buf, this.disabledRecipes());
 		buf.writeBoolean(this.flipRecipeList());
-		buf.writeCollection(this.disabledModids(), FriendlyByteBuf::writeUtf);
+		writeStringList(buf, this.disabledModids());
 		buf.writeBoolean(this.flipModidList());
+	}
+
+	private static void writeStringList(FriendlyByteBuf buf, List<? extends String> list) {
+		buf.writeVarInt(list.size());
+		list.forEach(buf::writeUtf);
 	}
 
 	@Override

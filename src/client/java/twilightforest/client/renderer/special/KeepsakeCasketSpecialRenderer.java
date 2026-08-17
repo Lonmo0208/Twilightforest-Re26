@@ -30,7 +30,7 @@ public record KeepsakeCasketSpecialRenderer(KeepsakeCasketModel model, float ope
 		stack.translate(0.5F, 0.0F, 0.5F);
 		stack.mulPose(Direction.NORTH.getRotation());
 		stack.mulPose(Axis.XP.rotationDegrees(90.0F));
-		collector.submitModel(this.model(), this.openness(), stack, KeepsakeCasketRenderer.getTextureLocation(argument), light, overlay, outlineColor, null);
+		collector.submitModel(this.model(), this.openness(), stack, KeepsakeCasketRenderer.getTextureLocation(argument), light, overlay, outlineColor);
 	}
 
 	@Override

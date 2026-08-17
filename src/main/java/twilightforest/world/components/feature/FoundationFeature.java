@@ -1,7 +1,9 @@
 package twilightforest.world.components.feature;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
@@ -15,45 +17,63 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import twilightforest.util.features.FeatureLogic;
 import twilightforest.util.features.FeatureUtil;
 import twilightforest.world.components.feature.config.RuinedFoundationConfig;
 
-public class FoundationFeature extends Feature<RuinedFoundationConfig> {
+public class FoundationFeature implements Feature {
 
-	public FoundationFeature(Codec<RuinedFoundationConfig> configIn) {
-		super(configIn);
+	public static final MapCodec<FoundationFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+		RuinedFoundationConfig.RuinedFoundationDimensions.CODEC.forGetter(f -> f.dimensions),
+		RuinedFoundationConfig.RuinedFoundationBlocks.CODEC.forGetter(f -> f.blocks),
+		ResourceKey.codec(Registries.LOOT_TABLE).fieldOf("loot_table").forGetter(f -> f.lootTable)
+	).apply(instance, FoundationFeature::new));
+
+	private final RuinedFoundationConfig.RuinedFoundationDimensions dimensions;
+	private final RuinedFoundationConfig.RuinedFoundationBlocks blocks;
+	private final ResourceKey<LootTable> lootTable;
+
+	public FoundationFeature(RuinedFoundationConfig.RuinedFoundationDimensions dimensions, RuinedFoundationConfig.RuinedFoundationBlocks blocks, ResourceKey<LootTable> lootTable) {
+		this.dimensions = dimensions;
+		this.blocks = blocks;
+		this.lootTable = lootTable;
+	}
+
+	public FoundationFeature() {
+		this(RuinedFoundationConfig.withDefaultBlocks(false));
+	}
+
+	private FoundationFeature(RuinedFoundationConfig config) {
+		this(config.dimensions(), config.blocks(), config.lootTable());
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<RuinedFoundationConfig> ctx) {
-		WorldGenLevel world = ctx.level();
-		BlockPos pos = ctx.origin();
-		RandomSource rand = ctx.random();
-		RuinedFoundationConfig config = ctx.config();
-		RuinedFoundationConfig.RuinedFoundationDimensions dimensions = ctx.config().dimensions();
-		RuinedFoundationConfig.RuinedFoundationBlocks blocks = ctx.config().blocks();
+	public MapCodec<? extends Feature> codec() {
+		return CODEC;
+	}
 
-		IntProvider wallWidths = dimensions.wallWidth();
-		int xWidth = wallWidths.sample(rand);
-		int zWidth = wallWidths.sample(rand);
+	@Override
+	public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos pos) {
+		IntProvider wallWidths = this.dimensions.wallWidth();
+		int xWidth = wallWidths.sample(random);
+		int zWidth = wallWidths.sample(random);
 
-		if (!FeatureUtil.isAreaSuitable(world, pos.offset(1, 0, 1), xWidth - 1, 4, zWidth - 1)) {
+		if (!FeatureUtil.isAreaSuitable(level, pos.offset(1, 0, 1), xWidth - 1, 4, zWidth - 1)) {
 			return false;
 		}
 
 		//okay!
-		generateFoundation(world, rand, pos, xWidth, zWidth, dimensions.wallHeights(), dimensions.placeFloorTest(), blocks.wallBlock(), blocks.wallTop(), blocks.decayedWall(), blocks.decayedTop(), blocks.floor());
+		generateFoundation(level, random, pos, xWidth, zWidth, this.dimensions.wallHeights(), this.dimensions.placeFloorTest(), this.blocks.wallBlock(), this.blocks.wallTop(), this.blocks.decayedWall(), this.blocks.decayedTop(), this.blocks.floor());
 
 		//TODO: chimney?
 
-		int basementDepth = dimensions.basementHeight().sample(rand);
+		int basementDepth = this.dimensions.basementHeight().sample(random);
 		if (basementDepth > 0) {
 			BlockPos basementCeilingPos = pos.offset(1, -3, 1);
-			generateBasement(xWidth - 2, zWidth - 2, basementDepth, world, basementCeilingPos, rand, dimensions.placeFloorTest(), blocks.floor(), blocks.basementPosts(), blocks.lootContainer(), config.lootTable());
+			generateBasement(xWidth - 2, zWidth - 2, basementDepth, level, basementCeilingPos, random, this.dimensions.placeFloorTest(), this.blocks.floor(), this.blocks.basementPosts(), this.blocks.lootContainer(), this.lootTable);
 		}
 
 		return true;

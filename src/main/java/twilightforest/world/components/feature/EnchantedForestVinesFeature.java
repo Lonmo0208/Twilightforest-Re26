@@ -12,24 +12,31 @@ import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import twilightforest.init.TFBlocks;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class EnchantedForestVinesFeature extends Feature<NoneFeatureConfiguration> {
+public class EnchantedForestVinesFeature implements Feature {
 	private static final int rarity = 7;
 	private static final int extraRarityOnTrees = 8;
 
-	public EnchantedForestVinesFeature(Codec<NoneFeatureConfiguration> codec) {super(codec);}
+	public EnchantedForestVinesFeature() {
+	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-		WorldGenLevel world = context.level();
-		setAllPossibleStates(world, context.random(), context.origin());
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.levelgen.feature.Feature> codec() {
+		return com.mojang.serialization.MapCodec.unit(this);
+	}
+
+	@Override
+	public boolean place(net.minecraft.world.level.WorldGenLevel level, net.minecraft.world.level.chunk.ChunkGenerator chunkGenerator, net.minecraft.util.RandomSource random, net.minecraft.core.BlockPos pos) {
+		// ===== 26.3 过渡变量：原 context 引用迁移 =====
+		@SuppressWarnings("unused") Object _cfg = null; /* ctx.config() 原本从此处取，现为 Feature 字段 TODO */
+		WorldGenLevel world = level;
+		setAllPossibleStates(world, random, pos);
 		return true;
 	}
 

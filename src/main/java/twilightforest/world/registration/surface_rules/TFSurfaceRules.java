@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.placement.CaveSurface;
 import org.jetbrains.annotations.NotNull;
 import twilightforest.init.TFBiomes;
 import twilightforest.init.TFBlocks;
@@ -51,7 +52,7 @@ public class TFSurfaceRules {
 		);
 
 		//highlands has a noise-based mixture of podzol and coarse dirt
-		SurfaceRules.RuleSource highlandsSoil = SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
+		SurfaceRules.RuleSource highlandsSoil = SurfaceRules.ifTrue(SurfaceRules.stoneDepthCheck(0, false, CaveSurface.FLOOR), SurfaceRules.sequence(
 			//mix coarse dirt and podzol with noise
 			SurfaceRules.ifTrue(surfaceNoiseAbove(2.25D), COARSE_DIRT),
 			SurfaceRules.ifTrue(surfaceNoiseAbove(-2.25D), podzolFloor)
@@ -65,10 +66,10 @@ public class TFSurfaceRules {
 	private static SurfaceRules.RuleSource deadrockSurface(HolderGetter<Biome> biomes) {
 		//thornlands/plateau has no caves and deadrock instead of stone
 		SurfaceRules.RuleSource deadrockTerrain = SurfaceRules.sequence(
-			SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, WEATHERED_DEADROCK),
+			SurfaceRules.ifTrue(SurfaceRules.stoneDepthCheck(0, false, CaveSurface.FLOOR), WEATHERED_DEADROCK),
 			SurfaceRules.ifTrue(
 				SurfaceRules.waterStartCheck(-6, -1),
-				SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, CRACKED_DEADROCK)
+				SurfaceRules.ifTrue(SurfaceRules.stoneDepthCheck(0, true, CaveSurface.FLOOR), CRACKED_DEADROCK)
 			),
 			DEADROCK
 		);
@@ -86,11 +87,11 @@ public class TFSurfaceRules {
 		);
 
 		SurfaceRules.RuleSource snowySoil = SurfaceRules.sequence(
-			SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, snowFloor),
+			SurfaceRules.ifTrue(SurfaceRules.stoneDepthCheck(0, false, CaveSurface.FLOOR), snowFloor),
 			SurfaceRules.ifTrue(
 				SurfaceRules.waterStartCheck(-6, -1),
 				SurfaceRules.ifTrue(
-					SurfaceRules.UNDER_FLOOR,
+					SurfaceRules.stoneDepthCheck(0, true, CaveSurface.FLOOR),
 					SurfaceRules.ifTrue(SurfaceRules.verticalGradient("snowy_dirt", VerticalAnchor.absolute(0), VerticalAnchor.absolute(-3)), DIRT)
 				)
 			)
@@ -105,10 +106,10 @@ public class TFSurfaceRules {
 		//glacier has gravel for a few layers, then stone. All blanketed under 30+ blocks of ice
 		SurfaceRules.RuleSource surfaceUnderPermafrost = SurfaceRules.sequence(
 			//surface and under is gravel
-			SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, GRAVEL),
+			SurfaceRules.ifTrue(SurfaceRules.stoneDepthCheck(0, false, CaveSurface.FLOOR), GRAVEL),
 			SurfaceRules.ifTrue(
 				SurfaceRules.waterStartCheck(-6, -1),
-				SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, GRAVEL)
+				SurfaceRules.ifTrue(SurfaceRules.stoneDepthCheck(0, true, CaveSurface.FLOOR), GRAVEL)
 			)
 		);
 
@@ -120,7 +121,7 @@ public class TFSurfaceRules {
 	private static SurfaceRules.RuleSource overworldLikeFloor(HolderGetter<Biome> biomes) {
 		//lakes and rivers get sand
 		SurfaceRules.RuleSource riverLakeBeds = SurfaceRules.ifTrue(SurfaceRules.isBiome(biomes, TFBiomes.LAKE, TFBiomes.STREAM), SurfaceRules.sequence(
-			SurfaceRules.ifTrue(SurfaceRules.ON_CEILING, SANDSTONE),
+			SurfaceRules.ifTrue(SurfaceRules.stoneDepthCheck(0, false, CaveSurface.CEILING), SANDSTONE),
 			SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), GRASS_BLOCK),
 			SAND
 		));
@@ -147,7 +148,7 @@ public class TFSurfaceRules {
 		);
 
 		// Twilight Forest's surface is based off the normal overworld surface
-		SurfaceRules.RuleSource onFloor = SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
+		SurfaceRules.RuleSource onFloor = SurfaceRules.ifTrue(SurfaceRules.stoneDepthCheck(0, false, CaveSurface.FLOOR), SurfaceRules.sequence(
 			riverLakeBeds,
 			swampBeds,
 			grassSurface,
@@ -160,7 +161,7 @@ public class TFSurfaceRules {
 			//check if we're above ground, so hollow hills dont have dirt floors
 			SurfaceRules.ifTrue(
 				SurfaceRules.yStartCheck(VerticalAnchor.absolute(-4), 1),
-				SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, DIRT)
+				SurfaceRules.ifTrue(SurfaceRules.stoneDepthCheck(0, true, CaveSurface.FLOOR), DIRT)
 			)
 		);
 

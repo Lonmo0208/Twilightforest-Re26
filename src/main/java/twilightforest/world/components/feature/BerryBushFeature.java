@@ -2,7 +2,10 @@ package twilightforest.world.components.feature;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -12,34 +15,53 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import twilightforest.block.SnowLoggable;
+import twilightforest.init.TFBlocks;
 import twilightforest.tags.TFBlockTags;
 import twilightforest.util.TFMathUtil;
 import twilightforest.util.WorldUtil;
-import twilightforest.world.components.feature.config.BerryBushConfig;
 
 import java.util.List;
 
-public class BerryBushFeature extends Feature<BerryBushConfig> {
+public class BerryBushFeature implements Feature {
+
+	public static final MapCodec<BerryBushFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+		BlockState.CODEC.fieldOf("bush").forGetter(f -> f.bushState),
+		TagKey.codec(Registries.BLOCK).fieldOf("generates_on").forGetter(f -> f.placesOn),
+		Codec.BOOL.fieldOf("can_generate_snowy").forGetter(f -> f.canBeSnowy)
+	).apply(instance, BerryBushFeature::new));
+
 	private static final float DEFAULT_RIPE_PROBABILITY = 0.2F;
 
-	public BerryBushFeature(Codec<BerryBushConfig> codec) {
-		super(codec);
+	private final BlockState bushState;
+	private final TagKey<Block> placesOn;
+	private final boolean canBeSnowy;
+
+	public BerryBushFeature(BlockState bushState, TagKey<Block> placesOn, boolean canBeSnowy) {
+		this.bushState = bushState;
+		this.placesOn = placesOn;
+		this.canBeSnowy = canBeSnowy;
+	}
+
+	public BerryBushFeature() {
+		this(TFBlocks.RASPBERRY_BUSH.defaultBlockState(), TFBlockTags.TF_BERRY_BUSHES_SURVIVE, true);
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<BerryBushConfig> context) {
-		WorldGenLevel level = context.level();
-		BlockPos pos = context.origin();
-		BlockState stateToPlace = context.config().bushState();
-		RandomSource random = context.random();
-		TagKey<Block> generatesOn = context.config().placesOn();
+	public MapCodec<? extends Feature> codec() {
+		return CODEC;
+	}
+
+	@Override
+	public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos pos) {
+		BlockState stateToPlace = this.bushState;
+		TagKey<Block> generatesOn = this.placesOn;
 
 		if (!level.getBlockState(pos.below()).is(generatesOn))
 			return false;
 
-		boolean isInSnowyBiome = context.config().canBeSnowy() && level.getBiome(pos).value().shouldSnow(level, pos);
+		boolean isInSnowyBiome = this.canBeSnowy && level.getBiome(pos).value().shouldSnow(level, pos);
 		return switch (this.chooseSize(random)) {
 			case LARGE -> this.generateLargeNode(level, pos, stateToPlace, generatesOn, random, isInSnowyBiome);
 			case MEDIUM -> this.generateMediumNode(level, pos, stateToPlace, generatesOn, random, isInSnowyBiome);

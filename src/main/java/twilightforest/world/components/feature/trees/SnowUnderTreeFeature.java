@@ -11,19 +11,22 @@ import net.minecraft.world.level.block.SnowyBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+public class SnowUnderTreeFeature implements Feature {
 
-public class SnowUnderTreeFeature extends Feature<NoneFeatureConfiguration> {
-
-	public SnowUnderTreeFeature(Codec<NoneFeatureConfiguration> config) {
-		super(config);
+	public SnowUnderTreeFeature() {
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
-		BlockPos pos = ctx.origin();
-		WorldGenLevel world = ctx.level();
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.levelgen.feature.Feature> codec() {
+		return com.mojang.serialization.MapCodec.unit(this);
+	}
+
+	@Override
+	public boolean place(net.minecraft.world.level.WorldGenLevel level, net.minecraft.world.level.chunk.ChunkGenerator chunkGenerator, net.minecraft.util.RandomSource random, net.minecraft.core.BlockPos pos) {
+		// ===== 26.3 过渡变量：原 ctx 引用迁移 =====
+		@SuppressWarnings("unused") Object _cfg = null; /* _cfg 原本从此处取，现为 Feature 字段 TODO */
+		WorldGenLevel world = level;
 		BlockPos.MutableBlockPos mPos = new BlockPos.MutableBlockPos();
 		BlockPos.MutableBlockPos mPosDown = new BlockPos.MutableBlockPos();
 

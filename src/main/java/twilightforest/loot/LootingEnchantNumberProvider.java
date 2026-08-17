@@ -20,7 +20,7 @@ import java.util.Set;
 public class LootingEnchantNumberProvider implements NumberProvider {
 	public static final MapCodec<LootingEnchantNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Enchantment.CODEC.fieldOf("enchantment").forGetter(provider -> provider.enchantment),
-			NumberProviders.CODEC.fieldOf("base_value").forGetter(provider -> provider.baseValue))
+			NumberProviders.DIRECT_CODEC.fieldOf("base_value").forGetter(provider -> provider.baseValue))
 		.apply(instance, LootingEnchantNumberProvider::new)
 	);
 

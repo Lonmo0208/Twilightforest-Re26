@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.BushFoliagePlacer;
@@ -38,7 +38,7 @@ public class TreeConfigurations {
 		return WeightedList.builder();
 	}
 
-	public static final TreeConfiguration TWILIGHT_OAK = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature TWILIGHT_OAK = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LOG),
 		new StraightTrunkPlacer(4, 2, 0),
 		BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LEAVES),
@@ -49,7 +49,7 @@ public class TreeConfigurations {
 		.decorators(ImmutableList.of(TreeDecorators.LIVING_ROOTS))
 		.build();
 
-	public static final TreeConfiguration LARGE_TWILIGHT_OAK = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature LARGE_TWILIGHT_OAK = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LOG),
 		new FancyTrunkPlacer(3, 11, 0),
 		BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LEAVES),
@@ -60,7 +60,7 @@ public class TreeConfigurations {
 		.decorators(ImmutableList.of(TreeDecorators.LIVING_ROOTS))
 		.build();
 
-	public static final TreeConfiguration SWAMPY_OAK = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature SWAMPY_OAK = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LOG),
 		new StraightTrunkPlacer(4, 2, 0),
 		BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LEAVES),
@@ -72,7 +72,7 @@ public class TreeConfigurations {
 		.build();
 
 	private final static int LEAF_SHAG_FACTOR = 24;
-	public static final TreeConfiguration CANOPY_TREE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature CANOPY_TREE = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.CANOPY_LOG),
 		new BranchingTrunkPlacer(20, 5, 5, 12, new BranchesConfig(BlockStateProvider.simple(TFBlocks.CANOPY_WOOD), 3, 1, 10, 1, 0.3, 0.2), false, true),
 		BlockStateProvider.simple(TFBlocks.CANOPY_LEAVES),
@@ -84,7 +84,7 @@ public class TreeConfigurations {
 		.ignoreVines()
 		.build();
 
-	public static final TreeConfiguration CANOPY_TREE_FIREFLY = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature CANOPY_TREE_FIREFLY = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.CANOPY_LOG),
 		new BranchingTrunkPlacer(20, 5, 5, 12, new BranchesConfig(BlockStateProvider.simple(TFBlocks.CANOPY_WOOD), 3, 1, 10, 1, 0.3, 0.2), false, true),
 		BlockStateProvider.simple(TFBlocks.CANOPY_LEAVES),
@@ -117,7 +117,7 @@ public class TreeConfigurations {
 		.ignoreVines()
 		.build();
 
-	public static final TreeConfiguration CANOPY_TREE_DEAD = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature CANOPY_TREE_DEAD = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.CANOPY_LOG),
 		new BranchingTrunkPlacer(20, 5, 5, 12, new BranchesConfig(BlockStateProvider.simple(TFBlocks.CANOPY_WOOD), 3, 1, 10, 1, 0.3, 0.2), false, true),
 		BlockStateProvider.simple(Blocks.AIR),
@@ -140,7 +140,7 @@ public class TreeConfigurations {
 		.chanceSecondFive(3)
 		.build();
 
-	public static final TreeConfiguration MANGROVE_TREE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature MANGROVE_TREE = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.MANGROVE_LOG),
 		new TrunkRiser(4, new BranchingTrunkPlacer(7, 4, 0, 6, new BranchesConfig(BlockStateProvider.simple(TFBlocks.MANGROVE_WOOD), 0, 3, 6, 2, 0.3, 0.25), false, false)),
 		BlockStateProvider.simple(TFBlocks.MANGROVE_LEAVES),
@@ -158,7 +158,7 @@ public class TreeConfigurations {
 		)
 		.build();
 
-	public static final TreeConfiguration DARKWOOD_TREE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature DARKWOOD_TREE = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.DARK_LOG),
 		new BranchingTrunkPlacer(9, 1, 1, 6, new BranchesConfig(BlockStateProvider.simple(TFBlocks.DARK_WOOD), 4, 0, 8, 2, 0.23, 0.23), false, false),
 		BlockStateProvider.simple(TFBlocks.HARDENED_DARK_LEAVES),
@@ -170,7 +170,7 @@ public class TreeConfigurations {
 		.ignoreVines()
 		.build();
 
-	public static final TreeConfiguration HOMEGROWN_DARKWOOD_TREE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature HOMEGROWN_DARKWOOD_TREE = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.DARK_LOG),
 		new BranchingTrunkPlacer(9, 1, 1, 6, new BranchesConfig(BlockStateProvider.simple(TFBlocks.DARK_WOOD), 4, 0, 8, 2, 0.23, 0.23), false, false),
 		BlockStateProvider.simple(TFBlocks.DARK_LEAVES),
@@ -182,7 +182,7 @@ public class TreeConfigurations {
 		.ignoreVines()
 		.build();
 
-	public static final TreeConfiguration DARKWOOD_LANTERN_TREE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature DARKWOOD_LANTERN_TREE = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.DARK_LOG),
 		new BranchingTrunkPlacer(9, 1, 1, 6, new BranchesConfig(BlockStateProvider.simple(TFBlocks.DARK_WOOD), 4, 0, 8, 2, 0.23, 0.23), false, false),
 		BlockStateProvider.simple(TFBlocks.DARK_LEAVES),
@@ -205,7 +205,7 @@ public class TreeConfigurations {
 		.ignoreVines()
 		.build();
 
-	public static final TreeConfiguration SMALL_JUNGLE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature SMALL_JUNGLE = new TreeFeature.Builder(
 		BlockStateProvider.simple(Blocks.JUNGLE_LOG),
 		new StraightTrunkPlacer(3, 2, 2),
 		BlockStateProvider.simple(Blocks.JUNGLE_LEAVES),
@@ -221,7 +221,7 @@ public class TreeConfigurations {
 		.build();
 
 	//[VanillaCopy] of JUNGLE_BUSH
-	public static final TreeConfiguration OAK_BUSH = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature OAK_BUSH = new TreeFeature.Builder(
 		BlockStateProvider.simple(Blocks.OAK_LOG),
 		new StraightTrunkPlacer(1, 0, 0),
 		BlockStateProvider.simple(Blocks.OAK_LEAVES),
@@ -231,7 +231,7 @@ public class TreeConfigurations {
 		.build();
 
 	//[VanillaCopy] of Features.MEGA_SPRUCE, just without all the nasty podzol so it fits better
-	public static final TreeConfiguration BIG_SPRUCE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature BIG_SPRUCE = new TreeFeature.Builder(
 		BlockStateProvider.simple(Blocks.SPRUCE_LOG),
 		new GiantTrunkPlacer(13, 2, 14),
 		BlockStateProvider.simple(Blocks.SPRUCE_LEAVES),
@@ -250,7 +250,7 @@ public class TreeConfigurations {
 	)
 		.build();
 
-	public static final TreeConfiguration TRANSFORM_TREE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature TRANSFORM_TREE = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.TRANSFORMATION_LOG),
 		new BranchingTrunkPlacer(6, 5, 5, 7, new BranchesConfig(BlockStateProvider.simple(TFBlocks.TRANSFORMATION_WOOD), 3, 1, 10, 1, 0.3, 0.2), false, false),
 		BlockStateProvider.simple(TFBlocks.TRANSFORMATION_LEAVES),
@@ -270,7 +270,7 @@ public class TreeConfigurations {
 	)
 		.build();
 
-	public static final TreeConfiguration SORT_TREE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature SORT_TREE = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.SORTING_LOG),
 		new StraightTrunkPlacer(3, 0, 0),
 		BlockStateProvider.simple(TFBlocks.SORTING_LEAVES),
@@ -316,7 +316,7 @@ public class TreeConfigurations {
 	)
 		.build();
 
-	public static final TreeConfiguration RAINBOAK_TREE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature RAINBOAK_TREE = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LOG),
 		new StraightTrunkPlacer(4, 2, 0),
 		BlockStateProvider.simple(TFBlocks.RAINBOW_OAK_LEAVES),
@@ -327,7 +327,7 @@ public class TreeConfigurations {
 		.decorators(ImmutableList.of(TreeDecorators.LIVING_ROOTS))
 		.build();
 
-	public static final TreeConfiguration LARGE_RAINBOAK_TREE = new TreeConfiguration.TreeConfigurationBuilder(
+	public static final TreeFeature LARGE_RAINBOAK_TREE = new TreeFeature.Builder(
 		BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LOG),
 		new FancyTrunkPlacer(3, 11, 0),
 		BlockStateProvider.simple(TFBlocks.RAINBOW_OAK_LEAVES),

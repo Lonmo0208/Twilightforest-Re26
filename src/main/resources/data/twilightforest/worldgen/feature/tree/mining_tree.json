@@ -1,0 +1,33 @@
+{
+    "type":  "twilightforest:miners_tree",
+    "add_first_five_chance":  1,
+    "add_second_five_chance":  1,
+    "branch_provider":  {
+                            "type":  "minecraft:simple_state_provider",
+                            "state":  {
+                                          "id":  "twilightforest:mining_wood"
+                                      }
+                        },
+    "check_water":  false,
+    "decorators":  [
+
+                   ],
+    "has_leaves":  false,
+    "leaves_provider":  {
+                            "type":  "minecraft:simple_state_provider",
+                            "state":  {
+                                          "id":  "twilightforest:mining_leaves"
+                                      }
+                        },
+    "minimum_size":  0,
+    "roots_provider":  {
+                           "type":  "minecraft:simple_state_provider",
+                           "state":  "twilightforest:root_block"
+                       },
+    "trunk_provider":  {
+                           "type":  "minecraft:simple_state_provider",
+                           "state":  {
+                                         "id":  "twilightforest:mining_log"
+                                     }
+                       }
+}

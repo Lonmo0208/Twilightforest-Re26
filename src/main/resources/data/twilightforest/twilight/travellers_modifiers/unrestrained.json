@@ -1,12 +1,14 @@
 {
-  "type": "twilightforest:component",
-  "component": {
-    "twilightforest:unrestrained": {}
-  },
-  "description": [
-    {
-      "translate": "travellers_gear.modifier.twilightforest.unrestrained.description"
-    }
-  ],
-  "equipment_slots": "feet"
+    "type":  "twilightforest:component",
+    "component":  {
+                      "twilightforest:unrestrained":  {
+
+                                                      }
+                  },
+    "description":  [
+                        {
+                            "translate":  "travellers_gear.modifier.twilightforest.unrestrained.description"
+                        }
+                    ],
+    "equipment_slots":  "feet"
 }

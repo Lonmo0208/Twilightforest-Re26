@@ -45,8 +45,8 @@ public class FireflyRenderer implements BlockEntityRenderer<FireflyBlockEntity, 
 		stack.mulPose(Axis.YN.rotationDegrees(yaw));
 
 		model.setupGlow();
-		collector.submitModel(model, Unit.INSTANCE, stack, RenderTypes.entityCutout(TEXTURE), light, OverlayTexture.NO_OVERLAY, outlineColor, breakProgress);
-		collector.submitModelPart(model.glow, stack, RenderTypes.entityTranslucentEmissive(TEXTURE), light, overlay, null, ARGB.white(glow), breakProgress);
+		collector.submitModel(model, Unit.INSTANCE, stack, RenderTypes.entityCutout(TEXTURE), light, OverlayTexture.NO_OVERLAY, outlineColor);
+		collector.submitModelPart(model.glow, stack, RenderTypes.entityTranslucentEmissive(TEXTURE), light, overlay, null, ARGB.white(glow), 0);
 		stack.popPose();
 	}
 

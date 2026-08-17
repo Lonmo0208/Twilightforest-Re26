@@ -5,9 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
-import net.minecraft.resources.RegistryFileCodec;
-import net.minecraft.util.KeyDispatchDataCodec;
-import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.core.registries.codec.RegistryFileCodec;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 import org.jetbrains.annotations.NotNull;
 import twilightforest.TFRegistries;
 import twilightforest.world.components.layer.BiomeDensitySource;
@@ -15,7 +14,7 @@ import twilightforest.world.components.layer.BiomeDensitySource;
 /**
  * A DensityFunction implementation that enables Biomes to influence terrain formulations, if in the noise chunk generator.
  */
-public class TerrainDensityRouter implements DensityFunction.SimpleFunction {
+public class TerrainDensityRouter implements DensityFunction {
 	public static final MapCodec<TerrainDensityRouter> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 		RegistryFileCodec.create(TFRegistries.Keys.BIOME_TERRAIN_DATA, BiomeDensitySource.CODEC, false).fieldOf("terrain_source").forGetter(TerrainDensityRouter::biomeDensitySourceHolder),
 		Codec.doubleRange(-64, 0).fieldOf("lower_density_bound").forGetter(TerrainDensityRouter::lowerDensityBound),
@@ -24,9 +23,7 @@ public class TerrainDensityRouter implements DensityFunction.SimpleFunction {
 		DensityFunction.CODEC.fieldOf("base_factor").forGetter(TerrainDensityRouter::baseFactor),
 		DensityFunction.CODEC.fieldOf("base_offset").forGetter(TerrainDensityRouter::baseOffset)
 	).apply(inst, TerrainDensityRouter::new));
-	public static final KeyDispatchDataCodec<TerrainDensityRouter> KEY_CODEC = KeyDispatchDataCodec.of(CODEC);
-
-	private final Holder<BiomeDensitySource> biomeDensitySourceHolder;
+		private final Holder<BiomeDensitySource> biomeDensitySourceHolder;
 	private final double lowerDensityBound;
 	private final double upperDensityBound;
 	private final double depthScalar;
@@ -50,10 +47,10 @@ public class TerrainDensityRouter implements DensityFunction.SimpleFunction {
 	}
 
 	@Override
-	public double compute(FunctionContext context) {
+	public float compute(FunctionContext context) {
 		BiomeDensitySource.DensityData densityData = this.computeTerrain(context);
 		double depth = this.baseOffset.compute(context) + densityData.depth * this.baseFactor.compute(context);
-		return depth + densityData.depth;
+		return (float) (depth + densityData.depth);
 	}
 
 	// Our default method for obtaining column samples of the biome source.
@@ -63,19 +60,27 @@ public class TerrainDensityRouter implements DensityFunction.SimpleFunction {
 		return this.biomeDensitySourceHolder.value().sampleTerrain(context.blockX(), context.blockZ(), context);
 	}
 
-	@Override
+	/* @Override
 	public double minValue() {
 		return this.lowerDensityBound;
-	}
+	} */ // TODO-263: replaced by range()
 
-	@Override
+	/* @Override
 	public double maxValue() {
 		return this.upperDensityBound;
+	} */ // TODO-263: replaced by range()
+
+	@Override
+	public net.minecraft.util.Interval range() {
+		return net.minecraft.util.Interval.of((float) this.lowerDensityBound, (float) this.upperDensityBound);
 	}
 
 	@Override
-	public KeyDispatchDataCodec<? extends DensityFunction> codec() {
-		return KEY_CODEC;
+	public MapCodec<? extends DensityFunction> codec() { return CODEC; }
+
+	@Override
+	public int domainAxes() {
+		return DensityFunction.ALL_AXES;
 	}
 
 	public Holder<BiomeDensitySource> biomeDensitySourceHolder() {
@@ -120,6 +125,21 @@ public class TerrainDensityRouter implements DensityFunction.SimpleFunction {
 		));
 	}
 
+	@Override
+	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
+		for (int i = 0; i < ds.length; i++) {
+			ds[i] = this.compute(contextProvider.forIndex(i));
+		}
+	}
+
+	@Override
+	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
+		DensityFunction factor = this.baseFactor().mapChildren(visitor);
+		DensityFunction offset = this.baseOffset().mapChildren(visitor);
+		if (factor == this.baseFactor() && offset == this.baseOffset()) return this;
+		return new TerrainDensityRouter(this.biomeDensitySourceHolder(), this.lowerDensityBound(), this.upperDensityBound(), this.depthScalar(), factor, offset);
+	}
+
 	public static class ChunkCachedDensityRouter extends TerrainDensityRouter {
 		private final BiomeDensitySource biomeDensitySource;
 
@@ -147,5 +167,20 @@ public class TerrainDensityRouter implements DensityFunction.SimpleFunction {
 
 			return dataColumn;
 		}
+		@Override
+	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
+		for (int i = 0; i < ds.length; i++) {
+			ds[i] = this.compute(contextProvider.forIndex(i));
+		}
 	}
+
+	@Override
+	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
+		DensityFunction factor = this.baseFactor().mapChildren(visitor);
+		DensityFunction offset = this.baseOffset().mapChildren(visitor);
+		if (factor == this.baseFactor() && offset == this.baseOffset()) return this;
+		return new TerrainDensityRouter(this.biomeDensitySourceHolder(), this.lowerDensityBound(), this.upperDensityBound(), this.depthScalar(), factor, offset);
+	}
+
+}
 }

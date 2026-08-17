@@ -65,8 +65,10 @@ public abstract class ProjectileUtilMixin {
 	 * {@code AttackRange.getHitEntitiesAlong()} → {@code getManyEntityHitResult}
 	 * is the new melee hit detection path. Without this redirect, melee swings
 	 * and multi-target attacks never register hits on TFPart entities.
+	 * 26.3: 该方法拆分为 8 参 / 10 参两个重载，10 参重载内部调用
+	 * {@code Level.getEntities(Entity, AABB, Predicate)}，因此只对该重载重定向。
 	 */
-	@Redirect(method = "getManyEntityHitResult(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;FLnet/minecraft/world/level/ClipContext$Block;Z)Ljava/util/Collection;",
+	@Redirect(method = "getManyEntityHitResult(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;FLnet/minecraft/world/level/ClipContext$Block;ZZ)Ljava/util/Collection;",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getEntities(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Ljava/util/List;"))
 	private static List<Entity> twilightforest$includeMultipartPartsMany(Level level, Entity shooter, AABB box, Predicate<Entity> filter) {
 		return twilightforest$augmentEntitiesWithParts(level, shooter, box, filter);

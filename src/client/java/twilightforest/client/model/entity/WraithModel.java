@@ -5,11 +5,11 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
+import twilightforest.client.state.entity.WraithRenderState;
 
-public class WraithModel extends HumanoidModel<HumanoidRenderState> {
+public class WraithModel extends HumanoidModel<WraithRenderState> {
 
 	public WraithModel(ModelPart root) {
 		super(root, RenderTypes::entityTranslucent);
@@ -38,7 +38,7 @@ public class WraithModel extends HumanoidModel<HumanoidRenderState> {
 	}
 
 	@Override
-	public void setupAnim(HumanoidRenderState entity) {
+	public void setupAnim(WraithRenderState entity) {
 		super.setupAnim(entity);
 
 		float var8 = Mth.sin(entity.attackTime * Mth.PI);

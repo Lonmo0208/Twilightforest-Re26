@@ -1,7 +1,6 @@
 package twilightforest.world.components.feature.templates;
 
 import com.google.common.math.StatsAccumulator;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.RandomSource;
@@ -17,26 +16,26 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.util.features.FeatureLogic;
 
-public abstract class TemplateFeature<T extends FeatureConfiguration> extends Feature<T> {
-	public TemplateFeature(Codec<T> config) {
-		super(config);
+public abstract class TemplateFeature implements Feature {
+	public TemplateFeature() {
+	}
+
+	@Override
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.levelgen.feature.Feature> codec() {
+		return com.mojang.serialization.MapCodec.unit(this);
 	}
 
 	@Override // Loosely based on WorldGenFossils
-	public final boolean place(FeaturePlaceContext<T> ctx) {
-		WorldGenLevel world = ctx.level();
-		BlockPos pos = ctx.origin();
-		RandomSource random = world.getRandom();
-		T config = ctx.config();
+	public final boolean place(WorldGenLevel world, ChunkGenerator chunkGenerator, RandomSource random, BlockPos pos) {
+		// config field removed in 26.3, stored as instance fields
 
 		StructureTemplateManager templateManager = world.getLevel().getServer().getStructureManager();
 		StructureTemplate template = this.getTemplate(templateManager, random);
@@ -66,7 +65,7 @@ public abstract class TemplateFeature<T extends FeatureConfiguration> extends Fe
 		BlockPos placementPos = template.getZeroPositionWithTransform(startPos, mirror, rotation);
 
 		StructurePlaceSettings placementSettings = (new StructurePlaceSettings()).setMirror(mirror).setRotation(rotation).setBoundingBox(structureMask).setRandom(random);
-		this.modifySettings(placementSettings.clearProcessors(), random, config);
+		this.modifySettings(placementSettings.clearProcessors(), random);
 
 		template.placeInWorld(world, placementPos, placementPos, placementSettings, random, Block.UPDATE_CLIENTS);
 
@@ -78,7 +77,7 @@ public abstract class TemplateFeature<T extends FeatureConfiguration> extends Fe
 			}
 		}
 
-		this.postPlacement(world, random, templateManager, rotation, mirror, placementSettings, placementPos, config);
+		this.postPlacement(world, random, templateManager, rotation, mirror, placementSettings, placementPos);
 
 		return true;
 	}
@@ -86,13 +85,13 @@ public abstract class TemplateFeature<T extends FeatureConfiguration> extends Fe
 	@Nullable
 	protected abstract StructureTemplate getTemplate(StructureTemplateManager templateManager, RandomSource random);
 
-	protected void modifySettings(StructurePlaceSettings settings, RandomSource random, T config) {
+	protected void modifySettings(StructurePlaceSettings settings, RandomSource random) {
 	}
 
 	protected void processMarkers(StructureTemplate.StructureBlockInfo info, WorldGenLevel world, Rotation rotation, Mirror mirror, RandomSource random) {
 	}
 
-	protected void postPlacement(WorldGenLevel world, RandomSource random, StructureTemplateManager templateManager, Rotation rotation, Mirror mirror, StructurePlaceSettings placementSettings, BlockPos placementPos, T config) {
+	protected void postPlacement(WorldGenLevel world, RandomSource random, StructureTemplateManager templateManager, Rotation rotation, Mirror mirror, StructurePlaceSettings placementSettings, BlockPos placementPos) {
 	}
 
 	protected int yLevelOffset() {

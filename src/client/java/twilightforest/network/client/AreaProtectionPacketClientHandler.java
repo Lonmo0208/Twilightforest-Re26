@@ -7,6 +7,7 @@ import net.minecraft.world.entity.Entity;
 import twilightforest.entity.ProtectionBox;
 import twilightforest.init.TFParticleType;
 import twilightforest.network.AreaProtectionPacket;
+import twilightforest.util.ClientEntityIdProvider;
 
 public class AreaProtectionPacketClientHandler {
 
@@ -22,7 +23,9 @@ public class AreaProtectionPacketClientHandler {
 						}
 					}
 				}
-				level.addEntity(new ProtectionBox(level, box));
+				ProtectionBox protectionBox = new ProtectionBox(level, box);
+				ClientEntityIdProvider.assignLocalId(protectionBox);
+				level.addEntity(protectionBox);
 			});
 			for (int i = 0; i < 20; i++) {
 				double vx = level.getRandom().nextGaussian() * 0.02D;

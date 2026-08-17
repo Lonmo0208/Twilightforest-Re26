@@ -42,11 +42,7 @@ import twilightforest.enums.HollowLogVariants;
 public class ClimbableHollowLogBlock extends HorizontalDirectionalBlock implements WaterloggedBlock {
 
 	public static final EnumProperty<HollowLogVariants.Climbable> VARIANT = EnumProperty.create("variant", HollowLogVariants.Climbable.class);
-	public static final MapCodec<ClimbableHollowLogBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			BuiltInRegistries.BLOCK.byNameCodec().fieldOf("vertical_log").forGetter(o -> o.vertical.get()),
-			propertiesCodec())
-		.apply(instance, (block, props) -> new ClimbableHollowLogBlock(() -> block, props))
-	);
+
 	private static final VoxelShape LADDER_EAST = Block.box(0, 0, 0, 3, 16, 16);
 	private static final VoxelShape LADDER_WEST = Block.box(13, 0, 0, 16, 16, 16);
 	private static final VoxelShape LADDER_SOUTH = Block.box(0, 0, 0, 16, 16, 3);
@@ -151,8 +147,5 @@ public class ClimbableHollowLogBlock extends HorizontalDirectionalBlock implemen
 		return super.useItemOn(stack, state, level, pos, player, hand, hit);
 	}
 
-	@Override
-	protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-		return CODEC;
-	}
+	
 }

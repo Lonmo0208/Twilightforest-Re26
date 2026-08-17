@@ -1,8 +1,8 @@
 {
-  "values": [
-    "twilightforest:timewood",
-    "twilightforest:transwood",
-    "twilightforest:minewood",
-    "twilightforest:sortwood"
-  ]
+    "values":  [
+                   "twilightforest:timewood",
+                   "twilightforest:transwood",
+                   "twilightforest:minewood",
+                   "twilightforest:sortwood"
+               ]
 }

@@ -43,7 +43,6 @@ import twilightforest.init.TFBlockEntities;
 
 public class BrazierBlock extends BaseEntityBlock {
 
-	public static final MapCodec<BrazierBlock> CODEC = simpleCodec(BrazierBlock::new);
 	private static final VoxelShape UPPER_SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 12.0D, 14.0D);
 	private static final VoxelShape LOWER_SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
 	public static final EnumProperty<BrazierLight> LIGHT = EnumProperty.create("light", BrazierLight.class);
@@ -54,10 +53,7 @@ public class BrazierBlock extends BaseEntityBlock {
 		this.registerDefaultState(this.getStateDefinition().any().setValue(LIGHT, BrazierLight.OFF).setValue(HALF, DoubleBlockHalf.LOWER));
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Nullable
 	@Override

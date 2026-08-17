@@ -1,5 +1,6 @@
 package twilightforest.block;
 
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -62,17 +63,17 @@ return player.getMainHandItem().is(Items.SHEARS) ? 0.2F : super.getDestroyProgre
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
+	public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, BonemealSource source) {
 		return state.getValue(AGE) < MAX_AGE - 1 || level.getBlockState(pos.above()).isAir() || level.getBlockState(pos.above()).is(Blocks.SNOW);
 	}
 
 	@Override
-	public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
+	public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
 		return true;
 	}
 
 	@Override
-	public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+	public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
 		int age = state.getValue(AGE);
 		if (age < 2)
 			this.grow(state, level, pos, Math.min(state.getValue(AGE) + 1 + random.nextInt(2), MAX_AGE - 1));

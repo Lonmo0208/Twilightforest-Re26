@@ -53,7 +53,7 @@ public class SimplifiedAttackGoal extends Goal {
 	protected void checkAndPerformAttack(LivingEntity entity) {
 		if (this.attackTick <= 0 && this.mob.isWithinMeleeAttackRange(entity) && this.mob.hasLineOfSight(entity)) {
 			this.attackTick = this.adjustedTickDelay(20);
-			this.mob.swing(InteractionHand.MAIN_HAND);
+			this.mob.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 			this.mob.doHurtTarget((ServerLevel) this.mob.level(), entity);
 		}
 	}

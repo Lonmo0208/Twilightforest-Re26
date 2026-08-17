@@ -1,0 +1,145 @@
+{
+    "type":  "twilightforest:foundation",
+    "basement_height":  {
+                            "type":  "minecraft:weighted_list",
+                            "distribution":  [
+                                                 {
+                                                     "data":  3,
+                                                     "weight":  1
+                                                 },
+                                                 {
+                                                     "data":  0,
+                                                     "weight":  1
+                                                 }
+                                             ]
+                        },
+    "basement_posts":  {
+                           "type":  "minecraft:simple_state_provider",
+                           "state":  {
+                                         "id":  "minecraft:oak_fence"
+                                     }
+                       },
+    "decayed_wall_block":  {
+                               "type":  "minecraft:simple_state_provider",
+                               "state":  "minecraft:mossy_cobblestone"
+                           },
+    "decayed_wall_top_block":  {
+                                   "type":  "minecraft:weighted_state_provider",
+                                   "entries":  [
+                                                   {
+                                                       "data":  "minecraft:mossy_cobblestone",
+                                                       "weight":  5
+                                                   },
+                                                   {
+                                                       "data":  {
+                                                                    "id":  "minecraft:mossy_cobblestone_slab"
+                                                                },
+                                                       "weight":  1
+                                                   },
+                                                   {
+                                                       "data":  {
+                                                                    "id":  "minecraft:mossy_cobblestone_stairs"
+                                                                },
+                                                       "weight":  2
+                                                   },
+                                                   {
+                                                       "data":  {
+                                                                    "id":  "minecraft:mossy_cobblestone_stairs"
+                                                                },
+                                                       "weight":  2
+                                                   }
+                                               ]
+                               },
+    "floor":  {
+                  "type":  "minecraft:weighted_state_provider",
+                  "entries":  [
+                                  {
+                                      "data":  "minecraft:oak_planks",
+                                      "weight":  39
+                                  },
+                                  {
+                                      "data":  {
+                                                   "id":  "minecraft:oak_slab"
+                                               },
+                                      "weight":  1
+                                  },
+                                  {
+                                      "data":  {
+                                                   "id":  "minecraft:oak_stairs"
+                                               },
+                                      "weight":  6
+                                  },
+                                  {
+                                      "data":  {
+                                                   "id":  "minecraft:oak_stairs"
+                                               },
+                                      "weight":  2
+                                  },
+                                  {
+                                      "data":  {
+                                                   "id":  "minecraft:oak_stairs"
+                                               },
+                                      "weight":  6
+                                  },
+                                  {
+                                      "data":  {
+                                                   "id":  "minecraft:oak_stairs"
+                                               },
+                                      "weight":  2
+                                  }
+                              ]
+              },
+    "loot_container":  {
+                           "type":  "minecraft:simple_state_provider",
+                           "state":  {
+                                         "id":  "minecraft:chest"
+                                     }
+                       },
+    "loot_table":  "twilightforest:foundation_basement",
+    "random_floor_chance":  {
+                                "type":  "minecraft:uniform",
+                                "max_exclusive":  1,
+                                "min_inclusive":  -2
+                            },
+    "wall_block":  {
+                       "type":  "minecraft:simple_state_provider",
+                       "state":  "minecraft:cobblestone"
+                   },
+    "wall_heights":  {
+                         "type":  "minecraft:uniform",
+                         "max_inclusive":  5,
+                         "min_inclusive":  1
+                     },
+    "wall_top_block":  {
+                           "type":  "minecraft:weighted_state_provider",
+                           "entries":  [
+                                           {
+                                               "data":  "minecraft:cobblestone",
+                                               "weight":  5
+                                           },
+                                           {
+                                               "data":  {
+                                                            "id":  "minecraft:cobblestone_slab"
+                                                        },
+                                               "weight":  1
+                                           },
+                                           {
+                                               "data":  {
+                                                            "id":  "minecraft:cobblestone_stairs"
+                                                        },
+                                               "weight":  2
+                                           },
+                                           {
+                                               "data":  {
+                                                            "id":  "minecraft:cobblestone_stairs"
+                                                        },
+                                               "weight":  2
+                                           }
+                                       ]
+                       },
+    "wall_width":  {
+                       "type":  "minecraft:uniform",
+                       "max_inclusive":  9,
+                       "min_inclusive":  5
+                   }
+}

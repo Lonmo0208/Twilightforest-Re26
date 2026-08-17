@@ -50,7 +50,7 @@ public record SkullCandleSpecialRenderer(PlayerSkinRenderCache playerSkinRenderC
 		SkullModelBase.State modelState = new SkullModelBase.State();
 		modelState.animationPos = this.animation();
 		modelState.yRot = 180.0F;
-		collector.submitModel(this.model(), modelState, stack, rendertype, light, OverlayTexture.NO_OVERLAY, outlineColor, null);
+		collector.submitModel(this.model(), modelState, stack, rendertype, light, OverlayTexture.NO_OVERLAY, outlineColor);
 		stack.popPose();
 
 		SkullCandles skullCandles = info.getSecond();

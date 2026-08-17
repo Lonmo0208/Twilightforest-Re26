@@ -54,7 +54,7 @@ public class CicadaRenderer implements BlockEntityRenderer<CicadaBlockEntity, Ci
 		stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 		stack.mulPose(Axis.YP.rotationDegrees(180.0F + rotation));
 		stack.mulPose(Axis.YN.rotationDegrees(yaw));
-		collector.submitModel(model, Unit.INSTANCE, stack, model.renderType(TEXTURE), light, overlay, outlineColor, breakProgress);
+		collector.submitModel(model, Unit.INSTANCE, stack, model.renderType(TEXTURE), light, overlay, outlineColor);
 		stack.popPose();
 	}
 }

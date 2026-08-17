@@ -25,6 +25,7 @@ public class TrollRenderer extends HumanoidMobRenderer<Troll, TrollRenderState, 
 	@Override
 	public void extractRenderState(Troll entity, TrollRenderState state, float partialTick) {
 		super.extractRenderState(entity, state, partialTick);
+		state.attackTime = entity.getSwingAnimation(partialTick);
 		state.isHoldingRock = entity.hasRock();
 		state.agressive = entity.isAggressive();
 	}

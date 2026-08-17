@@ -1,12 +1,14 @@
 {
-  "type": "twilightforest:component",
-  "component": {
-    "twilightforest:all_night_goggles": {}
-  },
-  "description": [
-    {
-      "translate": "travellers_gear.modifier.twilightforest.all_night_goggles.description"
-    }
-  ],
-  "equipment_slots": "head"
+    "type":  "twilightforest:component",
+    "component":  {
+                      "twilightforest:all_night_goggles":  {
+
+                                                           }
+                  },
+    "description":  [
+                        {
+                            "translate":  "travellers_gear.modifier.twilightforest.all_night_goggles.description"
+                        }
+                    ],
+    "equipment_slots":  "head"
 }

@@ -9,6 +9,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
@@ -55,14 +56,14 @@ public class KnightStrongholdStructure extends ControlledSpawningStructure {
 	public static KnightStrongholdStructure buildKnightStrongholdConfig(BootstrapContext<Structure> context) {
 		return new KnightStrongholdStructure(
 			ControlledSpawningConfig.firstIndexMonsters(WeightedList.<MobSpawnSettings.SpawnerData>builder()
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.BLOCKCHAIN_GOBLIN.get(), 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.LOWER_GOBLIN_KNIGHT.get(), 1, 2), 5)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.HELMET_CRAB.get(), 2, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.SLIME_BEETLE.get(), 2, 3), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP_SAPPER.get(), 1, 2), 2)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), 2, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, 1, 2), 5)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SLIME, 4, 4), 5)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.BLOCKCHAIN_GOBLIN.get(), UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.LOWER_GOBLIN_KNIGHT.get(), UniformInt.of(1, 2)), 5)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.HELMET_CRAB.get(), UniformInt.of(2, 4)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.SLIME_BEETLE.get(), UniformInt.of(2, 3)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP_SAPPER.get(), UniformInt.of(1, 2)), 2)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), UniformInt.of(2, 4)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, UniformInt.of(1, 2)), 5)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SLIME, UniformInt.of(4, 4)), 5)
 				.build()
 			),
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_trophy_pedestal"))),

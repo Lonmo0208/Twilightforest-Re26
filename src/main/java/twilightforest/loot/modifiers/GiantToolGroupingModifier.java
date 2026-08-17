@@ -44,7 +44,7 @@ public final class GiantToolGroupingModifier {
 	 * For subsequent evaluations, empty list is returned (all gets converted into giant block).
 	 */
 	public static ObjectArrayList<ItemStack> apply(ObjectArrayList<ItemStack> generatedLoot, LootParams context) {
-		Entity entity = context.contextMap().getOptional(LootContextParams.THIS_ENTITY);
+		Entity entity = context.contextMap().get(LootContextParams.THIS_ENTITY);
 
 		if (!(entity instanceof Player player)) {
 			return generatedLoot;

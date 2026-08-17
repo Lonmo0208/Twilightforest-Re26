@@ -2,8 +2,8 @@ package twilightforest.world.components.structures;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import twilightforest.world.components.chunkgenerators.AbsoluteDifferenceFunction;
@@ -22,7 +22,7 @@ public interface CustomDensitySource {
 	 * @param structurePieceSource The specific Structure instance, represented by the StructureStart. It has plenty of information that distinguishes the structure in-world. Treat it as if it were an Entity meant for immutability and take care to not modify it nor call its property-changing methods.
 	 * @return A custom density function, which will be added to the Beardifier's original density value.
 	 */
-	DensityFunction getStructureTerraformer(ChunkPos chunkPosAt, StructureStart structurePieceSource);
+	net.minecraft.world.level.levelgen.densityfunction.DensityFunction getStructureTerraformer(ChunkPos chunkPosAt, StructureStart structurePieceSource);
 
 	/**
 	 * Provides a DensityFunction that will cut out any terrain that wants to submerge the structure in a upside-down pyramid shape. Anything below the structure should remain untouched.

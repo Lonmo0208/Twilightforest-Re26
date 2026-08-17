@@ -8,6 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -50,9 +51,9 @@ public class AuroraPalaceStructure extends ControlledSpawningStructure {
 	public static AuroraPalaceStructure buildAuroraPalaceConfig(BootstrapContext<Structure> context) {
 		return new AuroraPalaceStructure(
 			ControlledSpawningConfig.firstIndexMonsters(WeightedList.<MobSpawnSettings.SpawnerData>builder()
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.SNOW_GUARDIAN.get(), 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.STABLE_ICE_CORE.get(), 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.UNSTABLE_ICE_CORE.get(), 1, 2), 5)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.SNOW_GUARDIAN.get(), UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.STABLE_ICE_CORE.get(), UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.UNSTABLE_ICE_CORE.get(), UniformInt.of(1, 2)), 5)
 				.build()
 			),
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_yeti"))),

@@ -124,6 +124,7 @@ public final class WorldUtil {
 			: TFDimensionData.SEALEVEL; // Should only ever hit if this method is called on client FIXME Fix causes
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Optional<Pair<BlockPos, Holder<Structure>>> findNearestMapLandmark(ServerLevel level, HolderSet<Structure> targetStructures, BlockPos pos, int chunkSearchRadius, boolean skipKnownStructures) {
 		ChunkGeneratorStructureState state = level.getChunkSource().getGeneratorState();
 

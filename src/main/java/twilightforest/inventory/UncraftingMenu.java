@@ -921,7 +921,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 			}
 			slot.onTake(player, itemstack1);
 			if (slotNum == 1) {
-				player.drop(itemstack1, false);
+				player.drop(itemstack1, false, net.minecraft.util.Prediction.SERVER_ONLY);
 			}
 		}
 		return itemstack;

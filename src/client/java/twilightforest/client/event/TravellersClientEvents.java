@@ -423,7 +423,7 @@ public class TravellersClientEvents {
 			if (chestStack.has(TFDataComponents.TRAVELLERS_HAS_GLOVES) && !chestStack.has(TFDataComponents.EMPERORS_CLOTH)) {
 				boolean rightArm = arm == HumanoidArm.RIGHT;
 
-				AvatarRenderer<AbstractClientPlayer> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getPlayerRenderer(player);
+				AvatarRenderer<AbstractClientPlayer> renderer = (AvatarRenderer<AbstractClientPlayer>) (Object) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
 				PlayerModel playerModel = renderer.getModel();
 				ModelPart armPart = rightArm ? playerModel.rightArm : playerModel.leftArm;
 				armPart.resetPose();

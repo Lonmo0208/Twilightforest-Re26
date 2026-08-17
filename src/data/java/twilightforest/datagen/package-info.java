@@ -1,4 +1,0 @@
-@MethodsReturnNonnullByDefault
-package twilightforest.datagen;
-
-import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;

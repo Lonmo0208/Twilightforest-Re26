@@ -1,5 +1,6 @@
 package twilightforest.block;
 
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
@@ -7,6 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
+import twilightforest.init.TFConfiguredFeatures;
 import twilightforest.init.TFStructures;
 import twilightforest.world.components.structures.TreeGrowerStartable;
 
@@ -31,7 +34,8 @@ import java.util.Optional;
 public class HollowOakSaplingBlock extends SaplingBlock {
 
 	public HollowOakSaplingBlock(BlockBehaviour.Properties properties) {
-		super(new TreeGrower("hollow_oak", Optional.empty(), Optional.empty(), Optional.empty()), properties);
+		// The TreeGrower is never used: advanceTree() is fully overridden to grow the HOLLOW_TREE structure instead
+		super(new TreeGrower("hollow_oak", WeightedList.of(TFConfiguredFeatures.TWILIGHT_OAK_TREE), WeightedList.of(), WeightedList.of(), TFConfiguredFeatures.TWILIGHT_OAK_TREE), properties);
 	}
 
 	@Override
@@ -40,17 +44,17 @@ public class HollowOakSaplingBlock extends SaplingBlock {
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
+	public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, BonemealSource source) {
 		return true;
 	}
 
 	@Override
-	public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
+	public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
 		return level.getRandom().nextFloat() < 0.45F;
 	}
 
 	@Override
-	public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+	public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
 		TwilightForestMod.LOGGER.debug("[HollowOak] performBonemeal @ pos={} stage={}", pos, state.getValue(STAGE));
 		this.advanceTree(level, pos, state, random);
 	}

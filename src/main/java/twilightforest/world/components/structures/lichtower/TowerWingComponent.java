@@ -1253,7 +1253,7 @@ public class TowerWingComponent extends TFStructureComponentOld {
 
 		final BlockPos pos = getBlockPosWithOffset(cx, 2, cx);
 
-		if (i > 4 && !world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).get(TFStructureHelper.randomTree(rand.nextInt(4))).get().value().place(world, generator, world.getRandom(), pos)) {
+		if (i > 4 && !world.registryAccess().lookupOrThrow(Registries.FEATURE).get(TFStructureHelper.randomTree(rand.nextInt(4))).get().value().place(world, generator, world.getRandom(), pos)) {
 			//if tree placement fails, place the potted sapling
 			this.placeBlock(world, plant, cx, 2, cx, sbb);
 		} else {

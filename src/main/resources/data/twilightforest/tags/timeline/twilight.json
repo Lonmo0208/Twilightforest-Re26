@@ -1,6 +1,6 @@
 {
-  "values": [
-    "#minecraft:universal",
-    "minecraft:moon"
-  ]
+    "values":  [
+                   "#minecraft:universal",
+                   "minecraft:moon"
+               ]
 }

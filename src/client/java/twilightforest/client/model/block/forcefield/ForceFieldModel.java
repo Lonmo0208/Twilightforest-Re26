@@ -76,7 +76,7 @@ public class ForceFieldModel implements BlockStateModel, LevelAwareBlockStateMod
 
                                 BakedQuad quad = FaceBakery.bakeQuad(
                                         baker, element.from(), element.to(), cuboidFace, material,
-                                        side, modelState, element.rotation(), element.shade(), element.lightEmission()
+                                        side, modelState, element.rotation(), element.shadeDirectionOverride(), element.lightEmission()
                                 );
 
                                 entries.add(new QuadEntry(quad, side, condition.direction(), condition.b(), condition.parents()));

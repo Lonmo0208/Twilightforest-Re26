@@ -1,18 +1,18 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "redstone",
-  "key": {
-    "#": "twilightforest:encased_towerwood",
-    "6": "#c:gems/carminite",
-    "r": "#c:dusts/redstone"
-  },
-  "pattern": [
-    "#r#",
-    "r6r",
-    "#r#"
-  ],
-  "result": {
-    "count": 2,
-    "id": "twilightforest:reappearing_block"
-  }
+    "type":  "minecraft:crafting_shaped",
+    "category":  "redstone",
+    "key":  {
+                "#":  "twilightforest:encased_towerwood",
+                "6":  "#c:gems/carminite",
+                "r":  "#c:dusts/redstone"
+            },
+    "pattern":  [
+                    "#r#",
+                    "r6r",
+                    "#r#"
+                ],
+    "result":  {
+                   "count":  2,
+                   "id":  "twilightforest:reappearing_block"
+               }
 }

@@ -132,13 +132,11 @@ dependencies {
 	//implementation "tamaized:beanification:${project.beanification_version}"
 
 	// Forge Config API Port (provides NeoForge-compatible config API)
-	//implementation files('libs/forgeconfigapiport/forgeconfigapiport-fabric-26.1.5.jar')
-	implementation 'curse.maven:forge-config-api-port-547434:8292030'
+	implementation files('libs/forgeconfigapiport/ForgeConfigAPIPort-26.2.1-patched.jar')
 	// Transitive dependencies for ForgeConfigAPIPort
 	implementation 'com.electronwill.night-config:core:3.8.3'
 	implementation 'com.electronwill.night-config:toml:3.8.3'
-	//curse.maven
-	implementation 'curse.maven:modmenu-308702:8402669'
+	implementation "maven.modrinth:mOgUt4GM:9DznhFoj"
 	// Test dependencies
 	testImplementation 'org.junit.jupiter:junit-jupiter:6.0.1'
 	testImplementation 'org.mockito:mockito-core:5.11.0'

@@ -9,7 +9,7 @@ public final class InventoryUtil {
 		if (player.getInventory().add(stack))
 			return;
 
-		ItemEntity drop = player.drop(stack, false);
+		ItemEntity drop = player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
 		if (drop == null)
 			return;
 		drop.setNoPickUpDelay();

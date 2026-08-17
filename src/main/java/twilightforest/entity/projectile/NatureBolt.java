@@ -68,8 +68,8 @@ public class NatureBolt extends TFThrowable implements ITFProjectile, ItemSuppli
 		BlockState stateHit = this.level().getBlockState(blockPosHit);
 
 		if (this.level() instanceof ServerLevel server && server.getGameRules().get(GameRules.MOB_GRIEFING)) {
-			if (stateHit.getBlock() instanceof BonemealableBlock bonemealable && bonemealable.isValidBonemealTarget(this.level(), blockPosHit, stateHit)) {
-				bonemealable.performBonemeal(server, this.random, blockPosHit, stateHit);
+			if (stateHit.getBlock() instanceof BonemealableBlock bonemealable && bonemealable.isValidBonemealTarget(this.level(), blockPosHit, stateHit, net.minecraft.world.level.block.BonemealSource.MOB)) {
+				bonemealable.performBonemeal(server, this.random, blockPosHit, stateHit, net.minecraft.world.level.block.BonemealSource.MOB);
 			} else if (stateHit.isSolid() && this.canReplaceBlock(this.level(), blockPosHit)) {
 				this.level().setBlockAndUpdate(blockPosHit, Blocks.BIRCH_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true));
 			}

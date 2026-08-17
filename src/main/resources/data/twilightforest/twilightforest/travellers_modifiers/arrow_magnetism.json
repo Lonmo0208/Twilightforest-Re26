@@ -1,12 +1,14 @@
 {
-  "type": "twilightforest:component",
-  "component": {
-    "twilightforest:arrow_magnetism": {}
-  },
-  "description": [
-    {
-      "translate": "travellers_gear.modifier.twilightforest.arrow_magnetism.description"
-    }
-  ],
-  "equipment_slots": "chest"
+    "type":  "twilightforest:component",
+    "component":  {
+                      "twilightforest:arrow_magnetism":  {
+
+                                                         }
+                  },
+    "description":  [
+                        {
+                            "translate":  "travellers_gear.modifier.twilightforest.arrow_magnetism.description"
+                        }
+                    ],
+    "equipment_slots":  "chest"
 }

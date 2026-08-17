@@ -21,8 +21,16 @@ import java.util.function.BiConsumer;
  */
 public class HollowStumpFeature extends HollowTreeFeature {
 
-	public HollowStumpFeature(Codec<TFTreeFeatureConfig> config) {
+	public HollowStumpFeature() {
+	}
+
+	protected HollowStumpFeature(TFTreeFeatureConfig config) {
 		super(config);
+	}
+
+	@Override
+	protected TFTreeFeature create(TFTreeFeatureConfig config) {
+		return new HollowStumpFeature(config);
 	}
 
 	@Override

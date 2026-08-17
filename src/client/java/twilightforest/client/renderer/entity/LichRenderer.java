@@ -90,6 +90,7 @@ public class LichRenderer extends HumanoidMobRenderer<Lich, LichRenderState, Lic
 	@Override
 	public void extractRenderState(Lich entity, LichRenderState state, float partialTick) {
 		super.extractRenderState(entity, state, partialTick);
+		state.attackTime = entity.getSwingAnimation(partialTick);
 		state.isShadowClone = entity.isShadowClone();
 		state.phase = entity.getPhase();
 		state.shieldCount = ShieldLayer.getShieldCount(entity);

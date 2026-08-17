@@ -13,7 +13,6 @@ import net.minecraft.util.valueproviders.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -21,7 +20,7 @@ import twilightforest.loot.TFLootTables;
 import twilightforest.util.TFBlockFamilies;
 
 @SuppressWarnings("ConstantValue")
-public record RuinedFoundationConfig(RuinedFoundationDimensions dimensions, RuinedFoundationBlocks blocks, ResourceKey<LootTable> lootTable) implements FeatureConfiguration {
+public record RuinedFoundationConfig(RuinedFoundationDimensions dimensions, RuinedFoundationBlocks blocks, ResourceKey<LootTable> lootTable)  {
 	public static final Codec<RuinedFoundationConfig> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 		RuinedFoundationDimensions.CODEC.forGetter(RuinedFoundationConfig::dimensions),
 		RuinedFoundationBlocks.CODEC.forGetter(RuinedFoundationConfig::blocks),

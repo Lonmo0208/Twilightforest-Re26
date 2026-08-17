@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.core.registries.codec.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.PaintingVariantTags;
 import net.minecraft.util.random.WeightedList;
@@ -26,7 +26,7 @@ public class TemplateMarkerHandlers {
 
 	public static final Codec<TemplateMarkerHandlerType> TYPE_CODEC = Codec.lazyInitialized(TFRegistries.TEMPLATE_MARKER_HANDLER_TYPES::byNameCodec);
 	public static final Codec<TemplateMarkerHandler> DISPATCH_CODEC = TYPE_CODEC.dispatch("type", TemplateMarkerHandler::getType, TemplateMarkerHandlerType::getCodec);
-	public static final Codec<Holder<TemplateMarkerHandler>> HOLDER_CODEC = RegistryFileCodec.create(TFRegistries.Keys.TEMPLATE_MARKER_HANDLER, DISPATCH_CODEC);
+	public static final Codec<Holder<TemplateMarkerHandler>> HOLDER_CODEC = RegistryFileCodec.create(TFRegistries.Keys.TEMPLATE_MARKER_HANDLER, DISPATCH_CODEC, true);
 
 	public static final TemplateMarkerHandlerType BLOCK_PLACEMENT = () -> BlockPlaceMarkerHandler.CODEC;
 	public static final TemplateMarkerHandlerType HANDLER_SWITCH = () -> SwitchMarkerHandler.CODEC;
@@ -52,9 +52,9 @@ public class TemplateMarkerHandlers {
 			.add(Blocks.AIR.defaultBlockState(), 3)
 			.build()));
 
-		DryingRackMarkerHandler armorRack = new DryingRackMarkerHandler(SimpleStateProvider.simple(TFBlocks.CANOPY_DRYING_RACK), TFLootTables.CAMP_ARMOR_RACK);
+		DryingRackMarkerHandler armorRack = new DryingRackMarkerHandler(new SimpleStateProvider(TFBlocks.CANOPY_DRYING_RACK.defaultBlockState()), TFLootTables.CAMP_ARMOR_RACK);
 
-		DryingRackMarkerHandler birchDryingRack = new DryingRackMarkerHandler(SimpleStateProvider.simple(TFBlocks.BIRCH_DRYING_RACK), TFLootTables.CAMP_DRYING_RACK);
+		DryingRackMarkerHandler birchDryingRack = new DryingRackMarkerHandler(new SimpleStateProvider(TFBlocks.BIRCH_DRYING_RACK.defaultBlockState()), TFLootTables.CAMP_DRYING_RACK);
 
 		PaintingMarkerHandler painting = new PaintingMarkerHandler(PaintingVariantTags.PLACEABLE);
 

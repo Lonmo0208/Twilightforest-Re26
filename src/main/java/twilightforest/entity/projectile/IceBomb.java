@@ -117,7 +117,7 @@ public class IceBomb extends TFThrowable {
 			this.makeIceZone();
 
 			if (!this.level().isClientSide() && this.zoneTimer <= 0) {
-				this.level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, new BlockPos(this.blockPosition()), Block.getId(Blocks.ICE.defaultBlockState()));
+				this.level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, this.blockPosition().immutable(), Block.getId(Blocks.ICE.defaultBlockState()));
 				this.discard();
 			}
 		} else {

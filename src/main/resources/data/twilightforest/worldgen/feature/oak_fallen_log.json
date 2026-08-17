@@ -1,0 +1,9 @@
+{
+    "type":  "twilightforest:fallen_small_log",
+    "hollow":  {
+                   "id":  "twilightforest:hollow_oak_log_horizontal"
+               },
+    "normal":  {
+                   "id":  "minecraft:oak_log"
+               }
+}

@@ -3,11 +3,12 @@ package twilightforest.world.components.feature.trees;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.LevelWriter;
@@ -17,97 +18,50 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
+import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.SpruceFoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.shapes.BitSetDiscreteVoxelShape;
 import net.minecraft.world.phys.shapes.DiscreteVoxelShape;
 
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
 //[VanillaCopy] of TreeFeature but allows trees on snow
-public class SnowTreeFeature extends Feature<TreeConfiguration> {
-	public SnowTreeFeature(Codec<TreeConfiguration> codec) {
-		super(codec);
-	}
+public class SnowTreeFeature implements Feature {
+	// 26.3: config baked into the singleton feature (mirrors the former "anywhere_tree" / snowy_spruce_tree data)
+	public static final TreeFeature SNOWY_SPRUCE = new TreeFeature.Builder(
+		BlockStateProvider.simple(Blocks.SPRUCE_LOG),
+		new StraightTrunkPlacer(5, 2, 1),
+		BlockStateProvider.simple(Blocks.SPRUCE_LEAVES),
+		new SpruceFoliagePlacer(UniformInt.of(2, 3), UniformInt.of(0, 2), UniformInt.of(1, 2)),
+		new TwoLayersFeatureSize(2, 0, 2),
+		BlockStateProvider.simple(Blocks.DIRT)
+	).ignoreVines().build();
 
-	private static boolean isVine(LevelSimulatedReader reader, BlockPos pos) {
-		return reader.isStateAtPosition(pos, (state) -> state.is(Blocks.VINE));
-	}
-
-	private static void setBlockKnownShape(LevelWriter p_67257_, BlockPos p_67258_, BlockState p_67259_) {
-		p_67257_.setBlock(p_67258_, p_67259_, Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
-	}
-
-	public static boolean validTreePos(LevelSimulatedReader reader, BlockPos pos) {
-		return reader.isStateAtPosition(pos, (state) -> state.isAir() || state.is(BlockTags.REPLACEABLE_BY_TREES));
-	}
-
-	private boolean doPlace(WorldGenLevel level, RandomSource random, BlockPos pos, BiConsumer<BlockPos, BlockState> consumer, BiConsumer<BlockPos, BlockState> consumer1, FoliagePlacer.FoliageSetter setter, TreeConfiguration config) {
-		int i = config.trunkPlacer.getTreeHeight(random);
-		int j = config.foliagePlacer.foliageHeight(random, i, config);
-		int k = i - j;
-		int l = config.foliagePlacer.foliageRadius(random, k);
-		BlockPos blockpos = config.rootPlacer.map((p_225286_) -> p_225286_.getTrunkOrigin(pos, random)).orElse(pos);
-		int i1 = Math.min(pos.getY(), blockpos.getY());
-		int j1 = Math.max(pos.getY(), blockpos.getY()) + i + 1;
-		if (i1 >= level.getMinY() + 1 && j1 <= level.getMaxY()) {
-			OptionalInt optionalint = config.minimumSize.minClippedHeight();
-			int k1 = this.getMaxFreeTreeHeight(level, i, blockpos, config);
-			if (k1 >= i || optionalint.isPresent() && k1 >= optionalint.getAsInt()) {
-				if (config.rootPlacer.isPresent() && !config.rootPlacer.get().placeRoots(level, consumer, random, pos, blockpos, config)) {
-					return false;
-				} else {
-					List<FoliagePlacer.FoliageAttachment> list = config.trunkPlacer.placeTrunk(level, consumer1, random, k1, blockpos, config);
-					list.forEach((p_225279_) -> {
-						config.foliagePlacer.createFoliage(level, setter, random, config, k1, p_225279_, j, l);
-					});
-					return true;
-				}
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
-
-	private int getMaxFreeTreeHeight(WorldGenLevel reader, int height, BlockPos pos, TreeConfiguration config) {
-		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
-
-		for (int i = 0; i <= height + 1; ++i) {
-			int j = config.minimumSize.getSizeAtHeight(height, i);
-
-			for (int k = -j; k <= j; ++k) {
-				for (int l = -j; l <= j; ++l) {
-					blockpos$mutableblockpos.setWithOffset(pos, k, i, l);
-					if (!config.trunkPlacer.isFree(reader, blockpos$mutableblockpos) || !config.ignoreVines && isVine(reader, blockpos$mutableblockpos)) {
-						return i - 2;
-					}
-				}
-			}
-		}
-
-		return height;
+	public SnowTreeFeature() {
 	}
 
 	@Override
-	protected void setBlock(LevelWriter writer, BlockPos pos, BlockState state) {
-		setBlockKnownShape(writer, pos, state);
+	public MapCodec<? extends Feature> codec() {
+		return MapCodec.unit(this);
 	}
 
 	@Override
-	public final boolean place(FeaturePlaceContext<TreeConfiguration> context) {
-		WorldGenLevel worldgenlevel = context.level();
-		RandomSource randomsource = context.random();
-		BlockPos blockpos = context.origin();
-		TreeConfiguration treeconfiguration = context.config();
+	public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos pos) {
+		WorldGenLevel worldgenlevel = level;
+		RandomSource randomsource = random;
+		BlockPos blockpos = pos;
+		TreeFeature treeconfiguration = SNOWY_SPRUCE;
 		Set<BlockPos> set = Sets.newHashSet();
 		Set<BlockPos> set1 = Sets.newHashSet();
 		Set<BlockPos> set2 = Sets.newHashSet();
@@ -138,9 +92,9 @@ public class SnowTreeFeature extends Feature<TreeConfiguration> {
 		};
 		boolean flag = this.doPlace(worldgenlevel, randomsource, blockpos, biconsumer, biconsumer1, setter, treeconfiguration);
 		if (flag && (!set1.isEmpty() || !set2.isEmpty())) {
-			if (!treeconfiguration.decorators.isEmpty()) {
+			if (!treeconfiguration.decorators().isEmpty()) {
 				TreeDecorator.Context treedecorator$context = new TreeDecorator.Context(worldgenlevel, biconsumer3, randomsource, set1, set2, set);
-				treeconfiguration.decorators.forEach((p_225282_) -> {
+				treeconfiguration.decorators().forEach((p_225282_) -> {
 					p_225282_.place(treedecorator$context);
 				});
 			}
@@ -153,6 +107,66 @@ public class SnowTreeFeature extends Feature<TreeConfiguration> {
 		} else {
 			return false;
 		}
+	}
+
+	private static boolean isVine(LevelSimulatedReader reader, BlockPos pos) {
+		return reader.isStateAtPosition(pos, (state) -> state.is(Blocks.VINE));
+	}
+
+	private static void setBlockKnownShape(LevelWriter p_67257_, BlockPos p_67258_, BlockState p_67259_) {
+		p_67257_.setBlock(p_67258_, p_67259_, Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
+	}
+
+	public static boolean validTreePos(LevelSimulatedReader reader, BlockPos pos) {
+		return reader.isStateAtPosition(pos, (state) -> state.isAir() || state.is(BlockTags.REPLACEABLE_BY_TREES));
+	}
+
+	private boolean doPlace(WorldGenLevel level, RandomSource random, BlockPos pos, BiConsumer<BlockPos, BlockState> consumer, BiConsumer<BlockPos, BlockState> consumer1, FoliagePlacer.FoliageSetter setter, TreeFeature config) {
+		int i = config.trunkPlacer().getTreeHeight(random);
+		int j = config.foliagePlacer().foliageHeight(random, i, config);
+		int k = i - j;
+		int l = config.foliagePlacer().foliageRadius(random, k);
+		BlockPos blockpos = config.rootPlacer().map((p_225286_) -> p_225286_.getTrunkOrigin(pos, random)).orElse(pos);
+		int i1 = Math.min(pos.getY(), blockpos.getY());
+		int j1 = Math.max(pos.getY(), blockpos.getY()) + i + 1;
+		if (i1 >= level.getMinY() + 1 && j1 <= level.getMaxY()) {
+			OptionalInt optionalint = config.minimumSize().minClippedHeight();
+			int k1 = this.getMaxFreeTreeHeight(level, i, blockpos, config);
+			if (k1 >= i || optionalint.isPresent() && k1 >= optionalint.getAsInt()) {
+				if (config.rootPlacer().isPresent() && !config.rootPlacer().get().placeRoots(level, consumer, random, pos, blockpos, config)) {
+					return false;
+				} else {
+					List<FoliagePlacer.FoliageAttachment> list = config.trunkPlacer().placeTrunk(level, consumer1, random, k1, blockpos, config);
+					list.forEach((p_225279_) -> {
+						config.foliagePlacer().createFoliage(level, setter, random, config, k1, p_225279_, j, l);
+					});
+					return true;
+				}
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	private int getMaxFreeTreeHeight(WorldGenLevel reader, int height, BlockPos pos, TreeFeature config) {
+		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+
+		for (int i = 0; i <= height + 1; ++i) {
+			int j = config.minimumSize().getSizeAtHeight(height, i);
+
+			for (int k = -j; k <= j; ++k) {
+				for (int l = -j; l <= j; ++l) {
+					blockpos$mutableblockpos.setWithOffset(pos, k, i, l);
+					if (!config.trunkPlacer().isFree(reader, blockpos$mutableblockpos) || !config.ignoreVines() && isVine(reader, blockpos$mutableblockpos)) {
+						return i - 2;
+					}
+				}
+			}
+		}
+
+		return height;
 	}
 
 	public static DiscreteVoxelShape updateLeaves(LevelAccessor accessor, BoundingBox box, Set<BlockPos> posSet, Set<BlockPos> posSet1, Set<BlockPos> posSet2) {

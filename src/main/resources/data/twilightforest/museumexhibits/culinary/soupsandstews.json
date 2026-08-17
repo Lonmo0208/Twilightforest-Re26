@@ -1,13 +1,1 @@
-{
-  "collection": "museumcurator.collection.culinary",
-  "name": "museumcurator.culinary.soupsandstews",
-  "insertGroups": [
-    {
-      "relativeTo": "minecraft:rabbit_stew",
-      "placement": "after",
-      "items": [
-        "twilightforest:meef_stroganoff"
-      ]
-    }
-  ]
-}
+"museumcurator.culinary.soupsandstews"

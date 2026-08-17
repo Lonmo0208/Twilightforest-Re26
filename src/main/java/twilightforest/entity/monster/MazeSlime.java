@@ -62,7 +62,7 @@ public class MazeSlime extends Slime {
 	}
 
 	@Override
-	protected boolean isDealsDamage() {
+	protected boolean canDealDamage() {
 		return true;
 	}
 

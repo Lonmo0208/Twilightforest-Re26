@@ -144,7 +144,7 @@ public class SnowQueenModel extends HumanoidModel<SnowQueenRenderState> implemen
 		} else {
 			stack.translate(0.0F, 0.0F, 0.0F);
 		}
-		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(SnowQueenRenderer.TEXTURE), light, overlay, null, -1, breakProgress);
+		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(SnowQueenRenderer.TEXTURE), light, overlay, null, -1, breakProgress != null ? breakProgress.progress() : 0);
 	}
 
 	@Override

@@ -26,17 +26,13 @@ import twilightforest.tags.TFBlockTags;
 public class FireJetBlock extends BaseEntityBlock {
 
 	public static final EnumProperty<FireJetVariant> STATE = EnumProperty.create("state", FireJetVariant.class);
-	public static final MapCodec<FireJetBlock> CODEC = simpleCodec(FireJetBlock::new);
 
 	public FireJetBlock(Properties properties) {
 		super(properties);
 		this.registerDefaultState(this.getStateDefinition().any().setValue(STATE, FireJetVariant.IDLE));
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

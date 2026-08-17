@@ -18,17 +18,12 @@ import twilightforest.util.entities.EntityUtil;
 
 public class StrongholdShieldBlock extends DirectionalBlock {
 
-	public static final MapCodec<StrongholdShieldBlock> CODEC = simpleCodec(StrongholdShieldBlock::new);
-
 	public StrongholdShieldBlock(BlockBehaviour.Properties properties) {
 		super(properties);
 		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.DOWN));
 	}
 
-	@Override
-	protected MapCodec<? extends DirectionalBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

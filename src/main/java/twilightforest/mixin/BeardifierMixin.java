@@ -6,7 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.levelgen.Beardifier;
-import net.minecraft.world.level.levelgen.DensityFunction;
+//import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawJunction;
@@ -154,11 +155,11 @@ public class BeardifierMixin {
 	}
 
 	@Inject(method = "compute", at = @At("RETURN"), cancellable = true)
-	private void tf$addCustomDensity(DensityFunction.FunctionContext context, CallbackInfoReturnable<Double> cir) {
+	private void tf$addCustomDensity(DensityFunction.FunctionContext context, CallbackInfoReturnable<Float> cir) {
 		ObjectList<DensityFunction> densities = TF_CUSTOM_DENSITIES.get(this);
 		if (densities != null && !densities.isEmpty()) {
-			double original = cir.getReturnValue();
-			double added = 0;
+			float original = cir.getReturnValue();
+			float added = 0;
 			for (int i = 0; i < densities.size(); i++) {
 				added += densities.get(i).compute(context);
 			}
@@ -173,7 +174,7 @@ public class BeardifierMixin {
 	 * letting our tf$addCustomDensity mixin above modify every noise cell's value.
 	 */
 	@Inject(method = "fillArray", at = @At("HEAD"), cancellable = true)
-	private void tf$fillArrayWithCustomDensities(double[] output, DensityFunction.ContextProvider contextProvider, CallbackInfo ci) {
+	private void tf$fillArrayWithCustomDensities(float[] output, DensityFunction.ContextProvider contextProvider, CallbackInfo ci) {
 		ObjectList<DensityFunction> densities = TF_CUSTOM_DENSITIES.get(this);
 		if (densities != null && !densities.isEmpty()) {
 			contextProvider.fillAllDirectly(output, (DensityFunction) (Object) this);

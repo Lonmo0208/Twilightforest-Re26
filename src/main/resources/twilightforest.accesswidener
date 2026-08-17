@@ -4,7 +4,7 @@ accessWidener v2 official
 accessible field net/minecraft/world/level/block/entity/BaseContainerBlockEntity name Lnet/minecraft/network/chat/Component;
 
 # BiomeGrassColors and FoliageColorHandler (gets biome noise values for blending colors together)
-accessible field net/minecraft/world/level/biome/Biome TEMPERATURE_NOISE Lnet/minecraft/world/level/levelgen/synth/PerlinSimplexNoise;
+# 26.3: TEMPERATURE_NOISE renamed to FROZEN_TEMPERATURE_NOISE and is now public
 
 # CarminiteGhastguard (adds the goal to ghastguards)
 accessible class net/minecraft/world/entity/monster/Ghast$GhastLookGoal
@@ -73,10 +73,7 @@ accessible method net/minecraft/world/level/block/FlowerPotBlock isEmpty ()Z
 # StructureTreeGrower (unfinalizes the class so I can extend it)
 extendable class net/minecraft/world/level/block/grower/TreeGrower
 
-# TFCavesCarver
-accessible field net/minecraft/world/level/levelgen/carver/CaveCarverConfiguration floorLevel Lnet/minecraft/util/valueproviders/FloatProvider;
-accessible method net/minecraft/world/level/levelgen/carver/WorldCarver isDebugEnabled (Lnet/minecraft/world/level/levelgen/carver/CarverConfiguration;)Z
-accessible method net/minecraft/world/level/levelgen/carver/WorldCarver getCarveState (Lnet/minecraft/world/level/levelgen/carver/CarvingContext;Lnet/minecraft/world/level/levelgen/carver/CarverConfiguration;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/levelgen/Aquifer;)Lnet/minecraft/world/level/block/state/BlockState;
+# TFCavesCarver (26.3: CaveCarverConfiguration removed, WorldCarver is now an interface, methods inlined)
 
 # TFClientEvents (fetches the biome seed for the aurora shader)
 accessible field net/minecraft/world/level/biome/BiomeManager biomeZoomSeed J
@@ -141,7 +138,7 @@ accessible field net/minecraft/world/level/levelgen/feature/trunkplacers/TrunkPl
 accessible method net/minecraft/world/level/levelgen/feature/trunkplacers/TrunkPlacerType <init> (Lcom/mojang/serialization/MapCodec;)V
 
 # TwilightForestMod (adds blocks for stripping and burning repsectively)
-mutable field net/minecraft/world/item/AxeItem STRIPPABLES Ljava/util/Map;
+# 26.3: AxeItem removed, stripping handled via data maps
 accessible method net/minecraft/world/level/block/FireBlock setFlammable (Lnet/minecraft/world/level/block/Block;II)V
 
 # TravellersGearCommand (the alternative is to copy the method verbatim into a TF class, might as well reuse the vanilla method)
@@ -207,9 +204,7 @@ accessible field net/minecraft/client/renderer/blockentity/BlockEntityRenderDisp
 # QuestRam, FieryArmor and RisingZombie need to extend
 extendable method net/minecraft/client/model/Model renderToBuffer (Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V
 
-# BoxDensityFunction
-accessible method net/minecraft/world/level/levelgen/Beardifier getBeardContribution (IIII)D
-accessible method net/minecraft/world/level/levelgen/Beardifier getBuryContribution (DDD)D
+# BoxDensityFunction (26.3: Beardifier methods removed, local implementations used instead)
 
 # Lich
 accessible field net/minecraft/world/entity/ai/goal/MeleeAttackGoal speedModifier D

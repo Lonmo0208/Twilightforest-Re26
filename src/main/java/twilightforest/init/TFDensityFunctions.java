@@ -7,8 +7,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +63,7 @@ public class TFDensityFunctions {
 			64,
 			1,
 			DensityFunctions.constant(8),
-			DensityFunctions.constant(-1.25)
+			DensityFunctions.constant(-1.25F)
 		);
 
 		return new DensityFunctions.HolderHolder(context.register(BIOME_TERRAIN_RAW, rawBiomeDensityReferenced));
@@ -71,9 +71,9 @@ public class TFDensityFunctions {
 
 	@NotNull
 	private static DensityFunction makeAmbientNoise2D(BootstrapContext<DensityFunction> context) {
-		HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);
-		Holder.Reference<NormalNoise.NoiseParameters> surfaceParams = noiseLookup.getOrThrow(Noises.SURFACE);
-		Holder.Reference<NormalNoise.NoiseParameters> ridgeParams = noiseLookup.getOrThrow(Noises.RIDGE);
+		HolderGetter<NormalNoise> noiseLookup = context.lookup(Registries.NOISE);
+		Holder.Reference<NormalNoise> surfaceParams = noiseLookup.getOrThrow(Noises.SURFACE);
+		Holder.Reference<NormalNoise> ridgeParams = noiseLookup.getOrThrow(Noises.RIDGE);
 
 		DensityFunction noiseInterpolator = mulAddHalf(DensityFunctions.noise(surfaceParams, 1, 0));
 		DensityFunction wideNoise = mulAddHalf(DensityFunctions.noise(ridgeParams, 1, 0));
@@ -103,9 +103,9 @@ public class TFDensityFunctions {
 	@NotNull
 	private static DensityFunction mulAddHalf(DensityFunction input) {
 		return DensityFunctions.add(
-			DensityFunctions.constant(0.5),
+			DensityFunctions.constant(0.5F),
 			DensityFunctions.mul(
-				DensityFunctions.constant(0.5),
+				DensityFunctions.constant(0.5F),
 				input
 			)
 		);
@@ -133,15 +133,15 @@ public class TFDensityFunctions {
 			)
 		);
 
-		context.register(FORESTED_TERRAIN, finalDensity.clamp(-0.1, 0.5));
+		context.register(FORESTED_TERRAIN, finalDensity.clamp(-0.1F, 0.5F));
 	}
 
 	private static void makeSkylightTerrain(BootstrapContext<DensityFunction> context, DensityFunction rawBiomeDensity, DensityFunction ambientTerrainNoise) {
 		DensityFunction skyIslandNoise = DensityFunctions.add(
-			DensityFunctions.constant(-0.5),
+			DensityFunctions.constant(-0.5F),
 			DensityFunctions.mul(
 				DensityFunctions.add(
-					DensityFunctions.constant(-0.5),
+					DensityFunctions.constant(-0.5F),
 					ambientTerrainNoise
 				),
 				DensityFunctions.constant(5)
@@ -149,7 +149,7 @@ public class TFDensityFunctions {
 		);
 
 		DensityFunction biomeDensity = DensityFunctions.mul(
-			DensityFunctions.constant(-0.25),
+			DensityFunctions.constant(-0.25F),
 			DensityFunctions.mul(DensityFunctions.add(
 				rawBiomeDensity,
 				DensityFunctions.yClampedGradient(-31, 256, 31, -256)
@@ -163,6 +163,6 @@ public class TFDensityFunctions {
 			biomeDensity
 		);
 
-		context.register(SKYLIGHT_TERRAIN, finalDensity.clamp(-0.1, 0.5));
+		context.register(SKYLIGHT_TERRAIN, finalDensity.clamp(-0.1F, 0.5F));
 	}
 }

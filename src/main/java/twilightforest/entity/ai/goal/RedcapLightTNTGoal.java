@@ -72,7 +72,7 @@ public class RedcapLightTNTGoal extends RedcapBaseGoal {
 
 			this.redcap.level().setBlock(this.tntPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
 			net.minecraft.world.level.block.TntBlock.prime(this.redcap.level(), this.tntPos);
-			this.redcap.swing(InteractionHand.MAIN_HAND);
+			this.redcap.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 			this.redcap.getNavigation().stop();
 		} else {
 			this.redcap.getNavigation().moveTo(this.tntPos.getX(), this.tntPos.getY(), this.tntPos.getZ(), this.pursueSpeed);

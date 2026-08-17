@@ -1,0 +1,8 @@
+{
+    "type":  "twilightforest:berry_bush",
+    "bush":  {
+                 "id":  "twilightforest:blackberry_bush"
+             },
+    "can_generate_snowy":  true,
+    "generates_on":  "twilightforest:tf_berry_bushes_survive"
+}

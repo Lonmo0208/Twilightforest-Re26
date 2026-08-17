@@ -1,5 +1,6 @@
 package twilightforest.block;
 
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -67,7 +68,7 @@ public class UberousSoilBlock extends Block implements BonemealableBlock {
 		BlockPos fromPos = pos.above();
 		BlockState above = level.getBlockState(fromPos);
 		if (!(above.getBlock() instanceof BonemealableBlock bonemealableBlock && !above.is(this))) {
-			if (above.isSolid()) FarmlandBlock.turnToDirt(null, state, level, pos);
+			if (above.isSolid()) level.setBlock(pos, Blocks.DIRT.defaultBlockState(), Block.UPDATE_ALL);
 			return;
 		}
 
@@ -139,7 +140,7 @@ public class UberousSoilBlock extends Block implements BonemealableBlock {
 	@Override
 	@SuppressWarnings("deprecation")
 	//check each side of the block, as well as above and below each of those positions for valid spots
-	public boolean isValidBonemealTarget(LevelReader getter, BlockPos pos, BlockState state) {
+	public boolean isValidBonemealTarget(LevelReader getter, BlockPos pos, BlockState state, BonemealSource source) {
 		for (Direction dir : Direction.values()) {
 			if (dir != Direction.UP && dir != Direction.DOWN) {
 				BlockState blockAt = getter.getBlockState(pos.relative(dir));
@@ -167,7 +168,7 @@ public class UberousSoilBlock extends Block implements BonemealableBlock {
 	}
 
 	@Override
-	public boolean isBonemealSuccess(Level level, RandomSource rand, BlockPos pos, BlockState state) {
+	public boolean isBonemealSuccess(Level level, RandomSource rand, BlockPos pos, BlockState state, BonemealSource source) {
 		return true;
 	}
 
@@ -175,7 +176,7 @@ public class UberousSoilBlock extends Block implements BonemealableBlock {
 	@SuppressWarnings("deprecation")
 	//check each side of the block, as well as above and below each of those positions to check for a place to put a block
 	//the above and below checks allow the patch to jump to a new y level, makes spreading easier
-	public void performBonemeal(ServerLevel level, RandomSource rand, BlockPos pos, BlockState state) {
+	public void performBonemeal(ServerLevel level, RandomSource rand, BlockPos pos, BlockState state, BonemealSource source) {
 		List<Direction> directions = Arrays.asList(Direction.values());
 		Collections.shuffle(directions);
 		for (Direction dir : directions) {

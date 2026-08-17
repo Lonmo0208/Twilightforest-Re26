@@ -1,7 +1,7 @@
 {
-  "values": [
-    "#c:crops/carrot",
-    "#c:crops/potato",
-    "#c:crops/beetroot"
-  ]
+    "values":  [
+                   "#c:crops/carrot",
+                   "#c:crops/potato",
+                   "#c:crops/beetroot"
+               ]
 }

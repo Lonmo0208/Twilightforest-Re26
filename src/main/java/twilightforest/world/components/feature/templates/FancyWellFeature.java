@@ -17,12 +17,11 @@ import twilightforest.loot.TFLootTables;
 import twilightforest.world.components.feature.config.SwizzleConfig;
 import twilightforest.world.components.processors.SmartGrassProcessor;
 
-public class FancyWellFeature extends TemplateFeature<SwizzleConfig> {
+public class FancyWellFeature extends TemplateFeature {
 	private static final Identifier WELL_TOP = TwilightForestMod.prefix("feature/well/fancy_well_top");
 	private static final Identifier WELL_BOTTOM = TwilightForestMod.prefix("feature/well/fancy_well_bottom");
 
-	public FancyWellFeature(Codec<SwizzleConfig> config) {
-		super(config);
+	public FancyWellFeature() {
 	}
 
 	@Nullable
@@ -32,12 +31,11 @@ public class FancyWellFeature extends TemplateFeature<SwizzleConfig> {
 	}
 
 	@Override
-	protected void modifySettings(StructurePlaceSettings settings, RandomSource random, SwizzleConfig config) {
-		config.buildAddProcessors(settings, random);
+	protected void modifySettings(StructurePlaceSettings settings, RandomSource random) {
 	}
 
 	@Override
-	protected void postPlacement(WorldGenLevel world, RandomSource random, StructureTemplateManager templateManager, Rotation rotation, Mirror mirror, StructurePlaceSettings placementSettings, BlockPos placementPos, SwizzleConfig config) {
+	protected void postPlacement(WorldGenLevel world, RandomSource random, StructureTemplateManager templateManager, Rotation rotation, Mirror mirror, StructurePlaceSettings placementSettings, BlockPos placementPos) {
 		StructureTemplate template = templateManager.getOrCreate(WELL_BOTTOM);
 
 		if (template == null) return;

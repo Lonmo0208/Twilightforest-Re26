@@ -43,7 +43,7 @@ import twilightforest.init.TFBlockEntities;
 public class SkullChestBlock extends BaseEntityBlock implements BlockLoggingEnum.IMultiLoggable {
 
 	public static final EnumProperty<Direction> FACING = TFHorizontalBlock.FACING;
-	public static final MapCodec<SkullChestBlock> CODEC = simpleCodec(SkullChestBlock::new);
+
 	private static final VoxelShape BOTTOM_X = Block.box(2.0D, 0.0D, 1.0D, 14.0D, 6.0D, 15.0D);
 	private static final VoxelShape TOP_X = Block.box(1.0D, 6.0D, 0.0D, 15.0D, 14.0D, 16.0D);
 	private static final VoxelShape BOTTOM_Z = Block.box(1.0D, 0.0D, 2.0D, 15.0D, 6.0D, 14.0D);
@@ -62,10 +62,7 @@ public class SkullChestBlock extends BaseEntityBlock implements BlockLoggingEnum
 		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
 	}
 
-	@Override
-	protected MapCodec<? extends SkullChestBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {

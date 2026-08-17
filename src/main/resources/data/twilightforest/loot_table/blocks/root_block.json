@@ -1,56 +1,40 @@
-﻿{
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:alternatives",
-          "children": [
-            {
-              "type": "minecraft:item",
-              "conditions": [
-                {
-                  "condition": "minecraft:match_tool",
-                  "predicate": {
-                    "predicates": {
-                      "minecraft:enchantments": [
-                        {
-                          "enchantments": "minecraft:silk_touch",
-                          "levels": {
-                            "min": 1
-                          }
-                        }
-                      ]
-                    }
+{
+    "type":  "minecraft:block",
+    "pools":  [
+                  {
+                      "bonus_rolls":  0.0,
+                      "entries":  [
+                                      {
+                                          "type":  "minecraft:alternatives",
+                                          "children":  [
+                                                           {
+                                                               "type":  "minecraft:item",
+                                                               "name":  "twilightforest:root_block",
+                                                               "condition":  {
+                                                                                 "predicate":  {
+                                                                                                   "predicates":  {
+                                                                                                                      "minecraft:enchantments":  [
+                                                                                                                                                     {
+                                                                                                                                                         "enchantments":  "minecraft:silk_touch",
+                                                                                                                                                         "levels":  {
+                                                                                                                                                                        "min":  1
+                                                                                                                                                                    }
+                                                                                                                                                     }
+                                                                                                                                                 ]
+                                                                                                                  }
+                                                                                               },
+                                                                                 "type":  "minecraft:match_tool"
+                                                                             }
+                                                           },
+                                                           {
+                                                               "type":  "minecraft:item",
+                                                               "name":  "minecraft:stick"
+                                                           }
+                                                       ]
+                                      }
+                                  ],
+                      "rolls":  1.0
                   }
-                }
               ],
-              "name": "twilightforest:root_block"
-            },
-            {
-              "type": "minecraft:item",
-              "functions": [
-                {
-                  "add": false,
-                  "count": {
-                    "type": "minecraft:uniform",
-                    "max": 5.0,
-                    "min": 3.0
-                  },
-                  "function": "minecraft:set_count"
-                },
-                {
-                  "function": "minecraft:explosion_decay"
-                }
-              ],
-              "name": "minecraft:stick"
-            }
-          ]
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:blocks/root_block"
+    "random_sequence":  "twilightforest:blocks/root_block"
 }

@@ -253,7 +253,7 @@ public final class FeaturePlacers {
 		}
 	}
 
-	// [VanillaCopy] TrunkPlacer.placeLog - Swapped TreeConfiguration for BlockStateProvider
+	// [VanillaCopy] TrunkPlacer.placeLog - Swapped TreeFeature for BlockStateProvider
 	// If possible, use TrunkPlacer.placeLog instead
 	public static boolean placeIfValidTreePos(WorldGenLevel world, BiConsumer<BlockPos, BlockState> placer, RandomSource random, BlockPos pos, BlockStateProvider config) {
 		if (validTreePos(world, pos)) {

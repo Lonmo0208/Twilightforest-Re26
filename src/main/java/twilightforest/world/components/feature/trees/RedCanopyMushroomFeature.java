@@ -1,14 +1,14 @@
 package twilightforest.world.components.feature.trees;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HugeMushroomBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.HugeMushroomFeatureConfiguration;
-
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 
 public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 	/**
@@ -20,18 +20,33 @@ public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 	 */
 	private final int enumHead;
 
-	public RedCanopyMushroomFeature(Codec<HugeMushroomFeatureConfiguration> featureConfigurationCodec, int enumHead) {
-		super(featureConfigurationCodec);
-		this.enumHead = enumHead;
+	public RedCanopyMushroomFeature() {
+		// 26.3: config 迁移为实例单例；enumHead 默认 0。TFFeatures 中 4 个注册目前共用默认值，如需区分帽型需另行处理
+		this.enumHead = 0;
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<HugeMushroomFeatureConfiguration> context) {
-		return super.place(context);
+	public BlockStateProvider capProvider() {
+		return BlockStateProvider.simple(Blocks.RED_MUSHROOM_BLOCK.defaultBlockState());
 	}
 
 	@Override
-	protected int getTreeHeight(RandomSource random) {
+	public BlockStateProvider stemProvider() {
+		return BlockStateProvider.simple(Blocks.MUSHROOM_STEM.defaultBlockState());
+	}
+
+	@Override
+	public int foliageRadius() {
+		return 3;
+	}
+
+	@Override
+	public BlockPredicate canPlaceOn() {
+		return BlockPredicate.matchesTag(BlockTags.HUGE_RED_MUSHROOM_CAN_PLACE_ON);
+	}
+
+	@Override
+	public int getTreeHeight(RandomSource random) {
 		return super.getTreeHeight(random) + 3;
 	}
 
@@ -46,21 +61,21 @@ public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 	}
 
 	@Override
-	protected void makeCap(WorldGenLevel levelAccessor, RandomSource random, BlockPos pos, int height, BlockPos.MutableBlockPos mutableBlockPos, HugeMushroomFeatureConfiguration featureConfiguration) {
+	public void makeCap(WorldGenLevel levelAccessor, RandomSource random, BlockPos pos, int height, BlockPos.MutableBlockPos mutableBlockPos) {
 		if (this.enumHead == 0) {
-			this.makeVanillaCap(levelAccessor, random, pos, height, mutableBlockPos, featureConfiguration);
+			this.makeVanillaCap(levelAccessor, random, pos, height, mutableBlockPos);
 		} else if (this.enumHead == 1) {
-			this.makeSmoothCap(levelAccessor, random, pos, height, mutableBlockPos, featureConfiguration);
+			this.makeSmoothCap(levelAccessor, random, pos, height, mutableBlockPos);
 		} else if (this.enumHead == 2) {
-			this.makeSpheroidCap(levelAccessor, random, pos, height, mutableBlockPos, featureConfiguration);
-		} else super.makeCap(levelAccessor, random, pos, height, mutableBlockPos, featureConfiguration);
+			this.makeSpheroidCap(levelAccessor, random, pos, height, mutableBlockPos);
+		} else super.makeCap(levelAccessor, random, pos, height, mutableBlockPos);
 	}
 
 	//Pretty much a 1:1 vanilla copy of the big red mushroom cap code
-	protected void makeVanillaCap(WorldGenLevel levelAccessor, RandomSource random, BlockPos pos, int height, BlockPos.MutableBlockPos mutableBlockPos, HugeMushroomFeatureConfiguration featureConfiguration) {
+	protected void makeVanillaCap(WorldGenLevel levelAccessor, RandomSource random, BlockPos pos, int height, BlockPos.MutableBlockPos mutableBlockPos) {
 		for (int y = height - 3; y <= height; ++y) {
-			int j = y < height ? featureConfiguration.foliageRadius() : featureConfiguration.foliageRadius() - 1;
-			int k = featureConfiguration.foliageRadius() - 2;
+			int j = y < height ? this.foliageRadius() : this.foliageRadius() - 1;
+			int k = this.foliageRadius() - 2;
 
 			for (int x = -j; x <= j; ++x) {
 				for (int z = -j; z <= j; ++z) {
@@ -73,7 +88,7 @@ public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 					if (y >= height || xMinMax != zMinMax) {
 						mutableBlockPos.setWithOffset(pos, x, y, z);
 						if (this.isReplaceable(levelAccessor, mutableBlockPos)) {
-							BlockState blockstate = featureConfiguration.capProvider().getState(levelAccessor, random, pos);
+							BlockState blockstate = this.capProvider().getState(levelAccessor, random, pos);
 
 							if (blockstate.hasProperty(HugeMushroomBlock.WEST) && blockstate.hasProperty(HugeMushroomBlock.EAST) && blockstate.hasProperty(HugeMushroomBlock.NORTH) && blockstate.hasProperty(HugeMushroomBlock.SOUTH) && blockstate.hasProperty(HugeMushroomBlock.UP)) {
 								blockstate = blockstate
@@ -92,16 +107,16 @@ public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 		}
 	}
 
-	protected void makeSmoothCap(WorldGenLevel levelAccessor, RandomSource random, BlockPos pos, int height, BlockPos.MutableBlockPos mutableBlockPos, HugeMushroomFeatureConfiguration featureConfiguration) {
+	protected void makeSmoothCap(WorldGenLevel levelAccessor, RandomSource random, BlockPos pos, int height, BlockPos.MutableBlockPos mutableBlockPos) {
 		for (int y = height - 2; y <= height + 1; ++y) {
-			int j = featureConfiguration.foliageRadius() - Math.max(0, y - (height - 1)) + 1;
+			int j = this.foliageRadius() - Math.max(0, y - (height - 1)) + 1;
 
 			for (int x = -j; x <= j; ++x) {
 				for (int z = -j; z <= j; ++z) {
 					if (isInsideSmoothShape(height, j, x, y, z)) {
 						mutableBlockPos.setWithOffset(pos, x, y, z);
 						if (this.isReplaceable(levelAccessor, mutableBlockPos)) {
-							BlockState blockstate = featureConfiguration.capProvider().getState(levelAccessor, random, pos);
+							BlockState blockstate = this.capProvider().getState(levelAccessor, random, pos);
 
 							if (blockstate.hasProperty(HugeMushroomBlock.WEST) && blockstate.hasProperty(HugeMushroomBlock.EAST) && blockstate.hasProperty(HugeMushroomBlock.NORTH) && blockstate.hasProperty(HugeMushroomBlock.SOUTH) && blockstate.hasProperty(HugeMushroomBlock.UP)) {
 								blockstate = blockstate
@@ -141,9 +156,9 @@ public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 		return xMinMax != zMinMax || (Math.abs(x) == Math.abs(z) && Math.abs(x) == j - 1);
 	}
 
-	protected void makeSpheroidCap(WorldGenLevel levelAccessor, RandomSource random, BlockPos pos, int height, BlockPos.MutableBlockPos mutableBlockPos, HugeMushroomFeatureConfiguration featureConfiguration) {
+	protected void makeSpheroidCap(WorldGenLevel levelAccessor, RandomSource random, BlockPos pos, int height, BlockPos.MutableBlockPos mutableBlockPos) {
 		for (int y = height - 2; y <= height; ++y) {
-			int j = y == height - 1 ? featureConfiguration.foliageRadius() + 2 : featureConfiguration.foliageRadius() + 1;
+			int j = y == height - 1 ? this.foliageRadius() + 2 : this.foliageRadius() + 1;
 
 			for (int x = -j; x <= j; ++x) {
 				for (int z = -j; z <= j; ++z) {
@@ -152,7 +167,7 @@ public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 					if (distance <= maxDistance) {
 						mutableBlockPos.setWithOffset(pos, x, y, z);
 						if (this.isReplaceable(levelAccessor, mutableBlockPos)) {
-							BlockState blockstate = featureConfiguration.capProvider().getState(levelAccessor, random, pos);
+							BlockState blockstate = this.capProvider().getState(levelAccessor, random, pos);
 
 							if (blockstate.hasProperty(HugeMushroomBlock.WEST) && blockstate.hasProperty(HugeMushroomBlock.EAST) && blockstate.hasProperty(HugeMushroomBlock.NORTH) && blockstate.hasProperty(HugeMushroomBlock.SOUTH) && blockstate.hasProperty(HugeMushroomBlock.UP)) {
 								blockstate = blockstate

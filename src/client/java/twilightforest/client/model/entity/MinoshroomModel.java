@@ -171,7 +171,7 @@ public class MinoshroomModel extends HumanoidModel<MinoshroomRenderState> implem
 		} else {
 			stack.translate(0.0F, 0.375F, 0.56F);
 		}
-		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(MinoshroomRenderer.TEXTURE), light, overlay, null, -1, breakProgress);
+		collector.submitModelPart(this.head, stack, RenderTypes.entityCutout(MinoshroomRenderer.TEXTURE), light, overlay, null, -1, breakProgress != null ? breakProgress.progress() : 0);
 	}
 
 	@Override

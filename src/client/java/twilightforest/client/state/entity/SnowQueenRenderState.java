@@ -6,5 +6,6 @@ import twilightforest.entity.boss.SnowQueen;
 public class SnowQueenRenderState extends HumanoidRenderState {
 
 	public SnowQueen.Phase phase;
+	public float attackTime;
 	public boolean breathing;
 }

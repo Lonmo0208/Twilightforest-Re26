@@ -1,10 +1,1 @@
-{
-  "collection": "museumcurator.collection.architecture",
-  "name": "museumcurator.lithology.brick",
-  "items": [
-    "twilightforest:underbrick",
-    "twilightforest:cracked_underbrick",
-    "twilightforest:mossy_underbrick",
-    "twilightforest:underbrick_floor"
-  ]
-}
+"museumcurator.lithology.brick"

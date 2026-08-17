@@ -13,8 +13,8 @@ import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
@@ -80,7 +80,7 @@ public class HydraLairStructure extends ProgressionStructure implements CustomDe
 	}
 
 	@Override
-	public DensityFunction getStructureTerraformer(ChunkPos chunkSliceAt, StructureStart structurePieceSource) {
+	public net.minecraft.world.level.levelgen.densityfunction.DensityFunction getStructureTerraformer(ChunkPos chunkSliceAt, StructureStart structurePieceSource) {
 		final int hillSize = 2;
 
 		final float radius = (hillSize * 4 + 0.8f) * 8;
@@ -92,7 +92,7 @@ public class HydraLairStructure extends ProgressionStructure implements CustomDe
 		final BlockPos hillCenter = structureBox.getCenter();
 
 		// Main mound density field. All values above mount surface are 0 while other values under the mound are 1.
-		DensityFunction hillMound = HollowHillFunction.fromPos(hillCenter.atY(yCeilingFocus + 8), radius, 0.7f)
+		DensityFunction hillMound = ((DensityFunction) HollowHillFunction.fromPos(hillCenter.atY(yCeilingFocus + 8), radius, 0.7f))
 			.clamp(0, 1);
 
 		// Field that domes upwards instead of downwards like HollowHillFunction
@@ -102,14 +102,14 @@ public class HydraLairStructure extends ProgressionStructure implements CustomDe
 		// Similar field like above, but all per-position values multiplied by -1. Positive terrain field above (hill mound) and negative terrain field below (inner hill gap)
 		DensityFunction innerCeiling = DensityFunctions.mul(
 			DensityFunctions.constant(-1),
-			HollowHillFunction.fromPos(hillCenter.atY(yCeilingFocus + 6), radiusInner, 0.675f)
+			(DensityFunction) HollowHillFunction.fromPos(hillCenter.atY(yCeilingFocus + 6), radiusInner, 0.675f)
 		);
 
 		// Merge the inner ceiling & inner floor density functions, and obtain the maximum value.
 		// Resulting terrain field will "carve" out the interior space, using negative field values past 0.
 		DensityFunction interior = DensityFunctions.max(innerCeiling, innerFloor);
 
-		DensityFunction interiorMask = FocusedDensityFunction.fromPos(hillCenter.atY(yCeilingFocus), radiusInner * 0.52f, -radiusInner, 1);
+		DensityFunction interiorMask = (DensityFunction) FocusedDensityFunction.fromPos(hillCenter.atY(yCeilingFocus), radiusInner * 0.52f, -radiusInner, 1);
 
 		DensityFunction interiorMasked = DensityFunctions.max(interiorMask, interior);
 
@@ -118,9 +118,9 @@ public class HydraLairStructure extends ProgressionStructure implements CustomDe
 		// This min() function combines these two surfaces formed by said zeros
 		DensityFunction hollowHill = DensityFunctions.min(hillMound, interiorMasked);
 
-		DensityFunction maskingSphere = FocusedDensityFunction.fromPos(hillCenter.below(Mth.ceil(radius * 0.1)), width * 0.5f + 5, width * 0.25f, 0).clamp(0, 1);
+		DensityFunction maskingSphere = ((DensityFunction) FocusedDensityFunction.fromPos(hillCenter.below(Mth.ceil(radius * 0.1)), width * 0.5f + 5, width * 0.25f, 0)).clamp(0, 1);
 
-		DensityFunction cutout = FocusedDensityFunction.fromPos(hillCenter.offset(-16, 0, -16), 23, -23, 0).clamp(-4, 0);
+		DensityFunction cutout = ((DensityFunction) FocusedDensityFunction.fromPos(hillCenter.offset(-16, 0, -16), 23, -23, 0)).clamp(-4, 0);
 
 		DensityFunction hillMasked = DensityFunctions.mul(maskingSphere, hollowHill);
 

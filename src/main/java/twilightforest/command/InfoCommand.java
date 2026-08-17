@@ -83,7 +83,7 @@ public class InfoCommand {
 
 			if (!spawnList.isEmpty()) {
 				source.sendSuccess(() -> Component.translatable("commands.tffeature.structure.spawn_list").withStyle(ChatFormatting.UNDERLINE), false);
-				spawnList.forEach(entry -> source.sendSuccess(() -> Component.translatable("commands.tffeature.structure.spawn_info", entry.type().getDescription().getString(), entry.minCount()), false));
+				spawnList.forEach(entry -> source.sendSuccess(() -> Component.translatable("commands.tffeature.structure.spawn_info", entry.type().getDescription().getString(), entry.count().minInclusive()), false));
 			}} else {
 			source.sendSuccess(() -> Component.translatable("commands.tffeature.structure.outside").withStyle(ChatFormatting.BOLD, ChatFormatting.RED), false);
 		}

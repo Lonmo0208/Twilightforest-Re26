@@ -9,25 +9,29 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import twilightforest.block.FallenLeavesBlock;
 import twilightforest.init.TFBlocks;
 
-public class FallenLeavesFeature extends Feature<NoneFeatureConfiguration> {
+public class FallenLeavesFeature implements Feature {
 
-	public FallenLeavesFeature(Codec<NoneFeatureConfiguration> config) {
-		super(config);
+	public FallenLeavesFeature() {
+	}
+
+	@Override
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.levelgen.feature.Feature> codec() {
+		return com.mojang.serialization.MapCodec.unit(this);
 	}
 
 	private final BlockState state = TFBlocks.FALLEN_LEAVES.defaultBlockState();
 
 	@Override
-	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
-		WorldGenLevel level = ctx.level();
-		BlockPos position = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, ctx.origin());
-		RandomSource rand = ctx.random();
+	public boolean place(net.minecraft.world.level.WorldGenLevel level, net.minecraft.world.level.chunk.ChunkGenerator chunkGenerator, net.minecraft.util.RandomSource random, net.minecraft.core.BlockPos pos) {
+		// ===== 26.3 过渡变量：原 ctx 引用迁移 =====
+		@SuppressWarnings("unused") Object _cfg = null; /* _cfg 原本从此处取，现为 Feature 字段 TODO */
+		BlockPos position = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, pos);
+		RandomSource rand = random;
 
 		if (this.canPlace(position, level)) {
 			if (!level.getFluidState(position.below()).isEmpty()) {

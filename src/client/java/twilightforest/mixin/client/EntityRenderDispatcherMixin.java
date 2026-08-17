@@ -62,18 +62,19 @@ public class EntityRenderDispatcherMixin {
 				this.equipmentAssets,
 				this.atlasManager,
 				Minecraft.getInstance().font,
-				this.playerSkinRenderCache
+				this.playerSkinRenderCache,
+				Minecraft.getInstance().getPalettedTextureManager()
 			)
 		);
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
-	private <E extends Entity> void tf$redirectPartEntityShouldRender(E entity, Frustum frustum, double x, double y, double z, CallbackInfoReturnable<Boolean> cir) {
+	private <E extends Entity> void tf$redirectPartEntityShouldRender(E entity, Frustum frustum, double x, double y, double z, float partialTick, CallbackInfoReturnable<Boolean> cir) {
 		if (entity instanceof TFPart<?> part) {
 			EntityRenderer partRenderer = BakedMultiPartRenderers.lookup(part.renderer());
 			if (partRenderer != null) {
-				cir.setReturnValue(partRenderer.shouldRender(entity, frustum, x, y, z));
+				cir.setReturnValue(partRenderer.shouldRender(entity, frustum, x, y, z, partialTick));
 			}
 			// If not found in BakedMultiPartRenderers, let the standard Fabric registry handle it
 		}

@@ -23,7 +23,7 @@ public class ItemModelLayerHelper {
 			public QuadCollection compute(ModelBaker modelBakery) {
 				QuadCollection.Builder builder = new QuadCollection.Builder();
 				BakedQuad.MaterialInfo materialInfo = modelBakery.interner()
-					.materialInfo(BakedQuad.MaterialInfo.of(material, material.sprite().transparency(), layerIndex, true, 0));
+					.materialInfo(BakedQuad.MaterialInfo.of(material, material.sprite().transparency(), layerIndex, null, 0));
 				bakeExtrudedSprite(builder, modelBakery.interner(), modelState, materialInfo);
 				return builder.build();
 			}

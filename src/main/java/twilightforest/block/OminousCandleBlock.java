@@ -45,10 +45,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class OminousCandleBlock extends BaseEntityBlock {
-	public static final MapCodec<OminousCandleBlock> CODEC = RecordCodecBuilder.mapCodec(
-		app -> app.group(BuiltInRegistries.BLOCK.byNameCodec().fieldOf("candle").forGetter(block -> block.candle), propertiesCodec())
-			.apply(app, OminousCandleBlock::new)
-	);
 
 	private static final VoxelShape ONE_AABB = Block.box(7.0, 0.0, 7.0, 9.0, 6.0, 9.0);
 	private static final VoxelShape TWO_AABB = Block.box(5.0, 0.0, 6.0, 11.0, 6.0, 9.0);
@@ -96,10 +92,7 @@ public class OminousCandleBlock extends BaseEntityBlock {
 		this.candle = candle;
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {

@@ -2,14 +2,14 @@ package twilightforest.world.components.structures.placements;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
-import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
-import twilightforest.init.TFStructurePlacementTypes;
 import twilightforest.util.landmarks.LegacyLandmarkPlacements;
 
 import java.util.Optional;
@@ -18,7 +18,7 @@ import java.util.Optional;
  * Filters possible placements to only chunks actually demarcated to generate a Twilight Forest landmark structure
  * Does not filter for biome. That's for the structure's config to handle.
  */
-public class LandmarkGridPlacement extends StructurePlacement {
+public class LandmarkGridPlacement implements StructurePlacement {
 
 	public static final MapCodec<LandmarkGridPlacement> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 		ResourceKey.codec(Registries.STRUCTURE).optionalFieldOf("structure_grid_lock").forGetter(p -> p.landmark)
@@ -32,13 +32,11 @@ public class LandmarkGridPlacement extends StructurePlacement {
 	}
 
 	public LandmarkGridPlacement(Optional<ResourceKey<Structure>> landmark) {
-		super(Vec3i.ZERO, FrequencyReductionMethod.DEFAULT, 1f, 0, Optional.empty()); // None of these params matter except for possibly flat-world or whatever
-
 		this.landmark = landmark;
 	}
 
 	@Override
-	protected boolean isPlacementChunk(ChunkGeneratorStructureState state, int chunkX, int chunkZ) {
+	public boolean isStructureChunk(ChunkGeneratorStructureState state, int chunkX, int chunkZ) {
 		if (!LegacyLandmarkPlacements.chunkHasLandmarkCenter(chunkX, chunkZ))
 			return false;
 
@@ -46,7 +44,17 @@ public class LandmarkGridPlacement extends StructurePlacement {
 	}
 
 	@Override
-	public StructurePlacementType<?> type() {
-		return TFStructurePlacementTypes.GRID_LANDMARK_PLACEMENT_TYPE;
+	public Vec3i locateOffset() {
+		return Vec3i.ZERO;
+	}
+
+	@Override
+	public BlockPos getLocatePos(ChunkPos chunkPos) {
+		return chunkPos.getWorldPosition();
+	}
+
+	@Override
+	public MapCodec<? extends StructurePlacement> codec() {
+		return CODEC;
 	}
 }

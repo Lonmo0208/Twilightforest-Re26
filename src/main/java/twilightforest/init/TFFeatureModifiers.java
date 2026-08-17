@@ -1,11 +1,11 @@
 package twilightforest.init;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
-import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import twilightforest.TwilightForestMod;
 import twilightforest.world.components.feature.trees.treeplacers.*;
 import twilightforest.world.components.placements.AvoidLandmarkModifier;
@@ -25,9 +25,9 @@ public final class TFFeatureModifiers {
 	public static final TreeDecoratorType<TreeRootsDecorator> TREE_ROOTS = new TreeDecoratorType<>(TreeRootsDecorator.CODEC);
 	public static final TreeDecoratorType<DangleFromTreeDecorator> DANGLING_DECORATOR = new TreeDecoratorType<>(DangleFromTreeDecorator.CODEC);
 
-	public static final PlacementModifierType<AvoidLandmarkModifier> NO_STRUCTURE = () -> AvoidLandmarkModifier.CODEC;
-	public static final PlacementModifierType<ChunkCenterModifier> CHUNK_CENTERER = () -> ChunkCenterModifier.CODEC;
-	public static final PlacementModifierType<ChunkBlanketingModifier> CHUNK_BLANKETING = () -> ChunkBlanketingModifier.CODEC;
+	public static final MapCodec<AvoidLandmarkModifier> NO_STRUCTURE = AvoidLandmarkModifier.CODEC;
+	public static final MapCodec<ChunkCenterModifier> CHUNK_CENTERER = ChunkCenterModifier.CODEC;
+	public static final MapCodec<ChunkBlanketingModifier> CHUNK_BLANKETING = ChunkBlanketingModifier.CODEC;
 
 	public static void init() {
 		Registry.register(BuiltInRegistries.TRUNK_PLACER_TYPE, TwilightForestMod.prefix("branching_trunk_placer"), TRUNK_BRANCHING);

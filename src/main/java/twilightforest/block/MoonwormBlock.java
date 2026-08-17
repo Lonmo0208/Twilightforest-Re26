@@ -26,17 +26,12 @@ import twilightforest.loot.TFLootTables;
 
 public class MoonwormBlock extends CritterBlock implements SimpleWaterloggedBlock {
 
-	public static final MapCodec<MoonwormBlock> CODEC = simpleCodec(MoonwormBlock::new);
-
 	public MoonwormBlock(BlockBehaviour.Properties properties) {
 		super(properties);
 		this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false));
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

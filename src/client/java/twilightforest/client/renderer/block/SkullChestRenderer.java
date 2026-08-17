@@ -53,7 +53,7 @@ public class SkullChestRenderer<T extends BlockEntity & LidBlockEntity> implemen
 		lidRotation = 1.0F - lidRotation;
 		lidRotation = 1.0F - lidRotation * lidRotation * lidRotation;
 
-		collector.submitModel(this.model, lidRotation, stack, this.model.renderType(state.texture), state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
+		collector.submitModel(this.model, lidRotation, stack, this.model.renderType(state.texture), state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 		stack.popPose();
 	}
 

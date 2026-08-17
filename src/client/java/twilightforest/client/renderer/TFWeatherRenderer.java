@@ -76,7 +76,7 @@ public class TFWeatherRenderer {
 			public RenderType apply(Identifier texture) {
 				return RenderType.create(
 					"tf_weather",
-					RenderSetup.builder(RenderPipelines.WEATHER_DEPTH_WRITE)
+					RenderSetup.builder(RenderPipelines.WEATHER)
 						.withTexture("Sampler0", texture)
 						.createRenderSetup()
 				);

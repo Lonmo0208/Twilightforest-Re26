@@ -5,8 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import twilightforest.TwilightForestMod;
 import twilightforest.world.registration.biomes.BiomeHelper;
 
@@ -49,7 +48,7 @@ public class TFBiomes {
 
 	public static void bootstrap(BootstrapContext<Biome> context) {
 		HolderGetter<PlacedFeature> featureGetter = context.lookup(Registries.PLACED_FEATURE);
-		HolderGetter<ConfiguredWorldCarver<?>> carverGetter = context.lookup(Registries.CONFIGURED_CARVER);
+		HolderGetter<WorldCarver> carverGetter = context.lookup(Registries.CARVER);
 		context.register(FOREST, BiomeHelper.twilightForest(featureGetter, carverGetter).build());
 		context.register(DENSE_FOREST, BiomeHelper.denseForest(featureGetter, carverGetter).build());
 		context.register(FIREFLY_FOREST, BiomeHelper.fireflyForest(featureGetter, carverGetter).build());

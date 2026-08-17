@@ -84,7 +84,7 @@ public class TFChestRenderer<T extends ChestBlockEntity> extends ChestRenderer<T
 			open = 1.0F - open * open * open;
 			ChestModel model = this.models.select(state.type);
 			submitNodeCollector.submitModel(
-				model, open, poseStack, state.lightCoords, OverlayTexture.NO_OVERLAY, -1, customSprite, this.sprites, 0, state.breakProgress
+				model, open, poseStack, state.lightCoords, OverlayTexture.NO_OVERLAY, -1, customSprite, this.sprites, 0
 			);
 			poseStack.popPose();
 		} else {

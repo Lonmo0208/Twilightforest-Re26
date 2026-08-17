@@ -106,7 +106,7 @@ public class ToolEvents {
 
 				player.setYRot(living.getYRot());
 				player.teleportTo(living.getX(), living.getY(), living.getZ());
-				player.invulnerableTime = 40;
+				player.setInvulnerableTime(40);
 				player.level().broadcastEntityEvent(player, (byte) 46);
 				if (living.isPassenger() && living.getVehicle() != null) {
 					player.startRiding(living.getVehicle());
@@ -144,7 +144,7 @@ public class ToolEvents {
 
 		player.setYRot(living.getYRot());
 		player.teleportTo(living.getX(), living.getY(), living.getZ());
-		player.invulnerableTime = 40;
+		player.setInvulnerableTime(40);
 		player.level().broadcastEntityEvent(player, (byte) 46);
 		if (living.isPassenger() && living.getVehicle() != null) {
 			player.startRiding(living.getVehicle());
@@ -269,7 +269,7 @@ public class ToolEvents {
 
 					for (BlockPos offsetPos : GiantBlock.getVolume(pos)) {
 						if (!offsetPos.equals(pos) && player.level().getBlockState(offsetPos).is(state.getBlock())) {
-							BlockPos newPos = new BlockPos(offsetPos);
+							BlockPos newPos = offsetPos.immutable();
 							player.level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, newPos, Block.getId(player.level().getBlockState(newPos)));
 							player.gameMode.destroyBlock(newPos);
 						}

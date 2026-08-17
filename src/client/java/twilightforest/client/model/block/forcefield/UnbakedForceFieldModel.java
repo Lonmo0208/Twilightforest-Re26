@@ -97,7 +97,7 @@ public class UnbakedForceFieldModel implements UnbakedModel {
 
 					BakedQuad quad = FaceBakery.bakeQuad(
 						baker, element.from(), element.to(), cuboidFace, baked,
-						side, modelState, element.rotation(), element.shade(), element.lightEmission()
+						side, modelState, element.rotation(), element.shadeDirectionOverride(), element.lightEmission()
 					);
 
 					Direction cullDir = face.cullForDirection();

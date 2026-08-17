@@ -1,11 +1,1 @@
-{
-  "collection": "museumcurator.collection.architecture",
-  "name": "museumcurator.architecture.twilightforest.aurorablocks",
-  "relativeTo": "museumcurator.architecture.twilightforest.castlebrick",
-  "placement": "before",
-  "items": [
-    "twilightforest:aurora_block",
-    "twilightforest:aurora_pillar",
-    "twilightforest:aurora_slab"
-  ]
-}
+"museumcurator.architecture.twilightforest.aurorablocks"

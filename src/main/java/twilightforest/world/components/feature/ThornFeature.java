@@ -14,28 +14,40 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import twilightforest.init.TFBlocks;
 import twilightforest.util.WorldUtil;
 import twilightforest.world.components.feature.config.ThornsConfig;
 
-public class ThornFeature extends Feature<ThornsConfig> {
-	public ThornFeature(Codec<ThornsConfig> config) {
-		super(config);
+public class ThornFeature implements Feature {
+	private final ThornsConfig config;
+
+	public ThornFeature() {
+		this(new ThornsConfig(7, 3, 3, 50));
+	}
+
+	public ThornFeature(ThornsConfig config) {
+		this.config = config;
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<ThornsConfig> ctx) {
-		WorldGenLevel world = ctx.level();
-		BlockPos pos = ctx.origin();
-		RandomSource rand = ctx.random();
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.levelgen.feature.Feature> codec() {
+		return ThornsConfig.MAP_CODEC.xmap(ThornFeature::new, f -> f.config);
+	}
+
+	@Override
+	public boolean place(net.minecraft.world.level.WorldGenLevel level, net.minecraft.world.level.chunk.ChunkGenerator chunkGenerator, net.minecraft.util.RandomSource random, net.minecraft.core.BlockPos pos) {
+		// 26.3: ThornsConfig stored as instance field (replaces FeaturePlaceContext.config())
+		ThornsConfig config = this.config;
+		WorldGenLevel world = level;
+		RandomSource rand = random;
 
 
 		// make a 3-5 long stack going up
 		int nextLength = 2 + rand.nextInt(4);
 		int maxLength = 2 + rand.nextInt(4) + rand.nextInt(4) + rand.nextInt(4);
 
-		placeThorns(world, rand, pos, nextLength, Direction.UP, maxLength, pos, ctx.config(), true);
+		placeThorns(world, rand, pos, nextLength, Direction.UP, maxLength, pos, config, true);
 
 		return true;
 	}

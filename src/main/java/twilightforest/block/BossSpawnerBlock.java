@@ -19,11 +19,6 @@ import twilightforest.enums.BossVariant;
 
 public class BossSpawnerBlock extends BaseEntityBlock {
 
-	public static final MapCodec<BossSpawnerBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			BossVariant.CODEC.fieldOf("variant").forGetter(o -> o.boss),
-			propertiesCodec())
-		.apply(instance, BossSpawnerBlock::new)
-	);
 	private final BossVariant boss;
 
 	public BossSpawnerBlock(BossVariant variant, BlockBehaviour.Properties properties) {
@@ -31,10 +26,7 @@ public class BossSpawnerBlock extends BaseEntityBlock {
 		this.boss = variant;
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {

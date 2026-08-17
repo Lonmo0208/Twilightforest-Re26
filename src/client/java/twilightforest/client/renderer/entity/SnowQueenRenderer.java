@@ -31,6 +31,7 @@ public class SnowQueenRenderer extends HumanoidMobRenderer<SnowQueen, SnowQueenR
 	@Override
 	public void extractRenderState(SnowQueen entity, SnowQueenRenderState state, float partialTick) {
 		super.extractRenderState(entity, state, partialTick);
+		state.attackTime = entity.getSwingAnimation(partialTick);
 		state.breathing = entity.isBreathing();
 		state.phase = entity.getCurrentPhase();
 	}

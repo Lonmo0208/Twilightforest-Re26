@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
@@ -67,8 +67,8 @@ public class LichTowerRoomDecor extends TwilightJigsawPiece implements SortableP
 				level.setBlock(pos, TFStructureHelper.randomPlant(random), Block.UPDATE_CLIENTS);
 			}
 			case "tree" -> {
-				ResourceKey<ConfiguredFeature<?, ?>> randomTree = TFStructureHelper.randomTree(random.nextInt(4));
-				Registry<ConfiguredFeature<?, ?>> featureRegistry = level.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+				ResourceKey<Feature> randomTree = TFStructureHelper.randomTree(random.nextInt(4));
+				Registry<Feature> featureRegistry = level.registryAccess().lookupOrThrow(Registries.FEATURE);
 				if (!featureRegistry.get(randomTree).get().value().place(level, chunkGen, random, pos)) {
 					level.setBlock(pos, TFStructureHelper.randomPlant(random), Block.UPDATE_CLIENTS);
 				}

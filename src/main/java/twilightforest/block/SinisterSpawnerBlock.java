@@ -39,16 +39,12 @@ import java.util.List;
 import static twilightforest.init.TFBlocks.KNIGHT_PHANTOM_BOSS_SPAWNER;
 
 public class SinisterSpawnerBlock extends BaseEntityBlock {
-	public static final MapCodec<SinisterSpawnerBlock> CODEC = simpleCodec(SinisterSpawnerBlock::new);
 
 	public SinisterSpawnerBlock(Properties properties) {
 		super(properties);
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

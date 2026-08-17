@@ -1,0 +1,9 @@
+{
+    "type":  "twilightforest:fallen_small_log",
+    "hollow":  {
+                   "id":  "twilightforest:hollow_birch_log_horizontal"
+               },
+    "normal":  {
+                   "id":  "minecraft:birch_log"
+               }
+}

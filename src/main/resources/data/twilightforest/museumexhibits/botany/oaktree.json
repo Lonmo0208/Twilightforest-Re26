@@ -1,13 +1,1 @@
-{
-  "collection": "museumcurator.collection.botany",
-  "name": "museumcurator.botany.oaktree",
-  "insertGroups": [
-    {
-      "relativeTo": "minecraft:oak_log",
-      "placement": "before",
-      "items": [
-        "twilightforest:hollow_oak_log"
-      ]
-    }
-  ]
-}
+"museumcurator.botany.oaktree"

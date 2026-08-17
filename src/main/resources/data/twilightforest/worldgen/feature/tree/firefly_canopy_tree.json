@@ -1,0 +1,158 @@
+{
+    "type":  "minecraft:tree",
+    "below_trunk_provider":  {
+                                 "type":  "minecraft:rule_based_state_provider",
+                                 "rules":  [
+                                               {
+                                                   "if_true":  {
+                                                                   "type":  "minecraft:not",
+                                                                   "predicate":  {
+                                                                                     "type":  "minecraft:matching_block_tag",
+                                                                                     "tag":  "minecraft:cannot_replace_below_tree_trunk"
+                                                                                 }
+                                                               },
+                                                   "then":  {
+                                                                "type":  "minecraft:simple_state_provider",
+                                                                "state":  "minecraft:dirt"
+                                                            }
+                                               }
+                                           ]
+                             },
+    "decorators":  [
+                       {
+                           "type":  "twilightforest:tree_roots",
+                           "additional_random_strands":  1,
+                           "base_strand_count":  3,
+                           "ground_roots_provider":  {
+                                                         "type":  "minecraft:weighted_state_provider",
+                                                         "entries":  [
+                                                                         {
+                                                                             "data":  "twilightforest:root_block",
+                                                                             "weight":  6
+                                                                         },
+                                                                         {
+                                                                             "data":  "twilightforest:liveroot_block",
+                                                                             "weight":  1
+                                                                         }
+                                                                     ]
+                                                     },
+                           "rootPenetrability":  1,
+                           "root_length":  5,
+                           "y_offset":  0
+                       },
+                       {
+                           "type":  "twilightforest:trunkside_decorator",
+                           "deco_provider":  {
+                                                 "type":  "minecraft:simple_state_provider",
+                                                 "state":  {
+                                                               "id":  "twilightforest:firefly"
+                                                           }
+                                             },
+                           "placement_count":  2,
+                           "probability_of_placement":  1
+                       },
+                       {
+                           "type":  "twilightforest:trunkside_decorator",
+                           "deco_provider":  {
+                                                 "type":  "minecraft:simple_state_provider",
+                                                 "state":  {
+                                                               "id":  "twilightforest:firefly"
+                                                           }
+                                             },
+                           "placement_count":  4,
+                           "probability_of_placement":  0.5
+                       },
+                       {
+                           "type":  "twilightforest:dangle_from_tree_decorator",
+                           "attempts_minimum":  1,
+                           "baggage_provider":  {
+                                                    "entries":  [
+                                                                    {
+                                                                        "data":  {
+                                                                                     "id":  "twilightforest:firefly_jar"
+                                                                                 },
+                                                                        "weight":  10
+                                                                    },
+                                                                    {
+                                                                        "data":  {
+                                                                                     "id":  "twilightforest:cicada_jar"
+                                                                                 },
+                                                                        "weight":  1
+                                                                    }
+                                                                ]
+                                                },
+                           "base_length":  5,
+                           "minimum_required_length":  2,
+                           "random_add_attempts":  1,
+                           "random_add_length":  15,
+                           "rope_provider":  {
+                                                 "entries":  [
+                                                                 {
+                                                                     "data":  {
+                                                                                  "id":  "twilightforest:rope"
+                                                                              },
+                                                                     "weight":  3
+                                                                 },
+                                                                 {
+                                                                     "data":  {
+                                                                                  "id":  "minecraft:iron_chain"
+                                                                              },
+                                                                     "weight":  1
+                                                                 }
+                                                             ]
+                                             }
+                       }
+                   ],
+    "foliage_placer":  {
+                           "type":  "twilightforest:spheroid_foliage_placer",
+                           "horizontal_radius":  4.1231055,
+                           "offset":  0,
+                           "random_add_horizontal":  0,
+                           "random_add_vertical":  0,
+                           "shag_factor":  24,
+                           "vertical_filler_bias":  -0.2,
+                           "vertical_radius":  1.5
+                       },
+    "foliage_provider":  {
+                             "type":  "minecraft:simple_state_provider",
+                             "state":  {
+                                           "id":  "twilightforest:canopy_leaves"
+                                       }
+                         },
+    "ignore_vines":  true,
+    "minimum_size":  {
+                         "type":  "minecraft:two_layers_feature_size",
+                         "limit":  20,
+                         "lower_size":  1,
+                         "upper_size":  5
+                     },
+    "trunk_placer":  {
+                         "type":  "twilightforest:branching_trunk_placer",
+                         "base_height":  20,
+                         "branch_config":  {
+                                               "branch_provider":  {
+                                                                       "type":  "minecraft:simple_state_provider",
+                                                                       "state":  {
+                                                                                     "id":  "twilightforest:canopy_wood"
+                                                                                 }
+                                                                   },
+                                               "count_minimum":  3,
+                                               "downwards_pitch":  0.2,
+                                               "length":  10,
+                                               "random_add_count":  1,
+                                               "random_add_length":  1,
+                                               "spacing_yaw":  0.3
+                                           },
+                         "branch_start_offset_down":  12,
+                         "height_rand_a":  5,
+                         "height_rand_b":  5,
+                         "perpendicular_branches":  false,
+                         "prevent_exposed_root":  true
+                     },
+    "trunk_provider":  {
+                           "type":  "minecraft:simple_state_provider",
+                           "state":  {
+                                         "id":  "twilightforest:canopy_log"
+                                     }
+                       }
+}

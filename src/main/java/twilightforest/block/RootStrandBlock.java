@@ -1,5 +1,6 @@
 package twilightforest.block;
 
+import net.minecraft.world.level.block.BonemealSource;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,17 +17,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class RootStrandBlock extends TFPlantBlock implements BonemealableBlock {
 
-	public static final MapCodec<RootStrandBlock> CODEC = simpleCodec(RootStrandBlock::new);
 	private static final VoxelShape ROOT_SHAPE = box(2, 0, 2, 14, 16, 14);
 
 	public RootStrandBlock(Properties properties) {
 		super(properties);
 	}
 
-	@Override
-	protected MapCodec<? extends VegetationBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader reader, BlockPos pos) {
@@ -39,12 +36,12 @@ public class RootStrandBlock extends TFPlantBlock implements BonemealableBlock {
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(LevelReader getter, BlockPos pos, BlockState state) {
+	public boolean isValidBonemealTarget(LevelReader getter, BlockPos pos, BlockState state, BonemealSource source) {
 		return this.isBottomOpen(getter, pos);
 	}
 
 	@Override
-	public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
+	public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
 		return this.isBottomOpen(level, pos);
 	}
 
@@ -58,7 +55,7 @@ public class RootStrandBlock extends TFPlantBlock implements BonemealableBlock {
 	}
 
 	@Override
-	public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+	public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
 		BlockPos.MutableBlockPos mutable = pos.mutable();
 
 		do {

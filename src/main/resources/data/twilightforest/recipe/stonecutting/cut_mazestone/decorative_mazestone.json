@@ -1,7 +1,7 @@
 {
-  "type": "minecraft:stonecutting",
-  "ingredient": "twilightforest:cut_mazestone",
-  "result": {
-    "id": "twilightforest:decorative_mazestone"
-  }
+    "type":  "minecraft:stonecutting",
+    "ingredient":  "twilightforest:cut_mazestone",
+    "result":  {
+                   "id":  "twilightforest:decorative_mazestone"
+               }
 }

@@ -49,17 +49,17 @@ public class BiomeColorAlgorithms {
 	}
 
 	public static int darkForestCenterGrass(double x, double z) {
-		double noise = Biome.TEMPERATURE_NOISE.getValue(x * 0.0225D, z * 0.0225D, false); //TODO: Check
+		double noise = Biome.FROZEN_TEMPERATURE_NOISE.get(x * 0.0225D, 0.0D, z * 0.0225D); // 26.3: TEMPERATURE_NOISE renamed to FROZEN_TEMPERATURE_NOISE, Noise.get(x,y,z)
 		return noise < -0.2D ? 0x667540 : 0x554114;
 	}
 
 	public static int darkForestCenterFoliage(double x, double z) {
-		double noise = (Biome.TEMPERATURE_NOISE.getValue(x * 0.0225D, z * 0.0225D, false) + 1D) / 2D;
+		double noise = (Biome.FROZEN_TEMPERATURE_NOISE.get(x * 0.0225D, 0.0D, z * 0.0225D) + 1D) / 2D;
 		return noise < -0.1D ? 0xF9821E : 0xE94E14;
 	}
 
 	public static double spookyNoise(double x, double z) {
-		return (Biome.TEMPERATURE_NOISE.getValue(x * 0.0225D, z * 0.0225D, false) + 1D) / 2D;
+		return (Biome.FROZEN_TEMPERATURE_NOISE.get(x * 0.0225D, 0.0D, z * 0.0225D) + 1D) / 2D;
 	}
 
 	public static int spookyGrass(double x, double z) {

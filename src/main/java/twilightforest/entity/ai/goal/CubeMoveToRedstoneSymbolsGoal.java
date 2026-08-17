@@ -53,7 +53,7 @@ public class CubeMoveToRedstoneSymbolsGoal extends Goal {
 	 */
 	@Nullable
 	private BlockPos searchForRedstoneSymbol(RovingCube cube) {
-		BlockPos curPos = new BlockPos(cube.blockPosition());
+		BlockPos curPos = cube.blockPosition().immutable();
 
 		for (int x = -16; x < 16; x++) {
 			for (int z = -16; z < 16; z++) {

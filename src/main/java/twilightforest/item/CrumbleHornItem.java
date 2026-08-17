@@ -95,10 +95,10 @@ public class CrumbleHornItem extends Item {
 				if (living instanceof Player player) {
 					if (player.hasCorrectToolForDrops(state)) {
 						serverLevel.removeBlock(pos, false);
-						block.playerDestroy(serverLevel, player, pos, state, serverLevel.getBlockEntity(pos), ItemStack.EMPTY);
-						serverLevel.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
-						if (player instanceof ServerPlayer) {
-							player.awardStat(Stats.ITEM_USED.get(this));
+						if (player instanceof ServerPlayer serverPlayer) {
+							block.playerDestroy(serverLevel, serverPlayer, pos, state, serverLevel.getBlockEntity(pos), ItemStack.EMPTY);
+							serverLevel.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+							serverPlayer.awardStat(Stats.ITEM_USED.get(this));
 						}
 						return true;
 					}

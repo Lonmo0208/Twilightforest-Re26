@@ -1,22 +1,22 @@
 package twilightforest.client.renderer;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.BlendFactor;
-import com.mojang.blaze3d.platform.CompareOp;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.BlendFactor;
+import com.mojang.renderpearl.api.pipeline.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.renderer.BindGroupLayouts;
-import net.minecraft.client.renderer.RenderPipelines;
+
 import twilightforest.TwilightForestMod;
 
 public class TFRenderPipelines {
 
 	private static final BlendFunction SHADOW = new BlendFunction(BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA);
 
-	public static final RenderPipeline RED_THREAD = RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
+	public static final RenderPipeline RED_THREAD = RenderPipeline.builder()
 		.withLocation(TwilightForestMod.prefix("pipeline/red_thread"))
 		.withVertexShader(TwilightForestMod.prefix("pipeline/red_thread"))
 		.withFragmentShader(TwilightForestMod.prefix("pipeline/red_thread"))
@@ -27,7 +27,7 @@ public class TFRenderPipelines {
 		.withCull(false)
 		.build();
 
-	public static final RenderPipeline PROTECTION_BOX = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
+	public static final RenderPipeline PROTECTION_BOX = RenderPipeline.builder()
 		.withLocation("pipeline/energy_swirl")
 		.withVertexShader("core/entity")
 		.withFragmentShader("core/entity")
@@ -43,7 +43,7 @@ public class TFRenderPipelines {
 		.withDepthStencilState(DepthStencilState.DEFAULT)
 		.build();
 
-	public static final RenderPipeline SHADOW_CLONE = RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
+	public static final RenderPipeline SHADOW_CLONE = RenderPipeline.builder()
 		.withLocation("pipeline/entity_translucent_cull")
 		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
 		.withBindGroupLayout(BindGroupLayouts.SAMPLER1)

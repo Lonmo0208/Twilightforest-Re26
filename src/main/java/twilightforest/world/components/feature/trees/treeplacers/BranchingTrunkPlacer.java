@@ -10,7 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
@@ -49,13 +49,13 @@ public class BranchingTrunkPlacer extends TrunkPlacer {
 	}
 
 	@Override
-	public List<FoliagePlacer.FoliageAttachment> placeTrunk(WorldGenLevel worldReader, BiConsumer<BlockPos, BlockState> worldPlacer, RandomSource random, int height, BlockPos startPos, TreeConfiguration treeConfig) {
+	public List<FoliagePlacer.FoliageAttachment> placeTrunk(WorldGenLevel worldReader, BiConsumer<BlockPos, BlockState> worldPlacer, RandomSource random, int height, BlockPos startPos, TreeFeature treeConfig) {
 		List<FoliagePlacer.FoliageAttachment> leafAttachments = Lists.newArrayList();
 
 		if (this.preventExposedRoot) {
 			for (Direction direction : Direction.Plane.HORIZONTAL) {
 				if (worldReader.isStateAtPosition(startPos.below().relative(direction), BlockBehaviour.BlockStateBase::canBeReplaced)) {
-					worldPlacer.accept(startPos.below(), (BlockState)Function.identity().apply(treeConfig.trunkProvider.getState(worldReader, random, startPos.below())));
+					worldPlacer.accept(startPos.below(), treeConfig.trunkProvider().getState(worldReader, random, startPos.below()));
 					break;
 				}
 			}

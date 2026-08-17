@@ -112,8 +112,8 @@ public class ForceFieldModelBuilder {
 					partObj.add("rotation", rotation);
 				}
 
-				if (!part.shade()) {
-					partObj.addProperty("shade", part.shade());
+				if (part.shadeDirectionOverride() != null) {
+					partObj.addProperty("shade_direction", part.shadeDirectionOverride().getSerializedName());
 				}
 
 				if (part.lightEmission() != 0) {
@@ -310,7 +310,7 @@ public class ForceFieldModelBuilder {
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().build(), (direction, face) -> {
 					throw new IllegalArgumentException();
 				}, LinkedHashMap::new));
-			return new CuboidModelElement(this.from, this.to, faces, this.rotation == null ? null : this.rotation.build(), this.shade, this.light);
+			return new CuboidModelElement(this.from, this.to, faces, this.rotation == null ? null : this.rotation.build(), this.shade ? null : Direction.DOWN, this.light);
 		}
 
 		public ForceFieldModelBuilder end() {

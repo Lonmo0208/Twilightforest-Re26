@@ -1,6 +1,6 @@
 {
-  "values": [
-    "minecraft:spruce",
-    "twilightforest:canopy"
-  ]
+    "values":  [
+                   "minecraft:spruce",
+                   "twilightforest:canopy"
+               ]
 }

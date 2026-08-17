@@ -21,7 +21,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -266,7 +266,7 @@ public class EntityEvents {
 		if (source.getMsgId().equals("arrow") && trueSource instanceof Player player) {
 
 			if (player.getItemInHand(player.getUsedItemHand()).is(TFItems.TRIPLE_BOW)) {
-				living.invulnerableTime = 0;
+				living.setInvulnerableTime(0);
 			}
 		}
 	}
@@ -315,7 +315,7 @@ public class EntityEvents {
 
 				if (entity instanceof LivingEntity entityBlocking) {
 					if (entityBlocking.isBlocking() && entityBlocking.getUseItem().getUseDuration(entityBlocking) - entityBlocking.getUseItemRemainingTicks() <= TFConfig.shieldParryTicks) {
-						projectile.deflect(ProjectileDeflection.AIM_DEFLECT, entityBlocking, EntityReference.of(entityBlocking), true);
+						projectile.deflect(ProjectileDeflection.AIM_DEFLECT, entityBlocking, EntityReference.of(entityBlocking), true, projectile.getDeltaMovement().length());
 						event.setCanceled(true);
 					}
 				}
@@ -368,7 +368,7 @@ public class EntityEvents {
 						}
 					}
 					stack.consume(1, event.getEntity());
-					event.getEntity().swing(event.getHand());
+					event.getEntity().swing(event.getHand(), net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 					if (event.getEntity() instanceof ServerPlayer)
 						event.getEntity().awardStat(TFStats.SKULL_CANDLES_MADE);
 					//this is to prevent anything from being placed afterwords
@@ -579,7 +579,7 @@ public class EntityEvents {
 	}
 
 	private void stopEndermenFromGrabbingBlocksInTF(FabricEvents.EntityJoinLevelEvent event) {
-		if (event.getEntity() instanceof EnderMan enderMan) {
+		if (event.getEntity() instanceof Enderman enderMan) {
 			var goalSelector = ((TFEntityExtensions) enderMan).twilightforest$getGoalSelector();
 			goalSelector.getAvailableGoals().stream()
 				.filter(g -> g.getGoal().getClass().getName().contains("EndermanTakeBlockGoal"))
@@ -714,9 +714,9 @@ public class EntityEvents {
 	static class ExtendedEndermanTakeBlockGoal extends Goal {
 
 		private final Goal delegate;
-		private final EnderMan enderman;
+		private final Enderman enderman;
 
-		public ExtendedEndermanTakeBlockGoal(Goal delegate, EnderMan enderman) {
+		public ExtendedEndermanTakeBlockGoal(Goal delegate, Enderman enderman) {
 			this.delegate = delegate;
 			this.enderman = enderman;
 		}

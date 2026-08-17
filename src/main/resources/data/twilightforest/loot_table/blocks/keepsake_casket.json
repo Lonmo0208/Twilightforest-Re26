@@ -1,22 +1,18 @@
 {
-    "type": "minecraft:block",
-    "pools": [
-        {
-            "bonus_rolls": 0.0,
-            "entries": [
-                
-            ],
-            "functions": [
-                {
-                    "block": "twilightforest:keepsake_casket",
-                    "function": "minecraft:copy_state",
-                    "properties": [
-                        "damage"
-                    ]
-                }
-            ],
-            "rolls": 1.0
-        }
-    ],
-    "random_sequence": "twilightforest:blocks/keepsake_casket"
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [],
+      "modifier": {
+        "block": "twilightforest:keepsake_casket",
+        "properties": [
+          "damage"
+        ],
+        "type": "minecraft:copy_state"
+      },
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "twilightforest:blocks/keepsake_casket"
 }

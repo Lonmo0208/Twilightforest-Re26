@@ -2,6 +2,7 @@ package twilightforest.world.components.processors;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UpdateMarkingProcessor implements StructureProcessor {
-	public static final MapCodec<UpdateMarkingProcessor> MAP_CODEC = Block.CODEC.codec().listOf().xmap(UpdateMarkingProcessor::new, p -> p.blocksToMarkUpdate).fieldOf("mark_updates");
+	public static final MapCodec<UpdateMarkingProcessor> MAP_CODEC = BuiltInRegistries.BLOCK.byNameCodec().listOf().xmap(UpdateMarkingProcessor::new, p -> p.blocksToMarkUpdate).fieldOf("mark_updates");
 
 	private final List<Block> blocksToMarkUpdate;
 

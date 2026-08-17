@@ -5,14 +5,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class WeightedListFeatureConfig implements FeatureConfiguration {
+public class WeightedListFeatureConfig  {
 	public static final Codec<WeightedListFeatureConfig> CODEC = WeightedList.codec(PlacedFeature.CODEC).xmap(WeightedListFeatureConfig::new, c -> c.randomFeatures);
 
 	private final WeightedList<Holder<PlacedFeature>> randomFeatures;
@@ -25,14 +24,13 @@ public class WeightedListFeatureConfig implements FeatureConfiguration {
 		return this.randomFeatures.getRandom(random);
 	}
 
-	@Override
-	public Stream<Holder<ConfiguredFeature<?, ?>>> getSubFeatures() {
+	public Stream<Holder<Feature>> getSubFeatures() {
 		return this.randomFeatures.unwrap()
 			.stream()
 			.map(Weighted::value)
 			.map(Holder::value)
 			.map(PlacedFeature::feature)
 			.map(Holder::value)
-			.flatMap(ConfiguredFeature::getSubFeatures);
+			.flatMap(Feature::getSubFeatures);
 	}
 }

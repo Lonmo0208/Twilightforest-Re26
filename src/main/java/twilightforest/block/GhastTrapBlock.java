@@ -29,17 +29,13 @@ public class GhastTrapBlock extends BaseEntityBlock {
 	public static final int ACTIVATE_EVENT = 0;
 	public static final int DEACTIVATE_EVENT = 1;
 	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
-	public static final MapCodec<GhastTrapBlock> CODEC = simpleCodec(GhastTrapBlock::new);
 
 	public GhastTrapBlock(Properties properties) {
 		super(properties);
 		this.registerDefaultState(this.getStateDefinition().any().setValue(ACTIVE, false));
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
@@ -134,7 +134,7 @@ public class StrongholdAtriumComponent extends KnightStrongholdComponent {
 		BlockPos pos = getBlockPosWithOffset(x, y, z);
 
 		if (sbb.isInside(pos)) {
-			ResourceKey<ConfiguredFeature<?, ?>> treeGen = switch (treeNum) {
+			ResourceKey<Feature> treeGen = switch (treeNum) {
 				case 1 ->
 					// jungle tree
 					TreeFeatures.JUNGLE_TREE;
@@ -150,7 +150,7 @@ public class StrongholdAtriumComponent extends KnightStrongholdComponent {
 			// grow a tree
 
 			for (int i = 0; i < 100; i++) {
-				if (world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).get(treeGen).get().value().place(world, generator, world.getRandom(), pos)) {
+				if (world.registryAccess().lookupOrThrow(Registries.FEATURE).get(treeGen).get().value().place(world, generator, world.getRandom(), pos)) {
 					break;
 				}
 			}

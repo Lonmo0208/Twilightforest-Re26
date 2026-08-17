@@ -1,16 +1,16 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "|": "#c:rods/wooden",
-    "T": "twilightforest:torchberries"
-  },
-  "pattern": [
-    "T",
-    "|"
-  ],
-  "result": {
-    "count": 5,
-    "id": "minecraft:torch"
-  }
+    "type":  "minecraft:crafting_shaped",
+    "category":  "misc",
+    "key":  {
+                "|":  "#c:rods/wooden",
+                "T":  "twilightforest:torchberries"
+            },
+    "pattern":  [
+                    "T",
+                    "|"
+                ],
+    "result":  {
+                   "count":  5,
+                   "id":  "minecraft:torch"
+               }
 }

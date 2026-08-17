@@ -36,7 +36,7 @@ public abstract class ProjectileMixin {
 		if (entityBlocking.isBlocking()
 			&& entityBlocking.getUseItem().getUseDuration(entityBlocking) - entityBlocking.getUseItemRemainingTicks() <= TFConfig.shieldParryTicks) {
 			// Use AIM_DEFLECT so the projectile bounces back toward the shooter
-			self.deflect(ProjectileDeflection.AIM_DEFLECT, entityBlocking, EntityReference.of(entityBlocking), true);
+			self.deflect(ProjectileDeflection.AIM_DEFLECT, entityBlocking, EntityReference.of(entityBlocking), true, self.getDeltaMovement().length());
 			ci.cancel(); // Prevent the original onHit logic from running
 		}
 	}

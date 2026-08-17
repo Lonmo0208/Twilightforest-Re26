@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -30,10 +30,10 @@ import java.util.function.Function;
 
 public record CanopyBlanketProcessor(HolderSet<Biome> biomesForApplication, BlockStateProvider blockState, int height, HolderSet<Structure> avoidStructures) implements ChunkBlanketProcessor {
 	public static final MapCodec<CanopyBlanketProcessor> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-		RegistryCodecs.homogeneousList(Registries.BIOME, true).fieldOf("biome_mask").forGetter(CanopyBlanketProcessor::biomesForApplication),
+		RegistryCodecs.holderSet(Registries.BIOME, true).fieldOf("biome_mask").forGetter(CanopyBlanketProcessor::biomesForApplication),
 		BlockStateProvider.CODEC.fieldOf("block").forGetter(CanopyBlanketProcessor::blockState),
 		Codec.INT.fieldOf("height").forGetter(CanopyBlanketProcessor::height),
-		RegistryCodecs.homogeneousList(Registries.STRUCTURE, true).fieldOf("avoid_structures").forGetter(CanopyBlanketProcessor::avoidStructures)
+		RegistryCodecs.holderSet(Registries.STRUCTURE, true).fieldOf("avoid_structures").forGetter(CanopyBlanketProcessor::avoidStructures)
 	).apply(inst, CanopyBlanketProcessor::new));
 
 	@Override

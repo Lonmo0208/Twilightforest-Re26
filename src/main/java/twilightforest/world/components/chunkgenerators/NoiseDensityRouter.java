@@ -5,9 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
-import net.minecraft.resources.RegistryFileCodec;
-import net.minecraft.util.KeyDispatchDataCodec;
-import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.core.registries.codec.RegistryFileCodec;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 import org.jetbrains.annotations.NotNull;
 import twilightforest.TFRegistries;
 import twilightforest.world.components.layer.BiomeDensitySource;
@@ -15,14 +14,13 @@ import twilightforest.world.components.layer.BiomeDensitySource;
 /**
  * A DensityFunction implementation that enables Biomes to influence terrain formulations, if in the noise chunk generator.
  */
-public class NoiseDensityRouter implements DensityFunction.SimpleFunction {
+public class NoiseDensityRouter implements DensityFunction {
 	public static final MapCodec<NoiseDensityRouter> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 		RegistryFileCodec.create(TFRegistries.Keys.BIOME_TERRAIN_DATA, BiomeDensitySource.CODEC, false).fieldOf("terrain_source").forGetter(NoiseDensityRouter::biomeDensitySourceHolder),
 		Codec.doubleRange(-64, 0).fieldOf("lower_density_bound").forGetter(NoiseDensityRouter::lowerDensityBound),
 		Codec.doubleRange(0, 64).fieldOf("upper_density_bound").forGetter(NoiseDensityRouter::upperDensityBound),
 		Codec.doubleRange(0, 32).orElse(8.0).fieldOf("depth_scalar").forGetter(NoiseDensityRouter::depthScalar)
 	).apply(inst, NoiseDensityRouter::new));
-	public static final KeyDispatchDataCodec<NoiseDensityRouter> KEY_CODEC = KeyDispatchDataCodec.of(CODEC);
 
 	private final Holder<BiomeDensitySource> biomeDensitySourceHolder;
 	private final double lowerDensityBound;
@@ -42,8 +40,8 @@ public class NoiseDensityRouter implements DensityFunction.SimpleFunction {
 	}
 
 	@Override
-	public double compute(FunctionContext context) {
-		return this.computeTerrain(context).scale;
+	public float compute(FunctionContext context) {
+		return (float) this.computeTerrain(context).scale;
 	}
 
 	// Our default method for obtaining column samples of the biome source.
@@ -54,18 +52,30 @@ public class NoiseDensityRouter implements DensityFunction.SimpleFunction {
 	}
 
 	@Override
-	public double minValue() {
-		return this.lowerDensityBound;
+	public net.minecraft.util.Interval range() {
+		return net.minecraft.util.Interval.of((float) this.lowerDensityBound, (float) this.upperDensityBound);
 	}
 
 	@Override
-	public double maxValue() {
-		return this.upperDensityBound;
+	public MapCodec<? extends DensityFunction> codec() {
+		return CODEC;
 	}
 
 	@Override
-	public KeyDispatchDataCodec<? extends DensityFunction> codec() {
-		return KEY_CODEC;
+	public int domainAxes() {
+		return DensityFunction.ALL_AXES;
+	}
+
+	@Override
+	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
+		for (int i = 0; i < ds.length; i++) {
+			ds[i] = this.compute(contextProvider.forIndex(i));
+		}
+	}
+
+	@Override
+	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
+		return this;
 	}
 
 	public Holder<BiomeDensitySource> biomeDensitySourceHolder() {
@@ -127,5 +137,17 @@ public class NoiseDensityRouter implements DensityFunction.SimpleFunction {
 
 			return dataColumn;
 		}
+		@Override
+	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
+		for (int i = 0; i < ds.length; i++) {
+			ds[i] = this.compute(contextProvider.forIndex(i));
+		}
 	}
+
+	@Override
+	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
+		return this;
+	}
+
+}
 }

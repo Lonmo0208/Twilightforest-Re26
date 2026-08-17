@@ -68,7 +68,7 @@ public class LichAbsorbMinionsGoal extends Goal {
 			this.lich.makeMagicTrail(minion.getEyePosition(), this.lich.getEyePosition(), 1.0F, 0.5F, 0.5F);
 			//heal some health
 			this.lich.heal(minion.getHealth());
-			this.lich.swing(InteractionHand.MAIN_HAND);
+			this.lich.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 			this.lich.setPopCooldown(40);
 			this.lich.gameEvent(GameEvent.ENTITY_DIE);
 		}

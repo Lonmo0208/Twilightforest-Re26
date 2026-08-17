@@ -1,8 +1,1 @@
-{
-  "collection": "museumcurator.collection.equipment",
-  "name": "museumcurator.equipment.hoes",
-  "items": [
-    "twilightforest:ironwood_hoe",
-    "twilightforest:steeleaf_hoe"
-  ]
-}
+"museumcurator.equipment.hoes"

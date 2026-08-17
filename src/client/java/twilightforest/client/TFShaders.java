@@ -1,25 +1,25 @@
 package twilightforest.client;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.BindGroupLayout;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.CompareOp;
-import com.mojang.blaze3d.shaders.UniformType;
-import com.mojang.blaze3d.systems.RenderPass;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.CompareOp;
+import com.mojang.renderpearl.api.pipeline.UniformType;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.*;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.DynamicUniformStorage;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.DynamicGpuDataStorage;
+
 import net.minecraft.world.phys.Vec3;
 import twilightforest.TwilightForestMod;
 
@@ -30,21 +30,16 @@ import java.util.OptionalInt;
 
 public class TFShaders {
 
-	public static RenderPipeline RED_THREAD;
 	public static AuroraShaderInstance AURORA;
 
 	public static void registerRenderPipelines() {
-		RED_THREAD = RenderPipeline.builder(RenderPipelines.BLOCK_SNIPPET)
-			.withLocation(TwilightForestMod.prefix("red_thread/red_thread"))
-			.build();
-
 		// Aurora pipeline: TRANSLUCENT blending for fogged sky effect, with depth test enabled
 		// so the aurora correctly culls behind solid terrain (buildings, mountains), but
 		// depth writes disabled (writeDepth=false) because it is a semi-transparent sky
 		// layer and should not prevent subsequent translucent geometry from rendering.
 		// This mirrors the official implementation: RenderSystem.enableDepthTest() paired
 		// with RenderSystem.depthMask(false)-style behavior for sky effects.
-		RenderPipeline auroraPipeline = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+		RenderPipeline auroraPipeline = RenderPipeline.builder()
 			.withLocation(TwilightForestMod.prefix("aurora/aurora"))
 			.withVertexShader(TwilightForestMod.prefix("core/aurora/aurora"))
 			.withFragmentShader(TwilightForestMod.prefix("core/aurora/aurora"))
@@ -65,7 +60,7 @@ public class TFShaders {
 	 *     vec3 positionContext;
 	 * };
 	 */
-	public record AuroraSettings(int seedContext, float posX, float posY, float posZ) implements DynamicUniformStorage.DynamicUniform {
+	public record AuroraSettings(int seedContext, float posX, float posY, float posZ) implements DynamicGpuDataStorage.DynamicGpuData {
 		public static final int SIZE = new Std140SizeCalculator()
 			.putInt()      // seedContext: 4 bytes
 			.putVec3()     // positionContext: 16 bytes
@@ -81,7 +76,7 @@ public class TFShaders {
 
 	public static class AuroraShaderInstance {
 		private final RenderPipeline pipeline;
-		private DynamicUniformStorage<AuroraSettings> auroraUniforms;
+		private DynamicGpuDataStorage<AuroraSettings> auroraUniforms;
 		private final RenderSystem.AutoStorageIndexBuffer sequentialBuffer;
 		private GpuBuffer vertexBuffer;
 		private int vertexCount;
@@ -96,7 +91,7 @@ public class TFShaders {
 
 		private void ensureInitialized() {
 			if (!initialized && RenderSystem.tryGetDevice() != null) {
-				this.auroraUniforms = new DynamicUniformStorage<>("TF Aurora UBO", AuroraSettings.SIZE, 2);
+				this.auroraUniforms = new DynamicGpuDataStorage<>("TF Aurora UBO", AuroraSettings.SIZE, GpuBuffer.USAGE_UNIFORM, 2);
 				buildQuadBuffer();
 				initialized = true;
 			}
@@ -129,7 +124,7 @@ public class TFShaders {
 			GpuTextureView depthTexture = mc.gameRenderer.mainRenderTarget().getDepthTextureView();
 
 			AuroraSettings settings = new AuroraSettings(seed, x, y, z);
-			GpuBufferSlice auroraSlice = auroraUniforms.writeUniform(settings);
+			GpuBufferSlice auroraSlice = auroraUniforms.writeData(settings);
 
 			// The aurora quad is placed in world space (centered on the camera at y=256),
 			// so it must be transformed by the camera's view rotation matrix to appear in the sky.
@@ -145,7 +140,7 @@ public class TFShaders {
 			try (RenderPass renderPass = RenderSystem.getDevice()
 				.createCommandEncoder()
 				.createRenderPass(() -> "TF Aurora", colorTexture, Optional.empty(), depthTexture, OptionalDouble.empty())) {
-				renderPass.setPipeline(pipeline);
+				renderPass.setPipeline(RenderSystem.getCompiledPipeline(pipeline));
 				RenderSystem.bindDefaultUniforms(renderPass);
 				renderPass.setUniform("AuroraSettings", auroraSlice);
 				renderPass.setUniform("DynamicTransforms", dynamicTransforms);

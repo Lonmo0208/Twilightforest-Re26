@@ -12,12 +12,11 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import twilightforest.init.TFBlocks;
 import twilightforest.util.features.FeatureUtil;
 
-public class FallenHollowLogFeature extends Feature<NoneFeatureConfiguration> {
+public class FallenHollowLogFeature implements Feature {
 
 	final BlockState mossPatch = TFBlocks.MOSS_PATCH.defaultBlockState();
 	final BlockState oakLeaves = TFBlocks.TWILIGHT_OAK_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true);
@@ -26,15 +25,20 @@ public class FallenHollowLogFeature extends Feature<NoneFeatureConfiguration> {
 	final BlockState grass = Blocks.GRASS_BLOCK.defaultBlockState();
 	final BlockState firefly = TFBlocks.FIREFLY.defaultBlockState();
 
-	public FallenHollowLogFeature(Codec<NoneFeatureConfiguration> configIn) {
-		super(configIn);
+	public FallenHollowLogFeature() {
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
-		WorldGenLevel world = ctx.level();
-		BlockPos pos = ctx.origin();
-		RandomSource rand = ctx.random();
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.levelgen.feature.Feature> codec() {
+		return com.mojang.serialization.MapCodec.unit(this);
+	}
+
+	@Override
+	public boolean place(net.minecraft.world.level.WorldGenLevel level, net.minecraft.world.level.chunk.ChunkGenerator chunkGenerator, net.minecraft.util.RandomSource random, net.minecraft.core.BlockPos pos) {
+		// ===== 26.3 过渡变量：原 ctx 引用迁移 =====
+		@SuppressWarnings("unused") Object _cfg = null; /* _cfg 原本从此处取，现为 Feature 字段 TODO */
+		WorldGenLevel world = level;
+		RandomSource rand = random;
 
 		return rand.nextBoolean() ? makeLog4Z(world, rand, pos) : makeLog4X(world, rand, pos);
 	}

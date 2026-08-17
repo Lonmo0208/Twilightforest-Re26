@@ -161,7 +161,7 @@ public abstract class LandmarkStructure extends Structure implements DecorationC
 
 	@Override
 	public Optional<GenerationStub> findValidGenerationPoint(GenerationContext context) {
-		if (!(context.biomeSource() instanceof TFBiomeProvider twilightBiomeProvider))
+		if (!(context.biomeResolver() instanceof TFBiomeProvider twilightBiomeProvider))
 			return super.findValidGenerationPoint(context);
 
 		ChunkPos chunkPos = context.chunkPos();

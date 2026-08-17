@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 
 public class JarBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
-	public static final MapCodec<JarBlock> CODEC = simpleCodec(JarBlock::new);
+
 	private static final VoxelShape JAR = Block.box(3.0D, 0.0D, 3.0D, 13.0D, 14.0D, 13.0D);
 	private static final VoxelShape LID = Block.box(4.0D, 14.0D, 4.0D, 12.0D, 16.0D, 12.0D);
 	private static final VoxelShape AABB = Shapes.or(JAR, LID);
@@ -54,10 +54,7 @@ public class JarBlock extends BaseEntityBlock implements SimpleWaterloggedBlock 
 		this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false));
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {

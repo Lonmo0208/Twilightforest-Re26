@@ -265,7 +265,9 @@ public abstract class TFStructureComponentOld extends TFStructureComponent imple
 			world.setBlock(pos, Blocks.OAK_SIGN.defaultBlockState().setValue(StandingSignBlock.ROTATION, this.getOrientation().get2DDataValue() * 4), Block.UPDATE_CLIENTS);
 
 			if (world.getBlockEntity(pos) instanceof SignBlockEntity sign) {
-				sign.frontText = sign.frontText.setMessage(1, Component.literal(string0)).setMessage(2, Component.literal(string1));
+				// 26.3 TODO: SignText no longer has setMessage(int, MutableComponent) and SignBlockEntity.frontText is now private.
+				// Use the 26.3 API: SignText.asMutable().setLine(int, Component).asImmutable() via SignBlockEntity.updateText(...).
+				sign.updateText(text -> text.asMutable().setLine(1, Component.literal(string0)).setLine(2, Component.literal(string1)).asImmutable(), net.minecraft.world.level.block.entity.SignTextSlot.FRONT);
 			}
 		}
 	}

@@ -32,7 +32,7 @@ import twilightforest.init.TFSounds;
 import java.util.List;
 
 public class MasonJarBlock extends JarBlock implements SimpleWaterloggedBlock {
-	public static final MapCodec<MasonJarBlock> CODEC = simpleCodec(MasonJarBlock::new);
+
 	private static final int SLOT = 0;
 	private static final int ALL  = Integer.MAX_VALUE;
 
@@ -40,10 +40,7 @@ public class MasonJarBlock extends JarBlock implements SimpleWaterloggedBlock {
 		super(properties);
 	}
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+	
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

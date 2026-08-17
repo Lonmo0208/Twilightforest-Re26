@@ -2,6 +2,7 @@ package twilightforest.world.components.feature.trees;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -9,6 +10,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import twilightforest.init.TFBlocks;
 import twilightforest.util.RootPlacer;
 import twilightforest.util.features.FeatureLogic;
@@ -20,8 +22,21 @@ import java.util.function.BiConsumer;
 
 public class MegaOakTreeFeature extends CanopyTreeFeature {
 
-	public MegaOakTreeFeature(Codec<TFTreeFeatureConfig> config) {
+	public MegaOakTreeFeature() {
+	}
+
+	protected MegaOakTreeFeature(TFTreeFeatureConfig config) {
 		super(config);
+	}
+
+	@Override
+	public MapCodec<? extends Feature> codec() {
+		return TFTreeFeatureConfig.MAP_CODEC.xmap(MegaOakTreeFeature::new, f -> f.config);
+	}
+
+	@Override
+	protected TFTreeFeature create(TFTreeFeatureConfig config) {
+		return new MegaOakTreeFeature(config);
 	}
 
 	@Override

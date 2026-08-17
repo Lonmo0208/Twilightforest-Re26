@@ -132,7 +132,7 @@ public class UnbakedRoyalRagsModel {
 				CuboidFace face = this.baseFaces[direction.get2DDataValue()][quad];
 
 				baseQuads[direction.get2DDataValue()].add(FaceBakery.bakeQuad(
-					baker, from, to, face, baseMaterial, direction, state, null, true, 0
+					baker, from, to, face, baseMaterial, direction, state, null, null, 0
 				));
 			}
 		}
@@ -154,7 +154,7 @@ public class UnbakedRoyalRagsModel {
 					Material.Baked material = ConnectionLogic.values()[type].ordinal() == 0 ? woolMaterial : ctmMaterial;
 
 					quads[dir][quad][type] = FaceBakery.bakeQuad(
-						baker, from, to, face, material, Direction.values()[dir], state, null, true, 0
+						baker, from, to, face, material, Direction.values()[dir], state, null, null, 0
 					);
 				}
 			}
@@ -178,7 +178,7 @@ public class UnbakedRoyalRagsModel {
 
 					// TODO: Port to Fabric - FaceBakery.bakeGeometry was NeoForge-specific; using bakeQuad instead
 				BakedQuad bakedQuad = FaceBakery.bakeQuad(
-					baker, from, to, face, baseMaterial, direction, state, null, true, 0
+					baker, from, to, face, baseMaterial, direction, state, null, null, 0
 				);
 				Direction cullDir = face.cullForDirection();
 				if (cullDir != null) {

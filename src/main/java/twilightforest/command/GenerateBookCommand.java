@@ -37,7 +37,7 @@ public class GenerateBookCommand {
 					ItemStack book = hint.createHintBook(source.registryAccess());
 					if (!book.isEmpty()) {
 						if (!player.addItem(book)) {
-							player.drop(book, true);
+							player.drop(book, true, net.minecraft.util.Prediction.SERVER_ONLY);
 						}
 					}
 				}
@@ -47,13 +47,13 @@ public class GenerateBookCommand {
 				ItemStack book = hint.createHintBook(source.registryAccess());
 				if (!book.isEmpty()) {
 					if (!player.addItem(book)) {
-						player.drop(book, true);
+						player.drop(book, true, net.minecraft.util.Prediction.SERVER_ONLY);
 					}
 				}
 			} else {
 				ItemStack book = StructureHints.HintConfig.defaultBook();
 				if (!player.addItem(book)) {
-					player.drop(book, true);
+					player.drop(book, true, net.minecraft.util.Prediction.SERVER_ONLY);
 				}
 			}
 		}

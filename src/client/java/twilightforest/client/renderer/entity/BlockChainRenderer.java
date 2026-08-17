@@ -37,14 +37,14 @@ public class BlockChainRenderer extends EntityRenderer<ChainBlock, ChainBlockRen
 	public void submit(ChainBlockRenderState state, PoseStack stack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
 		super.submit(state, stack, submitNodeCollector, camera);
 		stack.pushPose();
-		RenderType foilRenderType = RenderTypes.glint();
+		RenderType foilRenderType = RenderTypes.patternedShieldGlint();
 		stack.mulPose(Axis.YP.rotationDegrees(state.yRot - 90.0F));
 		stack.mulPose(Axis.ZP.rotationDegrees(state.xRot));
 
 		stack.scale(-1.0F, -1.0F, 1.0F);
-		submitNodeCollector.order(0).submitModel(this.model, state, stack, this.model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+		submitNodeCollector.order(0).submitModel(this.model, state, stack, this.model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
 		if (state.isFoil) {
-			submitNodeCollector.order(1).submitModel(this.model, state, stack, foilRenderType, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+			submitNodeCollector.order(1).submitModel(this.model, state, stack, foilRenderType, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
 		}
 		stack.popPose();
 		if (state.chainStartPos != null) {
@@ -62,26 +62,26 @@ public class BlockChainRenderer extends EntityRenderer<ChainBlock, ChainBlockRen
 	}
 
 	@Override
-	protected AABB getBoundingBoxForCulling(ChainBlock chainBlock) {
+	protected AABB getBoundingBoxForCulling(ChainBlock chainBlock, float partialTick) {
 		if (chainBlock.getOwner() != null) {
-			AABB dis = super.getBoundingBoxForCulling(chainBlock);
+			AABB dis = super.getBoundingBoxForCulling(chainBlock, partialTick);
 			AABB owner = chainBlock.getOwner().getBoundingBox();
 			return dis.minmax(owner);
 		}
-		return super.getBoundingBoxForCulling(chainBlock);
+		return super.getBoundingBoxForCulling(chainBlock, partialTick);
 	}
 
 	public static void renderChain(boolean renderFoil, Vec3 offset, PoseStack stack, SubmitNodeCollector collector, int light, int outlineColor, ChainModel model) {
 		stack.pushPose();
-		RenderType foilRenderType = RenderTypes.glint();
+		RenderType foilRenderType = RenderTypes.patternedShieldGlint();
 
 		stack.translate(offset.x(), offset.y(), offset.z());
 
 		stack.scale(-1.0F, -1.0F, 1.0F);
-		collector.submitModel(model, Unit.INSTANCE, stack, model.renderType(TEXTURE), light, OverlayTexture.NO_OVERLAY, outlineColor, null);
+		collector.submitModel(model, Unit.INSTANCE, stack, model.renderType(TEXTURE), light, OverlayTexture.NO_OVERLAY, outlineColor);
 
 		if (renderFoil) {
-			collector.submitModel(model, Unit.INSTANCE, stack, foilRenderType, light, OverlayTexture.NO_OVERLAY, outlineColor, null);
+			collector.submitModel(model, Unit.INSTANCE, stack, foilRenderType, light, OverlayTexture.NO_OVERLAY, outlineColor);
 		}
 		stack.popPose();
 	}

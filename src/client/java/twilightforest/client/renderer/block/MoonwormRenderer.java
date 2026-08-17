@@ -42,7 +42,7 @@ public class MoonwormRenderer implements BlockEntityRenderer<MoonwormBlockEntity
 		stack.mulPose(Axis.YP.rotationDegrees(180.0F + rotation));
 		stack.mulPose(Axis.YN.rotationDegrees(yaw));
 		model.setupAnim(delay, wiggleRotation);
-		collector.submitModel(model, Unit.INSTANCE, stack, model.renderType(TEXTURE), light, overlay, outlineColor, breakProgress);
+		collector.submitModel(model, Unit.INSTANCE, stack, model.renderType(TEXTURE), light, overlay, outlineColor);
 		stack.popPose();
 	}
 

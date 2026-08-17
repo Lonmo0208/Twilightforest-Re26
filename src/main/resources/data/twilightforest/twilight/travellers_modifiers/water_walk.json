@@ -1,12 +1,14 @@
 {
-  "type": "twilightforest:component",
-  "component": {
-    "twilightforest:water_walk": {}
-  },
-  "description": [
-    {
-      "translate": "travellers_gear.modifier.twilightforest.water_walk.description"
-    }
-  ],
-  "equipment_slots": "feet"
+    "type":  "twilightforest:component",
+    "component":  {
+                      "twilightforest:water_walk":  {
+
+                                                    }
+                  },
+    "description":  [
+                        {
+                            "translate":  "travellers_gear.modifier.twilightforest.water_walk.description"
+                        }
+                    ],
+    "equipment_slots":  "feet"
 }

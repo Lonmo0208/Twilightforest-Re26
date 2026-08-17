@@ -8,13 +8,14 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import org.jetbrains.annotations.Nullable;
@@ -54,14 +55,14 @@ public class LichTowerStructure extends ControlledSpawningStructure implements C
 	}
 
 	@Override
-	public DensityFunction getStructureTerraformer(ChunkPos chunkPosAt, StructureStart structurePieceSource) {
+	public net.minecraft.world.level.levelgen.densityfunction.DensityFunction getStructureTerraformer(ChunkPos chunkPosAt, StructureStart structurePieceSource) {
 		BoundingBox mainPieceBox = structurePieceSource.getPieces().getFirst().getBoundingBox();
 
 		int yBase = mainPieceBox.minY();
 
 		DensityFunction activator = DensityFunctions.yClampedGradient(yBase - 2, yBase - 1, 1, 0);
 
-		DensityFunction bury = BoxDensityFunction.make(mainPieceBox, -5, -5, TerrainAdjustment.BURY);
+		DensityFunction bury = (DensityFunction) BoxDensityFunction.make(mainPieceBox, -5, -5, TerrainAdjustment.BURY);
 
 		return DensityFunctions.mul(activator, bury);
 	}
@@ -76,12 +77,12 @@ public class LichTowerStructure extends ControlledSpawningStructure implements C
 		return new LichTowerStructure(
 			ControlledSpawningConfig.firstIndexMonsters(
 				WeightedList.<MobSpawnSettings.SpawnerData>builder()
-					.add(new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 1, 2), 10)
-					.add(new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 1, 2), 10)
-					.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, 1, 1), 1)
-					.add(new MobSpawnSettings.SpawnerData(EntityTypes.ENDERMAN, 1, 2), 1)
-					.add(new MobSpawnSettings.SpawnerData(TFEntities.DEATH_TOME.get(), 1, 2), 5)
-					.add(new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, 1, 1), 1)
+					.add(new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, UniformInt.of(1, 2)), 10)
+					.add(new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, UniformInt.of(1, 2)), 10)
+					.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, UniformInt.of(1, 1)), 1)
+					.add(new MobSpawnSettings.SpawnerData(EntityTypes.ENDERMAN, UniformInt.of(1, 2)), 1)
+					.add(new MobSpawnSettings.SpawnerData(TFEntities.DEATH_TOME.get(), UniformInt.of(1, 2)), 5)
+					.add(new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, UniformInt.of(1, 1)), 1)
 					.build()
 			),
 			new AdvancementLockConfig(List.of(TwilightForestMod.prefix("progress_naga"))),

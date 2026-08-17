@@ -1,0 +1,13 @@
+{
+    "type":  "twilightforest:small_lake",
+    "barrier":  {
+                    "type":  "minecraft:simple_state_provider",
+                    "state":  "minecraft:stone"
+                },
+    "fluid":  {
+                  "type":  "minecraft:simple_state_provider",
+                  "state":  {
+                                "id":  "minecraft:lava"
+                            }
+              }
+}

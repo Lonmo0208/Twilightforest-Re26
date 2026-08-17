@@ -36,7 +36,7 @@ public class MoonwormShotRenderer extends EntityRenderer<MoonwormShot, MoonwormS
 
 		poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot - 180.0F));
 		poseStack.mulPose(Axis.ZP.rotationDegrees(state.xRot));
-		submitNodeCollector.submitModel(this.model, Unit.INSTANCE, poseStack, this.model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+		submitNodeCollector.submitModel(this.model, Unit.INSTANCE, poseStack, this.model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
 
 		poseStack.popPose();
 	}

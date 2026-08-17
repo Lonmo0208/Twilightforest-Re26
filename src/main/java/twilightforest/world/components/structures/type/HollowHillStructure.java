@@ -11,12 +11,13 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
@@ -98,11 +99,11 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 		return new HollowHillStructure(
 			1,
 			ControlledSpawningConfig.create(List.of(WeightedList.<MobSpawnSettings.SpawnerData>builder()
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SPIDER, 4, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 4, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP.get(), 4, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.SWARM_SPIDER.get(), 4, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), 4, 8), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SPIDER, UniformInt.of(4, 4)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, UniformInt.of(4, 4)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP.get(), UniformInt.of(4, 4)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.SWARM_SPIDER.get(), UniformInt.of(4, 4)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), UniformInt.of(4, 8)), 10)
 				.build()
 			), WeightedList.of(), WeightedList.of()),
 			context.lookup(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS).getOrThrow(StructureSpeleothemConfigs.SMALL_HILL),
@@ -121,16 +122,16 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 		return new HollowHillStructure(
 			2,
 			ControlledSpawningConfig.create(List.of(WeightedList.<MobSpawnSettings.SpawnerData>builder()
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP.get(), 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP_SAPPER.get(), 1, 2), 2)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), 2, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 2, 3), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.SWARM_SPIDER.get(), 2, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SPIDER, 1, 3), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, 1, 2), 5)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.FIRE_BEETLE.get(), 1, 1), 5)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.SLIME_BEETLE.get(), 1, 1), 5)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, 1, 1), 1)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP.get(), UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP_SAPPER.get(), UniformInt.of(1, 2)), 2)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.KOBOLD.get(), UniformInt.of(2, 4)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, UniformInt.of(2, 3)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.SWARM_SPIDER.get(), UniformInt.of(2, 4)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SPIDER, UniformInt.of(1, 3)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, UniformInt.of(1, 2)), 5)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.FIRE_BEETLE.get(), UniformInt.of(1, 1)), 5)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.SLIME_BEETLE.get(), UniformInt.of(1, 1)), 5)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, UniformInt.of(1, 1)), 1)
 				.build()
 			), WeightedList.of(), WeightedList.of()),
 			context.lookup(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS).getOrThrow(StructureSpeleothemConfigs.MEDIUM_HILL),
@@ -149,17 +150,17 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 		return new HollowHillStructure(
 			3,
 			ControlledSpawningConfig.firstIndexMonsters(WeightedList.<MobSpawnSettings.SpawnerData>builder()
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP.get(), 2, 4), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP_SAPPER.get(), 1, 2), 2)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 2, 3), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CAVE_SPIDER, 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, 1, 1), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.ENDERMAN, 1, 1), 1)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.WRAITH.get(), 1, 2), 2)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.FIRE_BEETLE.get(), 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.SLIME_BEETLE.get(), 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(TFEntities.PINCH_BEETLE.get(), 1, 2), 10)
-				.add(new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, 1, 1), 1)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP.get(), UniformInt.of(2, 4)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.REDCAP_SAPPER.get(), UniformInt.of(1, 2)), 2)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, UniformInt.of(2, 3)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CAVE_SPIDER, UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.CREEPER, UniformInt.of(1, 1)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.ENDERMAN, UniformInt.of(1, 1)), 1)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.WRAITH.get(), UniformInt.of(1, 2)), 2)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.FIRE_BEETLE.get(), UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.SLIME_BEETLE.get(), UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(TFEntities.PINCH_BEETLE.get(), UniformInt.of(1, 2)), 10)
+				.add(new MobSpawnSettings.SpawnerData(EntityTypes.WITCH, UniformInt.of(1, 1)), 1)
 				.build()
 			),
 			context.lookup(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS).getOrThrow(StructureSpeleothemConfigs.LARGE_HILL),
@@ -175,7 +176,7 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 	}
 
 	@Override
-	public DensityFunction getStructureTerraformer(ChunkPos chunkSliceAt, StructureStart structurePieceSource) {
+	public net.minecraft.world.level.levelgen.densityfunction.DensityFunction getStructureTerraformer(ChunkPos chunkSliceAt, StructureStart structurePieceSource) {
 		int hillSize = this.size;
 
 		final float radius = (hillSize * 4 + 0.8f) * 8;
@@ -186,24 +187,24 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 		final BlockPos hillCenter = structureBox.getCenter();
 
 		// Main mound density field. All values above mount surface are 0 while other values under the mound are 1.
-		DensityFunction hillMound = HollowHillFunction.fromPos(hillCenter.atY(yCeilingFocus + 10), radius, 0.7f)
+		DensityFunction hillMound = ((DensityFunction) HollowHillFunction.fromPos(hillCenter.atY(yCeilingFocus + 10), radius, 0.7f))
 			.clamp(0, 1);
 
 		// Similar field like above, but all per-position values multiplied by -1. Positive terrain field above (hill mound) and negative terrain field below (inner hill gap)
 		DensityFunction innerCeiling = DensityFunctions.mul(
 			DensityFunctions.constant(-1),
-			HollowHillFunction.fromPos(hillCenter.atY(yCeilingFocus + 6), radiusInner, 0.675f)
+			(DensityFunction) HollowHillFunction.fromPos(hillCenter.atY(yCeilingFocus + 6), radiusInner, 0.675f)
 		);
 
 		// Field that domes upwards instead of downwards like above 2 DensityFunctions.
 		// Negative terrain field above (inner hill gap) and positive terrain field below (stone underground)
-		DensityFunction innerFloor = HollowHillFunction.fromPos(hillCenter.atY(yCeilingFocus + hillSize + hillSize / 2), 2 - radiusInner, 1 / 10f);
+		DensityFunction innerFloor = (DensityFunction) HollowHillFunction.fromPos(hillCenter.atY(yCeilingFocus + hillSize + hillSize / 2), 2 - radiusInner, 1 / 10f);
 
 		// Merge the inner ceiling & inner floor density functions, and obtain the maximum value.
 		// Resulting terrain field will "carve" out the interior space, using negative field values past 0.
 		DensityFunction interior = DensityFunctions.max(innerCeiling, innerFloor);
 
-		DensityFunction interiorMask = FocusedDensityFunction.fromPos(hillCenter.atY(yCeilingFocus), radiusInner * 0.52f, -radiusInner, 1);
+		DensityFunction interiorMask = (DensityFunction) FocusedDensityFunction.fromPos(hillCenter.atY(yCeilingFocus), radiusInner * 0.52f, -radiusInner, 1);
 
 		DensityFunction interiorMasked = DensityFunctions.max(interiorMask, interior);
 
@@ -216,7 +217,7 @@ public class HollowHillStructure extends LandmarkStructure implements Configurab
 		// full extent of the mound (and a bit beyond) instead of being clipped at the much smaller
 		// piece bounding-box width. This prevents a steep, cube-shaped cliff where the mound
 		// suddenly stops blending with the natural terrain.
-		DensityFunction maskingSphere = FocusedDensityFunction.fromPos(hillCenter.below(Mth.ceil(radius * 0.1)), radius * 0.55f, radius * 0.25f, 0).clamp(0, 1);
+		DensityFunction maskingSphere = ((DensityFunction) FocusedDensityFunction.fromPos(hillCenter.below(Mth.ceil(radius * 0.1)), radius * 0.55f, radius * 0.25f, 0)).clamp(0, 1);
 
 		return DensityFunctions.mul(maskingSphere, DensityFunctions.mul(DensityFunctions.constant(8), hollowHill));
 	}
