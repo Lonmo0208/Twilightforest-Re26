@@ -402,29 +402,15 @@ public class TravellersClientEvents {
 		player.setAttached(attachment, !current);
 	}
 
-	public double slowZoomSensitivity(boolean cinematicCameraEnabled, double mouseSensitivity) {
-		Player player = Minecraft.getInstance().player;
-		if (cinematicCameraEnabled || player == null)
-			return mouseSensitivity;
-
-		ItemStack headStack = player.getItemBySlot(EquipmentSlot.HEAD);
-		Float zoomModifier = headStack.get(TFDataComponents.ZOOM_ABILITY_MODIFIER);
-		if (zoomModifier == null || !isZoomKeyHeld(player))
-			return mouseSensitivity;
-
-		double mod = 0.5D - 1 / (6 * mouseSensitivity);
-		double fovMod = zoomModifier + 0.05F;
-		return mod * mouseSensitivity / fovMod;
-	}
-
-	public boolean renderGlovesInFirstPerson(AbstractClientPlayer player, HumanoidArm arm, SubmitNodeCollector collector, PoseStack poseStack, int packedLight) {
+	public static boolean renderGlovesInFirstPerson(AbstractClientPlayer player, HumanoidArm arm, SubmitNodeCollector collector, PoseStack poseStack, int packedLight) {
 		if (TFConfig.firstPersonGloveOverlay) {
 			ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
 			if (chestStack.has(TFDataComponents.TRAVELLERS_HAS_GLOVES) && !chestStack.has(TFDataComponents.EMPERORS_CLOTH)) {
 				boolean rightArm = arm == HumanoidArm.RIGHT;
 
-				AvatarRenderer<AbstractClientPlayer> renderer = (AvatarRenderer<AbstractClientPlayer>) (Object) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
-				PlayerModel playerModel = renderer.getModel();
+				@SuppressWarnings("unchecked") // dispatcher only exposes generic EntityRenderer<? super AbstractClientPlayer, ?>
+				AvatarRenderer<AbstractClientPlayer> avatar = (AvatarRenderer<AbstractClientPlayer>) (Object) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
+				PlayerModel playerModel = avatar.getModel();
 				ModelPart armPart = rightArm ? playerModel.rightArm : playerModel.leftArm;
 				armPart.resetPose();
 				armPart.visible = true;

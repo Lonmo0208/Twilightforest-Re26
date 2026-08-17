@@ -8,6 +8,7 @@
       "client.MouseHandlerMixin",
       "client.ClientLevelMixin",
       "client.EntityRenderDispatcherMixin",
+      "client.FirstPersonHandsAndItemsRendererMixin",
       "client.GuiGraphicsExtractorMixin",
       "client.KeyboardInputMixin",
       "client.LivingEntityRendererMixin",
