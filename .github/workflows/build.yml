@@ -64,6 +64,11 @@ jobs:
         shell: bash
         run: |
           MOD_VERSION=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          # gradle.properties stores non-ASCII chars as Java-style unicode
+          # escapes (e.g. \u03b2 = β) which grep cannot decode. A literal
+          # backslash is illegal in GitHub artifact names, so decode the
+          # escapes before building the CI revision string.
+          MOD_VERSION=$(printf '%b' "$MOD_VERSION")
           CI_BUILD_NO="${{ github.run_number }}"
           echo "mod_version=${MOD_VERSION}" >> "$GITHUB_OUTPUT"
           echo "ci_revision=${MOD_VERSION}.${CI_BUILD_NO}" >> "$GITHUB_OUTPUT"
