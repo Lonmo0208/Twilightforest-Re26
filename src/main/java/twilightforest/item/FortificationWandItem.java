@@ -22,6 +22,9 @@ public class FortificationWandItem extends ScepterItem {
 			if (attachment != null) {
 				attachment.setShields(player, 5, true);
 			}
+			if (!player.isCreative()) {
+				stack.hurtWithoutBreaking(1, player);
+			}
 		}
 		player.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.2F + 1.0F);
 
