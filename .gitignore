@@ -35,9 +35,4 @@ libs/iris*.jar
 libs/sodium*.jar
 /.workbuddy
 /twilightforest-template-26.1.2
-/libs/forgeconfigapiport
-build_errors.log
-build_errors2.log
-build_errors3.log
-build_errors4.log
-build_errors5.log
+
