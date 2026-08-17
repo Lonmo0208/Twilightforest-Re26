@@ -81,7 +81,7 @@ public class DarkTowerStructure extends ControlledSpawningStructure {
 			new StructureSettings(
 				context.lookup(Registries.BIOME).getOrThrow(TFBiomeTags.VALID_DARK_TOWER_BIOMES),
 				Arrays.stream(MobCategory.values()).collect(Collectors.<MobCategory, MobCategory, StructureSpawnOverride>toMap(category -> category, category -> new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, WeightedList.<MobSpawnSettings.SpawnerData>builder().build()))), // Landmarks have Controlled Mob spawning
-				GenerationStep.Decoration.SURFACE_STRUCTURES,
+				GenerationStep.Decoration.TOP_LAYER_MODIFICATION,
 				TerrainAdjustment.BEARD_THIN
 			)
 		);
