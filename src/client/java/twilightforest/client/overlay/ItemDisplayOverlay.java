@@ -32,7 +32,10 @@ public class ItemDisplayOverlay implements HudElement {
 	}
 
 	public static void render(GuiGraphicsExtractor graphics, Minecraft minecraft, Window window, Gui gui, Player player) {
-		if (player == null || gui.getDebugOverlay().showDebugScreen() || minecraft.options.hideGui)
+		// Don't render when the HUD is hidden. The F3 debug overlay does NOT hide the vanilla HUD,
+		// so unlike the old gating we do NOT bail out on showDebugScreen() here — otherwise the travel
+		// goggles' item display disappears whenever the player opens F3.
+		if (player == null || minecraft.options.hideGui)
 			return;
 
 		ItemStack goggles = player.getItemBySlot(EquipmentSlot.HEAD);
