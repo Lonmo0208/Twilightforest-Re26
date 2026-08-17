@@ -133,7 +133,15 @@ public class TFDensityFunctions {
 			)
 		);
 
-		context.register(FORESTED_TERRAIN, finalDensity.clamp(-0.1F, 0.5F));
+		// 26.3 requires a beardifier marker node inside final_density for the NoiseChunk's
+		// density-tree visitor to inject the actual Beardifier instance (26.2 used to add it
+		// unconditionally inside NoiseChunk). Without this marker, Beardifier.compute is never
+		// called, so every piece of structure terrain carving is lost: hollow hill domes,
+		// hydra lair, labyrinth entrance slopes, courtyard/quest grove flattening and yeti caves.
+		// The beardifier is added outside the terrain clamp (like vanilla's final_density) so its
+		// sculpting values are not flattened, while terrain-only cells stay inside [-0.1, 0.5].
+		DensityFunction clampedTerrain = finalDensity.clamp(-0.1F, 0.5F);
+		context.register(FORESTED_TERRAIN, DensityFunctions.add(clampedTerrain, DensityFunctions.beardifier()));
 	}
 
 	private static void makeSkylightTerrain(BootstrapContext<DensityFunction> context, DensityFunction rawBiomeDensity, DensityFunction ambientTerrainNoise) {
@@ -163,6 +171,8 @@ public class TFDensityFunctions {
 			biomeDensity
 		);
 
-		context.register(SKYLIGHT_TERRAIN, finalDensity.clamp(-0.1F, 0.5F));
+		// Same beardifier marker as makeForestedTerrain (see comment there).
+		DensityFunction clampedTerrain = finalDensity.clamp(-0.1F, 0.5F);
+		context.register(SKYLIGHT_TERRAIN, DensityFunctions.add(clampedTerrain, DensityFunctions.beardifier()));
 	}
 }

@@ -22,19 +22,15 @@ import java.util.Set;
 @Mixin(NoiseBasedChunkGenerator.class)
 public abstract class NoiseBasedChunkGeneratorMixin {
 
-	// 26.3: the WorldGenRegion overload was removed; buildSurface now takes
-	// explicit StructureManager/RandomState/ChunkAccess/BiomeManager/Blender and
-	// the biome holder set. The WorldGenRegion is recovered from the
-	// StructureManager's level for the twilight dimension surface tuning.
 	@Inject(method = "buildSurface(Lnet/minecraft/world/level/StructureManager;Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/chunk/ChunkAccess;Lnet/minecraft/world/level/biome/BiomeManager;Lnet/minecraft/world/level/levelgen/blending/Blender;Ljava/util/Set;)V", at = @At("HEAD"), cancellable = true)
 	private void twilightforest$buildSurface(StructureManager structureManager, RandomState randomState,
-			ChunkAccess protoChunk, BiomeManager biomeManager, Blender blender, Set<Holder<Biome>> biomes, CallbackInfo ci) {
+	                                         ChunkAccess protoChunk, BiomeManager biomeManager, Blender blender, Set<Holder<Biome>> possibleBiomes, CallbackInfo ci) {
 		if (((StructureManagerAccessor) structureManager).tf$getLevel() instanceof WorldGenRegion region
 				&& TFDimension.isTwilightPortalDestination(region.getLevel())) {
 			if (!SharedConstants.debugVoidTerrain(protoChunk.getPos()) && !SharedConstants.DEBUG_DISABLE_SURFACE) {
 				NoiseBasedChunkGenerator self = (NoiseBasedChunkGenerator) (Object) this;
 				WorldGenerationContext context = new WorldGenerationContext(self, region);
-				self.buildSurface(protoChunk, context, randomState, structureManager, biomeManager, blender, biomes);
+				self.buildSurface(protoChunk, context, randomState, structureManager, biomeManager, blender, null);
 			}
 			ci.cancel();
 		}
