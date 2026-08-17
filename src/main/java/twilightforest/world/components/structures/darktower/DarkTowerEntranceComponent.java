@@ -58,6 +58,9 @@ public class DarkTowerEntranceComponent extends DarkTowerWingComponent {
 		// clear inside
 		generateAirBox(world, sbb, 1, 1, 1, size - 2, height - 2, size - 2);
 
+		// clear vegetation that may have grown inside the structure (including floor and walls)
+		clearLeavesInside(world, sbb, 0, 0, 0, size - 1, height - 1, size - 1);
+
 		// sky light
 //		nullifySkyLightForBoundingBox(world);
 

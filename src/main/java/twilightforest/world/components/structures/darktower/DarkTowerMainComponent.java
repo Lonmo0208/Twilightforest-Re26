@@ -27,7 +27,6 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
-import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import twilightforest.TwilightForestMod;
@@ -38,13 +37,12 @@ import twilightforest.util.RotationUtil;
 import twilightforest.world.components.structures.TFMaze;
 import twilightforest.world.components.structures.TFStructureComponentOld;
 import twilightforest.world.components.structures.TFStructureDecorator;
-import twilightforest.world.components.structures.util.PieceBeardifierModifier;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DarkTowerMainComponent extends DarkTowerWingComponent implements PieceBeardifierModifier {
+public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	private boolean placedKeys = false;
 
 	public DarkTowerMainComponent(StructurePieceSerializationContext ctx, CompoundTag nbt) {
@@ -257,6 +255,9 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent implements Pi
 
 		// clear inside
 		generateAirBox(world, sbb, 1, 1, 1, size - 2, height - 2, size - 2);
+
+		// clear vegetation that may have grown inside the structure (including floor and walls)
+		clearLeavesInside(world, sbb, 0, 0, 0, size - 1, height - 1, size - 1);
 
 		if (this.getGenDepth() == 0) {
 			// deco to ground
@@ -1445,27 +1446,5 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent implements Pi
 			TFBlocks.STINGBERRY_BUSH.defaultBlockState()
 		);
 		return Util.getRandom(blocks, random);
-	}
-
-	@Override
-	public TerrainAdjustment getTerrainAdjustment() {
-		return TerrainAdjustment.BEARD_BOX;
-	}
-
-	@Override
-	public BoundingBox getBeardifierBox() {
-		return new BoundingBox(
-			this.boundingBox.minX(),
-			this.boundingBox.minY() - 16,
-			this.boundingBox.minZ(),
-			this.boundingBox.maxX(),
-			this.boundingBox.maxY(),
-			this.boundingBox.maxZ()
-		);
-	}
-
-	@Override
-	public int getGroundLevelDelta() {
-		return 0;
 	}
 }
