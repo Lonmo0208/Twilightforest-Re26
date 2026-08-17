@@ -100,7 +100,13 @@ public class ItemDisplayContents implements TooltipComponent {
 	}
 
 	public boolean isEmpty() {
-		return this.items.isEmpty();
+		if (this.items.isEmpty())
+			return true;
+		for (ItemStack stack : this.items) {
+			if (!stack.isEmpty())
+				return false;
+		}
+		return true;
 	}
 
 	@Override
