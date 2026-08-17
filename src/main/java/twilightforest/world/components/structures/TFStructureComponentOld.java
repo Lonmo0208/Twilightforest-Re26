@@ -26,6 +26,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -460,6 +461,28 @@ public abstract class TFStructureComponentOld extends TFStructureComponent imple
 							|| zMin != zMax && (z == zMin || z == zMax);
 
 						this.placeBlock(world, isBorder ? borderState : interiorState, x, y, z, boundingBox);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Clear twilight forest dark tree leaves within Y range 11-22 to prevent natural tree growth inside structures.
+	 * Only clears TFBlocks.DARK_LEAVES (dark tree leaves), preserves HARDENED_DARK_LEAVES (structure decoration).
+	 */
+	protected void clearLeavesInside(WorldGenLevel world, BoundingBox boundingBox, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
+		int worldMinY = this.boundingBox.minY();
+		for (int y = yMin; y <= yMax; ++y) {
+			int worldY = worldMinY + y;
+			if (worldY < 11 || worldY > 22) {
+				continue;
+			}
+			for (int x = xMin; x <= xMax; ++x) {
+				for (int z = zMin; z <= zMax; ++z) {
+					BlockState state = this.getBlock(world, x, y, z, boundingBox);
+					if (state.is(twilightforest.init.TFBlocks.DARK_LEAVES)) {
+						this.placeBlock(world, AIR, x, y, z, boundingBox);
 					}
 				}
 			}
