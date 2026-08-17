@@ -28,7 +28,16 @@ public class MapDisplay implements ItemDisplay {
 	@Override
 	public void render(ItemStack item, GuiGraphicsExtractor graphics, Minecraft minecraft, Gui gui, Player player, int widestWidgetWidth) {
 		MapId mapid = item.get(DataComponents.MAP_ID);
-		if (mapid == null) return;
+
+		int startX = Math.max(widestWidgetWidth / 2 - BG_SIZE / 2, 0);
+		int startY = 0;
+
+		// Always draw the background frame so the slot is visibly not empty,
+		// even before the client has synced this map's data.
+		graphics.blit(MAP_BACKGROUND_CHECKERBOARD, startX, startY, startX + BG_SIZE, startY + BG_SIZE, 0.0F, 1.0F, 0.0F, 1.0F);
+
+		if (mapid == null)
+			return;
 
 		// Use MagicMapItem.getData for magic maps, MapItem.getSavedData for vanilla maps
 		MapItemSavedData data;
@@ -40,11 +49,6 @@ public class MapDisplay implements ItemDisplay {
 			data = MapItem.getSavedData(item, minecraft.level);
 			if (data == null) return;
 		}
-
-		int startX = Math.max(widestWidgetWidth / 2 - BG_SIZE / 2, 0);
-		int startY = 0;
-
-		graphics.blit(MAP_BACKGROUND_CHECKERBOARD, startX, startY, startX + BG_SIZE, startY + BG_SIZE, 0.0F, 1.0F, 0.0F, 1.0F);
 
 		minecraft.getMapTextureManager().update(mapid, data);
 		MapRenderState mapRenderState = new MapRenderState();
