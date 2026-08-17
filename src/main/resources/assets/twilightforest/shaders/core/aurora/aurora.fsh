@@ -1,6 +1,7 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
-#moj_import <minecraft:fog.glsl>
+#include <minecraft:fog.glsl>
 
 layout(std140) uniform Globals {
     ivec3 CameraPosition;
@@ -117,10 +118,8 @@ vec4 openSimplex2_ImproveXY(vec3 X) {
 
 //////////////////////////////// End noise code ////////////////////////////////
 
-out vec4 fragColor;
-
-in vec4 pixelPos;
-in vec4 vertexColor;
+layout(location = 0) in vec4 pixelPos;
+layout(location = 1) in vec4 vertexColor;
 
 const int STEPS = 16;
 const float FSTEPS = 16.0;
@@ -161,6 +160,8 @@ float rayMarch(vec3 origin, vec3 direction) {
 
     return noise;
 }
+
+layout(location = 0) out vec4 fragColor;
 
 void main() {
     // Normalize pixelPos to [-1.0, 1.0]

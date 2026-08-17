@@ -202,7 +202,11 @@ public class TwilightForestClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			clientGameEvents.clientTick();
 		});
-		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(clientGameEvents::renderAurora);
+		// 26.3: BEFORE_TRANSLUCENT_TERRAIN now fires while the translucent RenderPearl pass is
+		// still open, so creating a new render pass there crashes with "Close the existing
+		// render pass before creating a new one!". END_MAIN fires after the main pass is
+		// closed (before clouds/weather), so the aurora can open its own depth-tested pass.
+		LevelRenderEvents.END_MAIN.register(clientGameEvents::renderAurora);
 
 		// Manually initialize TravellersClientEvents (handles all Traveller's Gear keybinds:
 		// V-key swap hotbar, Z-key zoom, C-key cycle item display, double-jump, sidestep, etc.).
