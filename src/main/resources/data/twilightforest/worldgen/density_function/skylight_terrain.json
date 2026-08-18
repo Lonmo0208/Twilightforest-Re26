@@ -1,6 +1,8 @@
 {
-    "type":  "minecraft:clamp",
-    "input":  {
+    "type":  "minecraft:add",
+    "left":  {
+        "type":  "minecraft:clamp",
+        "input":  {
                   "type":  "minecraft:add",
                   "left":  {
                                "type":  "twilightforest:sqrt",
@@ -144,6 +146,10 @@
                                           }
                             }
               },
-    "max":  0.5,
-    "min":  -0.1
+        "max":  0.5,
+        "min":  -0.1
+    },
+    "right":  {
+        "type":  "minecraft:beardifier"
+    }
 }

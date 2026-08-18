@@ -52,7 +52,12 @@
 		"fabric-api": "*",
 		"forgeconfigapiport": ">=26.2.0"
 	},
-	"suggests": {
+  "jars": [
+    {
+      "file": "META-INF/jars/forge-config-api-port-26.2.1-patched.jar"
+    }
+  ],
+  "suggests": {
 		"modmenu": "*"
 	}
 }
