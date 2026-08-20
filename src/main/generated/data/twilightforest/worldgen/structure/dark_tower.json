@@ -148,7 +148,7 @@
       "spawns": []
     }
   },
-  "step": "surface_structures",
+  "step": "top_layer_modification",
   "structure_icon": "twilightforest:dark_tower",
   "terrain_adaptation": "beard_thin"
 }
