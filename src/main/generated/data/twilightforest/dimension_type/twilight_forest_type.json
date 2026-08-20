@@ -29,6 +29,8 @@
     "minecraft:gameplay/eyeblossom_open": true,
     "minecraft:gameplay/piglins_zombify": false,
     "minecraft:gameplay/sky_light_level": 0.62,
+    "minecraft:visual/cloud_color": "#ffdbe4ec",
+    "minecraft:visual/cloud_height": 128.0,
     "minecraft:visual/fog_color": "#838387",
     "minecraft:visual/moon_angle": 270.0,
     "minecraft:visual/sky_color": "#7b7b7b",
