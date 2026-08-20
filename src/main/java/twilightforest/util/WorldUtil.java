@@ -28,7 +28,6 @@ import net.minecraft.world.level.levelgen.structure.StructureCheckResult;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.phys.AABB;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +50,7 @@ public final class WorldUtil {
 	 * before the server starts, ensuring currentServer is always set.
 	 */
 	public static void registerServerLifecycle() {
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> currentServer = server);
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> currentServer = server);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> currentServer = null);
 	}
 
@@ -59,10 +58,6 @@ public final class WorldUtil {
 	 * Get the MinecraftServer instance, works for both dedicated server and integrated client.
 	 */
 	private static MinecraftServer getServer() {
-		Object game = FabricLoader.getInstance().getGameInstance();
-		if (game instanceof MinecraftServer server) {
-			return server;
-		}
 		return Objects.requireNonNull(currentServer, "Server not yet started or not running");
 	}
 
