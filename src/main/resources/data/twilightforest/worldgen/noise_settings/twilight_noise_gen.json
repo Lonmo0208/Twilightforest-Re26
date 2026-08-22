@@ -15,7 +15,7 @@
                          "continents":  0,
                          "depth":  0,
                          "erosion":  0,
-                         "final_density":  "twilightforest:forested_terrain",
+                         "final_density":  "twilightforest:final_terrain",
                          "preliminary_surface_level":  "twilightforest:forested_terrain",
                          "ridges":  0,
                          "temperature":  0,

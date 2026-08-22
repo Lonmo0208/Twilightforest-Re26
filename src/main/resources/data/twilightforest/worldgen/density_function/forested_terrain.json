@@ -1,133 +1,88 @@
 {
-    "type":  "minecraft:add",
-    "left":  {
-        "type":  "minecraft:clamp",
-        "input":  {
-                  "type":  "minecraft:add",
-                  "left":  {
-                               "type":  "minecraft:mul",
-                               "left":  0.1666666716337204,
-                               "right":  {
-                                             "type":  "minecraft:add",
-                                             "left":  "twilightforest:raw_biome_terrain",
-                                             "right":  {
-                                                           "type":  "minecraft:gradient",
-                                                           "axis":  "y",
-                                                           "from_coordinate":  -31,
-                                                           "from_value":  31,
-                                                           "to_coordinate":  256,
-                                                           "to_value":  -256
-                                                       }
-                                         }
-                           },
-                  "right":  {
-                                "type":  "minecraft:mul",
-                                "left":  "twilightforest:raw_biome_noise",
-                                "right":  {
-                                              "type":  "minecraft:interpolated",
-                                              "input":  {
-                                                            "type":  "minecraft:max",
-                                                            "left":  0,
-                                                            "right":  {
-                                                                          "type":  "minecraft:flat_cache",
-                                                                          "input":  {
-                                                                                        "type":  "minecraft:add",
-                                                                                        "left":  {
-                                                                                                     "type":  "minecraft:mul",
-                                                                                                     "left":  {
-                                                                                                                  "type":  "minecraft:add",
-                                                                                                                  "left":  0.5,
-                                                                                                                  "right":  {
-                                                                                                                                "type":  "minecraft:mul",
-                                                                                                                                "left":  0.5,
-                                                                                                                                "right":  {
-                                                                                                                                              "type":  "minecraft:noise",
-                                                                                                                                              "noise":  "minecraft:ridge",
-                                                                                                                                              "xz_scale":  1,
-                                                                                                                                              "y_scale":  0
-                                                                                                                                          }
-                                                                                                                            }
-                                                                                                              },
-                                                                                                     "right":  {
-                                                                                                                   "type":  "minecraft:add",
-                                                                                                                   "left":  1,
-                                                                                                                   "right":  {
-                                                                                                                                 "type":  "minecraft:mul",
-                                                                                                                                 "left":  -1,
-                                                                                                                                 "right":  {
-                                                                                                                                               "type":  "minecraft:cache_once",
-                                                                                                                                               "input":  {
-                                                                                                                                                             "type":  "minecraft:clamp",
-                                                                                                                                                             "input":  {
-                                                                                                                                                                           "type":  "minecraft:add",
-                                                                                                                                                                           "left":  0.5,
-                                                                                                                                                                           "right":  {
-                                                                                                                                                                                         "type":  "minecraft:mul",
-                                                                                                                                                                                         "left":  0.5,
-                                                                                                                                                                                         "right":  {
-                                                                                                                                                                                                       "type":  "minecraft:noise",
-                                                                                                                                                                                                       "noise":  "minecraft:surface",
-                                                                                                                                                                                                       "xz_scale":  1,
-                                                                                                                                                                                                       "y_scale":  0
-                                                                                                                                                                                                   }
-                                                                                                                                                                                     }
-                                                                                                                                                                       },
-                                                                                                                                                             "max":  1,
-                                                                                                                                                             "min":  0
-                                                                                                                                                         }
-                                                                                                                                           }
-                                                                                                                             }
-                                                                                                               }
-                                                                                                 },
-                                                                                        "right":  {
-                                                                                                      "type":  "minecraft:mul",
-                                                                                                      "left":  {
-                                                                                                                   "type":  "minecraft:add",
-                                                                                                                   "left":  0.5,
-                                                                                                                   "right":  {
-                                                                                                                                 "type":  "minecraft:mul",
-                                                                                                                                 "left":  0.5,
-                                                                                                                                 "right":  {
-                                                                                                                                               "type":  "minecraft:noise",
-                                                                                                                                               "noise":  "minecraft:ridge",
-                                                                                                                                               "xz_scale":  4,
-                                                                                                                                               "y_scale":  0
-                                                                                                                                           }
-                                                                                                                             }
-                                                                                                               },
-                                                                                                      "right":  {
-                                                                                                                    "type":  "minecraft:cache_once",
-                                                                                                                    "input":  {
-                                                                                                                                  "type":  "minecraft:clamp",
-                                                                                                                                  "input":  {
-                                                                                                                                                "type":  "minecraft:add",
-                                                                                                                                                "left":  0.5,
-                                                                                                                                                "right":  {
-                                                                                                                                                              "type":  "minecraft:mul",
-                                                                                                                                                              "left":  0.5,
-                                                                                                                                                              "right":  {
-                                                                                                                                                                            "type":  "minecraft:noise",
-                                                                                                                                                                            "noise":  "minecraft:surface",
-                                                                                                                                                                            "xz_scale":  1,
-                                                                                                                                                                            "y_scale":  0
-                                                                                                                                                                        }
-                                                                                                                                                          }
-                                                                                                                                            },
-                                                                                                                                  "max":  1,
-                                                                                                                                  "min":  0
-                                                                                                                              }
-                                                                                                                }
-                                                                                                  }
-                                                                                    }
-                                                                      }
-                                                        }
-                                          }
-                            }
-              },
-        "max":  0.5,
-        "min":  -0.1
+  "type": "minecraft:clamp",
+  "input": {
+    "type": "minecraft:add",
+    "left": {
+      "type": "minecraft:mul",
+      "left": 0.16666667,
+      "right": {
+        "type": "minecraft:add",
+        "left": "twilightforest:raw_biome_terrain",
+        "right": {
+          "type": "minecraft:gradient",
+          "axis": "y",
+          "from_coordinate": -31,
+          "from_value": 31.0,
+          "to_coordinate": 256,
+          "to_value": -256.0
+        }
+      }
     },
-    "right":  {
-        "type":  "minecraft:beardifier"
+    "right": {
+      "type": "minecraft:mul",
+      "left": "twilightforest:raw_biome_noise",
+      "right": {
+        "type": "minecraft:interpolated",
+        "input": {
+          "type": "minecraft:max",
+          "left": 0.0,
+          "right": {
+            "type": "minecraft:flat_cache",
+            "input": {
+              "type": "minecraft:lerp",
+              "alpha": {
+                "type": "minecraft:clamp",
+                "input": {
+                  "type": "minecraft:add",
+                  "left": 0.5,
+                  "right": {
+                    "type": "minecraft:mul",
+                    "left": 0.5,
+                    "right": {
+                      "type": "minecraft:noise",
+                      "noise": "minecraft:surface",
+                      "xz_scale": 1.0,
+                      "y_scale": 0.0
+                    }
+                  }
+                },
+                "max": 1.0,
+                "min": 0.0
+              },
+              "first": {
+                "type": "minecraft:add",
+                "left": 0.5,
+                "right": {
+                  "type": "minecraft:mul",
+                  "left": 0.5,
+                  "right": {
+                    "type": "minecraft:noise",
+                    "noise": "minecraft:ridge",
+                    "xz_scale": 1.0,
+                    "y_scale": 0.0
+                  }
+                }
+              },
+              "second": {
+                "type": "minecraft:add",
+                "left": 0.5,
+                "right": {
+                  "type": "minecraft:mul",
+                  "left": 0.5,
+                  "right": {
+                    "type": "minecraft:noise",
+                    "noise": "minecraft:ridge",
+                    "xz_scale": 4.0,
+                    "y_scale": 0.0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
+  },
+  "max": 0.5,
+  "min": -0.1
 }

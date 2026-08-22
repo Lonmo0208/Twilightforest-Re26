@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:add",
+  "left": "twilightforest:forested_terrain",
+  "right": {
+    "type": "minecraft:beardifier"
+  }
+}

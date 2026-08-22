@@ -230,6 +230,30 @@ public class TreeConfigurations {
 		.ignoreVines()
 		.build();
 
+	public static final TreeFeature DARK_FOREST_OAK_TREE = new TreeFeature.Builder(
+		BlockStateProvider.simple(Blocks.OAK_LOG),
+		new StraightTrunkPlacer(4, 2, 0),
+		BlockStateProvider.simple(Blocks.OAK_LEAVES),
+		new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
+		new TwoLayersFeatureSize(1, 0, 1),
+		DIRT
+	)
+		.ignoreVines()
+		.build();
+
+	public static final TreeFeature DARK_FOREST_BIRCH_TREE = new TreeFeature.Builder(
+		BlockStateProvider.simple(Blocks.BIRCH_LOG),
+		new StraightTrunkPlacer(5, 2, 0),
+		BlockStateProvider.simple(Blocks.BIRCH_LEAVES),
+		new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
+		new TwoLayersFeatureSize(1, 0, 1),
+		DIRT
+	)
+		.ignoreVines()
+		.build();
+
+	public static final TreeFeature DARK_OAK_BUSH = OAK_BUSH;
+
 	//[VanillaCopy] of Features.MEGA_SPRUCE, just without all the nasty podzol so it fits better
 	public static final TreeFeature BIG_SPRUCE = new TreeFeature.Builder(
 		BlockStateProvider.simple(Blocks.SPRUCE_LOG),

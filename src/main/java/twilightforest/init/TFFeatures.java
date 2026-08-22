@@ -63,7 +63,8 @@ public class TFFeatures {
 
 		public static void init() {
 		// 26.3: feature types are registered as MapCodecs into BuiltInRegistries.FEATURE_TYPE
-		Registry.register(BuiltInRegistries.FEATURE_TYPE, TwilightForestMod.prefix("small_lake"), SMALL_LAKE.codec());
+				TwilightForestMod.LOGGER.info("[TFFeatures.init] registered FEATURE_TYPE: start");
+Registry.register(BuiltInRegistries.FEATURE_TYPE, TwilightForestMod.prefix("small_lake"), SMALL_LAKE.codec());
 		Registry.register(BuiltInRegistries.FEATURE_TYPE, TwilightForestMod.prefix("big_mushgloom"), BIG_MUSHGLOOM.codec());
 		Registry.register(BuiltInRegistries.FEATURE_TYPE, TwilightForestMod.prefix("canopy_brown_mushroom"), CANOPY_BROWN_MUSHROOM.codec());
 		Registry.register(BuiltInRegistries.FEATURE_TYPE, TwilightForestMod.prefix("canopy_red_vanilla_mushroom"), CANOPY_RED_VANILLA_MUSHROOM.codec());

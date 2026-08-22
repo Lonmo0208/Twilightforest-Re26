@@ -5,7 +5,7 @@
                           "type":  "twilightforest:chunk_blanketing",
                           "biome_lock":  "twilightforest:thornlands",
                           "heightmap":  "OCEAN_FLOOR_WG",
-                          "integrity":  0.7
+                          "integrity":  0.9
                       },
                       {
                           "type":  "minecraft:biome"

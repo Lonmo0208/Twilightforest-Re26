@@ -11,8 +11,7 @@ import java.util.function.Consumer;
 public class MinotaurAxeItem extends Item {
 
 	public MinotaurAxeItem(ToolMaterial material, float damage, float speed, Properties properties) {
-		// TODO-263: Original super(material, damage, speed, properties)
-		super(properties);
+		super(properties.axe(material, damage, speed));
 	}
 
 	@Override

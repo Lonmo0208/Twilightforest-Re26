@@ -99,7 +99,10 @@ public class CloudCastleComponent extends TFStructureComponentOld {
 			GiantMiner miner = TFEntities.GIANT_MINER.get().create(world.getLevel(), EntitySpawnReason.STRUCTURE);
 			miner.setPos(bx, by, bz);
 			miner.setPersistenceRequired();
-			// EventHooks.finalizeMobSpawn(miner, world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null)); // TODO: Port - NeoForge hook
+			// Replaces the NeoForge EventHooks.finalizeMobSpawn hook that was dropped in the Fabric port.
+			// Without it, populateDefaultEquipmentSlots() never runs, so the giant spawns empty-handed
+			// instead of holding its Giant Pickaxe (the spawn egg path calls this and works normally).
+			miner.finalizeSpawn(world.getLevel(), world.getLevel().getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 
 			world.addFreshEntity(miner);
 		}
@@ -116,7 +119,8 @@ public class CloudCastleComponent extends TFStructureComponentOld {
 			ArmoredGiant warrior = TFEntities.ARMORED_GIANT.get().create(world.getLevel(), EntitySpawnReason.STRUCTURE);
 			warrior.setPos(bx, by, bz);
 			warrior.setPersistenceRequired();
-			// EventHooks.finalizeMobSpawn(warrior, world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null)); // TODO: Port - NeoForge hook
+			// Same finalizeMobSpawn replacement as placeGiantMiner: populates the iron armor + Giant Sword.
+			warrior.finalizeSpawn(world.getLevel(), world.getLevel().getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 
 			world.addFreshEntity(warrior);
 		}

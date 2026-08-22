@@ -197,34 +197,15 @@ public abstract class BiomeHelper {
 		return new Biome.BiomeBuilder()
 			.hasPrecipitation(false)
 			.temperature(0.5F)
-			// Official: downfall=0.5 (matches temperature 0.5 temperate biome). Was incorrectly 0.0.
 			.downfall(0.5F)
-			// Enchanted Forest-specific environment attributes, matching official JSON colors:
-			// - FOG_COLOR = 0xC0FFF8 (12648408) = pale cyan magic mist (not the default 0x3A4E42 deep green forest fog).
-			//   This is the signature color of the Enchanted Forest biome's atmosphere.
-			// - SKY_COLOR = 0x20224A (same as default twilight sky, kept)
-			// - WATER_FOG_COLOR = 0x050533 (same as default deep water fog, kept)
-			// Ambient particles (wandering firefly) inherited from defaultEnvironmentBuilder.
 			.putAttributes(EnvironmentAttributeMap.builder()
-				.set(EnvironmentAttributes.FOG_COLOR, 0xC0FFF8)
+				.set(EnvironmentAttributes.FOG_COLOR, 0xC0D878)
 				.set(EnvironmentAttributes.WATER_FOG_COLOR, 0x050533)
 				.set(EnvironmentAttributes.SKY_COLOR, 0x20224A)
 				.set(EnvironmentAttributes.AMBIENT_PARTICLES, List.of(new AmbientParticle(TFParticleType.WANDERING_FIREFLY, 0.00025f))))
 			.specialEffects(defaultAmbientBuilder()
-				// Fabric port note: Official NeoForge version uses both grassColorOverride=0x00FFFF (65535,
-				// pure cyan) AND grassColorModifier=ENCHANTED_FOREST, whose modifyColor() subtracts a
-				// distance-driven 0..255 value from the BLUE channel via BiomeColorAlgorithms.enchanted().
-				//
-				// Since we cannot extend the GrassColorModifier enum on Fabric, we bake the *average*
-				// enchanted forest color directly into the overrides here: 0x00FF80 = full GREEN (255)
-				// + half BLUE (128), which is the midpoint of the cyan<->emerald oscillation the
-				// official modifier produces across quest grove distances. This matches the emerald
-				// grass look from the user's reference screenshot (the Quest Grove / quest ram area)
-				// where the blue channel has been partially reduced, eliminating the "too-blue" tint.
-				// A client-side color provider then augments this with the dynamic oscillation when
-				// looking at actual blocks in-world.
-				.foliageColorOverride(0x00FF80)
-				.grassColorOverride(0x00FF80)
+				.foliageColorOverride(0x00E58D)
+				.grassColorOverride(0x00E58D)
 				.grassColorModifier(grassColorModifierEnumExtension.ENCHANTED_FOREST).build())
 			.mobSpawnSettings(defaultMobSpawning().build())
 			.generationSettings(biome.build());

@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.LevelWriter;
@@ -17,124 +16,117 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.TreeFeature;
-import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.shapes.BitSetDiscreteVoxelShape;
 import net.minecraft.world.phys.shapes.DiscreteVoxelShape;
-import net.minecraft.world.level.chunk.ChunkGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import twilightforest.init.TFBlocks;
 import twilightforest.util.features.FeaturePlacers;
-import twilightforest.world.components.feature.trees.treeplacers.BranchingTrunkPlacer;
-import twilightforest.world.components.feature.trees.treeplacers.BranchesConfig;
-import twilightforest.world.components.feature.trees.treeplacers.LeafSpheroidFoliagePlacer;
 
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-/**
- * Makes large trees with flat leaf ovals that provide a canopy for the forest
- *
- * @author Ben
- */
-
-//Lots of things from TreeFeature, but we're checking for dirt to place on
 public class DarkCanopyTreeFeature implements Feature {
 
-	private static final int LEAF_SHAG_FACTOR = 24;
-
-	// 26.3: config baked into the singleton feature (mirrors the former canopy tree data)
-	public static final TreeFeature CANOPY = new TreeFeature.Builder(
-		BlockStateProvider.simple(TFBlocks.CANOPY_LOG),
-		new BranchingTrunkPlacer(20, 5, 5, 12, new BranchesConfig(BlockStateProvider.simple(TFBlocks.CANOPY_WOOD), 3, 1, 10, 1, 0.3, 0.2), false, true),
-		BlockStateProvider.simple(TFBlocks.CANOPY_LEAVES),
-		new LeafSpheroidFoliagePlacer((float) Math.sqrt(Math.pow(4, 2) + Math.pow(1, 2)), 1.5f, ConstantInt.of(0), 0, 0, -0.2f, LEAF_SHAG_FACTOR),
-		new TwoLayersFeatureSize(20, 0, 5),
-		BlockStateProvider.simple(Blocks.DIRT)
-	).ignoreVines().build();
+	private final net.minecraft.world.level.levelgen.feature.TreeFeature config;
 
 	public DarkCanopyTreeFeature() {
+		this.config = null;
+	}
+
+	public DarkCanopyTreeFeature(net.minecraft.world.level.levelgen.feature.TreeFeature config) {
+		this.config = config;
 	}
 
 	@Override
 	public MapCodec<? extends Feature> codec() {
-		// 26.3: 多个 dark_canopy_tree JSON 入口点，必须返回新的 codec 对象才能通过 MappedRegistry 判重检查
-		return twilightforest.util.Codecs.freshUnit(DarkCanopyTreeFeature::new);
+		return net.minecraft.world.level.levelgen.feature.TreeFeature.CODEC.xmap(DarkCanopyTreeFeature::new, f -> f.config);
 	}
 
 	@Override
 	public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos pos) {
-		WorldGenLevel reader = level;
-		RandomSource rand = random;
+		net.minecraft.world.level.levelgen.feature.TreeFeature treeconfiguration = this.config;
 
-		// if we are given leaves as a starting position, seek dirt or grass underneath
-		boolean foundDirt = false;
-		for (int dy = pos.getY(); dy >= reader.getMinY(); dy--) {
-			BlockState state = reader.getBlockState(new BlockPos(pos.getX(), dy - 1, pos.getZ()));
-			if (state.is(BlockTags.DIRT)) {
-				// yes!
-				foundDirt = true;
-				pos = new BlockPos(pos.getX(), dy, pos.getZ());
-				break;
-			} else if (state.is(BlockTags.BASE_STONE_OVERWORLD) || state.is(BlockTags.SAND)) {
+		final int x = pos.getX();
+		final int z = pos.getZ();
+		int surfaceY = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
+
+		int soilTop = -1;
+		final int maxTerrainY = 16;
+		int searchStart = Math.min(Math.max(surfaceY, 8), maxTerrainY);
+		for (int y = searchStart; y >= level.getMinY() + 2; y--) {
+			BlockPos probe = new BlockPos(x, y, z);
+			BlockState atState = level.getBlockState(probe);
+			BlockState aboveState = level.getBlockState(probe.above());
+			boolean atIsSoil = atState.is(BlockTags.DIRT)
+					|| atState.is(Blocks.GRASS_BLOCK)
+					|| atState.is(Blocks.PODZOL)
+					|| atState.is(Blocks.MYCELIUM)
+					|| atState.is(Blocks.COARSE_DIRT);
+			boolean aboveIsAir = aboveState.isAir()
+					|| aboveState.is(BlockTags.REPLACEABLE)
+					|| aboveState.is(BlockTags.REPLACEABLE_BY_TREES);
+			if (atIsSoil && aboveIsAir) {
+				soilTop = y;
 				break;
 			}
 		}
 
-		if (!foundDirt) {
+		if (soilTop < level.getMinY() + 1) {
 			return false;
 		}
 
-		if (!reader.isEmptyBlock(pos)) {
-			pos = pos.above();
-			if (!reader.isEmptyBlock(pos)) {
-				return false;
+		pos = new BlockPos(x, soilTop, z);
+
+		if (treeconfiguration == null) {
+			return false;
+		}
+
+		int treeHeight;
+		try {
+			treeHeight = treeconfiguration.trunkPlacer().getTreeHeight(random);
+		} catch (Throwable t) {
+			treeHeight = 20;
+		}
+		final boolean isSmallTree = treeHeight <= 14;
+
+		if (!isSmallTree) {
+			for (int i = 1; i <= 4; i++) {
+				if (!validTreePos(level, pos.relative(Direction.UP, i))) {
+					return false;
+				}
+			}
+
+			for (Direction e : Direction.Plane.HORIZONTAL) {
+				if (level.getBlockState(pos.relative(e)).is(BlockTags.LOGS)) {
+					return false;
+				}
 			}
 		}
 
-		for (int i = 0; i < 4; i++) {
-			//We check against the TreeFeature's validTreePos method, to see if the tree can grow here, cuz the trunk placer uses this as well
-			//If we don't, some trees end up growing only one or two blocks tall
-			if (!FeaturePlacers.validTreePos(reader, pos.relative(Direction.UP, i))) {
-				return false;
-			}
-		}
-
-		// do not grow next to another tree
-		for (Direction e : Direction.Plane.HORIZONTAL) {
-			if (reader.getBlockState(pos.relative(e)).is(BlockTags.LOGS)) {
-				return false;
-			}
-		}
-
-		//Taken from TreeFeature.generate, adjusting our BoundingBox to fit where the dirt is
-		TreeFeature treeconfiguration = CANOPY;
 		Set<BlockPos> set = Sets.newHashSet();
 		Set<BlockPos> set1 = Sets.newHashSet();
 		Set<BlockPos> set2 = Sets.newHashSet();
 		Set<BlockPos> set3 = Sets.newHashSet();
 		BiConsumer<BlockPos, BlockState> biconsumer = (p_160555_, p_160556_) -> {
 			set.add(p_160555_.immutable());
-			reader.setBlock(p_160555_, p_160556_, Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
+			level.setBlock(p_160555_, p_160556_, Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
 		};
 		BiConsumer<BlockPos, BlockState> biconsumer1 = (p_160548_, p_160549_) -> {
 			set1.add(p_160548_.immutable());
-			reader.setBlock(p_160548_, p_160549_, Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
+			level.setBlock(p_160548_, p_160549_, Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
 		};
 		FoliagePlacer.FoliageSetter setter = new FoliagePlacer.FoliageSetter() {
 			@Override
 			public void set(BlockPos pos, BlockState state) {
 				set2.add(pos.immutable());
-				reader.setBlock(pos, state, Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
+				level.setBlock(pos, state, Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
 			}
 
 			@Override
@@ -144,74 +136,68 @@ public class DarkCanopyTreeFeature implements Feature {
 		};
 		BiConsumer<BlockPos, BlockState> biconsumer3 = (p_225290_, p_225291_) -> {
 			set3.add(p_225290_.immutable());
-			reader.setBlock(p_225290_, p_225291_, Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
+			level.setBlock(p_225290_, p_225291_, Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_ALL);
 		};
-		boolean flag = this.doPlace(reader, rand, pos, biconsumer, biconsumer1, setter, treeconfiguration);
-		if (flag && (!set1.isEmpty() || !set2.isEmpty())) {
+		boolean flag = this.doPlace(level, random, pos, biconsumer, biconsumer1, setter, treeconfiguration);
+
+		if (flag) {
+			if (set1.isEmpty() && set2.isEmpty()) {
+				return false;
+			}
 			if (!treeconfiguration.decorators().isEmpty()) {
-				TreeDecorator.Context treedecorator$context = new TreeDecorator.Context(reader, biconsumer3, rand, set1, set2, set);
+				TreeDecorator.Context treedecorator$context = new TreeDecorator.Context(level, biconsumer3, random, set1, set2, set);
 				treeconfiguration.decorators().forEach((p_225282_) -> {
 					p_225282_.place(treedecorator$context);
 				});
 			}
 
 			return BoundingBox.encapsulatingPositions(Iterables.concat(set1, set2, set3)).map((p_160521_) -> {
-				DiscreteVoxelShape shape = updateLeaves(reader, p_160521_, set1, set3);
-				StructureTemplate.updateShapeAtEdge(reader, 3, shape, p_160521_.minX(), p_160521_.minY(), p_160521_.minZ());
+				DiscreteVoxelShape shape = updateLeaves(level, p_160521_, set1, set3);
+				StructureTemplate.updateShapeAtEdge(level, 3, shape, p_160521_.minX(), p_160521_.minY(), p_160521_.minZ());
 				return true;
 			}).orElse(false);
-		} else {
-			return false;
 		}
+		return false;
 	}
 
-	//Mostly [VanillaCopy] of TreeFeature.doPlace, edits noted
-	private boolean doPlace(WorldGenLevel level, RandomSource random, BlockPos pos, BiConsumer<BlockPos, BlockState> consumer, BiConsumer<BlockPos, BlockState> consumer1, FoliagePlacer.FoliageSetter foliageSetter, TreeFeature config) {
+	private boolean doPlace(WorldGenLevel level, RandomSource random, BlockPos pos, BiConsumer<BlockPos, BlockState> consumer, BiConsumer<BlockPos, BlockState> consumer1, FoliagePlacer.FoliageSetter foliageSetter, net.minecraft.world.level.levelgen.feature.TreeFeature config) {
 		int i = config.trunkPlacer().getTreeHeight(random);
 		int j = config.foliagePlacer().foliageHeight(random, i, config);
 		int k = i - j;
 		int l = config.foliagePlacer().foliageRadius(random, k);
-		BlockPos blockpos = config.rootPlacer().map((placer) -> placer.getTrunkOrigin(pos, random)).orElse(pos);
+		BlockPos rawTrunkOrigin = config.rootPlacer().map((placer) -> placer.getTrunkOrigin(pos, random)).orElse(pos);
+		BlockPos blockpos = rawTrunkOrigin.above();
 		int i1 = Math.min(pos.getY(), blockpos.getY());
 		int j1 = Math.max(pos.getY(), blockpos.getY()) + i + 1;
 		if (i1 >= level.getMinY() + 1 && j1 <= level.getMaxY() + 1) {
 			OptionalInt optionalint = config.minimumSize().minClippedHeight();
-			int k1 = this.getMaxFreeTreeHeight(level, i, blockpos, config);
-			if (k1 >= i || optionalint.isPresent() && k1 >= optionalint.getAsInt()) {
-				if (config.rootPlacer().isPresent() && !config.rootPlacer().get().placeRoots(level, consumer, random, pos, blockpos, config)) {
-					return false;
-				} else {
-					List<FoliagePlacer.FoliageAttachment> list = config.trunkPlacer().placeTrunk(level, consumer1, random, k1, blockpos, config);
-					list.forEach((attachment) -> {
-						config.foliagePlacer().createFoliage(level, foliageSetter, random, config, k1, attachment, j, l);
-					});
-					return true;
-				}
-			} else {
+			int k1 = Math.max(i, optionalint.orElse(0));
+			if (config.rootPlacer().isPresent() && !config.rootPlacer().get().placeRoots(level, consumer, random, pos, rawTrunkOrigin, config)) {
 				return false;
+			} else {
+				List<FoliagePlacer.FoliageAttachment> list = config.trunkPlacer().placeTrunk(level, consumer1, random, k1, blockpos, config);
+				list.forEach((attachment) -> {
+					config.foliagePlacer().createFoliage(level, foliageSetter, random, config, k1, attachment, j, l);
+				});
+				return true;
 			}
-		} else {
-			return false;
 		}
+		return false;
 	}
 
-	//everything beyond this point is a [VanillaCopy] of TreeFeature
-	private int getMaxFreeTreeHeight(WorldGenLevel level, int trunkHeight, BlockPos pos, TreeFeature config) {
+	private int getMaxFreeTreeHeight(WorldGenLevel level, int trunkHeight, BlockPos pos, net.minecraft.world.level.levelgen.feature.TreeFeature config) {
 		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-
 		for (int i = 0; i <= trunkHeight + 1; ++i) {
 			int j = config.minimumSize().getSizeAtHeight(trunkHeight, i);
-
 			for (int k = -j; k <= j; ++k) {
 				for (int l = -j; l <= j; ++l) {
 					mutable.setWithOffset(pos, k, i, l);
-					if (!FeaturePlacers.validTreePos(level, mutable) || !config.ignoreVines() && isVine(level, mutable)) {
+					if (!FeaturePlacers.validTreePos(level, mutable) || (!config.ignoreVines() && isVine(level, mutable))) {
 						return i - 2;
 					}
 				}
 			}
 		}
-
 		return trunkHeight;
 	}
 
@@ -227,24 +213,19 @@ public class DarkCanopyTreeFeature implements Feature {
 		List<Set<BlockPos>> list = Lists.newArrayList();
 		DiscreteVoxelShape discretevoxelshape = new BitSetDiscreteVoxelShape(p_67204_.getXSpan(), p_67204_.getYSpan(), p_67204_.getZSpan());
 		int i = 6;
-
 		for (int j = 0; j < 6; ++j) {
 			list.add(Sets.newHashSet());
 		}
-
 		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
-
 		for (BlockPos blockpos : Lists.newArrayList(p_67206_)) {
 			if (p_67204_.isInside(blockpos)) {
 				discretevoxelshape.fill(blockpos.getX() - p_67204_.minX(), blockpos.getY() - p_67204_.minY(), blockpos.getZ() - p_67204_.minZ());
 			}
 		}
-
 		for (BlockPos blockpos1 : Lists.newArrayList(p_67205_)) {
 			if (p_67204_.isInside(blockpos1)) {
 				discretevoxelshape.fill(blockpos1.getX() - p_67204_.minX(), blockpos1.getY() - p_67204_.minY(), blockpos1.getZ() - p_67204_.minZ());
 			}
-
 			for (Direction direction : Direction.values()) {
 				blockpos$mutableblockpos.setWithOffset(blockpos1, direction);
 				if (!p_67205_.contains(blockpos$mutableblockpos)) {
@@ -259,16 +240,13 @@ public class DarkCanopyTreeFeature implements Feature {
 				}
 			}
 		}
-
 		for (int l = 1; l < 6; ++l) {
 			Set<BlockPos> set = list.get(l - 1);
 			Set<BlockPos> set1 = list.get(l);
-
 			for (BlockPos blockpos2 : set) {
 				if (p_67204_.isInside(blockpos2)) {
 					discretevoxelshape.fill(blockpos2.getX() - p_67204_.minX(), blockpos2.getY() - p_67204_.minY(), blockpos2.getZ() - p_67204_.minZ());
 				}
-
 				for (Direction direction1 : Direction.values()) {
 					blockpos$mutableblockpos.setWithOffset(blockpos2, direction1);
 					if (!set.contains(blockpos$mutableblockpos) && !set1.contains(blockpos$mutableblockpos)) {
@@ -281,7 +259,6 @@ public class DarkCanopyTreeFeature implements Feature {
 								if (p_67204_.isInside(blockpos$mutableblockpos)) {
 									discretevoxelshape.fill(blockpos$mutableblockpos.getX() - p_67204_.minX(), blockpos$mutableblockpos.getY() - p_67204_.minY(), blockpos$mutableblockpos.getZ() - p_67204_.minZ());
 								}
-
 								set1.add(blockpos$mutableblockpos.immutable());
 							}
 						}
@@ -289,11 +266,20 @@ public class DarkCanopyTreeFeature implements Feature {
 				}
 			}
 		}
-
 		return discretevoxelshape;
 	}
 
 	public static boolean validTreePos(LevelSimulatedReader reader, BlockPos pos) {
 		return reader.isStateAtPosition(pos, (state) -> state.isAir() || state.is(BlockTags.REPLACEABLE_BY_TREES));
+	}
+
+	private static boolean isPlantable(BlockState state) {
+		return state.is(Blocks.GRASS_BLOCK) ||
+				state.is(Blocks.DIRT) ||
+				state.is(Blocks.COARSE_DIRT) ||
+				state.is(Blocks.PODZOL) ||
+				state.is(Blocks.MYCELIUM) ||
+				state.is(Blocks.SAND) ||
+				state.is(Blocks.RED_SAND);
 	}
 }

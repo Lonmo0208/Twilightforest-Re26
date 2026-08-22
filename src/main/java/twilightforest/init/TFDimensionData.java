@@ -116,7 +116,7 @@ public class TFDimensionData {
 				DensityFunctions.zero(), //erosion
 				DensityFunctions.zero(), //depth
 				DensityFunctions.zero(), //ridges
-				DensityFunctions.zero(), //preliminarySurfaceLevel
+				finalDensity, //preliminarySurfaceLevel
 				finalDensity //finalDensity
 			),
 			Holder.direct(TFSurfaceRules.tfSurface(context.lookup(Registries.BIOME))),

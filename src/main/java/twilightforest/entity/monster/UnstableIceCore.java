@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -14,7 +13,6 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -22,7 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gamerules.GameRules;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFSounds;
-import twilightforest.util.ColorUtil;
 
 public class UnstableIceCore extends BaseIceMob {
 
@@ -107,13 +104,13 @@ public class UnstableIceCore extends BaseIceMob {
 		Block block = state.getBlock();
 
 		if (block.getExplosionResistance() < 8F && state.getDestroySpeed(this.level(), pos) >= 0) {
-			int blockColor = state.getMapColor(this.level(), pos).col;
-
-			// do appropriate transformation
+			// do appropriate transformation into aurora-palace themed blocks
 			if (this.shouldTransformGlass(state, pos)) {
-				this.level().setBlockAndUpdate(pos, ColorUtil.STAINED_GLASS.getColor(getClosestDyeColor(blockColor)));
+				this.level().setBlockAndUpdate(pos, TFBlocks.AURORALIZED_GLASS.defaultBlockState());
 			} else if (this.shouldTransformClay(state, pos)) {
-				this.level().setBlockAndUpdate(pos, ColorUtil.TERRACOTTA.getColor(getClosestDyeColor(blockColor)));
+				// randomly pick between the aurora brick and the aurora pillar
+				Block auroraBlock = this.getRandom().nextBoolean() ? TFBlocks.AURORA_BLOCK : TFBlocks.AURORA_PILLAR;
+				this.level().setBlockAndUpdate(pos, auroraBlock.defaultBlockState());
 			}
 		}
 	}
@@ -128,33 +125,6 @@ public class UnstableIceCore extends BaseIceMob {
 
 	private boolean isBlockNormalBounds(BlockState state, BlockPos pos) {
 		return Block.isShapeFullBlock(state.getShape(this.level(), pos));
-	}
-
-	private static DyeColor getClosestDyeColor(int blockColor) {
-		int red = (blockColor >> 16) & 255;
-		int green = (blockColor >> 8) & 255;
-		int blue = blockColor & 255;
-
-
-		DyeColor bestColor = DyeColor.WHITE;
-		int bestDifference = 1024;
-
-		for (DyeColor color : DyeColor.values()) {
-			int iColor = color.getTextureDiffuseColor();
-
-			int iRed = ARGB.red(iColor);
-			int iGreen = ARGB.green(iColor);
-			int iBlue = ARGB.blue(iColor);
-
-			int difference = Math.abs(red - iRed) + Math.abs(green - iGreen) + Math.abs(blue - iBlue);
-
-			if (difference < bestDifference) {
-				bestColor = color;
-				bestDifference = difference;
-			}
-		}
-
-		return bestColor;
 	}
 
 	@Override

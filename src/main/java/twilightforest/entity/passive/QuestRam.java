@@ -3,6 +3,7 @@ package twilightforest.entity.passive;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,6 +26,8 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -35,6 +38,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import twilightforest.TwilightForestMod;
 import twilightforest.beanification.Autowired;
 import twilightforest.entity.EnforcedHomePoint;
 import twilightforest.entity.ai.goal.QuestRamEatWoolGoal;
@@ -133,6 +137,19 @@ public class QuestRam extends Animal implements EnforcedHomePoint {
 		// todo flesh the context out more
 		LootParams ctx = new LootParams.Builder(server).withParameter(LootContextParams.THIS_ENTITY, this).create(LootContextParamSets.PIGLIN_BARTER);
 		ObjectArrayList<ItemStack> rewards = this.level().getServer().reloadableRegistries().getLootTable(questingRamCurrentContext.getContext().lootTable()).getRandomItems(ctx);
+
+		// DEBUG: log what was generated to diagnose the empty bundle issue
+		TwilightForestMod.LOGGER.info("[QuestRam] rewardQuest fired, loot table: {}", questingRamCurrentContext.getContext().lootTable());
+		TwilightForestMod.LOGGER.info("[QuestRam] generated {} reward stacks", rewards.size());
+		for (ItemStack reward : rewards) {
+			if (reward.is(Items.BUNDLE)) {
+				BundleContents bundleContents = reward.get(DataComponents.BUNDLE_CONTENTS);
+				TwilightForestMod.LOGGER.info("[QuestRam]   bundle component: {} (size={})", bundleContents, bundleContents == null ? -1 : bundleContents.size());
+			} else {
+				TwilightForestMod.LOGGER.info("[QuestRam]   item: {}", reward);
+			}
+		}
+
 		rewards.forEach(stack -> this.spawnAtLocation(server, stack, 1.0F));
 
 		for (ServerPlayer player : this.level().getEntitiesOfClass(ServerPlayer.class, getBoundingBox().inflate(16.0D, 16.0D, 16.0D))) {
