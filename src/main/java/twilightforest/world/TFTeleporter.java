@@ -181,9 +181,15 @@ public class TFTeleporter {
 
 	private static int getScanHeight(ServerLevel world, int x, int z) {
 		int worldHeight = world.getMaxY() - 1;
+		// Use getChunkNow to avoid blocking on chunk generation during scanning.
+		// If the chunk is not loaded yet, fall back to world max height to skip detailed height scanning.
+		LevelChunk chunk = world.getChunkSource().getChunkNow(x >> 4, z >> 4);
+		if (chunk == null) {
+			return worldHeight;
+		}
 		//FIXME find an alternative to getHighestSectionPosition, its marked for removal
 		@SuppressWarnings("removal")
-		int chunkHeight = world.getChunk(x >> 4, z >> 4).getHighestSectionPosition() + 15;
+		int chunkHeight = chunk.getHighestSectionPosition() + 15;
 		return Math.min(worldHeight, chunkHeight);
 	}
 
@@ -247,9 +253,14 @@ public class TFTeleporter {
 		Iterable<BlockPos> biomeCenterGrid = new DiagonalSpiralIterator<>(pos.getX() >> 4, pos.getZ() >> 4, false, 128, 16, LegacyLandmarkPlacements::getNearestCenterXZ);
 		// Iterator loops over a 9x9 grid of biomes' random centers, maintaining an approximate order of proximity
 		for (BlockPos biomeCenter : biomeCenterGrid) {
-			// Check biome overlapping structure center
-			if (checkProgression && biomeUnsafe(level, biomeCenter, entity)) {
-				continue;
+			// Skip biome safety check only if chunk is not loaded yet to avoid synchronous chunk generation.
+			// But still continue scanning positions within this biome center because isSafeAround() already
+			// handles unloaded chunks gracefully (treats them as temporarily safe).
+			if (checkProgression) {
+				LevelChunk centerChunk = level.getChunkSource().getChunkNow(biomeCenter.getX() >> 4, biomeCenter.getZ() >> 4);
+				if (centerChunk != null && biomeUnsafe(level, biomeCenter, entity)) {
+					continue;
+				}
 			}
 
 			// Searches every chunk in a 17x17 grid around the center, inside the biome cell
@@ -287,6 +298,15 @@ public class TFTeleporter {
 			return true;
 		}
 
+		// For ServerLevel during safety scanning, skip biome/structure checks if
+		// the chunk is not yet loaded to avoid synchronous chunk generation hangs.
+		if (world instanceof ServerLevel serverLevel) {
+			LevelChunk chunk = serverLevel.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
+			if (chunk == null) {
+				return false;
+			}
+		}
+
 		if (checkProgression && biomeUnsafe(world, pos, entity)) {
 			return true;
 		}
@@ -304,7 +324,18 @@ public class TFTeleporter {
 			.map(HolderSet.ListBacked::iterator)
 			.orElse(Collections.emptyIterator());
 
-		LevelChunk chunkAt = destLevel.getChunkAt(pos);
+		// Use non-blocking chunk access during safety scanning.
+		// If the chunk is not yet loaded, treat it as "not overlapping restricted structure"
+		// to avoid forcing synchronous chunk generation which hangs the server thread.
+		LevelChunk chunkAt;
+		if (destLevel instanceof ServerLevel serverLevel) {
+			chunkAt = serverLevel.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
+			if (chunkAt == null) {
+				return false;
+			}
+		} else {
+			chunkAt = destLevel.getChunkAt(pos);
+		}
 
 		while (landmarksInChunk.hasNext()) {
 			Holder<Structure> structureHolder = landmarksInChunk.next();
@@ -371,7 +402,7 @@ public class TFTeleporter {
 	protected static void loadSurroundingArea(ServerLevel world, Vec3 pos) {
 
 		int x = Mth.floor(pos.x()) >> 4;
-		int z = Mth.floor(pos.y()) >> 4;
+		int z = Mth.floor(pos.z()) >> 4;
 
 		for (int dx = -2; dx <= 2; dx++) {
 			for (int dz = -2; dz <= 2; dz++) {
