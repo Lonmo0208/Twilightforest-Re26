@@ -3,9 +3,8 @@
     "placement":  [
                       {
                           "type":  "twilightforest:chunk_blanketing",
-                          "biome_lock":  "twilightforest:thornlands",
                           "heightmap":  "OCEAN_FLOOR_WG",
-                          "integrity":  0.9
+                          "integrity":  1.0
                       },
                       {
                           "type":  "minecraft:biome"

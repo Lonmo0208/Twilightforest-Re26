@@ -43,6 +43,7 @@ import twilightforest.tags.TFBlockTags;
 import twilightforest.tags.TFWoodPaletteTags;
 import twilightforest.util.woods.WoodPalette;
 import twilightforest.world.components.feature.TFSmallLakeFeature;
+import twilightforest.world.components.feature.ThornFeature;
 import twilightforest.world.components.feature.trees.DarkCanopyTreeFeature;
 import twilightforest.world.components.feature.config.*;
 import twilightforest.world.registration.TreeConfigurations;
@@ -280,7 +281,7 @@ public final class TFConfiguredFeatures {
 		context.register(MALOBERRY_BUSHES,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(SMOKER,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(STONE_CIRCLE,  new NoOpFeature() /* TODO-263: Feature fallback */);
-		context.register(THORNS,  new NoOpFeature() /* TODO-263: Feature fallback */);
+		context.register(THORNS,  new ThornFeature());
 		context.register(TORCH_BERRIES,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(TROLL_ROOTS,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(TROLL_BIG_MUSHGLOOMS,  new NoOpFeature() /* TODO-263: Feature fallback */);

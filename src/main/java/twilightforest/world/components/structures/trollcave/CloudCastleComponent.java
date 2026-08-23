@@ -102,7 +102,10 @@ public class CloudCastleComponent extends TFStructureComponentOld {
 			// Replaces the NeoForge EventHooks.finalizeMobSpawn hook that was dropped in the Fabric port.
 			// Without it, populateDefaultEquipmentSlots() never runs, so the giant spawns empty-handed
 			// instead of holding its Giant Pickaxe (the spawn egg path calls this and works normally).
-			miner.finalizeSpawn(world.getLevel(), world.getLevel().getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
+			// NOTE: must use the WorldGenLevel's getCurrentDifficultyAt (ServerLevelAccessor), NOT
+			// world.getLevel().getCurrentDifficultyAt() which forces a synchronous chunk load from the
+			// structure-generation thread and deadlocks chunk generation.
+			miner.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 
 			world.addFreshEntity(miner);
 		}
@@ -120,7 +123,7 @@ public class CloudCastleComponent extends TFStructureComponentOld {
 			warrior.setPos(bx, by, bz);
 			warrior.setPersistenceRequired();
 			// Same finalizeMobSpawn replacement as placeGiantMiner: populates the iron armor + Giant Sword.
-			warrior.finalizeSpawn(world.getLevel(), world.getLevel().getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
+			warrior.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 
 			world.addFreshEntity(warrior);
 		}
