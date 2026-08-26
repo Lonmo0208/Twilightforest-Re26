@@ -150,7 +150,7 @@ public class BrazierBlock extends BaseEntityBlock {
 		if (state.is(this) && state.getValue(HALF) == DoubleBlockHalf.UPPER) {
 			if (state.getValue(LIGHT) != BrazierLight.FULL && stack.canPerformAction(ItemAbilities.FIRESTARTER_LIGHT)) {
 				level.setBlock(pos, state.cycle(LIGHT), 11);
-				level.getBlockState(pos.below()).cycle(LIGHT);
+				level.setBlock(pos.below(), level.getBlockState(pos.below()).cycle(LIGHT), 11);
 				if (stack.is(Items.FLINT_AND_STEEL)) {
 					stack.hurtAndBreak(1, player, hand);
 				} else {

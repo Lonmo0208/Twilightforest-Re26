@@ -121,7 +121,7 @@ public class SlideBlock extends Entity {
 				this.setDeltaMovement(this.getDeltaMovement().add(moveDirection.getStepX() * moveAcceleration, moveDirection.getStepY() * moveAcceleration, moveDirection.getStepZ() * moveAcceleration));
 				this.move(MoverType.SELF, new Vec3(this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z()));
 			}
-			this.getDeltaMovement().multiply(0.98, 0.98, 0.98);
+			this.setDeltaMovement(this.getDeltaMovement().multiply(0.98, 0.98, 0.98));
 
 			if (!this.level().isClientSide()) {
 				if (this.slideTime % 5 == 0) {
