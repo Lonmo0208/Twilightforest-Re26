@@ -65,7 +65,7 @@ public class HydraMortar extends ThrowableProjectile {
 		super.tick();
 
 		if (this.onGround()) {
-			this.getDeltaMovement().multiply(0.9D, 0.9D, 0.9D);
+			this.setDeltaMovement(this.getDeltaMovement().multiply(0.9D, 0.9D, 0.9D));
 
 			if (!this.level().isClientSide() && this.fuse-- <= 0) {
 				this.detonate();
