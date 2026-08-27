@@ -24,7 +24,7 @@ public class ConqueredMapIconRenderer {
 		if (this.isConquered(decorationState)) {
 			stack.pushPose();
 			stack.translate(0.0F + decorationState.x / 2.0F + 64.0F, 0.0F + decorationState.y / 2.0F + 64.0F, 0.0F);
-			stack.mulPose(Axis.ZP.rotationDegrees((decorationState.rot * 360) / 16.0F));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees((decorationState.rot * 360) / 16.0F)));
 			stack.scale(4.0F, 4.0F, 3.0F);
 			stack.translate(-1.0F, -1.0F, -0.005F);
 			Matrix4f matrix4f = stack.last().pose();

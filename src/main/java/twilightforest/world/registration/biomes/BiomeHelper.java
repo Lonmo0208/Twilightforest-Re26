@@ -18,6 +18,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import twilightforest.enums.extensions.TFGrassColorModifierEnumExtension;
 import twilightforest.init.TFCaveCarvers;
+import twilightforest.util.TFColorConvert;
 import twilightforest.init.TFEntities;
 import twilightforest.init.TFParticleType;
 import twilightforest.init.TFPlacedFeatures;
@@ -79,7 +80,7 @@ public abstract class BiomeHelper {
 			.temperature(0.7F)
 			.downfall(0.8F)
 			.putAttributes(defaultEnvironmentBuilder()
-				.set(EnvironmentAttributes.WATER_FOG_COLOR, 0x005522)
+				.set(EnvironmentAttributes.WATER_FOG_COLOR, TFColorConvert.rgb(0x005522))
 				.set(EnvironmentAttributes.AMBIENT_PARTICLES, List.of(new AmbientParticle(TFParticleType.WANDERING_FIREFLY, 0.001F))))
 			.specialEffects(new BiomeSpecialEffects.Builder().waterColor(0x005522).build())
 			.mobSpawnSettings(defaultMobSpawning().build())
@@ -199,9 +200,9 @@ public abstract class BiomeHelper {
 			.temperature(0.5F)
 			.downfall(0.5F)
 			.putAttributes(EnvironmentAttributeMap.builder()
-				.set(EnvironmentAttributes.FOG_COLOR, 0xC0D878)
-				.set(EnvironmentAttributes.WATER_FOG_COLOR, 0x050533)
-				.set(EnvironmentAttributes.SKY_COLOR, 0x20224A)
+				.set(EnvironmentAttributes.FOG_COLOR, TFColorConvert.rgb(0xC0D878))
+				.set(EnvironmentAttributes.WATER_FOG_COLOR, TFColorConvert.rgb(0x050533))
+				.set(EnvironmentAttributes.SKY_COLOR, TFColorConvert.rgb(0x20224A))
 				.set(EnvironmentAttributes.AMBIENT_PARTICLES, List.of(new AmbientParticle(TFParticleType.WANDERING_FIREFLY, 0.00025f))))
 			.specialEffects(defaultAmbientBuilder()
 				.foliageColorOverride(0x00E58D)
@@ -234,9 +235,9 @@ public abstract class BiomeHelper {
 			.temperature(0.5F)
 			.downfall(1.0F)
 			.putAttributes(EnvironmentAttributeMap.builder()
-				.set(EnvironmentAttributes.FOG_COLOR, 0x827391)
-				.set(EnvironmentAttributes.WATER_FOG_COLOR, 0xBC8857)
-				.set(EnvironmentAttributes.SKY_COLOR, 0x20224A))
+				.set(EnvironmentAttributes.FOG_COLOR, TFColorConvert.rgb(0x827391))
+				.set(EnvironmentAttributes.WATER_FOG_COLOR, TFColorConvert.rgb(0xBC8857))
+				.set(EnvironmentAttributes.SKY_COLOR, TFColorConvert.rgb(0x20224A)))
 			.specialEffects(defaultAmbientBuilder()
 				.waterColor(0xBC8857)
 				.grassColorOverride(0xC45123)
@@ -448,9 +449,9 @@ public abstract class BiomeHelper {
 			.temperature(0.8F)
 			.downfall(0.9F)
 			.putAttributes(EnvironmentAttributeMap.builder()
-				.set(EnvironmentAttributes.FOG_COLOR, 0x003F21)
-				.set(EnvironmentAttributes.WATER_FOG_COLOR, 0x95B55F)
-				.set(EnvironmentAttributes.SKY_COLOR, 0x002112))
+				.set(EnvironmentAttributes.FOG_COLOR, TFColorConvert.rgb(0x003F21))
+				.set(EnvironmentAttributes.WATER_FOG_COLOR, TFColorConvert.rgb(0x95B55F))
+				.set(EnvironmentAttributes.SKY_COLOR, TFColorConvert.rgb(0x002112)))
 			.specialEffects(defaultAmbientBuilder()
 				.grassColorOverride(0x5C694E)
 				.foliageColorOverride(0x496137)
@@ -486,9 +487,9 @@ public abstract class BiomeHelper {
 			.temperature(1.0F)
 			.downfall(0.4F)
 			.putAttributes(EnvironmentAttributeMap.builder()
-				.set(EnvironmentAttributes.FOG_COLOR, 0x380A00)
-				.set(EnvironmentAttributes.WATER_FOG_COLOR, 0x6C2C2C)
-				.set(EnvironmentAttributes.SKY_COLOR, 0x002112)
+				.set(EnvironmentAttributes.FOG_COLOR, TFColorConvert.rgb(0x380A00))
+				.set(EnvironmentAttributes.WATER_FOG_COLOR, TFColorConvert.rgb(0x6C2C2C))
+				.set(EnvironmentAttributes.SKY_COLOR, TFColorConvert.rgb(0x002112))
 				.set(EnvironmentAttributes.SNOW_GOLEM_MELTS, true)
 				.set(EnvironmentAttributes.AMBIENT_PARTICLES, List.of(new AmbientParticle(ParticleTypes.WHITE_ASH, 0.015f))))
 			.specialEffects(defaultAmbientBuilder()
@@ -510,8 +511,8 @@ public abstract class BiomeHelper {
 			.temperature(0.7F)
 			.downfall(0.8F)
 			.putAttributes(EnvironmentAttributeMap.builder()
-				.set(EnvironmentAttributes.FOG_COLOR, 0x000000)
-				.set(EnvironmentAttributes.SKY_COLOR, 0x000000))
+				.set(EnvironmentAttributes.FOG_COLOR, TFColorConvert.rgb(0x000000))
+				.set(EnvironmentAttributes.SKY_COLOR, TFColorConvert.rgb(0x000000)))
 			.specialEffects(defaultAmbientBuilder()
 				.grassColorOverride(0x4B6754)
 				.foliageColorOverride(0x3B5E3F)
@@ -540,7 +541,7 @@ public abstract class BiomeHelper {
 
 	public static Biome.BiomeBuilder darkForestCenter(HolderGetter<PlacedFeature> featureGetter, HolderGetter<WorldCarver> carverGetter) {
 		return darkForest(featureGetter, carverGetter)
-			.setAttribute(EnvironmentAttributes.FOG_COLOR, 0x493000)
+			.setAttribute(EnvironmentAttributes.FOG_COLOR, TFColorConvert.rgb(0x493000))
 			.specialEffects(defaultAmbientBuilder()
 				.grassColorOverride(0x667540)
 				.foliageColorOverride(0xF9821E)
@@ -569,8 +570,8 @@ public abstract class BiomeHelper {
 			.temperature(0.09F)
 			.downfall(0.9F)
 			.putAttributes(EnvironmentAttributeMap.builder()
-				.set(EnvironmentAttributes.FOG_COLOR, 0xFFFFFF)
-				.set(EnvironmentAttributes.SKY_COLOR, 0x808080))
+				.set(EnvironmentAttributes.FOG_COLOR, TFColorConvert.rgb(0xFFFFFF))
+				.set(EnvironmentAttributes.SKY_COLOR, TFColorConvert.rgb(0x808080)))
 			.specialEffects(defaultAmbientBuilder()
 				.foliageColorOverride(0xFFFFFF)
 				.grassColorOverride(0xFFFFFF)
@@ -594,8 +595,8 @@ public abstract class BiomeHelper {
 			.temperature(0.08F)
 			.downfall(0.1F)
 			.putAttributes(EnvironmentAttributeMap.builder()
-				.set(EnvironmentAttributes.FOG_COLOR, 0x361F88)
-				.set(EnvironmentAttributes.SKY_COLOR, 0x130D28))
+				.set(EnvironmentAttributes.FOG_COLOR, TFColorConvert.rgb(0x361F88))
+				.set(EnvironmentAttributes.SKY_COLOR, TFColorConvert.rgb(0x130D28)))
 			.specialEffects(defaultAmbientBuilder()
 				.foliageColorOverride(0xFFFFFF)
 				.grassColorOverride(0xFFFFFF)
@@ -743,9 +744,9 @@ public abstract class BiomeHelper {
 
 	public static EnvironmentAttributeMap.Builder defaultEnvironmentBuilderNoParticles() {
 		return EnvironmentAttributeMap.builder()
-			.set(EnvironmentAttributes.FOG_COLOR, 0x3A4E42)
-			.set(EnvironmentAttributes.WATER_FOG_COLOR, 0x050533)
-			.set(EnvironmentAttributes.SKY_COLOR, 0x20224A);
+			.set(EnvironmentAttributes.FOG_COLOR, TFColorConvert.rgb(0x3A4E42))
+			.set(EnvironmentAttributes.WATER_FOG_COLOR, TFColorConvert.rgb(0x050533))
+			.set(EnvironmentAttributes.SKY_COLOR, TFColorConvert.rgb(0x20224A));
 	}
 
 	// Defaults

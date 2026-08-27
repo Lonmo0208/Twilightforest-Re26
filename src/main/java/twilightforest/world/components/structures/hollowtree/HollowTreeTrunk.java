@@ -23,7 +23,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import twilightforest.TwilightForestMod;
@@ -126,7 +126,7 @@ public class HollowTreeTrunk extends HollowTreePiece {
 	 * Add on the various bits and doo-dads we need to succeed
 	 */
 	@Override
-	public void addChildren(StructurePiece piece, StructurePieceAccessor list, RandomSource rand) {
+	public void addChildren(StructurePiece piece, StructurePiecesBuilder list, RandomSource rand) {
 		int index = this.getGenDepth();
 
 		// 3-5 couple branches on the way up...
@@ -152,7 +152,7 @@ public class HollowTreeTrunk extends HollowTreePiece {
 	/**
 	 * Build the crown of the tree
 	 */
-	protected void buildFullCrown(StructurePieceAccessor list, RandomSource rand, int index) {
+	protected void buildFullCrown(StructurePiecesBuilder list, RandomSource rand, int index) {
 		int crownRadius = this.radius * 4 + 4;
 		int bvar = this.radius + 2;
 
@@ -173,7 +173,7 @@ public class HollowTreeTrunk extends HollowTreePiece {
 	 * Build a ring of branches around the tree
 	 * size 0 = small, 1 = med, 2 = large, 3 = root
 	 */
-	protected int buildBranchRing(StructurePieceAccessor list, RandomSource rand, int index, int branchHeight, int heightVar, int length, double tilt, int minBranches, int maxBranches, int size, boolean leafy) {
+	protected int buildBranchRing(StructurePiecesBuilder list, RandomSource rand, int index, int branchHeight, int heightVar, int length, double tilt, int minBranches, int maxBranches, int size, boolean leafy) {
 		//let's do this!
 		int numBranches = rand.nextInt(maxBranches - minBranches + 1) + minBranches;
 		double branchRotation = 1.0 / numBranches;
@@ -202,21 +202,21 @@ public class HollowTreeTrunk extends HollowTreePiece {
 	}
 
 
-	public void makeSmallBranch(StructurePieceAccessor list, RandomSource rand, int index, int branchHeight, int branchLength, double branchRotation, double branchAngle, boolean leafy) {
+	public void makeSmallBranch(StructurePiecesBuilder list, RandomSource rand, int index, int branchHeight, int branchLength, double branchRotation, double branchAngle, boolean leafy) {
 		BlockPos bSrc = this.getBranchSrc(branchHeight, branchRotation);
 		HollowTreeSmallBranch branch = new HollowTreeSmallBranch(index, bSrc, branchLength, branchRotation, branchAngle, leafy, this.wood, this.leaves);
 		list.addPiece(branch);
 		branch.addChildren(this, list, rand);
 	}
 
-	public void makeMedBranch(StructurePieceAccessor list, RandomSource rand, int index, int branchHeight, int branchLength, double branchRotation, double branchAngle, boolean leafy) {
+	public void makeMedBranch(StructurePiecesBuilder list, RandomSource rand, int index, int branchHeight, int branchLength, double branchRotation, double branchAngle, boolean leafy) {
 		BlockPos bSrc = this.getBranchSrc(branchHeight, branchRotation);
 		HollowTreeMedBranch branch = new HollowTreeMedBranch(index, bSrc, branchLength, branchRotation, branchAngle, leafy, this.wood, this.leaves);
 		list.addPiece(branch);
 		branch.addChildren(this, list, rand);
 	}
 
-	public void makeLargeBranch(StructurePieceAccessor list, RandomSource rand, int index, int branchHeight, int branchLength, double branchRotation, double branchAngle, boolean leafy) {
+	public void makeLargeBranch(StructurePiecesBuilder list, RandomSource rand, int index, int branchHeight, int branchLength, double branchRotation, double branchAngle, boolean leafy) {
 		BlockPos bSrc = this.getBranchSrc(branchHeight, branchRotation);
 		HollowTreeLargeBranch branch = new HollowTreeLargeBranch(index, bSrc, branchLength, branchRotation, branchAngle, leafy, rand, this.wood, this.leaves, this.dungeonWood, this.dungeonAir, this.dungeonLootBlock, this.dungeonLootTable, this.dungeonMonster);
 		list.addPiece(branch);
@@ -224,7 +224,7 @@ public class HollowTreeTrunk extends HollowTreePiece {
 	}
 
 
-	public void makeRoot(StructurePieceAccessor list, RandomSource rand, int index, int branchHeight, int branchLength, double branchRotation, double branchAngle) {
+	public void makeRoot(StructurePiecesBuilder list, RandomSource rand, int index, int branchHeight, int branchLength, double branchRotation, double branchAngle) {
 		BlockPos bSrc = this.getBranchSrc(branchHeight, branchRotation);
 		HollowTreeRoot branch = new HollowTreeRoot(index, bSrc, branchLength, branchRotation, branchAngle, false, this.root, this.wood);
 		list.addPiece(branch);

@@ -4,7 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 
 // Negative radius values cause a bowling-up shaped zero-threshold over this DensityFunction's field, making it useful for the hollow hill's floor alongside as its regular mound shape
 public record TanhHillFunction(float centerX, float bottomY, float centerZ, float radius, float heightScale, float cosAngleBiasDirection, float sinAngleBiasDirection, boolean isXOriented, boolean isOnRightSide) implements DensityFunction {
@@ -23,18 +28,6 @@ public record TanhHillFunction(float centerX, float bottomY, float centerZ, floa
 
 	public TanhHillFunction(float centerX, float bottomY, float centerZ, float radius, float heightScale, float angleBiasDirection, boolean isXOriented, boolean isOnRightSide) {
 		this(centerX, bottomY, centerZ, radius, heightScale, Mth.cos(angleBiasDirection), Mth.sin(angleBiasDirection), isXOriented, isOnRightSide);
-	}
-
-	@Override
-	public float compute(FunctionContext context) {
-		float dX = context.blockX() - this.centerX;
-		float dY = context.blockY() - this.bottomY;
-		float dZ = context.blockZ() - this.centerZ;
-		if (isXOriented)  // Make mounds more parallel to the trunk axis in shape
-			dZ *= PERPENDICULAR_BIAS;
-		else
-			dX *= PERPENDICULAR_BIAS;
-		return (float) compute(dX, dY, dZ);
 	}
 
 	public double compute(float dX, float dY, float dZ) {
@@ -78,12 +71,17 @@ public record TanhHillFunction(float centerX, float bottomY, float centerZ, floa
 	}
 
 	@Override
+	public DensitySampler compileSampler(DensityFunction.CompileContext compileContext) {
+		return new TanhHillSampler(this);
+	}
+
+	@Override
 	public net.minecraft.util.Interval range() {
 		return net.minecraft.util.Interval.of(-1.0f, 1.0f);
 	}
 
 	@Override
-	public com.mojang.serialization.MapCodec<? extends DensityFunction> codec() {
+	public MapCodec<? extends DensityFunction> codec() {
 		return CODEC;
 	}
 
@@ -93,14 +91,26 @@ public record TanhHillFunction(float centerX, float bottomY, float centerZ, floa
 	}
 
 	@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
-		}
+	public DensityFunction rewriteChildren(DfRewriteRule rule) {
+		return this;
 	}
 
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
-		return this;
+	public record TanhHillSampler(TanhHillFunction function) implements DensitySampler {
+		@Override
+		public void sampleVolume(SamplerContext context, DensityBuffer buffer, DensityVolume volume) {
+			DensitySampler.sampleVolumeNaive(context, buffer, volume, this);
+		}
+
+		@Override
+		public float sampleValue(SamplerContext context, int x, int y, int z) {
+			float dX = x - this.function.centerX();
+			float dY = y - this.function.bottomY();
+			float dZ = z - this.function.centerZ();
+			if (this.function.isXOriented())  // Make mounds more parallel to the trunk axis in shape
+				dZ *= PERPENDICULAR_BIAS;
+			else
+				dX *= PERPENDICULAR_BIAS;
+			return (float) this.function.compute(dX, dY, dZ);
+		}
 	}
 }

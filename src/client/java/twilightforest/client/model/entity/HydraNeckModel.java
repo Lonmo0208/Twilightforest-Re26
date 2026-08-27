@@ -35,7 +35,7 @@ public class HydraNeckModel extends EntityModel<HydraNeckRenderState> {
 	@Override
 	public void setupAnim(HydraNeckRenderState entity) {
 		// The HydraNeckRenderer already applies the neck's yaw rotation to the pose stack
-		// (via stack.mulPose(Axis.YN.rotationDegrees(yaw2 + 180))).
+		// (via stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YN.rotationDegrees(yaw2 + 180)))).
 		// The model should NOT apply yaw/xRot here, matching the old 1.21.1 behavior
 		// where netHeadYaw came from renderYawOffset (always 0 for PartEntity).
 	}

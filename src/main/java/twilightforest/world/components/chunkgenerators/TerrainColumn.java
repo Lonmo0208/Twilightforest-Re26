@@ -12,6 +12,8 @@ import net.minecraft.core.registries.codec.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import twilightforest.util.Codecs;
 
 import java.util.Map;
@@ -92,17 +94,30 @@ public final class TerrainColumn {
 		return result != null ? result.getValue() : other;
 	}
 
-	public double depth(DensityFunction.FunctionContext context) {
-		return this.noiseDepth.compute(context);
+	public double depth(TerrainColumnSamplers samplers, SamplerContext context, int x, int y, int z) {
+		return samplers.depth().sampleValue(context, x, y, z);
 	}
 
-	public double scale(DensityFunction.FunctionContext context) {
-		return this.noiseScale.compute(context);
+	public double scale(TerrainColumnSamplers samplers, SamplerContext context, int x, int y, int z) {
+		return samplers.scale().sampleValue(context, x, y, z);
 	}
 
-	public double weight(DensityFunction.FunctionContext context) {
-		return this.noiseWeight.compute(context);
+	public double weight(TerrainColumnSamplers samplers, SamplerContext context, int x, int y, int z) {
+		return samplers.weight().sampleValue(context, x, y, z);
 	}
+
+	public TerrainColumnSamplers compileSamplers(DensityFunction.CompileContext compileContext) {
+		return new TerrainColumnSamplers(
+			this.noiseDepth.compileSampler(compileContext),
+			this.noiseScale.compileSampler(compileContext),
+			this.noiseWeight.compileSampler(compileContext)
+		);
+	}
+
+	/**
+	 * Compiled, ready-to-sample versions of this column's depth/scale/weight density functions.
+	 */
+	public record TerrainColumnSamplers(DensitySampler depth, DensitySampler scale, DensitySampler weight) {}
 
 	public ResourceKey<Biome> getResourceKey() {
 		return this.resourceKey;

@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import org.jetbrains.annotations.NotNull;
 import twilightforest.init.custom.BiomeLayerStack;
 import twilightforest.world.components.chunkgenerators.TerrainColumn;
@@ -105,7 +106,19 @@ public class BiomeDensitySource {
 	private static final int BLEND_RADIUS_INT = Mth.floor(BLEND_RADIUS + 1.0);
 	private static final int BLOCK_XYZ_OFFSET = QuartPos.SIZE / 2;
 
-	public DensityData sampleTerrain(int blockX, int blockZ, DensityFunction.FunctionContext context) {
+	/**
+	 * Compiles the depth/scale/weight functions of every TerrainColumn handled by this
+	 * source, producing samplers ready to be queried during worldgen.
+	 */
+	public Map<ResourceKey<Biome>, TerrainColumn.TerrainColumnSamplers> compileTerrain(DensityFunction.CompileContext compileContext) {
+		Map<ResourceKey<Biome>, TerrainColumn.TerrainColumnSamplers> compiled = new java.util.HashMap<>();
+		for (TerrainColumn column : this.biomeList.values()) {
+			compiled.put(column.getResourceKey(), column.compileSamplers(compileContext));
+		}
+		return compiled;
+	}
+
+	public DensityData sampleTerrain(int blockX, int blockZ, int blockY, SamplerContext context, Map<ResourceKey<Biome>, TerrainColumn.TerrainColumnSamplers> compiledSamplers) {
 		double totalMappedDepth = 0.0;
 		double totalContribution = 0.0;
 		double totalScale = 0.0;
@@ -133,12 +146,15 @@ public class BiomeDensitySource {
 					Optional<TerrainColumn> terrainColumn = this.getTerrainColumn(cx + xQuartStart, cz + zQuartStart);
 					if (terrainColumn.isPresent()) {
 						TerrainColumn column = terrainColumn.get();
-						double weight = column.weight(context);
+						TerrainColumn.TerrainColumnSamplers columnSamplers = compiledSamplers.get(column.getResourceKey());
+						if (columnSamplers == null)
+							continue;
+						double weight = column.weight(columnSamplers, context, blockX, blockY, blockZ);
 						double falloff = BLEND_RADIUS_SQUARED * weight;
 						double scaleFalloff = falloff;
 
-						double neighborDepth = column.depth(context);
-						double neighborScale = column.scale(context);
+						double neighborDepth = column.depth(columnSamplers, context, blockX, blockY, blockZ);
+						double neighborScale = column.scale(columnSamplers, context, blockX, blockY, blockZ);
 
 						falloff *= Math.exp((distSq * 2f + neighborDepth) * -0.4f);
 						totalMappedDepth += neighborDepth * falloff;

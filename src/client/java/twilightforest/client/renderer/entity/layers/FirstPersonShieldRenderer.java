@@ -60,9 +60,9 @@ public class FirstPersonShieldRenderer {
 		for (int c = 0; c < count; c++) {
 			stack.pushPose();
 
-			stack.mulPose(Axis.YP.rotationDegrees(rotateAngleY * (180.0F / Mth.PI) + (c * (360.0F / count))));
-			stack.mulPose(Axis.XP.rotationDegrees(rotateAngleX * (180.0F / Mth.PI)));
-			stack.mulPose(Axis.ZP.rotationDegrees(rotateAngleZ * (180.0F / Mth.PI)));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(rotateAngleY * (180.0F / Mth.PI) + (c * (360.0F / count)))));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(rotateAngleX * (180.0F / Mth.PI))));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(rotateAngleZ * (180.0F / Mth.PI))));
 
 			stack.translate(0.0F, 0.4F, -0.7F);
 

@@ -49,8 +49,8 @@ public class BlockChainGoblinRenderer extends HumanoidMobRenderer<BlockChainGobl
 
 		stack.translate(blockInX, blockInY, blockInZ);
 
-		stack.mulPose(Axis.YP.rotationDegrees(180 - Mth.wrapDegrees(state.yRot)));
-		stack.mulPose(Axis.XP.rotationDegrees(state.xRot));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(180 - Mth.wrapDegrees(state.yRot))));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(state.xRot)));
 
 		stack.scale(-1.0F, -1.0F, 1.0F);
 		collector.submitModel(this.model, STATE, stack, this.model.renderType(BLOCK_AND_CHAIN_TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);

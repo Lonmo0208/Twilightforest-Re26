@@ -69,9 +69,9 @@ public class MinoshroomRenderer extends HumanoidMobRenderer<Minoshroom, Minoshro
 					float zOffs = 0.25F;
 					poseStack.pushPose();
 					this.getParentModel().cowTorso.translateAndRotate(poseStack);
-					poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+					poseStack.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(-90.0F)));
 					poseStack.translate(0.2F, yOffs, zOffs);
-					poseStack.mulPose(Axis.YP.rotationDegrees(-48.0F));
+					poseStack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(-48.0F)));
 					poseStack.scale(-1.0F, -1.0F, 1.0F);
 					poseStack.translate(-0.5D, -0.5D, -0.5D);
 					this.submitMushroomBlock(
@@ -80,11 +80,11 @@ public class MinoshroomRenderer extends HumanoidMobRenderer<Minoshroom, Minoshro
 					poseStack.popPose();
 					poseStack.pushPose();
 					this.getParentModel().cowTorso.translateAndRotate(poseStack);
-					poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+					poseStack.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(-90.0F)));
 					poseStack.translate(0.2F, yOffs, zOffs + 0.5D);
-					poseStack.mulPose(Axis.YP.rotationDegrees(42.0F));
+					poseStack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(42.0F)));
 					poseStack.translate(0.35F, 0.0D, -0.9F);
-					poseStack.mulPose(Axis.YP.rotationDegrees(-48.0F));
+					poseStack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(-48.0F)));
 					poseStack.scale(-1.0F, -1.0F, 1.0F);
 					poseStack.translate(-0.5D, -0.5D, -0.5D);
 					this.submitMushroomBlock(
@@ -95,7 +95,7 @@ public class MinoshroomRenderer extends HumanoidMobRenderer<Minoshroom, Minoshro
 					this.getParentModel().head.translateAndRotate(poseStack);
 					// TF - adjust head shroom
 					poseStack.translate(0.0D, -0.9D, 0.05D);
-					poseStack.mulPose(Axis.YP.rotationDegrees(-78.0F));
+					poseStack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(-78.0F)));
 					poseStack.scale(-1.0F, -1.0F, 1.0F);
 					poseStack.translate(-0.5D, -0.5D, -0.5D);
 					this.submitMushroomBlock(

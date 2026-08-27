@@ -19,7 +19,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import twilightforest.TwilightForestMod;
@@ -87,7 +87,7 @@ public class HollowTreeLargeBranch extends HollowTreeMedBranch {
 	 * Add other structure components to this one if needed
 	 */
 	@Override
-	public void addChildren(StructurePiece structurecomponent, StructurePieceAccessor list, RandomSource rand) {
+	public void addChildren(StructurePiece structurecomponent, StructurePiecesBuilder list, RandomSource rand) {
 		int index = this.getGenDepth();
 
 		// go about halfway out and make a few medium branches.
@@ -109,13 +109,13 @@ public class HollowTreeLargeBranch extends HollowTreeMedBranch {
 		}
 	}
 
-	public void makeLeafDungeon(StructurePieceAccessor list, RandomSource rand, int index, int x, int y, int z) {
+	public void makeLeafDungeon(StructurePiecesBuilder list, RandomSource rand, int index, int x, int y, int z) {
 		HollowTreeLeafDungeon dungeon = new HollowTreeLeafDungeon(index, x, y, z, 4, this.dungeonWood, this.leaves, this.dungeonAir, this.dungeonLootBlock, this.dungeonLootTable, this.dungeonMonster, rand);
 		list.addPiece(dungeon);
 		dungeon.addChildren(this, list, rand);
 	}
 
-	public void makeMedBranch(StructurePieceAccessor list, RandomSource rand, int index, BlockPos src, double branchLength, double branchRotation, double branchAngle, boolean leafy) {
+	public void makeMedBranch(StructurePiecesBuilder list, RandomSource rand, int index, BlockPos src, double branchLength, double branchRotation, double branchAngle, boolean leafy) {
 		HollowTreeMedBranch branch = new HollowTreeMedBranch(index, src, branchLength, branchRotation, branchAngle, leafy, this.wood, this.leaves);
 		list.addPiece(branch);
 		branch.addChildren(this, list, rand);

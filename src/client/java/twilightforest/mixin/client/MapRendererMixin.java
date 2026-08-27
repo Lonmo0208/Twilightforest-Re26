@@ -119,7 +119,7 @@ public abstract class MapRendererMixin {
 	private void tf$renderVanillaDecoration(MapRenderState.MapDecorationRenderState decoration, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int index) {
 		poseStack.pushPose();
 		poseStack.translate(decoration.x / 2.0F + 64.0F, decoration.y / 2.0F + 64.0F, -0.02F);
-		poseStack.mulPose(Axis.ZP.rotationDegrees(decoration.rot * 360.0F / 16.0F));
+		poseStack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(decoration.rot * 360.0F / 16.0F)));
 		poseStack.scale(4.0F, 4.0F, 3.0F);
 		poseStack.translate(-0.125F, 0.125F, 0.0F);
 		TextureAtlasSprite atlasSprite = decoration.atlasSprite;

@@ -46,8 +46,8 @@ public class SkullChestRenderer<T extends BlockEntity & LidBlockEntity> implemen
 	public void submit(SkullChestRenderState state, PoseStack stack, SubmitNodeCollector collector, CameraRenderState camera) {
 		stack.pushPose();
 		stack.translate(0.5F, 0.0F, 0.5F);
-		stack.mulPose(state.facing.getRotation());
-		stack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		stack.mulPose(new org.joml.Matrix4f().rotation(state.facing.getRotation()));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(90.0F)));
 
 		float lidRotation = state.open;
 		lidRotation = 1.0F - lidRotation;

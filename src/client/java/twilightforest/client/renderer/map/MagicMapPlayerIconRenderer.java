@@ -13,7 +13,7 @@ public class MagicMapPlayerIconRenderer {
 		stack.pushPose();
 		stack.translate(decorationRenderState.x / 2.0F + 64.0F, decorationRenderState.y / 2.0F + 64.0F, -0.02F);
 		// 180° flip for player icon (user requested)
-		stack.mulPose(Axis.ZP.rotationDegrees(decorationRenderState.rot * 360.0F / 16.0F + 180.0F));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(decorationRenderState.rot * 360.0F / 16.0F + 180.0F)));
 		stack.scale(4.0F, 4.0F, 3.0F);
 		stack.translate(-0.125F, 0.125F, 0.0F);
 		TextureAtlasSprite textureatlassprite = decorationRenderState.atlasSprite;

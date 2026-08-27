@@ -33,7 +33,7 @@ public class HydraRenderer extends MobRenderer<Hydra, HydraRenderState, HydraMod
 		}
 
 		if (!state.hasPose(Pose.SLEEPING)) {
-			stack.mulPose(Axis.YP.rotationDegrees(180.0F - yaw));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(180.0F - yaw)));
 		}
 
 		if (state.deathTime > 0) {
@@ -43,10 +43,10 @@ public class HydraRenderer extends MobRenderer<Hydra, HydraRenderState, HydraMod
 				f = 1.0F;
 			}
 
-			stack.mulPose(Axis.ZP.rotationDegrees(f * this.getFlipDegrees()));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(f * this.getFlipDegrees())));
 		} else if (state.isUpsideDown) {
 			stack.translate(0.0F, 6.0F, 0.0F);
-			stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(180.0F)));
 		}
 	}
 

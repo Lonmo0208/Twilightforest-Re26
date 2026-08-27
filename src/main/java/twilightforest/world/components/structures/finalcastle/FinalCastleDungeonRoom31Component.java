@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
@@ -53,7 +53,7 @@ public class FinalCastleDungeonRoom31Component extends TowerWingComponent {
 	}
 
 	@Override
-	public void addChildren(StructurePiece parent, StructurePieceAccessor list, RandomSource rand) {
+	public void addChildren(StructurePiece parent, StructurePiecesBuilder list, RandomSource rand) {
 		if (parent instanceof TFStructureComponentOld) {
 			this.deco = ((TFStructureComponentOld) parent).deco;
 		}
@@ -95,7 +95,7 @@ public class FinalCastleDungeonRoom31Component extends TowerWingComponent {
 		}
 	}
 
-	protected boolean addDungeonRoom(StructurePiece parent, StructurePieceAccessor list, RandomSource rand, Rotation rotation, int level) {
+	protected boolean addDungeonRoom(StructurePiece parent, StructurePiecesBuilder list, RandomSource rand, Rotation rotation, int level) {
 		rotation = rotation.getRotated(this.rotation);
 
 		BlockPos rc = this.getNewRoomCoords(rand, rotation);
@@ -115,7 +115,7 @@ public class FinalCastleDungeonRoom31Component extends TowerWingComponent {
 		return false;
 	}
 
-	protected boolean addDungeonExit(StructurePieceAccessor list, RandomSource rand, Rotation rotation) {
+	protected boolean addDungeonExit(StructurePiecesBuilder list, RandomSource rand, Rotation rotation) {
 
 		//TODO: check if we are sufficiently near the castle center
 

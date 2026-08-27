@@ -92,7 +92,7 @@ public class GraveyardFeature implements Feature {
 
 		int flags = 16 | 2 | 1;
 
-		StructureTemplateManager templatemanager = world.getLevel().getServer().getStructureManager();
+		StructureTemplateManager templatemanager = world.getLevel().getServer().getStructureTemplateManager();
 		StructureTemplate base = templatemanager.getOrCreate(GRAVEYARD);
 		if (base == null)
 			return false;

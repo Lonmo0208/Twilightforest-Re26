@@ -137,7 +137,7 @@ public class HollowTreeStructure extends Structure implements DecorationClearanc
 
 		if (height < 16 || (!this.allowInWater && seaFloorY < worldY))
 			return Optional.empty();
-		if (!this.biomes().contains(context.chunkGenerator().getBiomeSource().createResolver(context.randomState().sampler()).getNoiseBiome(x >> 2, worldY >> 2, z >> 2)))
+		if (!this.biomes().contains(context.chunkGenerator().getBiomeSource().createResolver(context.climateSampler()).getNoiseBiome(x >> 2, worldY >> 2, z >> 2)))
 			return Optional.empty();
 
 		int radius = this.radius.sample(random);

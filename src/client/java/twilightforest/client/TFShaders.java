@@ -22,9 +22,10 @@ import com.mojang.blaze3d.vertex.*;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.DynamicGpuDataStorage;
-
+import net.minecraft.client.renderer.DynamicGpuDataStorageMapped;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceProvider;
+import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +141,11 @@ public class TFShaders {
 
 			ShaderSource shaderSource = (id, type) -> readShader(resources, id, type);
 			try {
-				this.compiledPipeline = RenderSystem.getDevice().compilePipeline(pipeline, shaderSource);
+				// Compile asynchronously on the background executor, then finalize on the render thread
+				RenderSystem.getDevice().compilePipeline(pipeline, shaderSource, Util.backgroundExecutor())
+					.thenAccept(pending -> RenderSystem.queueFencedTask(() -> {
+						this.compiledPipeline = pending.finishCompile();
+					}));
 			} catch (RuntimeException e) {
 				LOGGER.error("Failed to compile aurora render pipeline {}", pipeline.getLocation(), e);
 				this.compiledPipeline = null;
@@ -168,7 +173,7 @@ public class TFShaders {
 
 		private void ensureInitialized() {
 			if (!initialized && RenderSystem.tryGetDevice() != null) {
-				this.auroraUniforms = new DynamicGpuDataStorage<>("TF Aurora UBO", AuroraSettings.SIZE, GpuBuffer.USAGE_UNIFORM, 2);
+				this.auroraUniforms = new DynamicGpuDataStorageMapped<>("TF Aurora UBO", AuroraSettings.SIZE, GpuBuffer.USAGE_UNIFORM, 2);
 				buildQuadBuffer();
 				initialized = true;
 			}

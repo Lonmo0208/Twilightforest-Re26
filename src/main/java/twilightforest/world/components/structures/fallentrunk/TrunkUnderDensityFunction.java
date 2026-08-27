@@ -6,6 +6,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.world.level.levelgen.Beardifier;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import twilightforest.world.components.chunkgenerators.TanhHillFunction;
 
@@ -20,6 +21,7 @@ public class TrunkUnderDensityFunction extends Beardifier {
 	private final RandomSource random;  // used to create dirt mounds
 	private final BoundingBox boundingBox;
 	private final List<TanhHillFunction> tanhHillFunctions;
+	private final List<TanhHillFunction.TanhHillSampler> tanhHillSamplers;
 	private final Rigid fallenTrunkPiece;
 	protected final BoundingBox moundBase;
 	protected static final float MOUND_RADIUS = 3F;
@@ -42,26 +44,26 @@ public class TrunkUnderDensityFunction extends Beardifier {
 			!isXOriented ? length / 2 : 0);
 		this.moundBase = BoundingBox.fromCorners(moundBaseCorner, moundBaseCorner);
 		this.tanhHillFunctions = new ArrayList<>();
+		this.tanhHillSamplers = new ArrayList<>();
 		int attemptedMoundsNumber = random.nextInt(minMounds, maxMounds + 1);
 		for(int i = 0; i < attemptedMoundsNumber; i++) {
 			Optional<TanhHillFunction> function = getTanhHillFunctionWithoutCoveringHole(piece, i % 2 == 0);
-			function.ifPresent(tanhHillFunctions::add);
+			function.ifPresent(f -> {
+				tanhHillFunctions.add(f);
+				tanhHillSamplers.add(new TanhHillFunction.TanhHillSampler(f));
+			});
 		}
 	}
 
 	@Override
-	public float compute(FunctionContext context) {
-		int x = context.blockX();
-		int y = context.blockY();
-		int z = context.blockZ();
-
+	public float sampleValue(SamplerContext context, int x, int y, int z) {
 		int groundLevelDelta = getFallenTrunkPiece().groundLevelDelta();
 		int horizontalDistanceX = Math.max(0, Math.max(boundingBox.minX() - x, x - boundingBox.maxX()));
 		int horizontalDistanceZ = Math.max(0, Math.max(boundingBox.minZ() - z, z - boundingBox.maxZ()));
 		int adjustedGroundLevel = boundingBox.minY() + groundLevelDelta + (isBigTree ? 1 : 0);
 		int verticalDistance = y - adjustedGroundLevel;
 
-		double moundContribution = computeMoundsContribution(context);
+		double moundContribution = computeMoundsContribution(context, x, y, z);
 		if (moundContribution > 0)
 			return (float) moundContribution;
 		return (float) flatSurroundingTerrain(horizontalDistanceX, verticalDistance, horizontalDistanceZ);
@@ -90,15 +92,15 @@ public class TrunkUnderDensityFunction extends Beardifier {
 		return -y * factor / verticalScale * (Math.exp(-normalizedDistance / (Math.max(1 - normalizedDistance, 1e-8))));
 	}
 
-	protected double computeMoundsContribution(FunctionContext context) {
-		int x = context.blockX() - boundingBox.minX();
-		int y = context.blockY() - boundingBox.minY();
-		int z = context.blockZ() - boundingBox.minZ();
+	protected double computeMoundsContribution(SamplerContext context, int x, int y, int z) {
+		int lx = x - boundingBox.minX();
+		int ly = y - boundingBox.minY();
+		int lz = z - boundingBox.minZ();
 		int radius = getRadius(boundingBox);
-		double ax = Math.abs((isXOriented ? z : x) - radius + 1);
-		double az = Math.abs(y - radius + 1);
+		double ax = Math.abs((isXOriented ? lz : lx) - radius + 1);
+		double az = Math.abs(ly - radius + 1);
 		if (radius == 2D) {  // This case is generated differently
-			if (Math.abs((isXOriented ? z : x) - 1.5) + Math.abs(y - 1.5) <= 2)
+			if (Math.abs((isXOriented ? lz : lx) - 1.5) + Math.abs(ly - 1.5) <= 2)
 				return -1;
 		} else {
 			if ((int) (Math.max(ax, az) + (Math.min(ax, az) * 0.5)) < radius)
@@ -106,8 +108,8 @@ public class TrunkUnderDensityFunction extends Beardifier {
 		}
 
 		double max = -1D;
-		for (TanhHillFunction h : tanhHillFunctions) {
-			double value = h.compute(context);
+		for (TanhHillFunction.TanhHillSampler h : tanhHillSamplers) {
+			double value = h.sampleValue(context, x, y, z);
 			if (value > max)
 				max = value;
 		}

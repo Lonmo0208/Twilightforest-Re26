@@ -3,14 +3,22 @@ package twilightforest.mixin;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.levelgen.Beardifier;
-//import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawJunction;
+import net.minecraft.world.level.levelgen.synth.Noise;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -57,7 +65,30 @@ public class BeardifierMixin {
 	 * and rigids/junctions are empty) but gives us a unique per-chunk key in this map.
 	 */
 	@Unique
-	private static final Map<Beardifier, ObjectList<DensityFunction>> TF_CUSTOM_DENSITIES = Collections.synchronizedMap(new WeakHashMap<>());
+	private static final Map<Beardifier, ObjectList<DensitySampler>> TF_CUSTOM_DENSITIES = Collections.synchronizedMap(new WeakHashMap<>());
+
+	/**
+	 * CompileContext stub for compiling custom terrain-former densities at structure
+	 * gather time. Our custom density functions are pure vertex functions (no noise
+	 * sampling), so the noise/random factories are never invoked.
+	 */
+	@Unique
+	private static final DensityFunction.CompileContext TF_NO_COMPILE_CONTEXT = new DensityFunction.CompileContext() {
+		@Override
+		public Noise createNoiseSampler(Holder<NormalNoise> noise) {
+			throw new UnsupportedOperationException("Custom TF densities cannot sample noise");
+		}
+
+		@Override
+		public RandomSource createRandom(Identifier id) {
+			throw new UnsupportedOperationException("Custom TF densities cannot create random");
+		}
+
+		@Override
+		public RandomSource createEndIslandRandom() {
+			throw new UnsupportedOperationException("Custom TF densities cannot create random");
+		}
+	};
 
 	@Inject(method = "forStructuresInChunk", at = @At("RETURN"), cancellable = true)
 	private static void tf$gatherCustomDensitiesAndStripAirborneRigids(StructureManager structureManager, ChunkPos chunkPos, CallbackInfoReturnable<Beardifier> cir) {
@@ -84,10 +115,10 @@ public class BeardifierMixin {
 			modified = tf$stripAirborneRigids(modified);
 		}
 
-		ObjectList<DensityFunction> customDensities = new ObjectArrayList<>(4);
-		for (StructureStart start : structureManager.startsForStructure(chunkPos, s -> s instanceof CustomDensitySource)) {
+		ObjectList<DensitySampler> customDensities = new ObjectArrayList<>(4);
+		for (StructureStart start : structureManager.startsForStructure(chunkPos.x(), chunkPos.z(), s -> s instanceof CustomDensitySource)) {
 			if (start.getStructure() instanceof CustomDensitySource customDensitySource) {
-				customDensities.add(customDensitySource.getStructureTerraformer(chunkPos, start));
+				customDensities.add(customDensitySource.getStructureTerraformer(chunkPos, start).compileSampler(TF_NO_COMPILE_CONTEXT));
 			}
 		}
 
@@ -154,30 +185,30 @@ public class BeardifierMixin {
 		return outer == null ? inner : BoundingBox.encapsulating(outer, inner);
 	}
 
-	@Inject(method = "compute", at = @At("RETURN"), cancellable = true)
-	private void tf$addCustomDensity(DensityFunction.FunctionContext context, CallbackInfoReturnable<Float> cir) {
-		ObjectList<DensityFunction> densities = TF_CUSTOM_DENSITIES.get(this);
+	@Inject(method = "sampleValue", at = @At("RETURN"), cancellable = true)
+	private void tf$addCustomDensity(SamplerContext context, int x, int y, int z, CallbackInfoReturnable<Float> cir) {
+		ObjectList<DensitySampler> densities = TF_CUSTOM_DENSITIES.get(this);
 		if (densities != null && !densities.isEmpty()) {
 			float original = cir.getReturnValue();
 			float added = 0;
 			for (int i = 0; i < densities.size(); i++) {
-				added += densities.get(i).compute(context);
+				added += densities.get(i).sampleValue(context, x, y, z);
 			}
 			cir.setReturnValue(original + added);
 		}
 	}
 
 	/**
-	 * Overrides EMPTY.fillArray()'s fast-path that skips compute() entirely by filling
-	 * output with all zeros. When we have custom densities attached to this Beardifier
-	 * instance, we force fillAllDirectly which iterates every cell and calls compute(),
+	 * Overrides EMPTY.sampleVolume()'s fast-path that skips computing entirely by leaving
+	 * the output buffer untouched. When we have custom densities attached to this Beardifier
+	 * instance, we force sampleVolumeNaive which iterates every cell and calls sampleValue(),
 	 * letting our tf$addCustomDensity mixin above modify every noise cell's value.
 	 */
-	@Inject(method = "fillArray", at = @At("HEAD"), cancellable = true)
-	private void tf$fillArrayWithCustomDensities(float[] output, DensityFunction.ContextProvider contextProvider, CallbackInfo ci) {
-		ObjectList<DensityFunction> densities = TF_CUSTOM_DENSITIES.get(this);
+	@Inject(method = "sampleVolume", at = @At("HEAD"), cancellable = true)
+	private void tf$fillVolumeWithCustomDensities(SamplerContext context, DensityBuffer buffer, DensityVolume volume, CallbackInfo ci) {
+		ObjectList<DensitySampler> densities = TF_CUSTOM_DENSITIES.get(this);
 		if (densities != null && !densities.isEmpty()) {
-			contextProvider.fillAllDirectly(output, (DensityFunction) (Object) this);
+			DensitySampler.sampleVolumeNaive(context, buffer, volume, (DensitySampler) (Object) this);
 			ci.cancel();
 		}
 	}

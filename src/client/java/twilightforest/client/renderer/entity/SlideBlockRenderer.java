@@ -34,11 +34,11 @@ public class SlideBlockRenderer extends EntityRenderer<SlideBlock, FallingBlockR
 				float angle = state.ageInTicks * 60F;
 				stack.translate(0.0D, 0.5D, 0.0D);
 				if (axis == Direction.Axis.Y) {
-					stack.mulPose(Axis.YP.rotationDegrees(angle));
+					stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(angle)));
 				} else if (axis == Direction.Axis.X) {
-					stack.mulPose(Axis.XP.rotationDegrees(angle));
+					stack.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(angle)));
 				} else if (axis == Direction.Axis.Z) {
-					stack.mulPose(Axis.ZP.rotationDegrees(angle));
+					stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(angle)));
 				}
 			}
 			stack.translate(-0.5D, -0.5D, -0.5D);

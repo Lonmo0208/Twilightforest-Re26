@@ -28,6 +28,7 @@ import twilightforest.init.custom.BiomeLayerStack;
 import twilightforest.world.components.biomesources.TFBiomeProvider;
 import twilightforest.world.components.layer.BiomeDensitySource;
 import twilightforest.world.registration.surface_rules.TFSurfaceRules;
+import twilightforest.util.TFColorConvert;
 
 import java.util.List;
 import java.util.Optional;
@@ -83,10 +84,10 @@ public class TFDimensionData {
 				.set(EnvironmentAttributes.STAR_BRIGHTNESS, 1.0F)
 				.set(EnvironmentAttributes.SKY_LIGHT_LEVEL, 0.62F)
 				.set(EnvironmentAttributes.SKY_LIGHT_FACTOR, 0.38F)
-				.set(EnvironmentAttributes.SKY_LIGHT_COLOR, 0x9292FF)
-				.set(EnvironmentAttributes.SKY_COLOR, 0x7B7B7B)
-				.set(EnvironmentAttributes.FOG_COLOR, 0x838387)
-				.set(EnvironmentAttributes.CLOUD_COLOR, 0xFFDBE4EC)
+				.set(EnvironmentAttributes.SKY_LIGHT_COLOR, TFColorConvert.rgb(0x9292FF))
+				.set(EnvironmentAttributes.SKY_COLOR, TFColorConvert.rgb(0x7B7B7B))
+				.set(EnvironmentAttributes.FOG_COLOR, TFColorConvert.rgb(0x838387))
+				.set(EnvironmentAttributes.CLOUD_COLOR, TFColorConvert.rgba(0xFFDBE4EC))
 				.set(EnvironmentAttributes.CLOUD_HEIGHT, 128.0F)
 				.build(),
 			timelines.getOrThrow(TWILIGHT_TIMELINES), //timelines
@@ -100,9 +101,7 @@ public class TFDimensionData {
 
 		NoiseSettings tfNoise = NoiseSettings.create(
 			-32, //TODO Deliberate over this. For now it'll be -32
-			256,
-			2,
-			2
+			256
 		);
 
 		return new NoiseGeneratorSettings(
@@ -124,8 +123,8 @@ public class TFDimensionData {
 			TFDimensionData.SEALEVEL,
 			false,
 			Optional.empty(),
-			List.of(),
-			false
+			false,
+			NoiseGeneratorSettings.DebugFunctions.EMPTY
 		);
 	}
 

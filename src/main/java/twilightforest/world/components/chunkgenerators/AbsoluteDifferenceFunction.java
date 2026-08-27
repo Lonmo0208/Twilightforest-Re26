@@ -5,7 +5,12 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Interval;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 
 public abstract class AbsoluteDifferenceFunction implements DensityFunction {
 	public static Min min(double max, BlockPos pos) {
@@ -35,14 +40,7 @@ public abstract class AbsoluteDifferenceFunction implements DensityFunction {
 	}
 
 	@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
-		}
-	}
-
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
+	public DensityFunction rewriteChildren(DfRewriteRule rule) {
 		return this;
 	}
 
@@ -58,8 +56,8 @@ public abstract class AbsoluteDifferenceFunction implements DensityFunction {
 		}
 
 		@Override
-		public float compute(FunctionContext context) {
-			return (float) Math.min(Math.min(Math.abs(context.blockX() - this.centerX), Math.abs(context.blockZ() - this.centerZ)), this.max);
+		public DensitySampler compileSampler(DensityFunction.CompileContext compileContext) {
+			return new MinSampler(this.max, this.centerX, this.centerZ);
 		}
 
 		@Override
@@ -80,13 +78,37 @@ public abstract class AbsoluteDifferenceFunction implements DensityFunction {
 		}
 
 		@Override
-		public float compute(FunctionContext context) {
-			return (float) Math.min(Math.max(Math.abs(context.blockX() - this.centerX), Math.abs(context.blockZ() - this.centerZ)), this.max);
+		public DensitySampler compileSampler(DensityFunction.CompileContext compileContext) {
+			return new MaxSampler(this.max, this.centerX, this.centerZ);
 		}
 
 		@Override
 		public MapCodec<? extends DensityFunction> codec() {
 			return CODEC;
+		}
+	}
+
+	public record MinSampler(double max, double centerX, double centerZ) implements DensitySampler {
+		@Override
+		public void sampleVolume(SamplerContext context, DensityBuffer buffer, DensityVolume volume) {
+			DensitySampler.sampleVolumeNaive(context, buffer, volume, this);
+		}
+
+		@Override
+		public float sampleValue(SamplerContext context, int x, int y, int z) {
+			return (float) Math.min(Math.min(Math.abs(x - this.centerX), Math.abs(z - this.centerZ)), this.max);
+		}
+	}
+
+	public record MaxSampler(double max, double centerX, double centerZ) implements DensitySampler {
+		@Override
+		public void sampleVolume(SamplerContext context, DensityBuffer buffer, DensityVolume volume) {
+			DensitySampler.sampleVolumeNaive(context, buffer, volume, this);
+		}
+
+		@Override
+		public float sampleValue(SamplerContext context, int x, int y, int z) {
+			return (float) Math.min(Math.max(Math.abs(x - this.centerX), Math.abs(z - this.centerZ)), this.max);
 		}
 	}
 }

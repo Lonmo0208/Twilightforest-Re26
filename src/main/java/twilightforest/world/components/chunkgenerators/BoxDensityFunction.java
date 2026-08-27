@@ -5,8 +5,13 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 
@@ -57,31 +62,9 @@ public class BoxDensityFunction implements DensityFunction {
 		this.terrainAdjustment = terrainAdjustment;
 	}
 
-	@Override // Parallels vanilla Beardifier behavior
-	public float compute(FunctionContext context) {
-		int blockX = context.blockX();
-		int blockY = context.blockY();
-		int blockZ = context.blockZ();
-
-		// Dist is zero if inside the box
-		int xDist = Math.max(0, Math.max(this.minX - blockX, blockX - this.maxX));
-		int zDist = Math.max(0, Math.max(this.minZ - blockZ, blockZ - this.maxZ));
-
-		int distAboveBottom = blockY - this.minY;
-		int yDist = switch (this.terrainAdjustment) {
-			case BURY, BEARD_THIN -> distAboveBottom;
-			case BEARD_BOX, ENCAPSULATE -> Math.max(0, Math.max(this.minY - blockY, blockY - this.maxY));
-			default -> 0;
-		};
-
-		float densityValue = switch (this.terrainAdjustment) {
-			case BURY -> getBuryContribution((float) xDist, (float) (yDist * 0.5), (float) zDist);
-			case BEARD_THIN, BEARD_BOX -> getBeardContribution(xDist, yDist, zDist, distAboveBottom) * 0.8F;
-			case ENCAPSULATE -> getBuryContribution((float) (xDist * 0.5), (float) (yDist * 0.5), (float) (zDist * 0.5)) * 0.8F;
-			default -> 0;
-		};
-
-		return Mth.clamp(densityValue, (float) this.minValue, (float) this.maxValue);
+	@Override
+	public DensitySampler compileSampler(DensityFunction.CompileContext compileContext) {
+		return new BoxSampler(this);
 	}
 
 	@Override
@@ -100,14 +83,7 @@ public class BoxDensityFunction implements DensityFunction {
 	}
 
 	@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
-		}
-	}
-
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
+	public DensityFunction rewriteChildren(DfRewriteRule rule) {
 		return this;
 	}
 
@@ -143,5 +119,35 @@ public class BoxDensityFunction implements DensityFunction {
 			return f2 * BEARD_KERNEL[k * 24 * 24 + j * 24 + i];
 		}
 		return 0.0F;
+	}
+
+	public record BoxSampler(BoxDensityFunction function) implements DensitySampler {
+		@Override
+		public void sampleVolume(SamplerContext context, DensityBuffer buffer, DensityVolume volume) {
+			DensitySampler.sampleVolumeNaive(context, buffer, volume, this);
+		}
+
+		@Override
+		public float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
+			// Dist is zero if inside the box
+			int xDist = Math.max(0, Math.max(this.function.minX - blockX, blockX - this.function.maxX));
+			int zDist = Math.max(0, Math.max(this.function.minZ - blockZ, blockZ - this.function.maxZ));
+
+			int distAboveBottom = blockY - this.function.minY;
+			int yDist = switch (this.function.terrainAdjustment) {
+				case BURY, BEARD_THIN -> distAboveBottom;
+				case BEARD_BOX, ENCAPSULATE -> Math.max(0, Math.max(this.function.minY - blockY, blockY - this.function.maxY));
+				default -> 0;
+			};
+
+			float densityValue = switch (this.function.terrainAdjustment) {
+				case BURY -> getBuryContribution((float) xDist, (float) (yDist * 0.5), (float) zDist);
+				case BEARD_THIN, BEARD_BOX -> getBeardContribution(xDist, yDist, zDist, distAboveBottom) * 0.8F;
+				case ENCAPSULATE -> getBuryContribution((float) (xDist * 0.5), (float) (yDist * 0.5), (float) (zDist * 0.5)) * 0.8F;
+				default -> 0;
+			};
+
+			return Mth.clamp(densityValue, (float) this.function.minValue, (float) this.function.maxValue);
+		}
 	}
 }

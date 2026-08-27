@@ -38,8 +38,8 @@ public class BlockChainRenderer extends EntityRenderer<ChainBlock, ChainBlockRen
 		super.submit(state, stack, submitNodeCollector, camera);
 		stack.pushPose();
 		RenderType foilRenderType = RenderTypes.patternedShieldGlint();
-		stack.mulPose(Axis.YP.rotationDegrees(state.yRot - 90.0F));
-		stack.mulPose(Axis.ZP.rotationDegrees(state.xRot));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(state.yRot - 90.0F)));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(state.xRot)));
 
 		stack.scale(-1.0F, -1.0F, 1.0F);
 		submitNodeCollector.order(0).submitModel(this.model, state, stack, this.model.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);

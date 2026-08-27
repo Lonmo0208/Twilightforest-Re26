@@ -21,8 +21,8 @@ public record SkullChestSpecialRenderer(KeepsakeCasketModel model, float opennes
 	@Override
 	public void submit(PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
 		stack.translate(0.5F, 0.0F, 0.5F);
-		stack.mulPose(Direction.NORTH.getRotation());
-		stack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Direction.NORTH.getRotation()));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(90.0F)));
 		collector.submitModel(this.model(), this.openness(), stack, SkullChestRenderer.SKULL_CHEST_TEXTURE, light, overlay, outlineColor);
 	}
 
@@ -30,8 +30,8 @@ public record SkullChestSpecialRenderer(KeepsakeCasketModel model, float opennes
 	public void getExtents(Consumer<Vector3fc> output) {
 		PoseStack poseStack = new PoseStack();
 		poseStack.translate(0.5F, 0.0F, 0.5F);
-		poseStack.mulPose(Direction.NORTH.getRotation());
-		poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		poseStack.mulPose(new org.joml.Matrix4f().rotation(Direction.NORTH.getRotation()));
+		poseStack.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(90.0F)));
 		this.model.root().getExtentsForGui(poseStack, output);
 	}
 

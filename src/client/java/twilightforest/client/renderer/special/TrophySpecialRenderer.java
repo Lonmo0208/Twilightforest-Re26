@@ -42,7 +42,7 @@ public record TrophySpecialRenderer(Function<BossVariant, TrophyBlockModel> trop
 				stack.pushPose();
 				stack.translate(0.5F, 0.1F, 0.5F);
 				stack.scale(-1.0F, -1.0F, 1.0F);
-				stack.mulPose(Axis.YP.rotationDegrees(rotation));
+				stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(rotation)));
 				TrophyRenderer.submitTrophy(false, model, animation, stack, collector, light, overlay, null, this.context());
 				stack.popPose();
 			} else if (this.context() == ItemDisplayContext.HEAD) {

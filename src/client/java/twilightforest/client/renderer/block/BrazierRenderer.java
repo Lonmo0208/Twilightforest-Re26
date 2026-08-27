@@ -44,14 +44,14 @@ public class BrazierRenderer implements BlockEntityRenderer<BrazierBlockEntity, 
 		float y = 0.35F * state.light.getFireSize();
 		stack.translate(0.26F, 1.6F, 0.5F);
 		stack.scale(0.35F, y, 0.35F);
-		stack.mulPose(Axis.YP.rotationDegrees(45.0F));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(45.0F)));
 		if (state.light.isLit() && y > 0.0F) {
 			state.fire.submit(stack, collector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
 		}
 		stack.popPose();
 		stack.pushPose();
 		stack.translate(0.5F, 1.5F, 0.5F);
-		stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(180.0F)));
 		Identifier loc = state.light.isLit() ? TEXTURE_ON : TEXTURE_OFF;
 		collector.submitModel(this.model, Unit.INSTANCE, stack, this.model.renderType(loc), state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 		if (state.light.isLit()) {

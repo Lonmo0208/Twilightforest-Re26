@@ -88,7 +88,7 @@ public class HollowOakSaplingBlock extends SaplingBlock {
 			}
 			TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree @ pos={} checkSaplingClearance passed, generating structure...", pos);
 
-			StructureStart structurestart = treeGrowerStartable.generateFromSapling(level.registryAccess(), generator, generator.getBiomeSource(), level.getChunkSource().randomState(), level.getStructureManager(), level.getSeed(), pos, level);
+			StructureStart structurestart = treeGrowerStartable.generateFromSapling(level.registryAccess(), generator, generator.getBiomeSource(), level.getChunkSource().randomState(), level.getServer().getStructureTemplateManager(), level.getSeed(), pos, level);
 
 			if (!structurestart.isValid()) {
 				TwilightForestMod.LOGGER.debug("[HollowOak] advanceTree @ pos={} aborted: structurestart.isValid()=false StructureStart={}",

@@ -46,9 +46,9 @@ public class IceLayer<S extends LivingEntityRenderState, M extends EntityModel<S
 			float dz = ((this.random.nextFloat() * (state.boundingBoxWidth * 2.0F)) - state.boundingBoxWidth) * 0.1F;
 			stack.translate(dx, dy, dz);
 			stack.scale(0.5F, 0.5F, 0.5F);
-			stack.mulPose(Axis.XP.rotationDegrees(this.random.nextFloat() * 360F));
-			stack.mulPose(Axis.YP.rotationDegrees(this.random.nextFloat() * 360F));
-			stack.mulPose(Axis.ZP.rotationDegrees(this.random.nextFloat() * 360F));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.XP.rotationDegrees(this.random.nextFloat() * 360F)));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(this.random.nextFloat() * 360F)));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(this.random.nextFloat() * 360F)));
 			stack.translate(-0.5F, -0.5F, -0.5F);
 
 			BlockModelRenderState iceModel = new BlockModelRenderState();

@@ -5,7 +5,12 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 
 // Negative radius values cause a bowling-up shaped zero-threshold over this DensityFunction's field, making it useful for the hollow hill's floor alongside as its regular mound shape
 public record HollowHillFunction(float centerX, float bottomY, float centerZ, float radius, float heightScale) implements DensityFunction {
@@ -21,11 +26,10 @@ public record HollowHillFunction(float centerX, float bottomY, float centerZ, fl
 		return new HollowHillFunction(blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f, radius, heightScale);
 	}
 
-	@Override
-	public float compute(FunctionContext context) {
-		float dX = context.blockX() - this.centerX;
-		float dY = context.blockY() - this.bottomY;
-		float dZ = context.blockZ() - this.centerZ;
+	public float computeValue(float blockX, float blockY, float blockZ) {
+		float dX = blockX - this.centerX;
+		float dY = blockY - this.bottomY;
+		float dZ = blockZ - this.centerZ;
 
 		return compute(dX, dY, dZ);
 	}
@@ -45,6 +49,11 @@ public record HollowHillFunction(float centerX, float bottomY, float centerZ, fl
 	}
 
 	@Override
+	public DensitySampler compileSampler(DensityFunction.CompileContext compileContext) {
+		return new HollowHillSampler(this);
+	}
+
+	@Override
 	public net.minecraft.util.Interval range() {
 		return net.minecraft.util.Interval.of(-1.0f, 1.0f);
 	}
@@ -60,14 +69,19 @@ public record HollowHillFunction(float centerX, float bottomY, float centerZ, fl
 	}
 
 	@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
-		}
+	public DensityFunction rewriteChildren(DfRewriteRule rule) {
+		return this;
 	}
 
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
-		return this;
+	public record HollowHillSampler(HollowHillFunction function) implements DensitySampler {
+		@Override
+		public void sampleVolume(SamplerContext context, DensityBuffer buffer, DensityVolume volume) {
+			DensitySampler.sampleVolumeNaive(context, buffer, volume, this);
+		}
+
+		@Override
+		public float sampleValue(SamplerContext context, int x, int y, int z) {
+			return this.function.computeValue(x, y, z);
+		}
 	}
 }

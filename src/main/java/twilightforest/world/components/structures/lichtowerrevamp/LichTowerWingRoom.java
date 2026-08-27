@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -195,7 +195,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 	}
 
 	@Override
-	protected void processJigsaw(TwilightJigsawPiece parent, StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, int jigsawIndex) {
+	protected void processJigsaw(TwilightJigsawPiece parent, StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, int jigsawIndex) {
 		switch (connection.target()) {
 			case "twilightforest:lich_tower/bridge" -> {
 				if (this.roomSize < 1) {
@@ -296,7 +296,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 		return hasRoomAbove && !hasRoomBelow ? 0 : hasRoomAbove ? 1 : 2;
 	}
 
-	private boolean putRoof(StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, JigsawRecord connection) {
+	private boolean putRoof(StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, JigsawRecord connection) {
 		FrontAndTop orientationToMatch = getVerticalOrientation(connection, Direction.UP, this);
 		BoundingBox roofExtension = BoundingBoxUtils.extrusionFrom(this.boundingBox.minX(), this.boundingBox.maxY() + 1, this.boundingBox.minZ(), this.boundingBox.maxX(), this.boundingBox.maxY() + 1, this.boundingBox.maxZ(), orientationToMatch.top().getOpposite(), 1);
 		boolean doSideAttachment = connection.orientation().front().getAxis().isHorizontal() && pieceAccessor.findCollisionPiece(roofExtension) != null;
@@ -320,7 +320,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 		return FrontAndTop.fromFrontAndTop(vertical, sourceDirection.getOpposite());
 	}
 
-	public static boolean tryRoof(StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, @Nullable Identifier roofLocation, FrontAndTop orientationToMatch, boolean allowClipping, TwilightJigsawPiece parent, int newDepth, StructureTemplateManager structureManager) {
+	public static boolean tryRoof(StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, @Nullable Identifier roofLocation, FrontAndTop orientationToMatch, boolean allowClipping, TwilightJigsawPiece parent, int newDepth, StructureTemplateManager structureManager) {
 		JigsawPlaceContext placeableJunction = JigsawPlaceContext.pickPlaceableJunction(parent.templatePosition(), connection.pos(), orientationToMatch, structureManager, roofLocation, "twilightforest:lich_tower/roof", context.random());
 
 		if (placeableJunction != null) {
@@ -336,7 +336,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 		return false;
 	}
 
-	private boolean tryBeard(StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, @Nullable Identifier beardLocation, FrontAndTop orientationToMatch, boolean allowClipping, boolean generateGround) {
+	private boolean tryBeard(StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, @Nullable Identifier beardLocation, FrontAndTop orientationToMatch, boolean allowClipping, boolean generateGround) {
 		JigsawPlaceContext placeableJunction = JigsawPlaceContext.pickPlaceableJunction(this.templatePosition(), connection.pos(), orientationToMatch, this.structureManager, beardLocation, "twilightforest:lich_tower/beard", context.random());
 
 		if (placeableJunction != null) {

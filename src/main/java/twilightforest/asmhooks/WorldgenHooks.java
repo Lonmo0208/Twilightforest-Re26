@@ -10,6 +10,8 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Beardifier;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawJunction;
@@ -31,7 +33,7 @@ public class WorldgenHooks {
 	public static ObjectList<DensityFunction> gatherCustomTerrain(StructureManager structureManager, ChunkPos chunkPos) {
 		ObjectArrayList<DensityFunction> customStructureTerraforms = new ObjectArrayList<>(10);
 
-		for (StructureStart structureStart : structureManager.startsForStructure(chunkPos, s -> s instanceof CustomDensitySource))
+		for (StructureStart structureStart : structureManager.startsForStructure(chunkPos.x(), chunkPos.z(), s -> s instanceof CustomDensitySource))
 			if (structureStart.getStructure() instanceof CustomDensitySource customDensitySource)
 				customStructureTerraforms.add(customDensitySource.getStructureTerraformer(chunkPos, structureStart));
 
@@ -39,17 +41,11 @@ public class WorldgenHooks {
 		return customStructureTerraforms;
 	}
 
-	public static double getCustomDensity(double original, DensityFunction.FunctionContext context, ObjectList<DensityFunction> customDensities) {
-		if (customDensities == null || customDensities.isEmpty())
+	public static double getCustomDensity(double original, DensitySampler sampled, SamplerContext context, int x, int y, int z) {
+		if (sampled == null)
 			return original;
 
-		double addedDensity = 0;
-
-		for (DensityFunction customDensity : customDensities) {
-			addedDensity += customDensity.compute(context);
-		}
-
-		return original + addedDensity;
+		return original + sampled.sampleValue(context, x, y, z);
 	}
 
 	/**
@@ -65,7 +61,7 @@ public class WorldgenHooks {
 		List<JigsawJunction> junctions = new ArrayList<>(((BeardifierAccessor) (Object) original).tf$getJunctions());
 		boolean changed = false;
 
-		for (StructureStart start : structureManager.startsForStructure(chunkPos, s -> true)) {
+		for (StructureStart start : structureManager.startsForStructure(chunkPos.x(), chunkPos.z(), s -> true)) {
 			TerrainAdjustment structureAdjustment = start.getStructure().terrainAdaptation();
 			for (StructurePiece piece : start.getPieces()) {
 				if (piece instanceof PieceBeardifierModifier modifier && piece.isCloseToChunk(chunkPos, 12)) {

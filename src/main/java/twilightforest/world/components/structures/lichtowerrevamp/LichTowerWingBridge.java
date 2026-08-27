@@ -13,7 +13,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
@@ -56,7 +56,7 @@ public final class LichTowerWingBridge extends TwilightJigsawPiece implements So
 	}
 
 	@Override
-	protected void processJigsaw(TwilightJigsawPiece parent, StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, JigsawRecord record, int jigsawIndex) {
+	protected void processJigsaw(TwilightJigsawPiece parent, StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, JigsawRecord record, int jigsawIndex) {
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public final class LichTowerWingBridge extends TwilightJigsawPiece implements So
 		}
 	}
 
-	public static void tryRoomAndBridge(TwilightJigsawPiece parent, StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, StructureTemplateManager structureManager, boolean fromCentralTower, int roomMaxSize, boolean generateGround, int newDepth, @Nullable Identifier override) {
+	public static void tryRoomAndBridge(TwilightJigsawPiece parent, StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, StructureTemplateManager structureManager, boolean fromCentralTower, int roomMaxSize, boolean generateGround, int newDepth, @Nullable Identifier override) {
 		if (!generateGround) {
 			if (fromCentralTower) {
 				for (Identifier bridgeId : lichTowerUtil.shuffledCenterBridges(context.random())) {
@@ -114,7 +114,7 @@ public final class LichTowerWingBridge extends TwilightJigsawPiece implements So
 		}
 	}
 
-	private static boolean tryBridge(TwilightJigsawPiece parent, StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, BlockPos sourceJigsawPos, FrontAndTop sourceOrientation, StructureTemplateManager structureManager, boolean fromCentralTower, int roomMaxSize, boolean generateGround, int newDepth, @Nullable Identifier bridgeId, boolean allowClipping, @Nullable Identifier override, boolean tiny) {
+	private static boolean tryBridge(TwilightJigsawPiece parent, StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, BlockPos sourceJigsawPos, FrontAndTop sourceOrientation, StructureTemplateManager structureManager, boolean fromCentralTower, int roomMaxSize, boolean generateGround, int newDepth, @Nullable Identifier bridgeId, boolean allowClipping, @Nullable Identifier override, boolean tiny) {
 		JigsawPlaceContext placeableJunction = JigsawPlaceContext.pickPlaceableJunction(parent.templatePosition(), sourceJigsawPos, sourceOrientation, structureManager, bridgeId, fromCentralTower ? "twilightforest:lich_tower/bridge_center" : "twilightforest:lich_tower/bridge", context.random());
 
 		if (placeableJunction != null) {
@@ -130,7 +130,7 @@ public final class LichTowerWingBridge extends TwilightJigsawPiece implements So
 		return false;
 	}
 
-	public static void putCover(TwilightJigsawPiece parent, StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, BlockPos sourceJigsawPos, FrontAndTop sourceOrientation, StructureTemplateManager structureManager, boolean noWindow, int newDepth) {
+	public static void putCover(TwilightJigsawPiece parent, StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, BlockPos sourceJigsawPos, FrontAndTop sourceOrientation, StructureTemplateManager structureManager, boolean noWindow, int newDepth) {
 		BlockPos parentTemplatePos = parent.templatePosition();
 		BoundingBox clearance = BoundingBox.fromCorners(parentTemplatePos.offset(sourceJigsawPos.relative(sourceOrientation.front(), 1)), parentTemplatePos.offset(sourceJigsawPos.relative(sourceOrientation.front(), 3)));
 		boolean onlyCobbleStopper = noWindow || pieceAccessor.findCollisionPiece(clearance) != null;
@@ -144,7 +144,7 @@ public final class LichTowerWingBridge extends TwilightJigsawPiece implements So
 		}
 	}
 
-	public boolean tryGenerateRoom(final Structure.GenerationContext context, final StructurePieceAccessor structureStart, final int roomMaxSize, boolean generateGround, @Nullable Identifier override, boolean tiny) {
+	public boolean tryGenerateRoom(final Structure.GenerationContext context, final StructurePiecesBuilder structureStart, final int roomMaxSize, boolean generateGround, @Nullable Identifier override, boolean tiny) {
 		List<JigsawRecord> spareJigsaws = this.getSpareJigsaws();
 		if (this.getSpareJigsaws().isEmpty())
 			return false;
@@ -167,7 +167,7 @@ public final class LichTowerWingBridge extends TwilightJigsawPiece implements So
 		return false;
 	}
 
-	public static boolean tryPlaceRoom(Structure.GenerationContext context, StructurePieceAccessor pieceAccessor, @Nullable Identifier roomId, JigsawRecord connection, int roomSize, boolean canPutGround, boolean allowClipping, TwilightJigsawPiece parent, int newDepth, StructureTemplateManager structureManager, String jigsawLabel) {
+	public static boolean tryPlaceRoom(Structure.GenerationContext context, StructurePiecesBuilder pieceAccessor, @Nullable Identifier roomId, JigsawRecord connection, int roomSize, boolean canPutGround, boolean allowClipping, TwilightJigsawPiece parent, int newDepth, StructureTemplateManager structureManager, String jigsawLabel) {
 		JigsawPlaceContext placeableJunction = JigsawPlaceContext.pickPlaceableJunction(parent.templatePosition(), connection.pos(), connection.orientation(), structureManager, roomId, jigsawLabel, context.random());
 
 		if (placeableJunction == null) {

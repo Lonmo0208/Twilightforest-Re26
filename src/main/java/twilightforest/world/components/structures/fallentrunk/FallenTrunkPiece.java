@@ -28,7 +28,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
@@ -92,7 +92,7 @@ public class FallenTrunkPiece extends StructurePiece {
 	}
 
 	@Override
-	public void addChildren(@NotNull StructurePiece parent, StructurePieceAccessor list, @NotNull RandomSource rand) {
+	public void addChildren(@NotNull StructurePiece parent, StructurePiecesBuilder list, @NotNull RandomSource rand) {
 		StructurePiece terraformingPiece = new UtilityPiece(0, boundingBox.inflatedBy(TERRAFORM_PIECE_SIZE));
 		list.addPiece(terraformingPiece);
 

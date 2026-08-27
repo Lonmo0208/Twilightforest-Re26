@@ -445,7 +445,7 @@ public class EntityEvents {
 		ChunkPos chunkPos = ChunkPos.containing(pos);
 		List<StructureStart> structureStarts;
 		synchronized (STRUCTURE_STARTS_CACHE) {
-			structureStarts = STRUCTURE_STARTS_CACHE.computeIfAbsent(ChunkPos.pack(chunkPos.x(), chunkPos.z()), k -> structureManager.startsForStructure(chunkPos, s -> s instanceof ControlledSpawns));
+			structureStarts = STRUCTURE_STARTS_CACHE.computeIfAbsent(ChunkPos.pack(chunkPos.x(), chunkPos.z()), k -> structureManager.startsForStructure(chunkPos.x(), chunkPos.z(), s -> s instanceof ControlledSpawns));
 		}
 
 		for (StructureStart start : structureStarts) {

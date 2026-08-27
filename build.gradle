@@ -101,6 +101,17 @@ loom {
 			//sourceSet sourceSets.test
 		}
 	}
+
+	// https://github.com/FabricMC/fabric-loom — 26.3-snapshot-10 on Windows needs a larger
+	// JVM stack shadow region, otherwise startup hangs/crashes (see Fabric Discord dev post).
+	runs {
+		client {
+			vmArg '-XX:StackShadowPages=32'
+		}
+		server {
+			vmArg '-XX:StackShadowPages=32'
+		}
+	}
 }
 
 fabricApi {

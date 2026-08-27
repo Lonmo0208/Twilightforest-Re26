@@ -28,7 +28,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
@@ -76,7 +76,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	}
 
 	@Override
-	public void addChildren(StructurePiece parent, StructurePieceAccessor list, RandomSource rand) {
+	public void addChildren(StructurePiece parent, StructurePiecesBuilder list, RandomSource rand) {
 		if (parent != null && parent instanceof TFStructureComponentOld) {
 			this.deco = ((TFStructureComponentOld) parent).deco;
 		}
@@ -187,7 +187,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	/**
 	 * Make a bridge that leads to an entrance tower
 	 */
-	private boolean makeEntranceTower(StructurePieceAccessor list, RandomSource rand, int index, int x, int y, int z, int childSize, int childHeight, Rotation rotation) {
+	private boolean makeEntranceTower(StructurePiecesBuilder list, RandomSource rand, int index, int x, int y, int z, int childSize, int childHeight, Rotation rotation) {
 		Direction direction = getStructureRelativeRotation(rotation);
 		int[] dx = offsetTowerCoords(x, y, z, 5, direction);
 
@@ -202,7 +202,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	/**
 	 * Make a bridge that leads to a new large-size tower
 	 */
-	private boolean makeNewLargeTower(StructurePieceAccessor list, RandomSource rand, int index, int x, int y, int z, Rotation rotation) {
+	private boolean makeNewLargeTower(StructurePiecesBuilder list, RandomSource rand, int index, int x, int y, int z, Rotation rotation) {
 
 		int wingSize = 15;
 		int wingHeight = 56;
@@ -222,7 +222,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	/**
 	 * Make a bridge that leads to a boss trap tower
 	 */
-	private boolean makeBossTrapWing(StructurePieceAccessor list, RandomSource rand, int index, int x, int y, int z, Rotation rotation) {
+	private boolean makeBossTrapWing(StructurePiecesBuilder list, RandomSource rand, int index, int x, int y, int z, Rotation rotation) {
 
 		int wingSize = 11;
 		int wingHeight = 9;
@@ -243,7 +243,7 @@ public class DarkTowerMainComponent extends DarkTowerWingComponent {
 	 * Attach a roof to this tower.
 	 */
 	@Override
-	public void makeARoof(StructurePiece parent, StructurePieceAccessor list, RandomSource rand) {
+	public void makeARoof(StructurePiece parent, StructurePiecesBuilder list, RandomSource rand) {
 		if (this.getGenDepth() < 2) {
 			super.makeARoof(parent, list, rand);
 		}

@@ -217,7 +217,7 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 	public void submit(JarRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
 		poseStack.pushPose();
 		poseStack.translate(0.5, 0.0, 0.5);
-		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+		poseStack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(180.0F)));
 		poseStack.translate(-0.5, 0.0, -0.5);
 
 		if (state.wobbleAmount >= 0.0F && state.wobbleAmount <= 1.0F) {
@@ -244,7 +244,7 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		if (state.itemStack != null && !state.itemStack.isEmpty()) {
 			poseStack.pushPose();
 			poseStack.translate(0.5D, 0.4375D, 0.5D);
-			poseStack.mulPose(Axis.YN.rotationDegrees(RotationSegment.convertToDegrees(state.itemRotation)));
+			poseStack.mulPose(new org.joml.Matrix4f().rotation(Axis.YN.rotationDegrees(RotationSegment.convertToDegrees(state.itemRotation))));
 			poseStack.scale(0.5F, 0.5F, 0.5F);
 			state.itemStack.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 			poseStack.popPose();

@@ -5,7 +5,12 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 
 // For making spheres
 public record FocusedDensityFunction(float centerX, float bottomY, float centerZ, float radius, float nearValue, float farValue) implements DensityFunction {
@@ -22,15 +27,19 @@ public record FocusedDensityFunction(float centerX, float bottomY, float centerZ
 		return new FocusedDensityFunction(blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f, radius, nearValue, farValue);
 	}
 
-	@Override
-	public float compute(FunctionContext context) {
-		float dX = this.centerX - context.blockX();
-		float dY = this.bottomY - context.blockY();
-		float dZ = this.centerZ - context.blockZ();
+	public float computeValue(float blockX, float blockY, float blockZ) {
+		float dX = this.centerX - blockX;
+		float dY = this.bottomY - blockY;
+		float dZ = this.centerZ - blockZ;
 
 		float dist = Mth.sqrt(dX * dX + dY * dY + dZ * dZ);
 
 		return Mth.clampedMap(dist, 0, this.radius, this.nearValue, this.farValue);
+	}
+
+	@Override
+	public DensitySampler compileSampler(DensityFunction.CompileContext compileContext) {
+		return new FocusedSampler(this);
 	}
 
 	@Override
@@ -49,14 +58,19 @@ public record FocusedDensityFunction(float centerX, float bottomY, float centerZ
 	}
 
 	@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
-		}
+	public DensityFunction rewriteChildren(DfRewriteRule rule) {
+		return this;
 	}
 
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
-		return this;
+	public record FocusedSampler(FocusedDensityFunction function) implements DensitySampler {
+		@Override
+		public void sampleVolume(SamplerContext context, DensityBuffer buffer, DensityVolume volume) {
+			DensitySampler.sampleVolumeNaive(context, buffer, volume, this);
+		}
+
+		@Override
+		public float sampleValue(SamplerContext context, int x, int y, int z) {
+			return this.function.computeValue(x, y, z);
+		}
 	}
 }

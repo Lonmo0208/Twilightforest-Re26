@@ -37,10 +37,10 @@ public class MoonwormRenderer implements BlockEntityRenderer<MoonwormBlockEntity
 	public static void submitMoonworm(MoonwormModel model, float yaw, float rotation, float wiggleRotation, int delay, Direction facing, PoseStack stack, SubmitNodeCollector collector, int light, int overlay, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
 		stack.pushPose();
 		stack.translate(0.5F, 0.5F, 0.5F);
-		stack.mulPose(facing.getRotation());
-		stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-		stack.mulPose(Axis.YP.rotationDegrees(180.0F + rotation));
-		stack.mulPose(Axis.YN.rotationDegrees(yaw));
+		stack.mulPose(new org.joml.Matrix4f().rotation(facing.getRotation()));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(180.0F)));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YP.rotationDegrees(180.0F + rotation)));
+		stack.mulPose(new org.joml.Matrix4f().rotation(Axis.YN.rotationDegrees(yaw)));
 		model.setupAnim(delay, wiggleRotation);
 		collector.submitModel(model, Unit.INSTANCE, stack, model.renderType(TEXTURE), light, overlay, outlineColor);
 		stack.popPose();

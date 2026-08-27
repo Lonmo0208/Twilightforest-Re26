@@ -85,7 +85,7 @@ public class TFDensityFunctions {
 			thinNoise
 		);
 
-		return DensityFunctions.flatCache(jitteredNoise);
+		return DensityFunctions.cache(jitteredNoise);
 	}
 
 	@NotNull
@@ -128,7 +128,9 @@ public class TFDensityFunctions {
 					DensityFunctions.max(
 						DensityFunctions.zero(),
 						ambientTerrainNoise
-					)
+					),
+					4,
+					4
 				)
 			)
 		);
@@ -158,7 +160,7 @@ public class TFDensityFunctions {
 
 		DensityFunction finalDensity = DensityFunctions.add(
 			new SqrtDensityFunction(
-				DensityFunctions.interpolated(skyIslandNoise).clamp(0, 2)
+				DensityFunctions.interpolated(skyIslandNoise, 4, 4).clamp(0, 2)
 			),
 			biomeDensity
 		);

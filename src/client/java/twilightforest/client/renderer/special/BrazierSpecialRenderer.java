@@ -22,7 +22,7 @@ public record BrazierSpecialRenderer(BrazierModel model) implements NoDataSpecia
 	public void submit(PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
 		stack.pushPose();
 		stack.translate(0.5F, 1.5F, 0.5F);
-		stack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(180.0F));
+		stack.mulPose(new org.joml.Matrix4f().rotation(com.mojang.math.Axis.ZP.rotationDegrees(180.0F)));
 		Identifier loc = BrazierRenderer.TEXTURE_OFF;
 		collector.submitModel(this.model, Unit.INSTANCE, stack, this.model.renderType(loc), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
 		stack.popPose();

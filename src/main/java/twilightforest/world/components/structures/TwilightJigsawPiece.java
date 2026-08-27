@@ -22,6 +22,7 @@ import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 
 import org.apache.logging.log4j.LogManager;
@@ -197,11 +198,11 @@ public class TwilightJigsawPiece extends TwilightTemplateStructurePiece implemen
 		}
 	}
 
-	@Deprecated(forRemoval = true) // Instead use addChildren(StructurePiece, StructurePieceAccessor, Structure.GenerationContext)
+	@Deprecated(forRemoval = true) // Instead use addChildren(StructurePiece, StructurePiecesBuilder, Structure.GenerationContext)
 	@Override
-	public void addChildren(StructurePiece parent, StructurePieceAccessor pieceAccessor, RandomSource random) {}
+	public void addChildren(StructurePiece parent, StructurePiecesBuilder pieceAccessor, RandomSource random) {}
 
-	public void addJigsaws(TwilightJigsawPiece parent, StructurePieceAccessor pieceAccessor, Structure.GenerationContext context) {
+	public void addJigsaws(TwilightJigsawPiece parent, StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context) {
 		WorldgenRandom random = context.random();
 		random.setSeed(random.nextLong() ^ (context.seed() * this.templatePosition.asLong()));
 
@@ -212,7 +213,7 @@ public class TwilightJigsawPiece extends TwilightTemplateStructurePiece implemen
 		}
 	}
 
-	protected void processJigsaw(TwilightJigsawPiece parent, StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, int jigsawIndex) {
+	protected void processJigsaw(TwilightJigsawPiece parent, StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, int jigsawIndex) {
 		Identifier templatePool = Identifier.parse(connection.pool());
 		BlockPos parentJunctionPos = this.templatePosition.offset(connection.pos());
 		boolean parentProjectsTerrain = this.terrainAdjustment != TerrainAdjustment.NONE;

@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
@@ -55,7 +55,7 @@ public class MushroomTowerWingComponent extends TowerWingComponent {
 	}
 
 	@Override
-	public void addChildren(StructurePiece parent, StructurePieceAccessor list, RandomSource rand) {
+	public void addChildren(StructurePiece parent, StructurePiecesBuilder list, RandomSource rand) {
 		if (parent != null && parent instanceof TFStructureComponentOld) {
 			this.deco = ((TFStructureComponentOld) parent).deco;
 		}
@@ -118,7 +118,7 @@ public class MushroomTowerWingComponent extends TowerWingComponent {
 	 * Make a new wing
 	 */
 	@Override
-	public boolean makeTowerWing(StructurePieceAccessor list, RandomSource rand, int index, int x, int y, int z, int wingSize, int wingHeight, Rotation rotation) {
+	public boolean makeTowerWing(StructurePiecesBuilder list, RandomSource rand, int index, int x, int y, int z, int wingSize, int wingHeight, Rotation rotation) {
 
 		Direction direction = getStructureRelativeRotation(rotation);
 		int[] dx = offsetTowerCoords(x, y, z, wingSize, direction);
@@ -156,7 +156,7 @@ public class MushroomTowerWingComponent extends TowerWingComponent {
 	/**
 	 * Adjust the coordinates for this tower to link up with any others within 3
 	 */
-	protected int[] adjustCoordinates(int x, int y, int z, int wingSize, Direction direction, StructurePieceAccessor list) {
+	protected int[] adjustCoordinates(int x, int y, int z, int wingSize, Direction direction, StructurePiecesBuilder list) {
 		// go through list.  if there are any same size towers within wingSize, return their xyz instead
 		if (list instanceof StructurePiecesBuilder start) {
 			for (StructurePiece obj : start.pieces) {
@@ -181,7 +181,7 @@ public class MushroomTowerWingComponent extends TowerWingComponent {
 	/**
 	 * Are there (not) any other towers below this bounding box?
 	 */
-	private boolean isHighest(BoundingBox boundingBox, int size, StructurePieceAccessor list) {
+	private boolean isHighest(BoundingBox boundingBox, int size, StructurePiecesBuilder list) {
 		// go through list.  if there are any same size towers within wingSize, return their xyz instead
 
 		BoundingBox boxAbove = new BoundingBox(
@@ -207,7 +207,7 @@ public class MushroomTowerWingComponent extends TowerWingComponent {
 	 * Make a mushroom roof!
 	 */
 	@Override
-	public void makeARoof(StructurePiece parent, StructurePieceAccessor list, RandomSource rand) {
+	public void makeARoof(StructurePiece parent, StructurePiecesBuilder list, RandomSource rand) {
 
 		TowerRoofComponent roof = new TowerRoofMushroomComponent(this.getGenDepth() + 1, this, 1.6F, getLocatorPosition().getX(), getLocatorPosition().getY(), getLocatorPosition().getZ());
 		if (!(list.findCollisionPiece(roof.getBoundingBox()) instanceof TowerRoofMushroomComponent)) {
@@ -221,11 +221,11 @@ public class MushroomTowerWingComponent extends TowerWingComponent {
 	}
 
 	@Override
-	protected boolean makeBridge(StructurePieceAccessor list, RandomSource rand, int index, int x, int y, int z, int wingSize, int wingHeight, Rotation rotation) {
+	protected boolean makeBridge(StructurePiecesBuilder list, RandomSource rand, int index, int x, int y, int z, int wingSize, int wingHeight, Rotation rotation) {
 		return this.makeBridge(list, rand, index, x, y, z, wingSize, wingHeight, rotation, false);
 	}
 
-	protected boolean makeBridge(StructurePieceAccessor list, RandomSource rand, int index, int x, int y, int z, int wingSize, int wingHeight, Rotation rotation, boolean ascender) {
+	protected boolean makeBridge(StructurePiecesBuilder list, RandomSource rand, int index, int x, int y, int z, int wingSize, int wingHeight, Rotation rotation, boolean ascender) {
 		// bridges are size  always
 		Direction direction = getStructureRelativeRotation(rotation);
 		int[] dx = offsetTowerCoords(x, y, z, 3, direction);
@@ -255,7 +255,7 @@ public class MushroomTowerWingComponent extends TowerWingComponent {
 		}
 	}
 
-	private boolean makeMainBridge(StructurePieceAccessor list, RandomSource rand, int index, int x, int y, int z, int wingHeight, Rotation rotation) {
+	private boolean makeMainBridge(StructurePiecesBuilder list, RandomSource rand, int index, int x, int y, int z, int wingHeight, Rotation rotation) {
 
 		Direction direction = getStructureRelativeRotation(rotation);
 		int[] dx = offsetTowerCoords(x, y, z, 3, direction);

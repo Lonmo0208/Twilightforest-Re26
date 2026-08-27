@@ -80,10 +80,10 @@ public abstract class TFPartRenderer<T extends TFPart<?>, S extends PartEntitySt
 				f = 1.0F;
 			}
 
-			stack.mulPose(Axis.ZP.rotationDegrees(f * this.getFlipDegrees()));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(f * this.getFlipDegrees())));
 		} else if (state.isUpsideDown) {
 			stack.translate(0.0F, (state.boundingBoxHeight + 0.1F) / partialTicks, 0.0F);
-			stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+			stack.mulPose(new org.joml.Matrix4f().rotation(Axis.ZP.rotationDegrees(180.0F)));
 		}
 	}
 
