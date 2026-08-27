@@ -186,7 +186,7 @@ public class CubeOfAnnihilation extends ThrowableProjectile {
 					this.getDeltaMovement().z() / (currentSpeed / maxSpeed)));
 			} else {
 				float slow = 0.5F;
-				this.getDeltaMovement().multiply(slow, slow, slow);
+				this.setDeltaMovement(this.getDeltaMovement().multiply(slow, slow, slow));
 			}
 
 			// demolish some blocks
