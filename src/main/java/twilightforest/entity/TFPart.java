@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import twilightforest.TwilightForestMod;
@@ -52,6 +53,13 @@ public abstract class TFPart<T extends Entity> extends PartEntity<T> {
 
 	@Override
 	public void tick() {
+		if (this.level() instanceof ServerLevel serverLevel
+			&& serverLevel.getChunkSource().getChunkNow(this.blockPosition().getX() >> 4, this.blockPosition().getZ() >> 4) == null) {
+			return;
+		}
+		if (this.level().isClientSide() && !this.level().hasChunkAt(this.blockPosition())) {
+			return;
+		}
 		updateLastPos();
 		super.tick();
 		if (this.newPosRotationIncrements > 0) {
