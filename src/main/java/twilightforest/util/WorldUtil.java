@@ -43,15 +43,28 @@ public final class WorldUtil {
 	}
 
 	@Nullable
-	private static MinecraftServer currentServer;
+	private static volatile MinecraftServer currentServer;
+
+	/**
+	 * Seed of the overworld, cached lazily on first successful read. Worldgen
+	 * worker threads (e.g. C2ME's parallel generation executors) read this
+	 * without touching the server object, avoiding visibility issues on the
+	 * currentServer reference. Sentinel value = not yet resolved.
+	 */
+	private static volatile long cachedOverworldSeed = Long.MIN_VALUE;
 
 	/**
 	 * Called from TwilightForestMod.onInitialize() to register the server lifecycle listener
 	 * before the server starts, ensuring currentServer is always set.
+	 * SERVER_STARTING fires early enough to be available during world generation,
+	 * but before levels exist, so the seed itself is resolved lazily.
 	 */
 	public static void registerServerLifecycle() {
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> currentServer = server);
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> currentServer = null);
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			currentServer = null;
+			cachedOverworldSeed = Long.MIN_VALUE;
+		});
 	}
 
 	/**
@@ -62,7 +75,16 @@ public final class WorldUtil {
 	}
 
 	public static long getOverworldSeed() {
-		return getServer().overworld().getSeed();
+		long seed = cachedOverworldSeed;
+		if (seed == Long.MIN_VALUE) {
+			// Lazy: overworld does not exist at SERVER_STARTING; the first
+			// worldgen-time caller resolves it. Benign race (same value written).
+			MinecraftServer server = getServer();
+			ServerLevel overworld = Objects.requireNonNull(server.overworld(), "Overworld not yet loaded");
+			seed = overworld.getSeed();
+			cachedOverworldSeed = seed;
+		}
+		return seed;
 	}
 
 	public static RegistryAccess getRegistryAccess() {
