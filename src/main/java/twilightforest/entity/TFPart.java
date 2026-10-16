@@ -70,6 +70,9 @@ public abstract class TFPart<T extends Entity> extends Entity {
 
 	@Override
 	public void tick() {
+		if (!this.level().hasChunkAt(this.blockPosition())) {
+			return;
+		}
 		updateLastPos();
 		super.tick();
 		if (this.newPosRotationIncrements > 0) {

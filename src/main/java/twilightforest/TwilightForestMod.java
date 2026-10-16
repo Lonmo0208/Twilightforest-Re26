@@ -11,7 +11,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.levelgen.Heightmap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twilightforest.beanification.BeanContext;
@@ -20,10 +24,11 @@ import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.config.ConfigSetup;
 import twilightforest.command.TFCommand;
 import twilightforest.entity.MagicPaintingVariant;
-import twilightforest.events.RegistrationEvents;
 import twilightforest.entity.passive.DwarfRabbitVariant;
+import twilightforest.entity.passive.Penguin;
 import twilightforest.entity.passive.TinyBirdVariant;
 import twilightforest.entity.passive.quest.QuestReloadListener;
+import twilightforest.events.RegistrationEvents;
 import twilightforest.init.*;
 import twilightforest.init.custom.*;
 import twilightforest.loot.TFLootTables;
@@ -86,6 +91,20 @@ public final class TwilightForestMod implements ModInitializer {
 			AttributeSupplier supplier = entry.getValue().get().build();
 			FabricDefaultAttributeRegistry.register(entityType, supplier);
 		}
+
+		// Register spawn placements from SPAWN_PREDICATES map
+		for (var entry : TFEntities.SPAWN_PREDICATES.entrySet()) {
+			var type = entry.getKey().get();
+			// Skip entities that need special placement types (handled separately below)
+			if (type == TFEntities.PENGUIN.get()) continue;
+			@SuppressWarnings({"unchecked", "rawtypes"})
+			var entityType = (net.minecraft.world.entity.EntityType) type;
+			@SuppressWarnings({"unchecked", "rawtypes"})
+			var predicate = (SpawnPlacements.SpawnPredicate) entry.getValue();
+			SpawnPlacements.register(entityType, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, predicate);
+		}
+		// Penguin uses NO_RESTRICTIONS (can spawn on ice/snow)
+		SpawnPlacements.register(TFEntities.PENGUIN.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Penguin::canSpawn);
 
 		TFBlockEntities.init();
 		TFSounds.init();
