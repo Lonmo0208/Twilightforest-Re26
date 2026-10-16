@@ -30,7 +30,7 @@ public class TrollBigMushgloomFeature extends BigMushgloomFeature {
 				for (int z = -foliageRadius; z <= foliageRadius; ++z) {
 					mutableBlockPos.setWithOffset(pos, x, height + y, z);
 					if (!levelAccessor.getBlockState(mutableBlockPos).is(BlockTags.FEATURES_CANNOT_REPLACE)) {
-						BlockState blockstate = this.capProvider().getState(levelAccessor, random, pos);
+						BlockState blockstate = this.capProvider().value().getState(levelAccessor, random, pos);
 						blockstate = FeatureLogic.getSphericalMushroomBlockState(blockstate, x, y, z, foliageRadius, capHeight);
 						this.setBlock(levelAccessor, mutableBlockPos, blockstate);
 					}

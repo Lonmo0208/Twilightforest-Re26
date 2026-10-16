@@ -14,17 +14,17 @@
                                              ]
                         },
     "basement_posts":  {
-                           "type":  "minecraft:simple_state_provider",
+                           "type":  "minecraft:simple",
                            "state":  {
                                          "id":  "minecraft:oak_fence"
                                      }
                        },
     "decayed_wall_block":  {
-                               "type":  "minecraft:simple_state_provider",
+                               "type":  "minecraft:simple",
                                "state":  "minecraft:mossy_cobblestone"
                            },
     "decayed_wall_top_block":  {
-                                   "type":  "minecraft:weighted_state_provider",
+                                   "type":  "minecraft:weighted",
                                    "entries":  [
                                                    {
                                                        "data":  "minecraft:mossy_cobblestone",
@@ -51,7 +51,7 @@
                                                ]
                                },
     "floor":  {
-                  "type":  "minecraft:weighted_state_provider",
+                  "type":  "minecraft:weighted",
                   "entries":  [
                                   {
                                       "data":  "minecraft:oak_planks",
@@ -90,7 +90,7 @@
                               ]
               },
     "loot_container":  {
-                           "type":  "minecraft:simple_state_provider",
+                           "type":  "minecraft:simple",
                            "state":  {
                                          "id":  "minecraft:chest"
                                      }
@@ -102,7 +102,7 @@
                                 "min_inclusive":  -2
                             },
     "wall_block":  {
-                       "type":  "minecraft:simple_state_provider",
+                       "type":  "minecraft:simple",
                        "state":  "minecraft:cobblestone"
                    },
     "wall_heights":  {
@@ -111,7 +111,7 @@
                          "min_inclusive":  1
                      },
     "wall_top_block":  {
-                           "type":  "minecraft:weighted_state_provider",
+                           "type":  "minecraft:weighted",
                            "entries":  [
                                            {
                                                "data":  "minecraft:cobblestone",

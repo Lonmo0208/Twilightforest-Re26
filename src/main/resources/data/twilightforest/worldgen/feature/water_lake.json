@@ -1,7 +1,7 @@
 {
     "type":  "twilightforest:small_lake",
     "fluid":  {
-                  "type":  "minecraft:simple_state_provider",
+                  "type":  "minecraft:simple",
                   "state":  {
                                 "id":  "minecraft:water"
                             }

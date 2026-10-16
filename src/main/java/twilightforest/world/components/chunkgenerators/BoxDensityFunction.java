@@ -3,10 +3,16 @@ package twilightforest.world.components.chunkgenerators;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 
@@ -57,36 +63,19 @@ public class BoxDensityFunction implements DensityFunction {
 		this.terrainAdjustment = terrainAdjustment;
 	}
 
-	@Override // Parallels vanilla Beardifier behavior
-	public float compute(FunctionContext context) {
-		int blockX = context.blockX();
-		int blockY = context.blockY();
-		int blockZ = context.blockZ();
-
-		// Dist is zero if inside the box
-		int xDist = Math.max(0, Math.max(this.minX - blockX, blockX - this.maxX));
-		int zDist = Math.max(0, Math.max(this.minZ - blockZ, blockZ - this.maxZ));
-
-		int distAboveBottom = blockY - this.minY;
-		int yDist = switch (this.terrainAdjustment) {
-			case BURY, BEARD_THIN -> distAboveBottom;
-			case BEARD_BOX, ENCAPSULATE -> Math.max(0, Math.max(this.minY - blockY, blockY - this.maxY));
-			default -> 0;
-		};
-
-		float densityValue = switch (this.terrainAdjustment) {
-			case BURY -> getBuryContribution((float) xDist, (float) (yDist * 0.5), (float) zDist);
-			case BEARD_THIN, BEARD_BOX -> getBeardContribution(xDist, yDist, zDist, distAboveBottom) * 0.8F;
-			case ENCAPSULATE -> getBuryContribution((float) (xDist * 0.5), (float) (yDist * 0.5), (float) (zDist * 0.5)) * 0.8F;
-			default -> 0;
-		};
-
-		return Mth.clamp(densityValue, (float) this.minValue, (float) this.maxValue);
+	@Override
+	public DensitySampler compileSampler(DensityFunction.CompileContext context) {
+		return new BoxDensityFunction.Sampler(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.minValue, this.maxValue, this.terrainAdjustment);
 	}
 
 	@Override
-	public net.minecraft.util.Interval range() {
-		return net.minecraft.util.Interval.of((float) this.minValue, (float) this.maxValue);
+	public DensityFunction rewriteChildren(DfRewriteRule rule) {
+		return this;
+	}
+
+	@Override
+	public Interval range() {
+		return Interval.of((float) this.minValue, (float) this.maxValue);
 	}
 
 	@Override
@@ -99,16 +88,34 @@ public class BoxDensityFunction implements DensityFunction {
 		return DensityFunction.ALL_AXES;
 	}
 
-	@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
-		}
-	}
+	public record Sampler(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, double minValue, double maxValue, TerrainAdjustment terrainAdjustment) implements DensitySampler {
+		@Override // Parallels vanilla Beardifier behavior
+		public float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
+			// Dist is zero if inside the box
+			int xDist = Math.max(0, Math.max(this.minX - blockX, blockX - this.maxX));
+			int zDist = Math.max(0, Math.max(this.minZ - blockZ, blockZ - this.maxZ));
 
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
-		return this;
+			int distAboveBottom = blockY - this.minY;
+			int yDist = switch (this.terrainAdjustment) {
+				case BURY, BEARD_THIN -> distAboveBottom;
+				case BEARD_BOX, ENCAPSULATE -> Math.max(0, Math.max(this.minY - blockY, blockY - this.maxY));
+				default -> 0;
+			};
+
+			float densityValue = switch (this.terrainAdjustment) {
+				case BURY -> getBuryContribution((float) xDist, (float) (yDist * 0.5), (float) zDist);
+				case BEARD_THIN, BEARD_BOX -> getBeardContribution(xDist, yDist, zDist, distAboveBottom) * 0.8F;
+				case ENCAPSULATE -> getBuryContribution((float) (xDist * 0.5), (float) (yDist * 0.5), (float) (zDist * 0.5)) * 0.8F;
+				default -> 0;
+			};
+
+			return Mth.clamp(densityValue, (float) this.minValue, (float) this.maxValue);
+		}
+
+		@Override
+		public void sampleVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume) {
+			DensitySampler.sampleVolumeNaive(context, outputBuffer, volume, this);
+		}
 	}
 
 	// Replicates the (now private) Beardifier contribution functions so box-based terrain shaping still works in 26.3

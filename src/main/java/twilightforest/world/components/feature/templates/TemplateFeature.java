@@ -37,7 +37,7 @@ public abstract class TemplateFeature implements Feature {
 	public final boolean place(WorldGenLevel world, ChunkGenerator chunkGenerator, RandomSource random, BlockPos pos) {
 		// config field removed in 26.3, stored as instance fields
 
-		StructureTemplateManager templateManager = world.getLevel().getServer().getStructureManager();
+		StructureTemplateManager templateManager = world.getLevel().getServer().getStructureTemplateManager();
 		StructureTemplate template = this.getTemplate(templateManager, random);
 
 		if (template == null)

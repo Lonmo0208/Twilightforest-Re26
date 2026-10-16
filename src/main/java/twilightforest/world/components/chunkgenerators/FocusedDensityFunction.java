@@ -4,8 +4,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 
 // For making spheres
 public record FocusedDensityFunction(float centerX, float bottomY, float centerZ, float radius, float nearValue, float farValue) implements DensityFunction {
@@ -23,19 +29,18 @@ public record FocusedDensityFunction(float centerX, float bottomY, float centerZ
 	}
 
 	@Override
-	public float compute(FunctionContext context) {
-		float dX = this.centerX - context.blockX();
-		float dY = this.bottomY - context.blockY();
-		float dZ = this.centerZ - context.blockZ();
-
-		float dist = Mth.sqrt(dX * dX + dY * dY + dZ * dZ);
-
-		return Mth.clampedMap(dist, 0, this.radius, this.nearValue, this.farValue);
+	public DensitySampler compileSampler(DensityFunction.CompileContext context) {
+		return new FocusedDensityFunction.Sampler(this.centerX, this.bottomY, this.centerZ, this.radius, this.nearValue, this.farValue);
 	}
 
 	@Override
-	public net.minecraft.util.Interval range() {
-		return net.minecraft.util.Interval.of(Math.min(this.nearValue, this.farValue), Math.max(this.nearValue, this.farValue));
+	public DensityFunction rewriteChildren(DfRewriteRule rule) {
+		return this;
+	}
+
+	@Override
+	public Interval range() {
+		return Interval.of(Math.min(this.nearValue, this.farValue), Math.max(this.nearValue, this.farValue));
 	}
 
 	@Override
@@ -48,15 +53,21 @@ public record FocusedDensityFunction(float centerX, float bottomY, float centerZ
 		return DensityFunction.ALL_AXES;
 	}
 
-	@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
-		}
-	}
+	public record Sampler(float centerX, float bottomY, float centerZ, float radius, float nearValue, float farValue) implements DensitySampler {
+		@Override
+		public float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
+			float dX = this.centerX - blockX;
+			float dY = this.bottomY - blockY;
+			float dZ = this.centerZ - blockZ;
 
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
-		return this;
+			float dist = Mth.sqrt(dX * dX + dY * dY + dZ * dZ);
+
+			return Mth.clampedMap(dist, 0, this.radius, this.nearValue, this.farValue);
+		}
+
+		@Override
+		public void sampleVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume) {
+			DensitySampler.sampleVolumeNaive(context, outputBuffer, volume, this);
+		}
 	}
 }

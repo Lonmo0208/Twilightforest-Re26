@@ -16,7 +16,7 @@
                          "depth":  0,
                          "erosion":  0,
                          "final_density":  "twilightforest:final_terrain",
-                         "preliminary_surface_level":  "twilightforest:forested_terrain",
+                         "chunk_surface_level":  "twilightforest:forested_terrain",
                          "ridges":  0,
                          "temperature":  0,
                          "vegetation":  0

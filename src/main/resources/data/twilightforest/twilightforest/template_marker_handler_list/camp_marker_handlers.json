@@ -6,7 +6,7 @@
                                               "birch_drying_rack":  {
                                                                         "type":  "twilightforest:drying_rack",
                                                                         "drying_rack_block":  {
-                                                                                                  "type":  "minecraft:simple_state_provider",
+                                                                                                  "type":  "minecraft:simple",
                                                                                                   "state":  {
                                                                                                                 "id":  "twilightforest:birch_drying_rack",
                                                                                                                 "properties":  {
@@ -20,7 +20,7 @@
                                               "camp_armor_rack":  {
                                                                       "type":  "twilightforest:drying_rack",
                                                                       "drying_rack_block":  {
-                                                                                                "type":  "minecraft:simple_state_provider",
+                                                                                                "type":  "minecraft:simple",
                                                                                                 "state":  {
                                                                                                               "id":  "twilightforest:canopy_drying_rack",
                                                                                                               "properties":  {
@@ -38,7 +38,7 @@
                                               "tent_pot":  {
                                                                "type":  "twilightforest:loot",
                                                                "loot_block":  {
-                                                                                  "type":  "minecraft:simple_state_provider",
+                                                                                  "type":  "minecraft:simple",
                                                                                   "state":  {
                                                                                                 "id":  "minecraft:decorated_pot",
                                                                                                 "properties":  {
@@ -53,7 +53,7 @@
                                               "twilight_oak_slab":  {
                                                                         "type":  "twilightforest:block_placement",
                                                                         "block_state":  {
-                                                                                            "type":  "minecraft:weighted_state_provider",
+                                                                                            "type":  "minecraft:weighted",
                                                                                             "entries":  [
                                                                                                             {
                                                                                                                 "data":  {

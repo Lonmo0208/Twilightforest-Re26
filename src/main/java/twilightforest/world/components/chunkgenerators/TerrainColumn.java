@@ -12,6 +12,8 @@ import net.minecraft.core.registries.codec.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import twilightforest.util.Codecs;
 
 import java.util.Map;
@@ -92,16 +94,26 @@ public final class TerrainColumn {
 		return result != null ? result.getValue() : other;
 	}
 
-	public double depth(DensityFunction.FunctionContext context) {
-		return this.noiseDepth.compute(context);
+	public Compiled compile(DensityFunction.CompileContext context) {
+		return new Compiled(this.keyBiome, this.noiseDepth.compileSampler(context), this.noiseScale.compileSampler(context), this.noiseWeight.compileSampler(context));
 	}
 
-	public double scale(DensityFunction.FunctionContext context) {
-		return this.noiseScale.compute(context);
-	}
+	/**
+	 * Compile-time view of a TerrainColumn. The samplers are built once per worldgen RandomState, so blend sampling
+	 * does not pay density-function compilation on every column lookup.
+	 */
+	public record Compiled(Holder<Biome> keyBiome, DensitySampler samplerDepth, DensitySampler samplerScale, DensitySampler samplerWeight) {
+		public double sampleDepth(SamplerContext context, int blockX, int blockY, int blockZ) {
+			return this.samplerDepth.sampleValue(context, blockX, blockY, blockZ);
+		}
 
-	public double weight(DensityFunction.FunctionContext context) {
-		return this.noiseWeight.compute(context);
+		public double sampleScale(SamplerContext context, int blockX, int blockY, int blockZ) {
+			return this.samplerScale.sampleValue(context, blockX, blockY, blockZ);
+		}
+
+		public double sampleWeight(SamplerContext context, int blockX, int blockY, int blockZ) {
+			return this.samplerWeight.sampleValue(context, blockX, blockY, blockZ);
+		}
 	}
 
 	public ResourceKey<Biome> getResourceKey() {

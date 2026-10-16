@@ -4,12 +4,20 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.codec.RegistryFileCodec;
+import net.minecraft.util.Interval;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import twilightforest.TFRegistries;
 import twilightforest.world.components.layer.BiomeDensitySource;
+
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * A DensityFunction implementation that enables Biomes to influence terrain formulations, if in the noise chunk generator.
@@ -40,42 +48,42 @@ public class NoiseDensityRouter implements DensityFunction {
 	}
 
 	@Override
-	public float compute(FunctionContext context) {
-		return (float) this.computeTerrain(context).scale;
-	}
+	public DensitySampler compileSampler(DensityFunction.CompileContext context) {
+		BiomeDensitySource biomeDensitySource = this.biomeDensitySourceHolder.value();
 
-	// Our default method for obtaining column samples of the biome source.
-	// This method is overridden by ChunkCachedNoiseDensityRouter, operating that subclass's cache.
-	@NotNull
-	public BiomeDensitySource.DensityData computeTerrain(FunctionContext context) {
-		return this.biomeDensitySourceHolder.value().sampleTerrain(context.blockX(), context.blockZ(), context);
+		Map<TerrainColumn, TerrainColumn.Compiled> compiledColumns = new IdentityHashMap<>();
+
+		return new NoiseDensityRouter.Sampler(
+			biomeDensitySource,
+			(float) this.lowerDensityBound,
+			(float) this.upperDensityBound,
+			(float) this.depthScalar,
+			column -> compiledColumns.computeIfAbsent(column, terrainColumn -> terrainColumn.compile(context))
+		);
 	}
 
 	@Override
-	public net.minecraft.util.Interval range() {
-		return net.minecraft.util.Interval.of((float) this.lowerDensityBound, (float) this.upperDensityBound);
+	public DensityFunction rewriteChildren(DfRewriteRule rule) {
+		return this;
+	}
+
+	@Override
+	public Interval range() {
+		return Interval.of((float) this.lowerDensityBound, (float) this.upperDensityBound);
+	}
+
+	/**
+	 * Vertical insensitivity is the same assumption {@link TerrainColumn} makes: the biome column data is resolved per X-Z,
+	 * so only X and Z are claimed here and the density compiler slices/broadcasts Y for us.
+	 */
+	@Override
+	public int domainAxes() {
+		return DensityFunction.AXIS_X | DensityFunction.AXIS_Z;
 	}
 
 	@Override
 	public MapCodec<? extends DensityFunction> codec() {
 		return CODEC;
-	}
-
-	@Override
-	public int domainAxes() {
-		return DensityFunction.ALL_AXES;
-	}
-
-	@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
-		}
-	}
-
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
-		return this;
 	}
 
 	public Holder<BiomeDensitySource> biomeDensitySourceHolder() {
@@ -94,60 +102,21 @@ public class NoiseDensityRouter implements DensityFunction {
 		return this.depthScalar;
 	}
 
-	/**
-	 * NoiseDensityRouter is at best, a configuration class with DensityFunction capabilities.
-	 * ChunkCachedNoiseDensityRouter is the actual DensityFunction used in worldgen.
-	 * This cache is made once per Chunk in noisegen, and caches first density value obtained from each unique X-Z coordinate, ambiguating the Y value in coordinate.
-	 * Plan your biome density functions accordingly! Don't use anything that's vertically sensitive
-	 */
-	@Override // NoiseChunk is the only class to ever call this, and it's typically a new chunk each time
-	public DensityFunction mapAll(Visitor visitor) {
-		return visitor.apply(new ChunkCachedNoiseDensityRouter(
-			this.biomeDensitySourceHolder,
-			this.lowerDensityBound,
-			this.upperDensityBound,
-			this.depthScalar
-		));
-	}
-
-	public static class ChunkCachedNoiseDensityRouter extends NoiseDensityRouter {
-		private final BiomeDensitySource biomeDensitySource;
-
-		private final BiomeDensitySource.DensityData[] horizontalCache = new BiomeDensitySource.DensityData[16 * 16];
-
-		public ChunkCachedNoiseDensityRouter(Holder<BiomeDensitySource> biomeDensitySource, double lowerDensityBound, double upperDensityBound, double depthScalar) {
-			super(biomeDensitySource, lowerDensityBound, upperDensityBound, depthScalar);
-			this.biomeDensitySource = biomeDensitySource.value();
-		}
-
-		@NotNull
+	public record Sampler(
+		BiomeDensitySource biomeDensitySource,
+		float lowerDensityBound,
+		float upperDensityBound,
+		float depthScalar,
+		Function<TerrainColumn, TerrainColumn.Compiled> columnCompiler
+	) implements DensitySampler {
 		@Override
-		public BiomeDensitySource.DensityData computeTerrain(FunctionContext context) {
-			int xInChunk = SectionPos.sectionRelative(context.blockX());
-			int zInChunk = SectionPos.sectionRelative(context.blockZ());
-
-			int arrayCoord = zInChunk + (xInChunk << 4);
-
-			BiomeDensitySource.DensityData dataColumn = this.horizontalCache[arrayCoord];
-
-			if (dataColumn == null) {
-				dataColumn = this.biomeDensitySource.sampleTerrain(context.blockX(), context.blockZ(), context);
-				this.horizontalCache[arrayCoord] = dataColumn;
-			}
-
-			return dataColumn;
+		public float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
+			return (float) this.biomeDensitySource.sampleTerrain(blockX, blockY, blockZ, context, this.columnCompiler).scale;
 		}
+
 		@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
+		public void sampleVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume) {
+			DensitySampler.sampleVolumeNaive(context, outputBuffer, volume, this);
 		}
 	}
-
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
-		return this;
-	}
-
-}
 }

@@ -29,7 +29,7 @@ public class TFCaveCarvers {
 		UniformFloat.of(-1.0F, -0.4F),
 		UniformFloat.of(0.1F, 0.9F),
 		false,
-		BlockStateProvider.simple(Blocks.DIRT)
+		BlockStateProvider.of(Blocks.DIRT)
 	);
 	public static final TFCavesCarver HIGHLAND_CAVES = new TFCavesCarver(
 		0.15F,
@@ -39,7 +39,7 @@ public class TFCaveCarvers {
 		UniformFloat.of(-1.0F, -0.4F),
 		UniformFloat.of(0.1F, 0.9F),
 		true,
-		BlockStateProvider.simple(TFBlocks.TROLLSTEINN)
+		BlockStateProvider.of(TFBlocks.TROLLSTEINN)
 	);
 
 	public static final ResourceKey<WorldCarver> TFCAVES_CONFIGURED = registerKey("tf_caves");

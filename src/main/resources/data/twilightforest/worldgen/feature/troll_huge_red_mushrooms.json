@@ -5,14 +5,14 @@
                          "tag":  "minecraft:huge_red_mushroom_can_place_on"
                      },
     "cap_provider":  {
-                         "type":  "minecraft:simple_state_provider",
+                         "type":  "minecraft:simple",
                          "state":  {
                                        "id":  "minecraft:red_mushroom_block"
                                    }
                      },
     "foliage_radius":  2,
     "stem_provider":  {
-                          "type":  "minecraft:simple_state_provider",
+                          "type":  "minecraft:simple",
                           "state":  {
                                         "id":  "minecraft:mushroom_stem"
                                     }

@@ -1,7 +1,7 @@
 {
     "type":  "twilightforest:wood_roots",
     "root_block":  {
-                       "type":  "minecraft:weighted_state_provider",
+                       "type":  "minecraft:weighted",
                        "entries":  [
                                        {
                                            "data":  "twilightforest:root_block",
@@ -14,7 +14,7 @@
                                    ]
                    },
     "root_ore":  {
-                     "type":  "minecraft:simple_state_provider",
+                     "type":  "minecraft:simple",
                      "state":  "twilightforest:liveroot_block"
                  }
 }

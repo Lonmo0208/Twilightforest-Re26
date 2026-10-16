@@ -93,6 +93,17 @@ loom {
 	splitEnvironmentSourceSets()
 	accessWidenerPath = file("src/main/resources/twilightforest.accesswidener")
 
+	// 26.3 on Windows needs a deeper stack shadow zone, otherwise the JVM dies with an access
+	// violation (0xC0000005) while the new render pipeline stack is being built at startup.
+	runs {
+		client {
+			vmArgs "-XX:StackShadowPages=32"
+		}
+		server {
+			vmArgs "-XX:StackShadowPages=32"
+		}
+	}
+
 	mods {
 		"${mod_id}" {
 			sourceSet sourceSets.main

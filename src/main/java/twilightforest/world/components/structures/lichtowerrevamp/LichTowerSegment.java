@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -76,7 +76,7 @@ public final class LichTowerSegment extends TwilightJigsawPiece implements Spawn
 		structureTag.putBoolean("put_gallery", this.putGallery);
 	}
 
-	public static void buildTowerBySegments(StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, final BlockPos sourceJigsawPos, final FrontAndTop sourceOrientation, final TwilightJigsawPiece parentBase, StructureTemplateManager structureManager, final int segments) {
+	public static void buildTowerBySegments(StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, final BlockPos sourceJigsawPos, final FrontAndTop sourceOrientation, final TwilightJigsawPiece parentBase, StructureTemplateManager structureManager, final int segments) {
 		Identifier segmentId = TwilightForestMod.prefix("lich_tower/tower_slice");
 		ArrayList<TwilightJigsawPiece> pieces = new ArrayList<>();
 
@@ -134,7 +134,7 @@ public final class LichTowerSegment extends TwilightJigsawPiece implements Spawn
 	}
 
 	@Override
-	protected void processJigsaw(TwilightJigsawPiece parent, StructurePieceAccessor pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, int jigsawIndex) {
+	protected void processJigsaw(TwilightJigsawPiece parent, StructurePiecesBuilder pieceAccessor, Structure.GenerationContext context, JigsawRecord connection, int jigsawIndex) {
 		switch (connection.target()) {
 			case "twilightforest:lich_tower/bridge" -> {
 				if (!this.putWings) return;

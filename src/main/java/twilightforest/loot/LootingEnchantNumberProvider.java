@@ -11,47 +11,51 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootContextUser;
+import net.minecraft.world.level.storage.loot.Validatable;
+import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import java.util.Set;
 
-public class LootingEnchantNumberProvider implements NumberProvider {
+/**
+ * Adds the attacker's enchantment level onto a base value. Always consumed in whole-number positions, so it is an int
+ * provider; the base value is wrapped in a float provider by the loot JSON when a fractional amount is needed.
+ */
+public record LootingEnchantNumberProvider(Holder<Enchantment> enchantment, Holder<ContextIntProvider> baseValue) implements ContextIntProvider, LootContextUser {
 	public static final MapCodec<LootingEnchantNumberProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			Enchantment.CODEC.fieldOf("enchantment").forGetter(provider -> provider.enchantment),
-			NumberProviders.DIRECT_CODEC.fieldOf("base_value").forGetter(provider -> provider.baseValue))
+			Enchantment.CODEC.fieldOf("enchantment").forGetter(LootingEnchantNumberProvider::enchantment),
+			ContextIntProviders.CODEC.fieldOf("base_value").forGetter(LootingEnchantNumberProvider::baseValue))
 		.apply(instance, LootingEnchantNumberProvider::new)
 	);
 
-	private final Holder<Enchantment> enchantment;
-	private final NumberProvider baseValue;
-
-	protected LootingEnchantNumberProvider(Holder<Enchantment> enchantment, NumberProvider baseValue) {
-		this.enchantment = enchantment;
-		this.baseValue = baseValue;
-	}
-
 	@Override
-	public MapCodec<? extends NumberProvider> codec() {
+	public MapCodec<LootingEnchantNumberProvider> codec() {
 		return CODEC;
 	}
 
-	public static LootingEnchantNumberProvider applyLootingLevelTo(HolderLookup.Provider provider, NumberProvider baseValue) {
+	@Override
+	public void validate(ValidationContext context) {
+		Validatable.validateHolder(context, "base_value", this.baseValue);
+	}
+
+	@Override
+	public Set<ContextKey<?>> getReferencedContextParams() {
+		return Set.of(LootContextParams.ATTACKING_ENTITY);
+	}
+
+	public static LootingEnchantNumberProvider applyLootingLevelTo(HolderLookup.Provider provider, Holder<ContextIntProvider> baseValue) {
 		HolderLookup.RegistryLookup<Enchantment> registrylookup = provider.lookupOrThrow(Registries.ENCHANTMENT);
 		return new LootingEnchantNumberProvider(registrylookup.getOrThrow(Enchantments.LOOTING), baseValue);
 	}
 
 	@Override
-	public float getFloat(LootContext context) {
-		if (context.getOptionalParameter(LootContextParams.ATTACKING_ENTITY) instanceof LivingEntity living) {
-			return EnchantmentHelper.getEnchantmentLevel(this.enchantment, living) + this.baseValue.getFloat(context);
+	public int getIntUnsafe(LootContext context) {
+		if (context.getOptional(LootContextParams.ATTACKING_ENTITY) instanceof LivingEntity living) {
+			return EnchantmentHelper.getEnchantmentLevel(this.enchantment, living) + this.baseValue.value().getIntUnsafe(context);
 		}
-		return this.baseValue.getFloat(context);
-	}
-
-	@Override
-	public Set<ContextKey<?>> getReferencedContextParams() {
-		return this.baseValue.getReferencedContextParams();
+		return this.baseValue.value().getIntUnsafe(context);
 	}
 }

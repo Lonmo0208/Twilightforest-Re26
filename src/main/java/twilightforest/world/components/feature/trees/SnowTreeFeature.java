@@ -40,12 +40,12 @@ import java.util.function.BiConsumer;
 public class SnowTreeFeature implements Feature {
 	// 26.3: config baked into the singleton feature (mirrors the former "anywhere_tree" / snowy_spruce_tree data)
 	public static final TreeFeature SNOWY_SPRUCE = new TreeFeature.Builder(
-		BlockStateProvider.simple(Blocks.SPRUCE_LOG),
+		BlockStateProvider.of(Blocks.SPRUCE_LOG),
 		new StraightTrunkPlacer(5, 2, 1),
-		BlockStateProvider.simple(Blocks.SPRUCE_LEAVES),
+		BlockStateProvider.of(Blocks.SPRUCE_LEAVES),
 		new SpruceFoliagePlacer(UniformInt.of(2, 3), UniformInt.of(0, 2), UniformInt.of(1, 2)),
 		new TwoLayersFeatureSize(2, 0, 2),
-		BlockStateProvider.simple(Blocks.DIRT)
+		BlockStateProvider.holderOf(Blocks.DIRT)
 	).ignoreVines().build();
 
 	public SnowTreeFeature() {

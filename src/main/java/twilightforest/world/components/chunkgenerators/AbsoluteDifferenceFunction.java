@@ -5,7 +5,12 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Interval;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 
 public abstract class AbsoluteDifferenceFunction implements DensityFunction {
 	public static Min min(double max, BlockPos pos) {
@@ -30,21 +35,34 @@ public abstract class AbsoluteDifferenceFunction implements DensityFunction {
 	}
 
 	@Override
-	public int domainAxes() {
-		return DensityFunction.ALL_AXES;
+	public DensitySampler compileSampler(DensityFunction.CompileContext context) {
+		AbsoluteDifferenceFunction function = this;
+
+		return new DensitySampler() {
+			@Override
+			public float sampleValue(SamplerContext samplerContext, int blockX, int blockY, int blockZ) {
+				return function.sampleColumn(blockX, blockZ);
+			}
+
+			@Override
+			public void sampleVolume(SamplerContext samplerContext, DensityBuffer outputBuffer, DensityVolume volume) {
+				DensitySampler.sampleVolumeNaive(samplerContext, outputBuffer, volume, this);
+			}
+		};
 	}
 
 	@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
-		}
-	}
-
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
+	public DensityFunction rewriteChildren(DfRewriteRule rule) {
 		return this;
 	}
+
+	/** Both variants only ever read X and Z, so the density compiler is free to slice and broadcast Y. */
+	@Override
+	public int domainAxes() {
+		return DensityFunction.AXIS_X | DensityFunction.AXIS_Z;
+	}
+
+	protected abstract float sampleColumn(int blockX, int blockZ);
 
 	public static class Min extends AbsoluteDifferenceFunction {
 		public static final MapCodec<Min> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -58,8 +76,8 @@ public abstract class AbsoluteDifferenceFunction implements DensityFunction {
 		}
 
 		@Override
-		public float compute(FunctionContext context) {
-			return (float) Math.min(Math.min(Math.abs(context.blockX() - this.centerX), Math.abs(context.blockZ() - this.centerZ)), this.max);
+		protected float sampleColumn(int blockX, int blockZ) {
+			return (float) Math.min(Math.min(Math.abs(blockX - this.centerX), Math.abs(blockZ - this.centerZ)), this.max);
 		}
 
 		@Override
@@ -80,8 +98,8 @@ public abstract class AbsoluteDifferenceFunction implements DensityFunction {
 		}
 
 		@Override
-		public float compute(FunctionContext context) {
-			return (float) Math.min(Math.max(Math.abs(context.blockX() - this.centerX), Math.abs(context.blockZ() - this.centerZ)), this.max);
+		protected float sampleColumn(int blockX, int blockZ) {
+			return (float) Math.min(Math.max(Math.abs(blockX - this.centerX), Math.abs(blockZ - this.centerZ)), this.max);
 		}
 
 		@Override

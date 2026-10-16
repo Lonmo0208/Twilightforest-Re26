@@ -6,7 +6,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import twilightforest.TwilightForestMod;
 import twilightforest.loot.LootingEnchantNumberProvider;
 import twilightforest.loot.MultiplayerBasedAdditionLootFunction;
@@ -25,8 +24,8 @@ public class TFLoot {
 
 	public static final MapCodec<MultiplayerBasedAdditionLootFunction> MULTIPLAYER_MULTIPLIER_CODEC = Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, TwilightForestMod.prefix("multiplayer_addition"), MultiplayerBasedAdditionLootFunction.CODEC);
 
-	public static final MapCodec<MultiplayerBasedNumberProvider> MULTIPLAYER_ROLLS_CODEC = Registry.register(BuiltInRegistries.LOOT_NUMBER_PROVIDER_TYPE, TwilightForestMod.prefix("multiplayer_rolls"), MultiplayerBasedNumberProvider.CODEC);
-	public static final MapCodec<LootingEnchantNumberProvider> LOOTING_ROLLS_CODEC = Registry.register(BuiltInRegistries.LOOT_NUMBER_PROVIDER_TYPE, TwilightForestMod.prefix("looting_rolls"), LootingEnchantNumberProvider.CODEC);
+	public static final MapCodec<MultiplayerBasedNumberProvider> MULTIPLAYER_ROLLS_CODEC = Registry.register(BuiltInRegistries.CONTEXT_INT_PROVIDER_TYPE, TwilightForestMod.prefix("multiplayer_rolls"), MultiplayerBasedNumberProvider.CODEC);
+	public static final MapCodec<LootingEnchantNumberProvider> LOOTING_ROLLS_CODEC = Registry.register(BuiltInRegistries.CONTEXT_INT_PROVIDER_TYPE, TwilightForestMod.prefix("looting_rolls"), LootingEnchantNumberProvider.CODEC);
 
 	public static void init() {
 		// Static initializer triggers all registrations

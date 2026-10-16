@@ -3,8 +3,14 @@ package twilightforest.world.components.chunkgenerators;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 
 // Negative radius values cause a bowling-up shaped zero-threshold over this DensityFunction's field, making it useful for the hollow hill's floor alongside as its regular mound shape
 public record TanhHillFunction(float centerX, float bottomY, float centerZ, float radius, float heightScale, float cosAngleBiasDirection, float sinAngleBiasDirection, boolean isXOriented, boolean isOnRightSide) implements DensityFunction {
@@ -26,15 +32,13 @@ public record TanhHillFunction(float centerX, float bottomY, float centerZ, floa
 	}
 
 	@Override
-	public float compute(FunctionContext context) {
-		float dX = context.blockX() - this.centerX;
-		float dY = context.blockY() - this.bottomY;
-		float dZ = context.blockZ() - this.centerZ;
-		if (isXOriented)  // Make mounds more parallel to the trunk axis in shape
-			dZ *= PERPENDICULAR_BIAS;
-		else
-			dX *= PERPENDICULAR_BIAS;
-		return (float) compute(dX, dY, dZ);
+	public DensitySampler compileSampler(DensityFunction.CompileContext context) {
+		return new TanhHillFunction.Sampler(this.centerX, this.bottomY, this.centerZ, this.radius, this.heightScale, this.cosAngleBiasDirection, this.sinAngleBiasDirection, this.isXOriented, this.isOnRightSide);
+	}
+
+	@Override
+	public DensityFunction rewriteChildren(DfRewriteRule rule) {
+		return this;
 	}
 
 	public double compute(float dX, float dY, float dZ) {
@@ -78,12 +82,12 @@ public record TanhHillFunction(float centerX, float bottomY, float centerZ, floa
 	}
 
 	@Override
-	public net.minecraft.util.Interval range() {
-		return net.minecraft.util.Interval.of(-1.0f, 1.0f);
+	public Interval range() {
+		return Interval.of(-1.0f, 1.0f);
 	}
 
 	@Override
-	public com.mojang.serialization.MapCodec<? extends DensityFunction> codec() {
+	public MapCodec<? extends DensityFunction> codec() {
 		return CODEC;
 	}
 
@@ -92,15 +96,63 @@ public record TanhHillFunction(float centerX, float bottomY, float centerZ, floa
 		return DensityFunction.ALL_AXES;
 	}
 
-	@Override
-	public void fillArray(float[] ds, DensityFunction.ContextProvider contextProvider) {
-		for (int i = 0; i < ds.length; i++) {
-			ds[i] = this.compute(contextProvider.forIndex(i));
-		}
-	}
+	public record Sampler(float centerX, float bottomY, float centerZ, float radius, float heightScale, float cosAngleBiasDirection, float sinAngleBiasDirection, boolean isXOriented, boolean isOnRightSide) implements DensitySampler {
+		@Override
+		public float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
+			float dX = blockX - this.centerX;
+			float dY = blockY - this.bottomY;
+			float dZ = blockZ - this.centerZ;
+			if (this.isXOriented)  // Make mounds more parallel to the trunk axis in shape
+				dZ *= PERPENDICULAR_BIAS;
+			else
+				dX *= PERPENDICULAR_BIAS;
 
-	@Override
-	public DensityFunction mapChildren(DensityFunction.Visitor visitor) {
-		return this;
+			return (float) this.compute(dX, dY, dZ);
+		}
+
+		@Override
+		public void sampleVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume) {
+			DensitySampler.sampleVolumeNaive(context, outputBuffer, volume, this);
+		}
+
+		public double compute(float dX, float dY, float dZ) {
+			if (dY > 10 || dY < -10)
+				return -1;
+			float perpendicularDist = this.isXOriented ? dZ : dX;
+			if (!this.isOnRightSide)
+				perpendicularDist = -perpendicularDist;
+			if (perpendicularDist < 0)
+				return -1;
+
+			double distSquared = dX * dX + dZ * dZ;
+			if (distSquared > 9 * this.radius * this.radius)
+				return -1;
+			double dist = Math.sqrt(distSquared);
+			// phi = atan2(dZ, dX); atan2 is expensive, don't use it.
+			double cosPhi = dX / dist;
+			double sinPhi = dZ / dist;
+			double cos2Phi = cosPhi * cosPhi - sinPhi * sinPhi;
+			double sin2Phi = 2 * cosPhi * sinPhi;
+			dist /= (1 + (sin2Phi * this.cosAngleBiasDirection - cos2Phi * this.sinAngleBiasDirection) / 3);  // = (1 + Math.sin(phi * 2 - angleBiasDirection) / 3)
+			double height = this.getHeight(dist);
+			if (this.heightScale * (height + 1) > dY)
+				return 1;
+			return -1;
+		}
+
+		private double getHeight(double dist) {
+			double distOverR = dist / this.radius;
+			double tanhExp = Math.exp(4 - 4 * distOverR);
+			double height = ((tanhExp - 1) / (tanhExp + 1));
+
+			double beardArg = -dist * this.radius * 0.01f;
+			if (beardArg < -10) {
+				height -= dist;
+			} else {
+				height -= dist * (1 - Math.exp(beardArg));
+			}
+
+			return height;
+		}
 	}
 }

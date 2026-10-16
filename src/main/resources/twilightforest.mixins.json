@@ -29,7 +29,6 @@
 		"MobMixin",
 		"MushroomBlockMixin",
 		"NaturalSpawnerMixin",
-		"NoiseBasedChunkGeneratorMixin",
 		"PhantomSpawnerMixin",
 		"PlayerAdvancementsMixin",
 		"PlayerMixin",

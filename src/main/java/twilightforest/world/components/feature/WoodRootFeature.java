@@ -20,8 +20,8 @@ import twilightforest.world.registration.TreeDecorators;
 public class WoodRootFeature implements Feature {
 
 	public static final MapCodec<WoodRootFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-		BlockStateProvider.CODEC.fieldOf("root_block").forGetter(f -> f.blockRoot),
-		BlockStateProvider.CODEC.fieldOf("root_ore").forGetter(f -> f.oreRoot)
+		BlockStateProvider.DIRECT_CODEC.fieldOf("root_block").forGetter(f -> f.blockRoot),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("root_ore").forGetter(f -> f.oreRoot)
 	).apply(instance, WoodRootFeature::new));
 
 	private final BlockStateProvider blockRoot;
@@ -33,7 +33,7 @@ public class WoodRootFeature implements Feature {
 	}
 
 	public WoodRootFeature() {
-		this(TreeDecorators.ROOT_BLEND_PROVIDER, BlockStateProvider.simple(TFBlocks.LIVEROOT_BLOCK));
+		this(TreeDecorators.ROOT_BLEND_PROVIDER, BlockStateProvider.of(TFBlocks.LIVEROOT_BLOCK));
 	}
 
 	@Override

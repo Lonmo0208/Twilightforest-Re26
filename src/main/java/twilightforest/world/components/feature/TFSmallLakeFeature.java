@@ -22,9 +22,9 @@ public class TFSmallLakeFeature implements Feature {
 	private static final BlockState AIR = Blocks.CAVE_AIR.defaultBlockState();
 
 	public static final MapCodec<TFSmallLakeFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-		BlockStateProvider.CODEC.fieldOf("fluid").forGetter(f -> f.fluid),
-		BlockStateProvider.CODEC.optionalFieldOf("barrier").forGetter(f -> Optional.ofNullable(f.barrier)),
-		BlockStateProvider.CODEC.optionalFieldOf("ice").forGetter(f -> Optional.ofNullable(f.ice))
+		BlockStateProvider.DIRECT_CODEC.fieldOf("fluid").forGetter(f -> f.fluid),
+		BlockStateProvider.DIRECT_CODEC.optionalFieldOf("barrier").forGetter(f -> Optional.ofNullable(f.barrier)),
+		BlockStateProvider.DIRECT_CODEC.optionalFieldOf("ice").forGetter(f -> Optional.ofNullable(f.ice))
 	).apply(instance, TFSmallLakeFeature::new));
 
 	private final BlockStateProvider fluid;
@@ -43,7 +43,7 @@ public class TFSmallLakeFeature implements Feature {
 	}
 
 	public TFSmallLakeFeature() {
-		this(BlockStateProvider.simple(Blocks.WATER), (BlockStateProvider) null, (BlockStateProvider) null);
+		this(BlockStateProvider.of(Blocks.WATER), (BlockStateProvider) null, (BlockStateProvider) null);
 	}
 
 	@Override

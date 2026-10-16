@@ -1,7 +1,7 @@
 {
     "type":  "minecraft:tree",
     "below_trunk_provider":  {
-                                 "type":  "minecraft:rule_based_state_provider",
+                                 "type":  "minecraft:rule_based",
                                  "rules":  [
                                                {
                                                    "if_true":  {
@@ -12,7 +12,7 @@
                                                                                  }
                                                                },
                                                    "then":  {
-                                                                "type":  "minecraft:simple_state_provider",
+                                                                "type":  "minecraft:simple",
                                                                 "state":  "minecraft:dirt"
                                                             }
                                                }
@@ -24,7 +24,7 @@
                            "additional_random_strands":  1,
                            "base_strand_count":  3,
                            "ground_roots_provider":  {
-                                                         "type":  "minecraft:weighted_state_provider",
+                                                         "type":  "minecraft:weighted",
                                                          "entries":  [
                                                                          {
                                                                              "data":  "twilightforest:root_block",
@@ -52,7 +52,7 @@
                            "radius":  2
                        },
     "foliage_provider":  {
-                             "type":  "minecraft:simple_state_provider",
+                             "type":  "minecraft:simple",
                              "state":  {
                                            "id":  "twilightforest:twilight_oak_leaves"
                                        }
@@ -71,7 +71,7 @@
                          "height_rand_b":  0
                      },
     "trunk_provider":  {
-                           "type":  "minecraft:simple_state_provider",
+                           "type":  "minecraft:simple",
                            "state":  {
                                          "id":  "twilightforest:twilight_oak_log"
                                      }

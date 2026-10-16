@@ -3,6 +3,7 @@ package twilightforest.world.components.feature.trees;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -42,7 +43,7 @@ public abstract class CanopyMushroomFeature implements AbstractHugeMushroomFeatu
 		for (int i = 0; i < height; ++i) {
 			mutableBlockPos.set(pos).move(Direction.UP, i);
 			if (this.isReplaceable(levelAccessor, mutableBlockPos)) {
-				this.setBlock(levelAccessor, mutableBlockPos, this.stemProvider().getState(levelAccessor, random, pos));
+				this.setBlock(levelAccessor, mutableBlockPos, this.stemProvider().value().getState(levelAccessor, random, pos));
 
 				if (bugsLeft > 0 && i > height / 2 && random.nextInt(10) == 9)
 					if (this.addFirefly(levelAccessor, mutableBlockPos, random))
@@ -56,7 +57,7 @@ public abstract class CanopyMushroomFeature implements AbstractHugeMushroomFeatu
 		int numBranches = this.getBranches(random);
 		float offset = random.nextFloat();
 		for (int b = 0; b < numBranches; b++) {
-			bugsLeft = this.buildABranch(levelAccessor, pos, height - 6 + b, this.getLength(random), 0.3 * b + offset, random, this.stemProvider(), bugsLeft);
+			bugsLeft = this.buildABranch(levelAccessor, pos, height - 6 + b, this.getLength(random), 0.3 * b + offset, random, this.stemProvider().value(), bugsLeft);
 		}
 	}
 
@@ -141,7 +142,7 @@ public abstract class CanopyMushroomFeature implements AbstractHugeMushroomFeatu
 				if (!FeatureLogic.isCornerInSquare(x, z, foliageRadius)) {
 					mutableBlockPos.setWithOffset(pos, x, height, z);
 					if (this.isReplaceable(levelAccessor, mutableBlockPos)) {
-						BlockState blockState = this.capProvider().getState(levelAccessor, random, pos);
+						BlockState blockState = this.capProvider().value().getState(levelAccessor, random, pos);
 						blockState = FeatureLogic.getHorizontalMushroomBlockState(blockState, x, z, foliageRadius);
 						this.setBlock(levelAccessor, mutableBlockPos, blockState);
 					}

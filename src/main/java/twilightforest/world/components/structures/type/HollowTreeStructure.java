@@ -47,15 +47,15 @@ public class HollowTreeStructure extends Structure implements DecorationClearanc
 		DecorationConfig.CODEC.fieldOf(DecorationClearance.CODEC_NAME).forGetter(s -> s.decorationConfig),
 		IntProviders.codec(16, 128).fieldOf("height").forGetter(s -> s.height),
 		IntProviders.codec(1, 8).fieldOf("radius").forGetter(s -> s.radius),
-		BlockStateProvider.CODEC.fieldOf("log").forGetter(s -> s.log),
-		BlockStateProvider.CODEC.fieldOf("wood").forGetter(s -> s.wood),
-		BlockStateProvider.CODEC.fieldOf("root").forGetter(s -> s.root),
-		BlockStateProvider.CODEC.fieldOf("leaves").forGetter(s -> s.leaves),
-		BlockStateProvider.CODEC.fieldOf("vine").forGetter(s -> s.vine),
-		BlockStateProvider.CODEC.fieldOf("bug").forGetter(s -> s.bug),
-		BlockStateProvider.CODEC.fieldOf("dungeon_wood").forGetter(s -> s.dungeonWood),
-		BlockStateProvider.CODEC.fieldOf("dungeon_air").forGetter(s -> s.dungeonAir),
-		BlockStateProvider.CODEC.fieldOf("dungeon_loot_block").forGetter(s -> s.dungeonLootBlock),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("log").forGetter(s -> s.log),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("wood").forGetter(s -> s.wood),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("root").forGetter(s -> s.root),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("leaves").forGetter(s -> s.leaves),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("vine").forGetter(s -> s.vine),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("bug").forGetter(s -> s.bug),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("dungeon_wood").forGetter(s -> s.dungeonWood),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("dungeon_air").forGetter(s -> s.dungeonAir),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("dungeon_loot_block").forGetter(s -> s.dungeonLootBlock),
 		ResourceKey.codec(Registries.LOOT_TABLE).fieldOf("dungeon_loot_table").forGetter(s -> s.dungeonLootTable),
 		RegistryFixedCodec.create(Registries.ENTITY_TYPE).fieldOf("dungeon_monster").forGetter(s -> s.dungeonMonster),
 		Codec.BOOL.optionalFieldOf("allow_in_water", false).forGetter(s -> s.allowInWater)
@@ -137,7 +137,7 @@ public class HollowTreeStructure extends Structure implements DecorationClearanc
 
 		if (height < 16 || (!this.allowInWater && seaFloorY < worldY))
 			return Optional.empty();
-		if (!this.biomes().contains(context.chunkGenerator().getBiomeSource().createResolver(context.randomState().sampler()).getNoiseBiome(x >> 2, worldY >> 2, z >> 2)))
+		if (!this.biomes().contains(context.chunkGenerator().getBiomeSource().createUncachedResolver(context.randomState()).getNoiseBiome(x >> 2, worldY >> 2, z >> 2)))
 			return Optional.empty();
 
 		int radius = this.radius.sample(random);

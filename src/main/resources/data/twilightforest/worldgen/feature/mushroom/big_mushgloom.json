@@ -5,14 +5,14 @@
                          "tag":  "twilightforest:huge_mushgloom_placeable"
                      },
     "cap_provider":  {
-                         "type":  "minecraft:simple_state_provider",
+                         "type":  "minecraft:simple",
                          "state":  {
                                        "id":  "twilightforest:huge_mushgloom"
                                    }
                      },
     "foliage_radius":  1,
     "stem_provider":  {
-                          "type":  "minecraft:simple_state_provider",
+                          "type":  "minecraft:simple",
                           "state":  {
                                         "id":  "twilightforest:huge_mushgloom_stem"
                                     }

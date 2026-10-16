@@ -1,6 +1,7 @@
 package twilightforest.world.components.feature.trees;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
@@ -18,13 +19,13 @@ public class BrownCanopyMushroomFeature extends CanopyMushroomFeature {
 	}
 
 	@Override
-	public BlockStateProvider capProvider() {
-		return BlockStateProvider.simple(Blocks.BROWN_MUSHROOM_BLOCK.defaultBlockState());
+	public Holder<BlockStateProvider> capProvider() {
+		return BlockStateProvider.holderOf(Blocks.BROWN_MUSHROOM_BLOCK.defaultBlockState());
 	}
 
 	@Override
-	public BlockStateProvider stemProvider() {
-		return BlockStateProvider.simple(Blocks.MUSHROOM_STEM.defaultBlockState());
+	public Holder<BlockStateProvider> stemProvider() {
+		return BlockStateProvider.holderOf(Blocks.MUSHROOM_STEM.defaultBlockState());
 	}
 
 	@Override

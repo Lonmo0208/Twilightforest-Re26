@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.Music;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.TriState;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.attribute.*;
@@ -83,10 +84,10 @@ public class TFDimensionData {
 				.set(EnvironmentAttributes.STAR_BRIGHTNESS, 1.0F)
 				.set(EnvironmentAttributes.SKY_LIGHT_LEVEL, 0.62F)
 				.set(EnvironmentAttributes.SKY_LIGHT_FACTOR, 0.38F)
-				.set(EnvironmentAttributes.SKY_LIGHT_COLOR, 0x9292FF)
-				.set(EnvironmentAttributes.SKY_COLOR, 0x7B7B7B)
-				.set(EnvironmentAttributes.FOG_COLOR, 0x838387)
-				.set(EnvironmentAttributes.CLOUD_COLOR, 0xFFDBE4EC)
+				.set(EnvironmentAttributes.SKY_LIGHT_COLOR, ARGB.vector3fFromRGB24(0x9292FF))
+				.set(EnvironmentAttributes.SKY_COLOR, ARGB.vector3fFromRGB24(0x7B7B7B))
+				.set(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(0x838387))
+				.set(EnvironmentAttributes.CLOUD_COLOR, ARGB.vector4fFromARGB32(0xFFDBE4EC))
 				.set(EnvironmentAttributes.CLOUD_HEIGHT, 128.0F)
 				.build(),
 			timelines.getOrThrow(TWILIGHT_TIMELINES), //timelines
@@ -96,13 +97,14 @@ public class TFDimensionData {
 
 	public static NoiseGeneratorSettings makeNoiseSettings(BootstrapContext<NoiseGeneratorSettings> context, boolean skylight) {
 		HolderGetter<DensityFunction> densityFunctions = context.lookup(Registries.DENSITY_FUNCTION);
-		DensityFunction finalDensity = densityFunctions.getOrThrow(skylight ? TFDensityFunctions.SKYLIGHT_TERRAIN : TFDensityFunctions.FORESTED_TERRAIN).value();
+		// Reference the registered terrain function rather than unwrapping it: datagen builds the bootstrapping
+		// registries in an arbitrary order (Fabric merges every mod's builder through a HashMap), so the holder's
+		// value may not be bound yet while noise settings are being built.
+		DensityFunction finalDensity = NoiseRouterData.getFunction(densityFunctions, skylight ? TFDensityFunctions.SKYLIGHT_TERRAIN : TFDensityFunctions.FORESTED_TERRAIN);
 
 		NoiseSettings tfNoise = NoiseSettings.create(
 			-32, //TODO Deliberate over this. For now it'll be -32
-			256,
-			2,
-			2
+			256
 		);
 
 		return new NoiseGeneratorSettings(
@@ -124,8 +126,8 @@ public class TFDimensionData {
 			TFDimensionData.SEALEVEL,
 			false,
 			Optional.empty(),
-			List.of(),
-			false
+			false,
+			NoiseGeneratorSettings.DebugFunctions.EMPTY
 		);
 	}
 

@@ -22,9 +22,13 @@ import com.mojang.blaze3d.vertex.*;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.DynamicGpuDataStorage;
+import net.minecraft.client.renderer.DynamicGpuDataStorageNonMapped;
+import net.minecraft.client.renderer.ShaderManager;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceProvider;
+import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +37,11 @@ import twilightforest.TwilightForestMod;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
+import java.util.concurrent.CompletableFuture;
 
 public class TFShaders {
 
@@ -109,6 +115,8 @@ public class TFShaders {
 		private int indexCount;
 		private boolean initialized;
 		private CompiledRenderPipeline compiledPipeline;
+		private CompletableFuture<CompiledRenderPipeline.Pending> pendingCompile;
+		private ModShaderSource shaderSource;
 
 		public AuroraShaderInstance(RenderPipeline pipeline) {
 			this.pipeline = pipeline;
@@ -138,12 +146,59 @@ public class TFShaders {
 			ResourceProvider resources = mc.getResourceManager();
 			if (resources == null || RenderSystem.tryGetDevice() == null) return;
 
-			ShaderSource shaderSource = (id, type) -> readShader(resources, id, type);
+			// 26.3 compiles pipelines asynchronously against a ShaderSource, so the first frame(s) after requesting
+			// compilation simply skip the aurora until the pending result is ready.
+			if (this.pendingCompile == null) {
+				try {
+					this.shaderSource = new ModShaderSource(resources);
+					this.pendingCompile = RenderSystem.getDevice().compilePipeline(this.pipeline, this.shaderSource, Util.backgroundExecutor());
+				} catch (RuntimeException e) {
+					LOGGER.error("Failed to compile aurora render pipeline {}", pipeline.getLocation(), e);
+					this.pendingCompile = null;
+				}
+				return;
+			}
+
+			if (!this.pendingCompile.isDone()) return;
+
 			try {
-				this.compiledPipeline = RenderSystem.getDevice().compilePipeline(pipeline, shaderSource);
+				CompiledRenderPipeline.Pending pending = this.pendingCompile.join();
+				this.compiledPipeline = pending != null ? pending.finishCompile() : null;
 			} catch (RuntimeException e) {
 				LOGGER.error("Failed to compile aurora render pipeline {}", pipeline.getLocation(), e);
 				this.compiledPipeline = null;
+			} finally {
+				this.pendingCompile = null;
+			}
+		}
+
+		/**
+		 * ShaderSource that serves the mod's own GLSL from the resource manager. Includes are pulled from the
+		 * vanilla include table (ShaderManager.listAllIncludes) because our shaders only #include vanilla files.
+		 */
+		private static final class ModShaderSource implements ShaderSource {
+			private final ResourceProvider resources;
+			private final Map<Identifier, ShaderSource.CachedIncludeSource> includes;
+
+			private ModShaderSource(ResourceProvider resources) {
+				this.resources = resources;
+				this.includes = resources instanceof ResourceManager resourceManager ? ShaderManager.listAllIncludes(resourceManager) : Map.of();
+			}
+
+			@Override
+			public String getShader(Identifier id, ShaderType type) {
+				return readShader(this.resources, id, type);
+			}
+
+			@Override
+			public ShaderSource.CachedIncludeSource getInclude(Identifier id) {
+				ShaderSource.CachedIncludeSource include = this.includes.get(id);
+				return include != null ? include : ShaderSource.CachedIncludeSource.createError("Missing include " + id);
+			}
+
+			@Override
+			public void close() {
+				this.includes.values().forEach(ShaderSource.CachedIncludeSource::close);
 			}
 		}
 
@@ -168,7 +223,7 @@ public class TFShaders {
 
 		private void ensureInitialized() {
 			if (!initialized && RenderSystem.tryGetDevice() != null) {
-				this.auroraUniforms = new DynamicGpuDataStorage<>("TF Aurora UBO", AuroraSettings.SIZE, GpuBuffer.USAGE_UNIFORM, 2);
+				this.auroraUniforms = new DynamicGpuDataStorageNonMapped<>("TF Aurora UBO", AuroraSettings.SIZE, GpuBuffer.USAGE_UNIFORM, 2);
 				buildQuadBuffer();
 				initialized = true;
 			}
@@ -274,6 +329,10 @@ public class TFShaders {
 			if (compiledPipeline != null) {
 				compiledPipeline.close();
 				compiledPipeline = null;
+			}
+			if (shaderSource != null) {
+				shaderSource.close();
+				shaderSource = null;
 			}
 			if (vertexBuffer != null) {
 				vertexBuffer.close();

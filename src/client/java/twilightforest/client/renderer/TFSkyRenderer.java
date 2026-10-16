@@ -45,34 +45,20 @@ public class TFSkyRenderer implements AutoCloseable {
 	}
 
 	// [VanillaCopy] LevelRenderer.addSkyPass's overworld branch, with sun/moon/sunrise-sunset using environment attribute angles, our own stars at full brightness, and lowering void horizon threshold height from getHorizonHeight (63) to 0
+	//
+	// 26.3 note: SkyRenderer's individual pieces (sky disc, sunrise/sunset, sun-moon-stars, dark disc) are private now
+	// and take the RenderPass that LevelRenderer.addSkyPass owns, so this pass can no longer re-use them. TODO-263:
+	// hook this into the sky pass again (or re-implement the disc/sun/moon draws against RenderPipelines directly).
 	public boolean renderSky(LevelRenderState level, SkyRenderState sky, Matrix4fc modelmatrix, Runnable setupFog) {
-		LevelRenderer levelRenderer = Minecraft.getInstance().levelRenderer;
-
 		setupFog.run();
 
 		PoseStack posestack = new PoseStack();
-		levelRenderer.skyRenderer.renderSkyDisc(sky.skyColor);
-
-		//TF: render sunrise/sunset color band (dusk glow on horizon)
-		if (sky.sunriseAndSunsetColor != 0) {
-			levelRenderer.skyRenderer.renderSunriseAndSunset(posestack, sky.sunAngle, sky.sunriseAndSunsetColor);
-		}
-
-		//TF: render sun and moon using environment attribute angles from dimension data
-		posestack.pushPose();
-		levelRenderer.skyRenderer.renderSunMoonAndStars(posestack, sky.sunAngle, sky.moonAngle, sky.starAngle, sky.moonPhase, sky.rainBrightness, 0.0F);
-		posestack.popPose();
 
 		//TF: replace star rendering with our own double-star renderer
 		posestack.pushPose();
-		posestack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+		posestack.rotateDegrees(Axis.YP, -90.0F);
 		renderStars(posestack);
 		posestack.popPose();
-
-		//TF: use custom height checks for the void sky as vanilla hardcodes to 63
-		if (renderDarkDisc) {
-			levelRenderer.skyRenderer.renderDarkDisc();
-		}
 
 		return true;
 	}

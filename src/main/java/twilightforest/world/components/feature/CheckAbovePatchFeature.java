@@ -19,7 +19,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 public class CheckAbovePatchFeature implements Feature {
 
 	public static final MapCodec<CheckAbovePatchFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-		BlockStateProvider.CODEC.fieldOf("state_provider").forGetter(f -> f.stateProvider),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("state_provider").forGetter(f -> f.stateProvider),
 		BlockPredicate.CODEC.fieldOf("target").forGetter(f -> f.target),
 		IntProviders.codec(0, 8).fieldOf("radius").forGetter(f -> f.radius),
 		com.mojang.serialization.Codec.intRange(0, 4).fieldOf("half_height").forGetter(f -> f.halfHeight)
@@ -38,7 +38,7 @@ public class CheckAbovePatchFeature implements Feature {
 	}
 
 	public CheckAbovePatchFeature() {
-		this(BlockStateProvider.simple(Blocks.MYCELIUM), BlockPredicate.matchesBlocks(Blocks.GRASS_BLOCK), UniformInt.of(4, 6), 3);
+		this(BlockStateProvider.of(Blocks.MYCELIUM), BlockPredicate.matchesBlocks(Blocks.GRASS_BLOCK), UniformInt.of(4, 6), 3);
 	}
 
 	@Override

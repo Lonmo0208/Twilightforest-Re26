@@ -1,6 +1,7 @@
 package twilightforest.world.components.feature.trees;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -26,13 +27,13 @@ public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 	}
 
 	@Override
-	public BlockStateProvider capProvider() {
-		return BlockStateProvider.simple(Blocks.RED_MUSHROOM_BLOCK.defaultBlockState());
+	public Holder<BlockStateProvider> capProvider() {
+		return BlockStateProvider.holderOf(Blocks.RED_MUSHROOM_BLOCK.defaultBlockState());
 	}
 
 	@Override
-	public BlockStateProvider stemProvider() {
-		return BlockStateProvider.simple(Blocks.MUSHROOM_STEM.defaultBlockState());
+	public Holder<BlockStateProvider> stemProvider() {
+		return BlockStateProvider.holderOf(Blocks.MUSHROOM_STEM.defaultBlockState());
 	}
 
 	@Override
@@ -88,7 +89,7 @@ public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 					if (y >= height || xMinMax != zMinMax) {
 						mutableBlockPos.setWithOffset(pos, x, y, z);
 						if (this.isReplaceable(levelAccessor, mutableBlockPos)) {
-							BlockState blockstate = this.capProvider().getState(levelAccessor, random, pos);
+							BlockState blockstate = this.capProvider().value().getState(levelAccessor, random, pos);
 
 							if (blockstate.hasProperty(HugeMushroomBlock.WEST) && blockstate.hasProperty(HugeMushroomBlock.EAST) && blockstate.hasProperty(HugeMushroomBlock.NORTH) && blockstate.hasProperty(HugeMushroomBlock.SOUTH) && blockstate.hasProperty(HugeMushroomBlock.UP)) {
 								blockstate = blockstate
@@ -116,7 +117,7 @@ public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 					if (isInsideSmoothShape(height, j, x, y, z)) {
 						mutableBlockPos.setWithOffset(pos, x, y, z);
 						if (this.isReplaceable(levelAccessor, mutableBlockPos)) {
-							BlockState blockstate = this.capProvider().getState(levelAccessor, random, pos);
+							BlockState blockstate = this.capProvider().value().getState(levelAccessor, random, pos);
 
 							if (blockstate.hasProperty(HugeMushroomBlock.WEST) && blockstate.hasProperty(HugeMushroomBlock.EAST) && blockstate.hasProperty(HugeMushroomBlock.NORTH) && blockstate.hasProperty(HugeMushroomBlock.SOUTH) && blockstate.hasProperty(HugeMushroomBlock.UP)) {
 								blockstate = blockstate
@@ -167,7 +168,7 @@ public class RedCanopyMushroomFeature extends CanopyMushroomFeature {
 					if (distance <= maxDistance) {
 						mutableBlockPos.setWithOffset(pos, x, y, z);
 						if (this.isReplaceable(levelAccessor, mutableBlockPos)) {
-							BlockState blockstate = this.capProvider().getState(levelAccessor, random, pos);
+							BlockState blockstate = this.capProvider().value().getState(levelAccessor, random, pos);
 
 							if (blockstate.hasProperty(HugeMushroomBlock.WEST) && blockstate.hasProperty(HugeMushroomBlock.EAST) && blockstate.hasProperty(HugeMushroomBlock.NORTH) && blockstate.hasProperty(HugeMushroomBlock.SOUTH) && blockstate.hasProperty(HugeMushroomBlock.UP)) {
 								blockstate = blockstate

@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class TFTreeFeatureConfig  {
 	public static final Codec<TFTreeFeatureConfig> codecTFTreeConfig = RecordCodecBuilder.create(instance -> instance.group(
-		BlockStateProvider.CODEC.fieldOf("trunk_provider").forGetter(obj -> obj.trunkProvider),
-		BlockStateProvider.CODEC.fieldOf("leaves_provider").forGetter(obj -> obj.leavesProvider),
-		BlockStateProvider.CODEC.fieldOf("branch_provider").forGetter(obj -> obj.branchProvider),
-		BlockStateProvider.CODEC.fieldOf("roots_provider").forGetter(obj -> obj.rootsProvider),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("trunk_provider").forGetter(obj -> obj.trunkProvider),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("leaves_provider").forGetter(obj -> obj.leavesProvider),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("branch_provider").forGetter(obj -> obj.branchProvider),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("roots_provider").forGetter(obj -> obj.rootsProvider),
 		Codec.INT.fieldOf("minimum_size").orElse(20).forGetter(obj -> obj.minHeight),
 		Codec.INT.fieldOf("add_first_five_chance").orElse(1).forGetter(obj -> obj.chanceAddFiveFirst),
 		Codec.INT.fieldOf("add_second_five_chance").orElse(1).forGetter(obj -> obj.chanceAddFiveSecond),
@@ -29,10 +29,10 @@ public class TFTreeFeatureConfig  {
 
 	// 26.3: map codec form, used by feature codecs to deserialize the flat JSON fields directly
 	public static final MapCodec<TFTreeFeatureConfig> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-		BlockStateProvider.CODEC.fieldOf("trunk_provider").forGetter(obj -> obj.trunkProvider),
-		BlockStateProvider.CODEC.fieldOf("leaves_provider").forGetter(obj -> obj.leavesProvider),
-		BlockStateProvider.CODEC.fieldOf("branch_provider").forGetter(obj -> obj.branchProvider),
-		BlockStateProvider.CODEC.fieldOf("roots_provider").forGetter(obj -> obj.rootsProvider),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("trunk_provider").forGetter(obj -> obj.trunkProvider),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("leaves_provider").forGetter(obj -> obj.leavesProvider),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("branch_provider").forGetter(obj -> obj.branchProvider),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("roots_provider").forGetter(obj -> obj.rootsProvider),
 		Codec.INT.fieldOf("minimum_size").orElse(20).forGetter(obj -> obj.minHeight),
 		Codec.INT.fieldOf("add_first_five_chance").orElse(1).forGetter(obj -> obj.chanceAddFiveFirst),
 		Codec.INT.fieldOf("add_second_five_chance").orElse(1).forGetter(obj -> obj.chanceAddFiveSecond),

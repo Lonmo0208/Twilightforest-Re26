@@ -2,6 +2,7 @@ package twilightforest.world.components.feature;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,13 +24,13 @@ public class BigMushgloomFeature implements AbstractHugeMushroomFeature {
 	}
 
 	@Override
-	public BlockStateProvider capProvider() {
-		return BlockStateProvider.simple(TFBlocks.HUGE_MUSHGLOOM.defaultBlockState());
+	public Holder<BlockStateProvider> capProvider() {
+		return BlockStateProvider.holderOf(TFBlocks.HUGE_MUSHGLOOM.defaultBlockState());
 	}
 
 	@Override
-	public BlockStateProvider stemProvider() {
-		return BlockStateProvider.simple(TFBlocks.HUGE_MUSHGLOOM_STEM.defaultBlockState());
+	public Holder<BlockStateProvider> stemProvider() {
+		return BlockStateProvider.holderOf(TFBlocks.HUGE_MUSHGLOOM_STEM.defaultBlockState());
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class BigMushgloomFeature implements AbstractHugeMushroomFeature {
 				for (int z = -foliageRadius; z <= foliageRadius; ++z) {
 					mutableBlockPos.setWithOffset(pos, x, height + y, z);
 					if (!levelAccessor.getBlockState(mutableBlockPos).isSolidRender()) {
-						BlockState blockstate = this.capProvider().getState(levelAccessor, random, pos);
+						BlockState blockstate = this.capProvider().value().getState(levelAccessor, random, pos);
 						blockstate = FeatureLogic.getSphericalMushroomBlockState(blockstate, x, y, z, foliageRadius, capHeight);
 						this.setBlock(levelAccessor, mutableBlockPos, blockstate);
 					}

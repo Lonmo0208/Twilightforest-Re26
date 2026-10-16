@@ -18,8 +18,8 @@ import twilightforest.init.custom.ChunkBlanketProcessors;
 public record GlacierBlanketProcessor(HolderSet<Biome> biomesForApplication, BlockStateProvider glacierBody, BlockStateProvider glacierTop, int height) implements ChunkBlanketProcessor.SimpleProcessor {
 	public static final MapCodec<GlacierBlanketProcessor> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 		RegistryCodecs.holderSet(Registries.BIOME, true).fieldOf("biome_mask").forGetter(GlacierBlanketProcessor::biomesForApplication),
-		BlockStateProvider.CODEC.fieldOf("body_block").forGetter(GlacierBlanketProcessor::glacierBody),
-		BlockStateProvider.CODEC.fieldOf("top_block").forGetter(GlacierBlanketProcessor::glacierTop),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("body_block").forGetter(GlacierBlanketProcessor::glacierBody),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("top_block").forGetter(GlacierBlanketProcessor::glacierTop),
 		Codec.INT.fieldOf("height").forGetter(GlacierBlanketProcessor::height)
 	).apply(inst, GlacierBlanketProcessor::new));
 

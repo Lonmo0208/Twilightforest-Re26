@@ -251,11 +251,11 @@ public final class TFConfiguredFeatures {
 		registerTemplateFeatures(context);
 
 		context.register(BIG_MUSHGLOOM,  new NoOpFeature() /* TODO-263: Feature fallback */);
-		context.register(DENSE_FERNS, new SimpleBlockFeature(BlockStateProvider.simple(Blocks.FERN)));
-		context.register(DENSE_LARGE_FERNS, new SimpleBlockFeature(BlockStateProvider.simple(Blocks.LARGE_FERN)));
+		context.register(DENSE_FERNS, new SimpleBlockFeature(BlockStateProvider.of(Blocks.FERN)));
+		context.register(DENSE_LARGE_FERNS, new SimpleBlockFeature(BlockStateProvider.of(Blocks.LARGE_FERN)));
 		context.register(FALLEN_LEAVES,  new NoOpFeature() /* TODO-263: Feature fallback */);
-		context.register(MAYAPPLE, new SimpleBlockFeature(BlockStateProvider.simple(TFBlocks.MAYAPPLE)));
-		context.register(FIDDLEHEAD, new SimpleBlockFeature(BlockStateProvider.simple(TFBlocks.FIDDLEHEAD)));
+		context.register(MAYAPPLE, new SimpleBlockFeature(BlockStateProvider.of(TFBlocks.MAYAPPLE)));
+		context.register(FIDDLEHEAD, new SimpleBlockFeature(BlockStateProvider.of(TFBlocks.FIDDLEHEAD)));
 		context.register(FIRE_JET,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(FOUNDATION,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(GROVE_RUINS, new NoOpFeature() /* TFFeatures.GROVE_RUINS */);
@@ -266,7 +266,7 @@ public final class TFConfiguredFeatures {
 		context.register(CICADA_LAMPPOST,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(FIREFLY_LAMPPOST,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(MONOLITH, new NoOpFeature() /* TFFeatures.MONOLITH */);
-		context.register(MUSHGLOOM_CLUSTER, new SimpleBlockFeature(BlockStateProvider.simple(TFBlocks.MUSHGLOOM)));
+		context.register(MUSHGLOOM_CLUSTER, new SimpleBlockFeature(BlockStateProvider.of(TFBlocks.MUSHGLOOM)));
 		context.register(MYCELIUM_BLOB,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(OUTSIDE_STALAGMITE,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(PLANT_ROOTS,  new NoOpFeature() /* TODO-263: Feature fallback */);
@@ -314,13 +314,13 @@ public final class TFConfiguredFeatures {
 		context.register(LEGACY_LAPIS_ORE,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(LEGACY_COPPER_ORE,  new NoOpFeature() /* TODO-263: Feature fallback */);
 
-		context.register(DARK_PUMPKINS, new SimpleBlockFeature(BlockStateProvider.simple(Blocks.PUMPKIN)));
-		context.register(DARK_GRASS, new SimpleBlockFeature(BlockStateProvider.simple(Blocks.SHORT_GRASS))); // [VanillaCopy] Registration of PATCH_GRASS_JUNGLE in VegetationFeatures
-		context.register(DARK_FERNS, new SimpleBlockFeature(BlockStateProvider.simple(Blocks.FERN)));
-		context.register(DARK_MUSHGLOOMS, new SimpleBlockFeature(BlockStateProvider.simple(TFBlocks.MUSHGLOOM)));
-		context.register(DARK_BROWN_MUSHROOMS, new SimpleBlockFeature(BlockStateProvider.simple(Blocks.BROWN_MUSHROOM)));
-		context.register(DARK_RED_MUSHROOMS, new SimpleBlockFeature(BlockStateProvider.simple(Blocks.RED_MUSHROOM)));
-		context.register(DARK_DEAD_BUSHES, new SimpleBlockFeature(BlockStateProvider.simple(Blocks.DEAD_BUSH)));
+		context.register(DARK_PUMPKINS, new SimpleBlockFeature(BlockStateProvider.of(Blocks.PUMPKIN)));
+		context.register(DARK_GRASS, new SimpleBlockFeature(BlockStateProvider.of(Blocks.SHORT_GRASS))); // [VanillaCopy] Registration of PATCH_GRASS_JUNGLE in VegetationFeatures
+		context.register(DARK_FERNS, new SimpleBlockFeature(BlockStateProvider.of(Blocks.FERN)));
+		context.register(DARK_MUSHGLOOMS, new SimpleBlockFeature(BlockStateProvider.of(TFBlocks.MUSHGLOOM)));
+		context.register(DARK_BROWN_MUSHROOMS, new SimpleBlockFeature(BlockStateProvider.of(Blocks.BROWN_MUSHROOM)));
+		context.register(DARK_RED_MUSHROOMS, new SimpleBlockFeature(BlockStateProvider.of(Blocks.RED_MUSHROOM)));
+		context.register(DARK_DEAD_BUSHES, new SimpleBlockFeature(BlockStateProvider.of(Blocks.DEAD_BUSH)));
 
 		context.register(UBEROUS_SOIL_PATCH_BIG,  new NoOpFeature() /* TODO-263: Feature fallback */);
 		context.register(UBEROUS_SOIL_PATCH_SMALL,  new NoOpFeature() /* TODO-263: Feature fallback */);

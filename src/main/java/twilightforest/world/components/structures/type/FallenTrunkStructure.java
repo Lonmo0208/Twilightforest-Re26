@@ -38,7 +38,7 @@ public class FallenTrunkStructure extends Structure implements DecorationClearan
 		Structure.settingsCodec(instance),
 		IntProviders.codec(16, 32).fieldOf("length").forGetter(s -> s.length),
 		IntProviders.codec(20, 32).fieldOf("big_trunk_length").forGetter(s -> s.bigTrunkLength),
-		BlockStateProvider.CODEC.fieldOf("log").forGetter(s -> s.log),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("log").forGetter(s -> s.log),
 		ResourceKey.codec(Registries.LOOT_TABLE).fieldOf("chest_loot_table").forGetter(s -> s.chestLootTable)
 	).apply(instance, FallenTrunkStructure::new));
 	public static final List<Integer> radiuses = List.of(1, 2, 4);
@@ -97,7 +97,7 @@ public class FallenTrunkStructure extends Structure implements DecorationClearan
 
 	private boolean isValidNoiseBiome(GenerationContext context, int x, int worldY, int z) {
 		Holder<Biome> noiseBiome = context.chunkGenerator().getBiomeSource()
-			.createResolver(context.randomState().sampler())
+			.createUncachedResolver(context.randomState())
 			.getNoiseBiome(x >> 2, worldY >> 2, z >> 2);
 		return this.biomes().contains(noiseBiome);
 	}
@@ -107,7 +107,7 @@ public class FallenTrunkStructure extends Structure implements DecorationClearan
 			x, worldY, z,
 			this.length.maxInclusive(), 1,
 			biomeHolder -> !context.validBiome().test(biomeHolder),
-			random, false, context.randomState().sampler());
+			random, false, context.randomState());
 		return invalidBiome != null;
 	}
 
@@ -132,7 +132,7 @@ public class FallenTrunkStructure extends Structure implements DecorationClearan
 				GenerationStep.Decoration.SURFACE_STRUCTURES,
 				TerrainAdjustment.NONE
 			),
-			UniformInt.of(17, 24), UniformInt.of(22, 28), BlockStateProvider.simple(TFBlocks.TWILIGHT_OAK_LOG), TFLootTables.FALLEN_TRUNK_LOOT
+			UniformInt.of(17, 24), UniformInt.of(22, 28), BlockStateProvider.of(TFBlocks.TWILIGHT_OAK_LOG), TFLootTables.FALLEN_TRUNK_LOOT
 		);
 	}
 

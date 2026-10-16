@@ -3,11 +3,19 @@ package twilightforest.mixin;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.levelgen.Beardifier;
-//import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DensityVolume;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
+import net.minecraft.world.level.levelgen.densityfunction.ScopedDensityBuffer;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawJunction;
@@ -18,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import twilightforest.TwilightForestMod;
 import twilightforest.asmhooks.WorldgenHooks;
 import twilightforest.world.components.structures.CustomDensitySource;
 
@@ -45,7 +54,7 @@ public class BeardifierMixin {
 	private static final int TF_AIRBORNE_RIGID_THRESHOLD_Y = 100;
 
 	/**
-	 * Stores custom density functions keyed by the specific Beardifier instance used for
+	 * Stores the compiled custom structure terraformers keyed by the specific Beardifier instance used for
 	 * that chunk. Since Beardifier.EMPTY is a JVM-wide singleton shared by all chunks with
 	 * no terrain-adapting structures, we can NEVER use EMPTY itself as the map key or
 	 * multiple concurrent chunks' custom densities will overwrite each other.
@@ -53,11 +62,15 @@ public class BeardifierMixin {
 	 * Instead, when we encounter EMPTY but have custom densities (e.g. Hollow Hill with
 	 * TerrainAdjustment.NONE), we swap EMPTY for a freshly-constructed Beardifier clone
 	 * with null affectedBox and empty rigids. This new instance behaves exactly like EMPTY
-	 * for all vanilla purposes (compute() returns 0 immediately because affectedBox is null
+	 * for all vanilla purposes (sampling returns 0 immediately because affectedBox is null
 	 * and rigids/junctions are empty) but gives us a unique per-chunk key in this map.
+	 * <p>
+	 * 26.3 note: Beardifier is now a DensitySampler rather than a DensityFunction, so the terraformers
+	 * stored here are samplers compiled through the level's RandomState - the sampler-side mixins below
+	 * add their contribution on top of whatever the vanilla beardifier samples.
 	 */
 	@Unique
-	private static final Map<Beardifier, ObjectList<DensityFunction>> TF_CUSTOM_DENSITIES = Collections.synchronizedMap(new WeakHashMap<>());
+	private static final Map<Beardifier, List<DensitySampler>> TF_CUSTOM_DENSITIES = Collections.synchronizedMap(new WeakHashMap<>());
 
 	@Inject(method = "forStructuresInChunk", at = @At("RETURN"), cancellable = true)
 	private static void tf$gatherCustomDensitiesAndStripAirborneRigids(StructureManager structureManager, ChunkPos chunkPos, CallbackInfoReturnable<Beardifier> cir) {
@@ -84,26 +97,52 @@ public class BeardifierMixin {
 			modified = tf$stripAirborneRigids(modified);
 		}
 
-		ObjectList<DensityFunction> customDensities = new ObjectArrayList<>(4);
-		for (StructureStart start : structureManager.startsForStructure(chunkPos, s -> s instanceof CustomDensitySource)) {
+		List<DensityFunction> customDensities = new ArrayList<>(4);
+		for (StructureStart start : structureManager.startsForStructure(chunkPos.x(), chunkPos.z(), s -> s instanceof CustomDensitySource)) {
 			if (start.getStructure() instanceof CustomDensitySource customDensitySource) {
 				customDensities.add(customDensitySource.getStructureTerraformer(chunkPos, start));
 			}
 		}
 
-		if (!customDensities.isEmpty()) {
-			Beardifier key = modified;
-			if (key == Beardifier.EMPTY) {
-				// Swap the shared EMPTY singleton for a unique instance with identical
-				// vanilla behavior (null affectedBox + empty rigids) so each chunk's
-				// custom densities don't overwrite each other via the shared-map key.
-				key = BeardifierAccessor.tf$create(List.of(), List.of(), null);
-			}
-			TF_CUSTOM_DENSITIES.put(key, customDensities);
-			cir.setReturnValue(key);
-		} else {
+		if (customDensities.isEmpty()) {
 			cir.setReturnValue(modified);
+			return;
 		}
+
+		RandomState randomState = tf$findRandomState(structureManager);
+		if (randomState == null) {
+			// Terraformers can only be sampled once compiled, and compiling needs the level's own
+			// RandomState (noise samplers are per-seed). Drop them rather than killing worldgen.
+			TwilightForestMod.LOGGER.debug("TF-BeardifierMixin: no RandomState for chunk ({},{}), skipping {} custom terraformers", chunkPos.x(), chunkPos.z(), customDensities.size());
+			cir.setReturnValue(modified);
+			return;
+		}
+
+		List<DensitySampler> customSamplers = new ObjectArrayList<>(customDensities.size());
+		for (DensityFunction customDensity : customDensities) {
+			customSamplers.add(randomState.getSampler(customDensity));
+		}
+
+		Beardifier key = modified;
+		if (key == Beardifier.EMPTY) {
+			// Swap the shared EMPTY singleton for a unique instance with identical
+			// vanilla behavior (null affectedBox + empty rigids) so each chunk's
+			// custom densities don't overwrite each other via the shared-map key.
+			key = BeardifierAccessor.tf$create(List.of(), List.of(), null);
+		}
+
+		TF_CUSTOM_DENSITIES.put(key, customSamplers);
+		cir.setReturnValue(key);
+	}
+
+	@Unique
+	private static @Nullable RandomState tf$findRandomState(StructureManager structureManager) {
+		LevelAccessor level = ((StructureManagerAccessor) structureManager).tf$getLevel();
+		if (level instanceof WorldGenRegion region) {
+			level = region.getLevel();
+		}
+
+		return level instanceof ServerLevel serverLevel ? serverLevel.getChunkSource().randomState() : null;
 	}
 
 	@Unique
@@ -112,7 +151,6 @@ public class BeardifierMixin {
 
 		List<Beardifier.Rigid> originalPieces = ((BeardifierAccessor) (Object) beardifier).tf$getPieces();
 		List<JigsawJunction> originalJunctions = ((BeardifierAccessor) (Object) beardifier).tf$getJunctions();
-		BoundingBox originalBox = ((BeardifierAccessor) (Object) beardifier).tf$getAffectedBox();
 
 		List<Beardifier.Rigid> filtered = new ArrayList<>(originalPieces.size());
 		int removed = 0;
@@ -154,31 +192,37 @@ public class BeardifierMixin {
 		return outer == null ? inner : BoundingBox.encapsulating(outer, inner);
 	}
 
-	@Inject(method = "compute", at = @At("RETURN"), cancellable = true)
-	private void tf$addCustomDensity(DensityFunction.FunctionContext context, CallbackInfoReturnable<Float> cir) {
-		ObjectList<DensityFunction> densities = TF_CUSTOM_DENSITIES.get(this);
-		if (densities != null && !densities.isEmpty()) {
-			float original = cir.getReturnValue();
-			float added = 0;
-			for (int i = 0; i < densities.size(); i++) {
-				added += densities.get(i).compute(context);
-			}
-			cir.setReturnValue(original + added);
+	@Inject(method = "sampleValue", at = @At("RETURN"), cancellable = true)
+	private void tf$addCustomDensity(SamplerContext context, int blockX, int blockY, int blockZ, CallbackInfoReturnable<Float> cir) {
+		List<DensitySampler> samplers = TF_CUSTOM_DENSITIES.get(this);
+		if (samplers == null || samplers.isEmpty()) return;
+
+		float added = 0;
+		for (int i = 0; i < samplers.size(); i++) {
+			added += samplers.get(i).sampleValue(context, blockX, blockY, blockZ);
 		}
+
+		cir.setReturnValue(cir.getReturnValueF() + added);
 	}
 
 	/**
-	 * Overrides EMPTY.fillArray()'s fast-path that skips compute() entirely by filling
-	 * output with all zeros. When we have custom densities attached to this Beardifier
-	 * instance, we force fillAllDirectly which iterates every cell and calls compute(),
-	 * letting our tf$addCustomDensity mixin above modify every noise cell's value.
+	 * Vanilla Beardifier.sampleVolume() zero-fills and short-circuits whenever the chunk has no affected box.
+	 * Adding the custom terraformers here is what lets structures with TerrainAdjustment.NONE (hollow hills)
+	 * still sculpt terrain, for every cell of the sampled volume rather than only single-point samples.
 	 */
-	@Inject(method = "fillArray", at = @At("HEAD"), cancellable = true)
-	private void tf$fillArrayWithCustomDensities(float[] output, DensityFunction.ContextProvider contextProvider, CallbackInfo ci) {
-		ObjectList<DensityFunction> densities = TF_CUSTOM_DENSITIES.get(this);
-		if (densities != null && !densities.isEmpty()) {
-			contextProvider.fillAllDirectly(output, (DensityFunction) (Object) this);
-			ci.cancel();
+	@Inject(method = "sampleVolume", at = @At("RETURN"))
+	private void tf$addCustomDensitiesToVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume, CallbackInfo ci) {
+		List<DensitySampler> samplers = TF_CUSTOM_DENSITIES.get(this);
+		if (samplers == null || samplers.isEmpty()) return;
+
+		try (ScopedDensityBuffer scratch = context.acquireBuffer(volume)) {
+			for (int i = 0; i < samplers.size(); i++) {
+				samplers.get(i).sampleVolume(context, scratch, volume);
+
+				for (int index = 0; index < outputBuffer.size(); index++) {
+					outputBuffer.addTo(index, scratch.get(index));
+				}
+			}
 		}
 	}
 }

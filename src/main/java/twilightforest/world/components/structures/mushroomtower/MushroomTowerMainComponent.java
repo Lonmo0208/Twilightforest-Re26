@@ -7,7 +7,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFStructurePieceTypes;
@@ -51,7 +51,7 @@ public class MushroomTowerMainComponent extends MushroomTowerWingComponent {
 	}
 
 	@Override
-	public void addChildren(StructurePiece parent, StructurePieceAccessor list, RandomSource rand) {
+	public void addChildren(StructurePiece parent, StructurePiecesBuilder list, RandomSource rand) {
 		if (parent != null && parent instanceof TFStructureComponentOld) {
 			this.deco = ((TFStructureComponentOld) parent).deco;
 		}
@@ -99,7 +99,7 @@ public class MushroomTowerMainComponent extends MushroomTowerWingComponent {
 	/**
 	 * Make a new ascender tower.  Returns direction if successful, null if not.
 	 */
-	private Rotation makeAscenderTower(StructurePieceAccessor list, RandomSource rand) {
+	private Rotation makeAscenderTower(StructurePiecesBuilder list, RandomSource rand) {
 
 		Rotation mainDir = RotationUtil.ROTATIONS[rand.nextInt(4)];
 		int[] dest = getValidOpening(rand, mainDir);
@@ -118,7 +118,7 @@ public class MushroomTowerMainComponent extends MushroomTowerWingComponent {
 	 * Make a mushroom roof!
 	 */
 	@Override
-	public void makeARoof(StructurePiece parent, StructurePieceAccessor list, RandomSource rand) {
+	public void makeARoof(StructurePiece parent, StructurePiecesBuilder list, RandomSource rand) {
 		TowerRoofComponent roof = new TowerRoofMushroomComponent(this.getGenDepth() + 1, this, 1.6F, getLocatorPosition().getX(), getLocatorPosition().getY(), getLocatorPosition().getZ());
 		list.addPiece(roof);
 		roof.addChildren(this, list, rand);

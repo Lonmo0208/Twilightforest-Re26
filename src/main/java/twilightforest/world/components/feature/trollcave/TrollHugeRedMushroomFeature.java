@@ -2,6 +2,7 @@ package twilightforest.world.components.feature.trollcave;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -25,13 +26,13 @@ public class TrollHugeRedMushroomFeature implements AbstractHugeMushroomFeature 
 	}
 
 	@Override
-	public BlockStateProvider capProvider() {
-		return BlockStateProvider.simple(Blocks.RED_MUSHROOM_BLOCK.defaultBlockState());
+	public Holder<BlockStateProvider> capProvider() {
+		return BlockStateProvider.holderOf(Blocks.RED_MUSHROOM_BLOCK.defaultBlockState());
 	}
 
 	@Override
-	public BlockStateProvider stemProvider() {
-		return BlockStateProvider.simple(Blocks.MUSHROOM_STEM.defaultBlockState());
+	public Holder<BlockStateProvider> stemProvider() {
+		return BlockStateProvider.holderOf(Blocks.MUSHROOM_STEM.defaultBlockState());
 	}
 
 	@Override
@@ -66,7 +67,7 @@ public class TrollHugeRedMushroomFeature implements AbstractHugeMushroomFeature 
 					if (y >= height || FeatureLogic.isEdge(x, z, foliageRadius)) {
 						mutableBlockPos.setWithOffset(pos, x, y, z);
 						if (!levelAccessor.getBlockState(mutableBlockPos).is(BlockTags.FEATURES_CANNOT_REPLACE)) {
-							BlockState blockState = this.capProvider().getState(levelAccessor, random, pos);
+							BlockState blockState = this.capProvider().value().getState(levelAccessor, random, pos);
 							if (FeatureLogic.hasAllMushroomsProperties(blockState)) {
 								blockState = blockState.setValue(HugeMushroomBlock.UP, y >= height - 1)
 									.setValue(HugeMushroomBlock.WEST, x < -innerRadius)

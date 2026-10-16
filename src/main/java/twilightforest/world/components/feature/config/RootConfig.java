@@ -6,7 +6,7 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 
 public record RootConfig(BlockStateProvider blockRoot, BlockStateProvider oreRoot)  {
 	public static final Codec<RootConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		BlockStateProvider.CODEC.fieldOf("root_block").forGetter(RootConfig::blockRoot),
-		BlockStateProvider.CODEC.fieldOf("root_ore").forGetter(RootConfig::oreRoot)
+		BlockStateProvider.DIRECT_CODEC.fieldOf("root_block").forGetter(RootConfig::blockRoot),
+		BlockStateProvider.DIRECT_CODEC.fieldOf("root_ore").forGetter(RootConfig::oreRoot)
 	).apply(instance, RootConfig::new));
 }

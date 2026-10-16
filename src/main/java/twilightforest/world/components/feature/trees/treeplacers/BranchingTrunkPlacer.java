@@ -55,7 +55,7 @@ public class BranchingTrunkPlacer extends TrunkPlacer {
 		if (this.preventExposedRoot) {
 			for (Direction direction : Direction.Plane.HORIZONTAL) {
 				if (worldReader.isStateAtPosition(startPos.below().relative(direction), BlockBehaviour.BlockStateBase::canBeReplaced)) {
-					worldPlacer.accept(startPos.below(), treeConfig.trunkProvider().getState(worldReader, random, startPos.below()));
+					worldPlacer.accept(startPos.below(), treeConfig.trunkProvider().value().getState(worldReader, random, startPos.below()));
 					break;
 				}
 			}

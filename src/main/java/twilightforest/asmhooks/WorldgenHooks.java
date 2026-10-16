@@ -31,7 +31,7 @@ public class WorldgenHooks {
 	public static ObjectList<DensityFunction> gatherCustomTerrain(StructureManager structureManager, ChunkPos chunkPos) {
 		ObjectArrayList<DensityFunction> customStructureTerraforms = new ObjectArrayList<>(10);
 
-		for (StructureStart structureStart : structureManager.startsForStructure(chunkPos, s -> s instanceof CustomDensitySource))
+		for (StructureStart structureStart : structureManager.startsForStructure(chunkPos.x(), chunkPos.z(), s -> s instanceof CustomDensitySource))
 			if (structureStart.getStructure() instanceof CustomDensitySource customDensitySource)
 				customStructureTerraforms.add(customDensitySource.getStructureTerraformer(chunkPos, structureStart));
 
@@ -39,18 +39,8 @@ public class WorldgenHooks {
 		return customStructureTerraforms;
 	}
 
-	public static double getCustomDensity(double original, DensityFunction.FunctionContext context, ObjectList<DensityFunction> customDensities) {
-		if (customDensities == null || customDensities.isEmpty())
-			return original;
-
-		double addedDensity = 0;
-
-		for (DensityFunction customDensity : customDensities) {
-			addedDensity += customDensity.compute(context);
-		}
-
-		return original + addedDensity;
-	}
+	// 26.3 note: custom structure terraformers are no longer summed over the raw DensityFunction#compute path -
+	// they are compiled per chunk and added by BeardifierMixin to the Beardifier's DensitySampler output.
 
 	/**
 	 * Rebuilds the Beardifier with piece-specific terrain adjustments for PieceBeardifierModifier pieces.
@@ -65,7 +55,7 @@ public class WorldgenHooks {
 		List<JigsawJunction> junctions = new ArrayList<>(((BeardifierAccessor) (Object) original).tf$getJunctions());
 		boolean changed = false;
 
-		for (StructureStart start : structureManager.startsForStructure(chunkPos, s -> true)) {
+		for (StructureStart start : structureManager.startsForStructure(chunkPos.x(), chunkPos.z(), s -> true)) {
 			TerrainAdjustment structureAdjustment = start.getStructure().terrainAdaptation();
 			for (StructurePiece piece : start.getPieces()) {
 				if (piece instanceof PieceBeardifierModifier modifier && piece.isCloseToChunk(chunkPos, 12)) {

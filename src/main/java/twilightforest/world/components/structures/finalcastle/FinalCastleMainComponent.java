@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import twilightforest.init.TFBlocks;
@@ -44,7 +44,7 @@ public class FinalCastleMainComponent extends TFStructureComponentOld {
 	}
 
 	@Override
-	public void addChildren(StructurePiece parent, StructurePieceAccessor list, RandomSource rand) {
+	public void addChildren(StructurePiece parent, StructurePiecesBuilder list, RandomSource rand) {
 		// add foundation
 		FinalCastleFoundation48Component foundation = new FinalCastleFoundation48Component(4, this, getLocatorPosition().getX(), getLocatorPosition().getY(), getLocatorPosition().getZ());
 		list.addPiece(foundation);
@@ -118,7 +118,7 @@ public class FinalCastleMainComponent extends TFStructureComponentOld {
 	/**
 	 * Build a side tower, then tell it to start building towards the destination
 	 */
-	private void buildTowerMaze(StructurePieceAccessor list, RandomSource rand, int x, int y, int z, int howFar, Direction direction, BlockState type, BlockPos dest) {
+	private void buildTowerMaze(StructurePiecesBuilder list, RandomSource rand, int x, int y, int z, int howFar, Direction direction, BlockState type, BlockPos dest) {
 		if (list instanceof StructurePiecesBuilder start) {
 			boolean complete = false;
 			int iterations = 0;
@@ -156,7 +156,7 @@ public class FinalCastleMainComponent extends TFStructureComponentOld {
 		}
 	}
 
-	private boolean isMazeComplete(StructurePieceAccessor list, BlockState type) {
+	private boolean isMazeComplete(StructurePiecesBuilder list, BlockState type) {
 		if (list instanceof StructurePiecesBuilder start) {
 			if (start.pieces.size() > 60) {
 				//TwilightForestMod.LOGGER.warn("Maze of color {} is getting a bit excessive.", BuiltInRegistries.BLOCK.getKey(type.getBlock()).toString());

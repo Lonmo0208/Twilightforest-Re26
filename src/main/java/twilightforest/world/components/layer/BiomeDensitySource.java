@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import org.jetbrains.annotations.NotNull;
 import twilightforest.init.custom.BiomeLayerStack;
 import twilightforest.world.components.chunkgenerators.TerrainColumn;
@@ -105,7 +106,7 @@ public class BiomeDensitySource {
 	private static final int BLEND_RADIUS_INT = Mth.floor(BLEND_RADIUS + 1.0);
 	private static final int BLOCK_XYZ_OFFSET = QuartPos.SIZE / 2;
 
-	public DensityData sampleTerrain(int blockX, int blockZ, DensityFunction.FunctionContext context) {
+	public DensityData sampleTerrain(int blockX, int blockY, int blockZ, SamplerContext samplerContext, Function<TerrainColumn, TerrainColumn.Compiled> columnCompiler) {
 		double totalMappedDepth = 0.0;
 		double totalContribution = 0.0;
 		double totalScale = 0.0;
@@ -132,13 +133,13 @@ public class BiomeDensitySource {
 				if (distSq < BLEND_RADIUS_SQUARED) {
 					Optional<TerrainColumn> terrainColumn = this.getTerrainColumn(cx + xQuartStart, cz + zQuartStart);
 					if (terrainColumn.isPresent()) {
-						TerrainColumn column = terrainColumn.get();
-						double weight = column.weight(context);
+						TerrainColumn.Compiled column = columnCompiler.apply(terrainColumn.get());
+						double weight = column.sampleWeight(samplerContext, blockX, blockY, blockZ);
 						double falloff = BLEND_RADIUS_SQUARED * weight;
 						double scaleFalloff = falloff;
 
-						double neighborDepth = column.depth(context);
-						double neighborScale = column.scale(context);
+						double neighborDepth = column.sampleDepth(samplerContext, blockX, blockY, blockZ);
+						double neighborScale = column.sampleScale(samplerContext, blockX, blockY, blockZ);
 
 						falloff *= Math.exp((distSq * 2f + neighborDepth) * -0.4f);
 						totalMappedDepth += neighborDepth * falloff;

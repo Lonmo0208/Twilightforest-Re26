@@ -23,15 +23,24 @@ import java.util.concurrent.CompletableFuture;
  * Without this, the canopy/glacier chunk blanket processors (dark forest canopy,
  * glacier packed-ice blanket) never run, so e.g. the Aurora Palace's glacier is
  * missing.
+ * <p>
+ * 26.3 note: the SURFACE chunk step was folded into the terrain step, so the hook now hangs off
+ * {@code buildTerrain}. That step returns a future which may still be completing on the worldgen executor,
+ * so the blanket has to be chained onto it instead of running straight away.
  */
 @Mixin(ChunkStatusTasks.class)
 public class ChunkStatusTasksMixin {
 
-	@Inject(method = "generateSurface", at = @At("RETURN"))
+	@Inject(method = "buildTerrain", at = @At("RETURN"), cancellable = true)
 	private static void tf$chunkBlanketing(WorldGenContext context, ChunkStep step, StaticCache2D<GenerationChunkHolder> chunks, ChunkAccess chunk, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> cir) {
-		// Rebuild the WorldGenRegion exactly as generateSurface does internally
-		// (new WorldGenRegion(context.level(), chunks, step, chunk)).
-		WorldGenRegion region = new WorldGenRegion(context.level(), chunks, step, chunk);
-		ChunkBlanketProcessors.chunkBlanketing(chunk, region);
+		CompletableFuture<ChunkAccess> terrain = cir.getReturnValue();
+
+		cir.setReturnValue(terrain.thenApply(generatedChunk -> {
+			// Rebuild the WorldGenRegion exactly as buildTerrain does internally
+			// (new WorldGenRegion(context.level(), chunks, step, chunk)).
+			WorldGenRegion region = new WorldGenRegion(context.level(), chunks, step, generatedChunk);
+			ChunkBlanketProcessors.chunkBlanketing(generatedChunk, region);
+			return generatedChunk;
+		}));
 	}
 }
