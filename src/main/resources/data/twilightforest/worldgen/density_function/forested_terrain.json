@@ -23,11 +23,13 @@
       "left": "twilightforest:raw_biome_noise",
       "right": {
         "type": "minecraft:interpolated",
+          "cell_size_xz": 4,
+          "cell_size_y": 8,
         "input": {
           "type": "minecraft:max",
           "left": 0.0,
           "right": {
-            "type": "minecraft:flat_cache",
+            "type": "minecraft:cache",
             "input": {
               "type": "minecraft:lerp",
               "alpha": {

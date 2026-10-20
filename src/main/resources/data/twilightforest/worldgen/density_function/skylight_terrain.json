@@ -9,7 +9,9 @@
                                "input":  {
                                              "type":  "minecraft:clamp",
                                              "input":  {
-                                                           "type":  "minecraft:interpolated",
+                                                           "type": "minecraft:interpolated",
+                                                             "cell_size_xz": 4,
+                                                             "cell_size_y": 8,
                                                            "input":  {
                                                                          "type":  "minecraft:add",
                                                                          "left":  -0.5,
@@ -20,7 +22,7 @@
                                                                                                      "type":  "minecraft:add",
                                                                                                      "left":  -0.5,
                                                                                                      "right":  {
-                                                                                                                   "type":  "minecraft:flat_cache",
+                                                                                                                   "type": "minecraft:cache",
                                                                                                                    "input":  {
                                                                                                                                  "type":  "minecraft:add",
                                                                                                                                  "left":  {
@@ -46,7 +48,7 @@
                                                                                                                                                                           "type":  "minecraft:mul",
                                                                                                                                                                           "left":  -1,
                                                                                                                                                                           "right":  {
-                                                                                                                                                                                        "type":  "minecraft:cache_once",
+                                                                                                                                                                                        "type": "minecraft:cache",
                                                                                                                                                                                         "input":  {
                                                                                                                                                                                                       "type":  "minecraft:clamp",
                                                                                                                                                                                                       "input":  {
@@ -87,7 +89,7 @@
                                                                                                                                                                       }
                                                                                                                                                         },
                                                                                                                                                "right":  {
-                                                                                                                                                             "type":  "minecraft:cache_once",
+                                                                                                                                                             "type": "minecraft:cache",
                                                                                                                                                              "input":  {
                                                                                                                                                                            "type":  "minecraft:clamp",
                                                                                                                                                                            "input":  {
