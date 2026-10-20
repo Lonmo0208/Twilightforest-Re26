@@ -129,7 +129,7 @@ tasks.named("compileJava") {
 
 dependencies {
 	// C2ME density-function compiler API (compile only, fetched + unpacked above)
-	c2meCompileDeps("maven.modrinth:c2me-fabric:0.4.2-alpha.0.60+26.2") { transitive = false }
+	c2meCompileDeps("maven.modrinth:c2me-fabric:0.4.0-alpha.0.65+26.1.2") { transitive = false }
 	compileOnly fileTree(dir: c2meCompileLibs, include: "*.jar")
 	compileOnly "org.ow2.asm:asm:9.10.1"
 	compileOnly "org.ow2.asm:asm-commons:9.10.1"
