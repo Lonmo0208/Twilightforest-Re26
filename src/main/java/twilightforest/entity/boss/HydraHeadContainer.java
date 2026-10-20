@@ -631,19 +631,11 @@ public class HydraHeadContainer {
 		// head2 is to the right
 		// head3 is to the left
 
-		float[] idleYRot = {0.0F, 60.0F, -60.0F, 90.0F, -90.0F, 90.0F, -90.0F};
-		float[] idleXRot = {60.0F, 10.0F, 10.0F, 50.0F, 50.0F, -10.0F, -10.0F};
-		float[] idleNeck = {7.0F, 9.0F, 9.0F, 8.0F, 8.0F, 9.0F, 9.0F};
-		int idx = Math.min(this.headNum, idleNeck.length - 1);
-
-		float neckLength = idleNeck[idx];
-		float xRotation = idleXRot[idx];
-		float yRotation = idleYRot[idx];
-
-		State curState = this.currentState;
-		if (curState != State.IDLE && curState != State.ATTACK_COOLDOWN && curState != State.DEAD && curState != State.DYING) {
-			neckLength += 0.5F;
-		}
+		// The pose of a head is driven by the per-state animation tables (setupStateRotations),
+		// so it pitches down and stretches its neck through the BITE/FLAME/MORTAR sequences.
+		float neckLength = this.getCurrentNeckLength();
+		float xRotation = this.getCurrentHeadXRotation();
+		float yRotation = this.getCurrentHeadYRotation();
 
 		float periodX = (this.headNum == 0 || this.headNum == 3) ? 20F : ((this.headNum == 1 || this.headNum == 4) ? 5.0f : 7.0F);
 		float periodY = (this.headNum == 0 || this.headNum == 4) ? 10F : ((this.headNum == 1 || this.headNum == 6) ? 6.0f : 5.0F);
@@ -680,19 +672,11 @@ public class HydraHeadContainer {
 	 * this on integer tick boundaries when evaluating AI decisions.
 	 */
 	public Vec3 computeHeadPosition(float partialTick) {
-		float[] idleYRot = {0.0F, 60.0F, -60.0F, 90.0F, -90.0F, 90.0F, -90.0F};
-		float[] idleXRot = {60.0F, 10.0F, 10.0F, 50.0F, 50.0F, -10.0F, -10.0F};
-		float[] idleNeck = {7.0F, 9.0F, 9.0F, 8.0F, 8.0F, 9.0F, 9.0F};
-		int idx = Math.min(this.headNum, idleNeck.length - 1);
-
-		float neckLength = idleNeck[idx];
-		float xRotation = idleXRot[idx];
-		float yRotation = idleYRot[idx];
-
-		State curState = this.currentState;
-		if (curState != State.IDLE && curState != State.ATTACK_COOLDOWN && curState != State.DEAD && curState != State.DYING) {
-			neckLength += 0.5F;
-		}
+		// The pose of a head is driven by the per-state animation tables (setupStateRotations),
+		// so it pitches down and stretches its neck through the BITE/FLAME/MORTAR sequences.
+		float neckLength = this.getCurrentNeckLength();
+		float xRotation = this.getCurrentHeadXRotation();
+		float yRotation = this.getCurrentHeadYRotation();
 
 		float periodX = (this.headNum == 0 || this.headNum == 3) ? 20F : ((this.headNum == 1 || this.headNum == 4) ? 5.0f : 7.0F);
 		float periodY = (this.headNum == 0 || this.headNum == 4) ? 10F : ((this.headNum == 1 || this.headNum == 6) ? 6.0f : 5.0F);
