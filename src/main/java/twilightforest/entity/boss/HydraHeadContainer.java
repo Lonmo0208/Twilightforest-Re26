@@ -836,7 +836,7 @@ public class HydraHeadContainer {
 		float cur = curLength != null ? curLength : 7.0F;
 		float progress = this.ticksNeeded > 0 ? (float) this.ticksProgress / (float) this.ticksNeeded : 1.0F;
 
-		return Mth.clampedLerp(prev, cur, progress);
+		return Mth.clampedLerp(progress, prev, cur);
 	}
 
 	private float getCurrentHeadXRotation() {
@@ -846,7 +846,7 @@ public class HydraHeadContainer {
 		float cur = currentRotation != null ? currentRotation : 60.0F;
 		float progress = this.ticksNeeded > 0 ? (float) this.ticksProgress / (float) this.ticksNeeded : 1.0F;
 
-		return Mth.clampedLerp(prev, cur, progress);
+		return Mth.clampedLerp(progress, prev, cur);
 	}
 
 	private float getCurrentHeadYRotation() {
@@ -856,7 +856,7 @@ public class HydraHeadContainer {
 		float cur = currentRotation != null ? currentRotation : 0.0F;
 		float progress = this.ticksNeeded > 0 ? (float) this.ticksProgress / (float) this.ticksNeeded : 1.0F;
 
-		return Mth.clampedLerp(prev, cur, progress);
+		return Mth.clampedLerp(progress, prev, cur);
 	}
 
 	protected float getCurrentMouthOpen() {
@@ -866,7 +866,7 @@ public class HydraHeadContainer {
 		float cur = curOpen != null ? curOpen : 0.0F;
 		float progress = this.ticksNeeded > 0 ? (float) this.ticksProgress / (float) this.ticksNeeded : 1.0F;
 
-		return Mth.clampedLerp(prev, cur, progress);
+		return Mth.clampedLerp(progress, prev, cur);
 	}
 
 	/**
