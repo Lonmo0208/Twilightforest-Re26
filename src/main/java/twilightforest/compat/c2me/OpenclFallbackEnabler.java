@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
  * this session, and in the config file for future sessions) instead of asking
  * users to edit c2me.toml in every instance.
  */
+@SuppressWarnings({"removal", "deprecation"})
 public final class OpenclFallbackEnabler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OpenclFallbackEnabler.class);
@@ -29,12 +30,18 @@ public final class OpenclFallbackEnabler {
 	}
 
 	public static void enable(Path configDir) {
-		forceInMemoryFlag();
+		if (!forceInMemoryFlag()) {
+			return;
+		}
 		patchConfigFile(configDir);
 	}
 
-	/** Flip C2ME's static final config field for the current session. */
-	private static void forceInMemoryFlag() {
+	/**
+	 * Flip C2ME's static final config field for the current session.
+	 *
+	 * @return true when the OpenCL module is installed and the flag was set
+	 */
+	private static boolean forceInMemoryFlag() {
 		try {
 			Class<?> config = Class.forName("com.ishland.c2me.opts.accel.opencl.common.Config");
 			Field field = config.getDeclaredField("allowIncompatibilityFallback");
@@ -42,10 +49,13 @@ public final class OpenclFallbackEnabler {
 			long offset = unsafe.staticFieldOffset(field);
 			unsafe.putBoolean(config, offset, true);
 			LOGGER.info("[TF-C2ME-Compat] Forced openclAccel.allowIncompatibilityFallback = true for this session");
+			return true;
 		} catch (ClassNotFoundException e) {
 			// OpenCL module not installed — nothing to do
+			return false;
 		} catch (Throwable t) {
 			LOGGER.warn("[TF-C2ME-Compat] Could not force OpenCL fallback flag; if the OpenCL module is installed and worldgen codegen fails, the game may crash. Install/verify config manually.", t);
+			return false;
 		}
 	}
 
