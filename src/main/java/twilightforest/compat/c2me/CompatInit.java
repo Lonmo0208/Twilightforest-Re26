@@ -22,15 +22,30 @@ public final class CompatInit {
 	}
 
 	public static void init(Path configDir) {
-		try {
-			TfDfBindings.register();
-			LOGGER.info("[TF-C2ME-Compat] Twilight Forest <-> C2ME dfc bindings active (JVM + OpenCL)");
-		} catch (Throwable t) {
-			// Never hard-fail the game over an optimization mod; C2ME will
-			// simply fall back to DelegateNode evaluation without us.
-			LOGGER.error("[TF-C2ME-Compat] Failed to register dfc bindings; TF will fall back to C2ME's default handling", t);
+		if (isDfcApiSupported()) {
+			try {
+				TfDfBindings.register();
+				LOGGER.info("[TF-C2ME-Compat] Twilight Forest <-> C2ME dfc bindings active (JVM + OpenCL)");
+			} catch (Throwable t) {
+				// Never hard-fail the game over an optimization mod; C2ME will
+				// simply fall back to DelegateNode evaluation without us.
+				LOGGER.error("[TF-C2ME-Compat] Failed to register dfc bindings; TF will fall back to C2ME's default handling", t);
+			}
+		} else {
+			// The 26w14a line ships an older C2ME dfc API; keep the log quiet.
+			LOGGER.info("[TF-C2ME-Compat] Installed C2ME dfc API is older than the TF bindings; skipping them");
 		}
 		// C2ME's OpenCL module is a separate optional mod; this is a no-op without it.
 		OpenclFallbackEnabler.enable(configDir);
+	}
+
+	private static boolean isDfcApiSupported() {
+		try {
+			// CodeEmitter exists in the 0.4.x dfc API used by the 26.2/26.3 lines.
+			Class.forName("com.ishland.c2me.opts.dfc.common.gen.CodeEmitter", false, CompatInit.class.getClassLoader());
+			return true;
+		} catch (Throwable t) {
+			return false;
+		}
 	}
 }
