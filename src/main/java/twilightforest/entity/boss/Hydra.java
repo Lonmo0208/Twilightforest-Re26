@@ -18,6 +18,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
@@ -28,7 +29,6 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.gamerules.GameRules;
 import twilightforest.entity.TFPart;
@@ -54,10 +54,8 @@ public class Hydra extends BaseTFBoss {
 	private static float HEADS_ACTIVITY_FACTOR = 0.3F;
 	public static final int MAX_HEADS = 7;
 
-	// Secondary-target attack chances. Distance bands match main target (FLAME 3~23, MORTAR 4~20).
-	// MORTAR is 15% less likely than FLAME: FLAME = 1/5 (20%)  →  MORTAR = 1/6 (~16.7%, ≈ 20% × 0.85)
-	private static final int SECONDARY_FLAME_CHANCE = 5;
-	private static final int SECONDARY_MORTAR_CHANCE = 6;
+	private static final int SECONDARY_FLAME_CHANCE = 10;
+	private static final int SECONDARY_MORTAR_CHANCE = 16;
 
 	private static final EntityDataAccessor<List<String>> HEAD_NAMES = SynchedEntityData.defineId(Hydra.class, TFDataSerializers.STRING_LIST);
 	public final HydraHeadContainer[] hc = new HydraHeadContainer[MAX_HEADS];
@@ -127,32 +125,32 @@ public class Hydra extends BaseTFBoss {
 		super.checkDespawn();
 	}
 
-	protected void tickHeadTurn(float yBodyRotT) {
-		float targetYaw = this.getTarget() != null ? this.getYRot() : yBodyRotT;
-		float f = Mth.wrapDegrees(targetYaw - this.yBodyRot);
-		// "Just a tiny bit slower" per user request — nudged from 0.10 down by ~15% so
-		// full 180° recovery takes a hair longer (~8 ticks to half-yaw-deviation instead
-		// of ~7), without drifting into the 12-tick zombie slowness they rejected last
-		// iteration.
-		this.yBodyRot += f * 0.085F;
-		float f1 = Mth.wrapDegrees(this.getYRot() - this.yBodyRot);
+	@Override
+	protected BodyRotationControl createBodyControl() {
+		return new BodyRotationControl(this) {
+			@Override
+			public void clientTick() {
+				float yRot = Hydra.this.getYHeadRot();
 
-		if (f1 < -75.0F) {
-			f1 = -75.0F;
-		}
+				float f = Mth.wrapDegrees(yRot - Hydra.this.yBodyRot);
+				Hydra.this.yBodyRot += f * 0.3F;
+				float f1 = Mth.wrapDegrees(Hydra.this.getYRot() - Hydra.this.yBodyRot);
 
-		if (f1 >= 75.0F) {
-			f1 = 75.0F;
-		}
+				if (f1 < -75.0F) {
+					f1 = -75.0F;
+				}
 
-		this.yBodyRot = this.getYRot() - f1;
+				if (f1 >= 75.0F) {
+					f1 = 75.0F;
+				}
 
-		// Large-angle catch-up bonus also dialed back proportionally (0.14 → 0.12).
-		// Still guarantees the hydra can unwedge from a fully reversed facing, it just
-		// doesn't snap back in one or two ticks.
-		if (f1 * f1 > 2500.0F) {
-			this.yBodyRot += f1 * 0.12F;
-		}
+				Hydra.this.yBodyRot = Hydra.this.getYRot() - f1;
+
+				if (f1 * f1 > 2500.0F) {
+					Hydra.this.yBodyRot += f1 * 0.2F;
+				}
+			}
+		};
 	}
 
 	@Override
@@ -340,51 +338,29 @@ public class Hydra extends BaseTFBoss {
 			}
 		}
 
-		if (this.getTarget() != null) {
-			// Snapshot the target to a local once and re-use it everywhere in this block.
-			// The previous crash (crash-2026-08-06_00.25.05-server.txt: "Cannot invoke
-			// Entity.getX() because entity is null" at Mob.lookAt) happened because
-			// getTarget() was re-read in the middle of a chain and came back null. Doing a
-			// single snapshot + isAlive() guard at the top prevents any such mid-stream
-			// nullification from ever producing another NPE in customServerAiStep.
-			LivingEntity target = this.getTarget();
-			if (target == null || !target.isAlive()) {
-				// Treat a snapshot-invalidated target the same as no-target: nudge yaw and
-				// fall through to idle-head cleanup below.
-				if (this.getRandom().nextFloat() < 0.05F) {
-					this.randomYawVelocity = (this.getRandom().nextFloat() - 0.5F) * 20F;
-				}
-				this.setYRot(this.getYRot() + this.randomYawVelocity);
-				this.setXRot(0);
-				for (int i = 0; i < MAX_HEADS; i++) {
-					if (this.hc[i].isIdle()) {
-						this.hc[i].setTargetEntity(null);
-					}
-				}
-			} else {
-				// "Just a tiny bit slower" per user. Arithmetic midpoint was
-				//   yaw: 2.0F/tick (40°/s)  →  now 1.7F/tick (34°/s, -15%)
-				//   pitch: 14.0F/tick       →  now 12.0F/tick
-				// Feels exactly like the previous midpoint speed the user liked, just
-				// noticeably less snappy when tracking a circling player.
-				this.lookAt(target, 1.7F, 12.0F);
+		// Snapshot the target once so a target that is cleared mid-block can't turn into an NPE
+		LivingEntity target = this.getTarget();
+		if (target != null) {
+			this.lookAt(target, 10.0F, this.getMaxHeadXRot());
 
-				// have any heads not currently attacking switch to the primary target
-				for (int i = 0; i < MAX_HEADS; i++) {
-					if (!this.hc[i].isAttacking() && !this.hc[i].isSecondaryAttacking) {
-						this.hc[i].setTargetEntity(target);
-					}
+			// have any heads not currently attacking switch to the primary target
+			for (int i = 0; i < MAX_HEADS; i++) {
+				if (!this.hc[i].isAttacking() && !this.hc[i].isSecondaryAttacking) {
+					this.hc[i].setTargetEntity(target);
 				}
+			}
 
-				// let's pick an attack
+			// let's pick an attack
+			if (target.isAlive()) {
 				float distance = target.distanceTo(this);
+
 				if (this.getSensing().hasLineOfSight(target)) {
 					this.attackEntity(target, distance);
 				}
+			}
 
-				if (this.numTicksToChaseTarget-- <= 0 || target.distanceToSqr(this) > f * f) {
-					this.setTarget(null);
-				}
+			if (this.numTicksToChaseTarget-- <= 0 || !target.isAlive() || target.distanceToSqr(this) > f * f) {
+				this.setTarget(null);
 			}
 		} else {
 			if (this.getRandom().nextFloat() < 0.05F) {
@@ -425,76 +401,40 @@ public class Hydra extends BaseTFBoss {
 	}
 
 	/**
-	 * Count timers, and pick an attack against the entity if our timer says go.
-	 * <p>
-	 * ---- User-requested behaviour: BITE IS FULLY PASSIVE ----
-	 * The three main heads (0..2) will ONLY start a BITE_BEGINNING sequence when the
-	 * target entity gets within 1.5 blocks of the state-machine-computed head endpoint
-	 * (i.e. the player rushes right into the head's mouth area — the passive trigger).
-	 * In every other situation — target is near the body but not near the head, target
-	 * is far away, target is flying high above, etc. — heads prefer RANGED attacks, and
-	 * ranged attack chance / range have both been bumped significantly so the hydra
-	 * feels much more aggressive at a distance than the stock 1% / 0.6% distribution.
-	 * Side heads (3..6) never bite at all and just spam ranged moves, same as vanilla.
+	 * Count timers, and pick an attack against the entity if our timer says go
 	 */
 	private void attackEntity(Entity target, float distance) {
-		// Independent null/invalid guard on top of the caller's isAlive() check. This
-		// protects against future code paths that call attackEntity() without going
-		// through customServerAiStep (e.g. secondaryAttacks-adjacent logic, or anything
-		// that might queue a stale target). If target is null/dead we bail immediately so
-		// target.position() / target.getBoundingBox() below can never NPE.
 		if (target == null || !target.isAlive() || target.isRemoved()) {
 			return;
 		}
 
-		// Ranged-only chances. Mortar used to never fire because (1) FLAME was checked
-		// FIRST with a wider distance band (0..FLAME_MAX) that always covered mortar's
-		// narrow band (4..MORTAR_MAX), and (2) FLAME_CHANCE was also higher — so every
-		// tick the head ran "if flame roll succeeds → flame, else if mortar roll succeeds
-		// → mortar" and the flame path would almost always consume the chance before the
-		// mortar roll even got a chance to execute. Swap order + boost mortar so the
-		// ballistic attack actually happens at reasonable frequency.
-		int FLAME_CHANCE  = 20;   // 5.0% per tick per head
-		int MORTAR_CHANCE = 23;
-
-		int FLAME_MIN_DIST  = 3;
-		int FLAME_MAX_DIST  = 23;
-		int MORTAR_MIN_DIST = 4;
-		int MORTAR_MAX_DIST = 20;
-
-		double BITE_RADIUS_SQ = 3.5D * 3.5D;
-
-		int BITE_CHANCE_DENOM = 4;  // nextInt(4) < 3 → 75%
+		int BITE_CHANCE = 10;
+		int FLAME_CHANCE = 100;
+		int MORTAR_CHANCE = 160;
 
 		boolean targetAbove = target.getBoundingBox().minY > this.getBoundingBox().maxY;
 
+		// three main heads can do these kinds of attacks
 		for (int i = 0; i < 3; i++) {
-			if (!this.hc[i].isIdle() || this.areTooManyHeadsAttacking(i)) continue;
-
-
-			Vec3 headEndPos = this.hc[i].computeHeadPosition(1.0F);
-			if (headEndPos.distanceToSqr(target.position()) < BITE_RADIUS_SQ
-					&& this.countActiveHeads() > 2
-					&& !this.areOtherHeadsBiting(i)
-					&& this.getRandom().nextInt(BITE_CHANCE_DENOM) < 3) {
-				this.hc[i].setNextState(HydraHeadContainer.State.BITE_BEGINNING);
-				continue;
-			}
-
-
-			if (distance > MORTAR_MIN_DIST && distance < MORTAR_MAX_DIST && !targetAbove && this.countMortarHeads() < 2 && this.getRandom().nextInt(MORTAR_CHANCE) == 0) {
-				this.hc[i].setNextState(HydraHeadContainer.State.MORTAR_BEGINNING);
-			} else if (distance > FLAME_MIN_DIST && distance < FLAME_MAX_DIST && this.countFlameHeads() < 2 && this.getRandom().nextInt(FLAME_CHANCE) == 0) {
-				this.hc[i].setNextState(HydraHeadContainer.State.FLAME_BEGINNING);
+			if (this.hc[i].isIdle() && !this.areTooManyHeadsAttacking(i)) {
+				if (distance > 4 && distance < 10 && this.getRandom().nextInt(BITE_CHANCE) == 0 && this.countActiveHeads() > 2 && !this.areOtherHeadsBiting(i)) {
+					this.hc[i].setNextState(HydraHeadContainer.State.BITE_BEGINNING);
+				} else if (distance > 0 && distance < 20 && this.getRandom().nextInt(FLAME_CHANCE) == 0) {
+					this.hc[i].setNextState(HydraHeadContainer.State.FLAME_BEGINNING);
+				} else if (distance > 8 && distance < 32 && !targetAbove && this.getRandom().nextInt(MORTAR_CHANCE) == 0) {
+					this.hc[i].setNextState(HydraHeadContainer.State.MORTAR_BEGINNING);
+				}
 			}
 		}
 
+		// heads 4-7 can do everything but bite
 		for (int i = 3; i < MAX_HEADS; i++) {
-			if (!this.hc[i].isIdle() || this.areTooManyHeadsAttacking(i)) continue;
-			if (distance > MORTAR_MIN_DIST && distance < MORTAR_MAX_DIST && !targetAbove && this.countMortarHeads() < 2 && this.getRandom().nextInt(MORTAR_CHANCE) == 0) {
-				this.hc[i].setNextState(HydraHeadContainer.State.MORTAR_BEGINNING);
-			} else if (distance > FLAME_MIN_DIST && distance < FLAME_MAX_DIST && this.countFlameHeads() < 2 && this.getRandom().nextInt(FLAME_CHANCE) == 0) {
-				this.hc[i].setNextState(HydraHeadContainer.State.FLAME_BEGINNING);
+			if (this.hc[i].isIdle() && !this.areTooManyHeadsAttacking(i)) {
+				if (distance > 0 && distance < 20 && this.getRandom().nextInt(FLAME_CHANCE) == 0) {
+					this.hc[i].setNextState(HydraHeadContainer.State.FLAME_BEGINNING);
+				} else if (distance > 8 && distance < 32 && !targetAbove && this.getRandom().nextInt(MORTAR_CHANCE) == 0) {
+					this.hc[i].setNextState(HydraHeadContainer.State.MORTAR_BEGINNING);
+				}
 			}
 		}
 	}
@@ -514,26 +454,6 @@ public class Hydra extends BaseTFBoss {
 		}
 
 		return otherAttacks >= 1 + (this.countActiveHeads() * HEADS_ACTIVITY_FACTOR);
-	}
-
-	private int countMortarHeads() {
-		int count = 0;
-		for (int i = 0; i < MAX_HEADS; i++) {
-			if (this.hc[i].isMortar()) {
-				count++;
-			}
-		}
-		return count;
-	}
-
-	private int countFlameHeads() {
-		int count = 0;
-		for (int i = 0; i < MAX_HEADS; i++) {
-			if (this.hc[i].isFlame()) {
-				count++;
-			}
-		}
-		return count;
 	}
 
 	private int countActiveHeads() {
@@ -570,11 +490,11 @@ public class Hydra extends BaseTFBoss {
 
 			for (int i = 1; i < MAX_HEADS; i++) {
 				if (!this.hc[i].isDead() && this.hc[i].isIdle() && isTargetOnThisSide(i, secondaryTarget)) {
-					if (distance > 3 && distance < 20 && this.countFlameHeads() < 2 && this.getRandom().nextInt(SECONDARY_FLAME_CHANCE) == 0) {
+					if (distance > 0 && distance < 20 && this.getRandom().nextInt(SECONDARY_FLAME_CHANCE) == 0) {
 						this.hc[i].setTargetEntity(secondaryTarget);
 						this.hc[i].isSecondaryAttacking = true;
 						this.hc[i].setNextState(HydraHeadContainer.State.FLAME_BEGINNING);
-					} else if (distance > 4 && distance < 20 && this.countMortarHeads() < 2 && this.getRandom().nextInt(SECONDARY_MORTAR_CHANCE) == 0) {
+					} else if (distance > 8 && distance < 32 && this.getRandom().nextInt(SECONDARY_MORTAR_CHANCE) == 0) {
 						this.hc[i].setTargetEntity(secondaryTarget);
 						this.hc[i].isSecondaryAttacking = true;
 						this.hc[i].setNextState(HydraHeadContainer.State.MORTAR_BEGINNING);
@@ -680,46 +600,21 @@ public class Hydra extends BaseTFBoss {
 	}
 
 	public boolean attackEntityFromPart(HydraPart part, DamageSource source, float damage) {
+		if (!(this.level() instanceof ServerLevel server)) {
+			return false;
+		}
+
 		// if we're in a wall, kill that wall
-		if (this.level() instanceof ServerLevel server && source.is(DamageTypes.IN_WALL)) {
+		if (source.is(DamageTypes.IN_WALL)) {
 			this.destroyBlocksInAABB(server, part.getBoundingBox());
 		}
 
-		// Only bypass the self-hit + range guards for *REFLECTED* HydraMortars, not for
-		// the hydra's own outgoing shots.
-		//
-		// Previous bug: we tested `source.getDirectEntity() instanceof HydraMortar` and
-		// unconditionally bypassed both gates. That worked great for reflected shells
-		// (owner = the player who bounced it) but also meant self-fired mortars that
-		// landed at the hydra's feet (e.g. when range was too short and the shell fell
-		// back down) ignored the self-damage guard and blew the hydra up — exactly the
-		// "it keeps getting hit by its own fireballs" bug the user reported.
-		//
-		// Correct rule:
-		//   reflected = direct entity is a HydraMortar AND its current owner is NOT the
-		//               firing hydra, nor a part of it.
-		// HydraMortar.hurtServer() explicitly calls setOwner(source.getEntity()) on
-		// reflect, so the owner flips from HydraHead → the reflecting player/LivingEntity
-		// at the exact moment of reflection and stays that way until detonation.
-		Entity directEntity = source.getDirectEntity();
-		boolean reflectedMortarHit = false;
-		if (directEntity instanceof HydraMortar mortar) {
-			Entity owner = mortar.getOwner();
-			if (owner != null
-				&& !(owner instanceof Hydra)
-				&& !(owner instanceof HydraPart hp && hp.getParent() == this)) {
-				reflectedMortarHit = true;
-			}
-		}
-
-		if (!reflectedMortarHit) {
-			if (source.getEntity() == this || source.getDirectEntity() == this)
-				return false;
-			if (this.getParts() != null)
-				for (Entity partEntity : this.getParts())
-					if (partEntity == source.getEntity() || partEntity == source.getDirectEntity())
-						return false;
-		}
+		if (source.getEntity() == this || source.getDirectEntity() == this)
+			return false;
+		if (this.getParts() != null)
+			for (Entity partEntity : this.getParts())
+				if (partEntity == source.getEntity() || partEntity == source.getDirectEntity())
+					return false;
 
 		HydraHeadContainer headCon = null;
 
@@ -730,14 +625,11 @@ public class Hydra extends BaseTFBoss {
 				return false;
 		}
 
-		// Skip the range check only for reflected mortar hits. Self-fired mortars that
-		// reach the attackEntityFromPart path via some other route still get the 20-block
-		// anti-hack range gate like every other damage type.
-		if (!reflectedMortarHit) {
-			double range = this.calculateRange(source);
-			if (range > 400) {
-				return false;
-			}
+		double range = this.calculateRange(source);
+
+		// Give some leeway for reflected mortars
+		if (range > 400 + (source.getDirectEntity() instanceof HydraMortar ? 200 : 0)) {
+			return false;
 		}
 
 		// ignore hits on dying heads, it's weird
@@ -746,13 +638,12 @@ public class Hydra extends BaseTFBoss {
 		}
 
 		boolean tookDamage;
-		ServerLevel serverLevel = (ServerLevel) this.level();
 		if (headCon != null && headCon.getCurrentMouthOpen() > 0.5) {
-			tookDamage = super.hurtServer(serverLevel, source, damage);
+			tookDamage = super.hurtServer(server, source, damage);
 			headCon.addDamage(damage);
 		} else {
 			int armoredDamage = Math.round(damage / ARMOR_MULTIPLIER);
-			tookDamage = super.hurtServer(serverLevel, source, armoredDamage);
+			tookDamage = super.hurtServer(server, source, armoredDamage);
 
 			if (headCon != null) {
 				headCon.addDamage(armoredDamage);
@@ -772,31 +663,7 @@ public class Hydra extends BaseTFBoss {
 
 	@Override
 	public boolean hurtServer(ServerLevel serverLevel, DamageSource src, float damage) {
-		// Body hit path (this method): normally only accepts BYPASSES_INVULNERABILITY tag (void damage,
-		// /kill, etc) because the hydra only accepts legitimate damage through
-		// HydraPart.hurtServer → Hydra.attackEntityFromPart for its head/neck/leg part entities.
-		//
-		// Exception for REFLECTED HYDRA_MORTARS: if a bounced mortar's direct AOE explosion happens to
-		// intersect the body entity directly (not a head part) we still want that damage to land,
-		// so we whitelist TFDamageTypes.HYDRA_MORTAR as valid here. But we MUST NOT whitelist
-		// SELF-SHOT mortars: otherwise a self-fired mortar that explodes at our feet would
-		// bypass invulnerability and hurt the body entity directly. Same ownership check as
-		// attackEntityFromPart: mortar must exist AND its owner not be this hydra or any
-		// part belonging to this hydra.
-		boolean bypass = src.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
-		boolean reflectedMortar = false;
-		if (src.is(TFDamageTypes.HYDRA_MORTAR)) {
-			Entity direct = src.getDirectEntity();
-			if (direct instanceof HydraMortar mortar) {
-				Entity owner = mortar.getOwner();
-				if (owner != null
-					&& !(owner instanceof Hydra)
-					&& !(owner instanceof HydraPart hp && hp.getParent() == this)) {
-					reflectedMortar = true;
-				}
-			}
-		}
-		return (bypass || reflectedMortar) && super.hurtServer(serverLevel, src, damage);
+		return src.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && super.hurtServer(serverLevel, src, damage);
 	}
 
 	@Override
@@ -931,7 +798,7 @@ public class Hydra extends BaseTFBoss {
 		if (this.deathTime == 1) {
 			for (int i = 0; i < MAX_HEADS; i++) {
 				this.hc[i].setRespawnCounter(-1);
-				if (this.hc[i].isActive()) {
+				if (!this.hc[i].isDead()) {
 					this.hc[i].setNextState(HydraHeadContainer.State.IDLE);
 					this.hc[i].endCurrentAction();
 					this.hc[i].setHurtTime(200);
@@ -943,7 +810,7 @@ public class Hydra extends BaseTFBoss {
 		if (this.deathTime <= 140 && this.deathTime % 20 == 0) {
 			int headToDie = (this.deathTime / 20) - 1;
 
-			if (this.hc[headToDie].isActive()) {
+			if (!this.hc[headToDie].isDead()) {
 				this.hc[headToDie].setNextState(HydraHeadContainer.State.DYING);
 				this.hc[headToDie].endCurrentAction();
 			}
