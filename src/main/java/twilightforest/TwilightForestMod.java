@@ -1,6 +1,7 @@
 package twilightforest;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
@@ -64,6 +65,12 @@ public final class TwilightForestMod implements ModInitializer {
 
 		// Initialize config system with ForgeConfigAPIPort
 		ConfigSetup.init();
+
+		// Optional C2ME integration. Guarded so the compat classes (which reference C2ME's
+		// dfc API) are never loaded when C2ME is not installed.
+		if (FabricLoader.getInstance().isModLoaded("c2me")) {
+			twilightforest.compat.c2me.CompatInit.init(FabricLoader.getInstance().getConfigDir());
+		}
 
 		// Register server lifecycle listener early to ensure WorldUtil.currentServer is always set
 		WorldUtil.registerServerLifecycle();
