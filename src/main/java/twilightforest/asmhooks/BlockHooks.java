@@ -12,15 +12,16 @@ import net.minecraft.world.phys.Vec3;
 import twilightforest.block.CloudBlock;
 import twilightforest.block.SnowLoggable;
 import twilightforest.block.WroughtIronFenceBlock;
-import twilightforest.client.FoliageColorHandler;
 import twilightforest.config.TFConfig;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.custom.TravellersModifiersManager;
 
+/**
+ * Behaviour hooks that NeoForge applies through ASM transformers. On Fabric they are called from mixins;
+ * the javadoc on each method names the transformer it replaces so the two stay in sync.
+ */
 @SuppressWarnings({"JavadocReference", "unused"})
 public class BlockHooks {
-
-	private static final FoliageColorHandler foliageColorHandler = new FoliageColorHandler();
 
 	/**
 	 * {@link twilightforest.asm.transformers.cloud.IsRainingAtTransformer}<p/>
@@ -29,32 +30,52 @@ public class BlockHooks {
 	 * {@link net.minecraft.world.level.Level#isRainingAt(BlockPos)}
 	 */
 	public static boolean isRainingAt(boolean isRaining, Level level, BlockPos pos) {
-		if (!isRaining && TFConfig.commonCloudBlockPrecipitationDistance > 0) {
-			if (!level.hasChunkAt(pos)) return false; //do NOT try to load new chunks when checking for rain. This can cause deadlocks if mobs ry to spawn in unloaded areas and check for rain
-			LevelChunk chunk = level.getChunkAt(pos);
-			for (int y = pos.getY(); y < pos.getY() + TFConfig.commonCloudBlockPrecipitationDistance; y++) {
-				BlockPos newPos = pos.atY(y);
-				BlockState state = chunk.getBlockState(newPos);
-				if (state.getBlock() instanceof CloudBlock cloudBlock && cloudBlock.getCurrentPrecipitation(newPos, level, level.getRainLevel(1.0F)).getLeft() == Biome.Precipitation.RAIN) {
-					return true;
-				}
-				if (Heightmap.Types.MOTION_BLOCKING.isOpaque().test(state)) {
-					return false;
-				}
+		return isRaining || hasRainyCloudAbove(level, pos);
+	}
+
+	/**
+	 * Replaces {@link twilightforest.asm.transformers.cloud.IsRainingAtTransformer} for the precipitation query that
+	 * 26.3's client uses to decide where rain/snow particles and weather columns are drawn
+	 * ({@code ClientLevel#getPrecipitationAt}).
+	 */
+	public static Biome.Precipitation precipitationAt(Biome.Precipitation original, Level level, BlockPos pos) {
+		return original == Biome.Precipitation.RAIN || !hasRainyCloudAbove(level, pos) ? original : Biome.Precipitation.RAIN;
+	}
+
+	/**
+	 * A rainy cloud block above {@code pos} acts like open sky: the block drips rain below itself even when the
+	 * position is enclosed (troll caves, cloud platforms, ...). Scanning stops at the first opaque block so only
+	 * positions with a clear line to the cloud are affected.
+	 */
+	private static boolean hasRainyCloudAbove(Level level, BlockPos pos) {
+		int distance = TFConfig.commonCloudBlockPrecipitationDistance;
+		if (distance <= 0) return false;
+		if (!level.hasChunkAt(pos)) return false; // do NOT try to load chunks while checking rain, that deadlocks worldgen
+
+		LevelChunk chunk = level.getChunkAt(pos);
+		for (int y = pos.getY(); y < pos.getY() + distance; y++) {
+			BlockPos scanPos = pos.atY(y);
+			BlockState state = chunk.getBlockState(scanPos);
+			if (state.getBlock() instanceof CloudBlock cloudBlock && cloudBlock.getCurrentPrecipitation(scanPos, level, level.getRainLevel(1.0F)).getLeft() == Biome.Precipitation.RAIN) {
+				return true;
+			}
+			if (Heightmap.Types.MOTION_BLOCKING.isOpaque().test(state)) {
+				return false;
 			}
 		}
-		return isRaining;
+
+		return false;
 	}
 
 	/**
 	 * {@link twilightforest.asm.transformers.snow.KeepGrassSnowyForSnowloggableBlocksTransformer}
 	 *
 	 * Injection Point:<br/>
-	 * {@link net.minecraft.world.level.block.SnowyDirtBlock.isSnowySetting(BlockState)}<br/>
+	 * {@link net.minecraft.world.level.block.SnowyBlock#isSnowySetting(BlockState)}<br/>
 	 * Targets: IRETURN
 	 */
-	public static boolean keepSnowyStateForSnowloggableBlocks(boolean o, BlockState state) {
-		return o || (state.getBlock() instanceof SnowLoggable && state.getValue(SnowLoggable.SNOW_LAYERS) > 0);
+	public static boolean keepSnowyStateForSnowloggableBlocks(boolean original, BlockState state) {
+		return original || (state.getBlock() instanceof SnowLoggable && state.getValue(SnowLoggable.SNOW_LAYERS) > 0);
 	}
 
 	/**
@@ -63,33 +84,11 @@ public class BlockHooks {
 	 * Injection Point:<br/>
 	 * {@link net.minecraft.world.entity.decoration.LeashFenceKnotEntity#survives()}
 	 */
-	public static boolean leashFenceKnotSurvives(boolean o, LeashFenceKnotEntity entity) {
-		if (o)
+	public static boolean leashFenceKnotSurvives(boolean original, LeashFenceKnotEntity entity) {
+		if (original)
 			return true; // Short-circuit to avoid an unnecessary #getBlockState call
 		BlockState fenceState = entity.level().getBlockState(entity.getPos());
 		return fenceState.is(TFBlocks.WROUGHT_IRON_FENCE) && fenceState.getValue(WroughtIronFenceBlock.POST) != WroughtIronFenceBlock.PostState.NONE;
-	}
-
-	/**
-	 * {@link twilightforest.asm.transformers.foliage.FoliageColorResolverTransformer}<p/>
-	 *
-	 * Injection Point:<br/>
-	 * {@link net.minecraft.client.renderer.BiomeColors#FOLIAGE_COLOR_RESOLVER}
-	 */
-	public static int resolveFoliageColor(int o, Biome biome, double x, double z) {
-		return foliageColorHandler.get(o, biome, x, z);
-	}
-
-	/**
-	 * {@link twilightforest.asm.transformers.block.UnrestrainedFrictionTransformer}<p/>
-	 *
-	 * Injection Point:<br/>
-	 * TODO: Port to Fabric - Original reference was NeoForge's IBlockExtension#getFriction
-	 * {@link net.minecraft.world.level.block.state.BlockBehaviour#getFriction(BlockState, LevelReader, BlockPos, Entity)}
-	 * Targets: FRETURN
-	 */
-	public static float resetBlockFrictionWithUnrestrained(float o, Entity entity) {
-		return TravellersModifiersManager.isModifierActive(entity, TravellersModifiersManager.UNRESTRAINED_MODIFIER) ? 0.6F : o;
 	}
 
 	/**
@@ -99,11 +98,11 @@ public class BlockHooks {
 	 * {@link net.minecraft.world.level.block.SlimeBlock#stepOn(Level, BlockPos, BlockState, Entity)}
 	 * Targets: {@link Entity#isSteppingCarefully()}
 	 */
-	public static boolean resetSlimeMomentumWithUnrestrained(boolean o, Entity entity) {
+	public static boolean resetSlimeMomentumWithUnrestrained(boolean original, Entity entity) {
 		if (TravellersModifiersManager.isModifierActive(entity, TravellersModifiersManager.UNRESTRAINED_MODIFIER)) {
-			return true; //dont return false here as the original check is looking that an entity is NOT stepping carefully
+			return true; // dont return false here as the original check is looking that an entity is NOT stepping carefully
 		}
-		return o;
+		return original;
 	}
 
 	/**
