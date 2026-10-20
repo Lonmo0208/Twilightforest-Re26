@@ -52,6 +52,8 @@ public class ClassPathScanningUtil {
 		prefixes.add("twilightforest.util.multiparts.");
 		// Mixin classes are never beans, and scanning them risks early loading of their targets.
 		prefixes.add("twilightforest.mixin.");
+		// Optional C2ME integration: only active when the c2me mod is present.
+		prefixes.add("twilightforest.compat.c2me.");
 		BLACKLIST_PREFIXES = List.copyOf(prefixes);
 	}
 

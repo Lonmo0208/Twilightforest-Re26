@@ -1,6 +1,7 @@
 package twilightforest;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
@@ -69,6 +70,12 @@ public final class TwilightForestMod implements ModInitializer {
 
 		// Initialize config system with ForgeConfigAPIPort
 		ConfigSetup.init();
+
+		// C2ME's OpenCL module initializes its config before our pre-launch hook runs, so
+		// force its incompatibility fallback in memory whenever C2ME is present.
+		if (FabricLoader.getInstance().isModLoaded("c2me")) {
+			twilightforest.compat.c2me.OpenclFallbackEnabler.enable(FabricLoader.getInstance().getConfigDir());
+		}
 
 		// Register server lifecycle listener early to ensure WorldUtil.currentServer is always set
 		WorldUtil.registerServerLifecycle();
