@@ -2,6 +2,13 @@ Twilight Forest [![Discord](https://img.shields.io/discord/313006291012288521.sv
 ==============
 
 This is the home of the Twilight Forest mod for Minecraft 1.12 and beyond.
+> **NeoForge build discontinued / NeoForge 版已停止维护**
+> The NeoForge port in this branch is no longer maintained: the official Twilight Forest has been updated, so
+> please use the official NeoForge build instead. This branch is kept for reference only and will not receive
+> further updates.
+>
+> 本分支的 NeoForge 移植已停止维护：官方暮色森林已更新，请直接使用官方 NeoForge 版本；本分支仅作留档，不再更新。
+
 
 ## Licensing
 Code unless otherwise stated default to our [LICENSE file here](LICENSE)
