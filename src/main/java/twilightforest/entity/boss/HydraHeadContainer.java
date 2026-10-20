@@ -193,6 +193,11 @@ public class HydraHeadContainer {
 			this.nextState = NEXT_AUTOMATIC;
 			this.ticksNeeded = 20;
 			this.ticksProgress = 20;
+			// A head that starts out dead must not keep a live hitbox on the server
+			if (!hydra.level().isClientSide()) {
+				headEntity.deactivate();
+				this.performOnAllNecks(HydraPart::deactivate);
+			}
 		}
 		this.setHeadPosition();
 		this.setNeckPosition();
@@ -614,7 +619,7 @@ public class HydraHeadContainer {
 		}
 
 		vector = vector.yRot((-(this.hydra.yBodyRot + neckRotation) * Mth.PI) / 180.0F);
-		this.setNeckPosition(this.hydra.getX() + vector.x(), this.hydra.getY() + vector.y(), this.hydra.getZ() + vector.z(), this.hydra.yBodyRot);
+		this.setNeckPosition(this.hydra.getX() + vector.x(), this.hydra.getY() + vector.y() + 0.5D, this.hydra.getZ() + vector.z(), this.hydra.yBodyRot);
 	}
 
 	protected void setHeadPosition() {
@@ -656,7 +661,7 @@ public class HydraHeadContainer {
 
 		dx = this.hydra.getX() + vector.x();
 		dy = this.hydra.getY() + vector.y() + 3;
-		dz = this.hydra.getZ() + vector.z();
+		dz = this.hydra.getZ() + vector.z() + 1;
 
 		this.headEntity.setPos(dx, dy, dz);
 		this.headEntity.setMouthOpen(getCurrentMouthOpen());

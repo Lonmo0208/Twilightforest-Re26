@@ -182,6 +182,7 @@ public class Hydra extends BaseTFBoss {
 		this.body.tick();
 		this.leftLeg.tick();
 		this.rightLeg.tick();
+		this.tail.tick();
 
 		// update all heads
 		for (int i = 0; i < MAX_HEADS; i++) {
@@ -227,6 +228,10 @@ public class Hydra extends BaseTFBoss {
 		dy = this.getY() + 0.1D;
 		dz = this.getZ() + Mth.cos(angle) * 10.5D;
 		this.tail.setPos(dx, dy, dz);
+
+		// The legs are parts too, their positions have to follow the body each tick
+		this.leftLeg.setPos(this.getX() - Mth.cos(angle) * 3.0D, this.getY(), this.getZ() - Mth.sin(angle) * 3.0D);
+		this.rightLeg.setPos(this.getX() + Mth.cos(angle) * 3.0D, this.getY(), this.getZ() + Mth.sin(angle) * 3.0D);
 
 		if (this.hurtTime == 0) {
 			this.collideWithEntities(this.level().getEntities(this, this.body.getBoundingBox()), this.body);

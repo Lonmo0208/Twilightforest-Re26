@@ -6,8 +6,11 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -18,10 +21,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
 import net.minecraft.world.level.gamerules.GameRules;
+import org.jetbrains.annotations.Nullable;
+import twilightforest.tags.TFBlockTags;
 import twilightforest.init.TFDamageTypes;
 import twilightforest.init.TFEntities;
-import twilightforest.tags.TFBlockTags;
 
 public class HydraMortar extends ThrowableProjectile {
 
@@ -37,22 +42,20 @@ public class HydraMortar extends ThrowableProjectile {
 
 	@SuppressWarnings("this-escape")
 	public HydraMortar(EntityType<? extends HydraMortar> type, Level world, HydraHead head) {
-		// 26.1: ThrowableProjectile no longer has a (type, owner, level) constructor.
-		// Compute the spawn position offset manually (3.5 blocks out on the look vector,
-		// +1 on Y) then call the (type, x, y, z, level) ctor. setOwner(head) is called
-		// explicitly because the owner-bearing overload was removed.
-		super(type,
-			head.getX() + head.getLookAngle().x() * 3.5,
-			head.getY() + 1 + head.getLookAngle().y() * 3.5,
-			head.getZ() + head.getLookAngle().z() * 3.5,
-			world);
-		// these were being set to extreme numbers when we got here, why?
+		super(type, world);
+		setOwner(head.getParent());
+
+		Vec3 vector = head.getLookAngle();
+
+		double dist = 3.5;
+		double px = head.getX() + vector.x() * dist;
+		double py = head.getY() + 1 + vector.y() * dist;
+		double pz = head.getZ() + vector.z() * dist;
+
+		this.snapTo(px, py, pz, 0, 0);
+		// these are being set to extreme numbers when we get here, why?
 		head.setDeltaMovement(Vec3.ZERO);
-		this.setOwner(head);
-
-
-
-		this.shootFromRotation(head, head.getXRot(), head.getYRot(), -20.0F, 0.84F, 1F);
+		this.shootFromRotation(head, head.getXRot(), head.getYRot(), -20.0F, 0.5F, 1F);
 
 		//TwilightForestMod.LOGGER.debug("Launching mortar! Current head motion is {}, {}", head.getDeltaMovement().x(), head.getDeltaMovement().z());
 	}
@@ -64,15 +67,35 @@ public class HydraMortar extends ThrowableProjectile {
 
 	@Override
 	public void tick() {
-		super.tick();
-
-		if (this.onGround()) {
-			this.getDeltaMovement().multiply(0.9D, 0.9D, 0.9D);
-
-			if (!this.level().isClientSide() && this.fuse-- <= 0) {
-				this.detonate();
-			}
+		if (!onGround()) {
+			super.tick();
+			return;
 		}
+
+		baseTick();
+		applyGravity();
+		move(MoverType.SELF, getDeltaMovement());
+		applyEffectsFromBlocks();
+		setDeltaMovement(getDeltaMovement().scale(0.99D));
+
+		if (onGround())
+			setDeltaMovement(getDeltaMovement().x(), 0.0D, getDeltaMovement().z());
+
+		if (level().isClientSide())
+			return;
+		if (horizontalCollision) {
+			detonate();
+			return;
+		}
+		for (Entity entity : level().getEntities(this, getBoundingBox(), this::canHitEntity)) {
+			EntityHitResult result = new EntityHitResult(entity);
+			// Fabric has no projectile impact event to veto this, so resolve the hit directly
+			hitTargetOrDeflectSelf(result);
+			if (!isAlive())
+				return;
+		}
+		if (fuse-- <= 0)
+			detonate();
 	}
 
 	public void setToBlasting() {
@@ -104,10 +127,17 @@ public class HydraMortar extends ThrowableProjectile {
 	}
 
 	@Override
+	protected boolean canHitEntity(Entity entity) {
+		if (!super.canHitEntity(entity) || (getOwner() != null && entity.is(getOwner())) || isPartOfHydra(entity))
+			return false;
+		return !(entity instanceof HydraMortar mortar) || (getOwner() != null && mortar.getOwner() != null && getOwner().is(mortar.getOwner()));
+	}
+
+	@Override
 	protected void onHitEntity(EntityHitResult result) {
 		Entity entity = result.getEntity();
 		if (!this.level().isClientSide() && this.getOwner() != null) {
-			if ((!(entity instanceof HydraMortar mortar) || mortar.getOwner().is(this.getOwner())) && !entity.is(this.getOwner()) && !this.isPartOfHydra(entity)) {
+			if ((!(entity instanceof HydraMortar mortar) || mortar.getOwner() != null && mortar.getOwner().is(this.getOwner())) && !entity.is(this.getOwner()) && !this.isPartOfHydra(entity)) {
 				this.detonate();
 			}
 		}
@@ -115,51 +145,6 @@ public class HydraMortar extends ThrowableProjectile {
 
 	private boolean isPartOfHydra(Entity entity) {
 		return this.getOwner() instanceof Hydra && entity instanceof HydraPart part && part.getParent().is(this.getOwner());
-	}
-
-	/**
-	 * Returns true when the nearby {@code entity} belongs to the same hydra that
-	 * originally fired this mortar (the hydra we'd damage if we let the direct
-	 * damage loop run against it). This covers:
-	 *   - the hydra body entity itself (LivingEntity owner → parent via getParent())
-	 *   - any HydraPart (head, neck, body, legs) whose parent matches that hydra
-	 *   - the owning HydraHead that shot us directly
-	 * Used to skip the detonate direct-hurt loop for self-shot mortars so the hydra
-	 * can't accidentally blow itself up.
-	 */
-	private boolean isSameHydraFamily(Entity entity) {
-		Entity owner = this.getOwner();
-		if (owner == null) return false;
-		Hydra ownerHydra =
-			owner instanceof Hydra h ? h :
-			owner instanceof HydraPart hp ? hp.getParent() :
-			null;
-		if (ownerHydra == null) return false;
-		if (entity.is(ownerHydra) || entity == ownerHydra) return true;
-		if (entity == owner) return true;
-		if (entity instanceof HydraPart hp && hp.getParent() == ownerHydra) return true;
-		return false;
-	}
-
-	/**
-	 * A mortar is "reflected" when its current owner is no longer the original
-	 * hydra/head that fired it. HydraMortar.hurtServer() reassigns
-	 * {@link #setOwner(Entity)} to the reflect source when the player hits the
-	 * mortar with a shield/sword, so checking "is owner a non-hydra living entity"
-	 * cleanly identifies reflected projectiles.
-	 *
-	 * Only reflected mortars get to bypass the hydra's self-damage guards and
-	 * distance check in Hydra.attackEntityFromPart, and only reflected mortars are
-	 * allowed to deal direct damage back to the firing hydra's parts during
-	 * detonate(). Self-fired mortars always skip damaging themselves even if they
-	 * land at our feet.
-	 */
-	private boolean isReflected() {
-		Entity owner = this.getOwner();
-		if (owner == null) return false;
-		if (owner instanceof Hydra) return false;
-		if (owner instanceof HydraPart hp) return hp.getParent() == null;
-		return true;
 	}
 
 	@Override
@@ -174,37 +159,14 @@ public class HydraMortar extends ThrowableProjectile {
 	}
 
 	private void detonate() {
+		if (!(this.level() instanceof ServerLevel serverLevel)) return;
 		float explosionPower = megaBlast ? 4.0F : 0.1F;
-
-		boolean flag = this.megaBlast && this.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.MOB_GRIEFING);
+		boolean flag = serverLevel.getGameRules().get(GameRules.MOB_GRIEFING);
 		this.level().explode(this, this.getX(), this.getY(), this.getZ(), explosionPower, flag, Level.ExplosionInteraction.MOB);
 
-		if (this.level() instanceof ServerLevel serverLevel) {
-			// Bumped nearby AOE sweep from inflate(1.0D) to inflate(2.5D). The hydra is a
-			// big mob: a reflected mortar that visibly splashes right next to a head 3~4
-			// blocks away from the projectile's origin used to fall *outside* the 1.0D
-			// inflated box, so the explode splash showed on screen but the direct-damage
-			// loop never picked that head/neck up and the hit looked like it did 0 damage.
-			// 2.5D gives us roughly a 6-block diameter sphere around the explosion which
-			// comfortably covers every head/neck/body part even on a fully-grown 7-head
-			// hydra, so any on-screen hit lands the expected damage.
-			boolean reflected = this.isReflected();
-			for (Entity nearby : this.level().getEntities(this, this.getBoundingBox().inflate(2.5D, 2.5D, 2.5D))) {
-				// For self-shot (non-reflected) mortars: never damage our own hydra or any
-				// of its child parts, even if the shot falls directly under our feet.
-				if (!reflected && this.isSameHydraFamily(nearby)) {
-					continue;
-				}
-				// For reflected mortars we intentionally keep the original
-				// `!fireImmune() || Hydra/HydraPart` bypass so reflected shots still
-				// damage the hydra even if its fire immunity would skip the hurt. Self
-				// shots intentionally do not get this bypass, combined with the
-				// isSameHydraFamily skip above = zero self damage.
-				if ((reflected && (!nearby.fireImmune() || nearby instanceof Hydra || nearby instanceof HydraPart) ||
-					 (!reflected && !nearby.fireImmune()))
-					&& nearby.hurtServer(serverLevel, TFDamageTypes.getIndirectEntityDamageSource(this.level(), TFDamageTypes.HYDRA_MORTAR, this, this.getOwner(), TFEntities.HYDRA.get()), DIRECT_DAMAGE)) {
-					nearby.igniteForSeconds(BURN_FACTOR);
-				}
+		for (Entity nearby : this.level().getEntities(this, this.getBoundingBox().inflate(1.0D, 1.0D, 1.0D))) {
+			if ((!nearby.fireImmune() || nearby instanceof Hydra || nearby instanceof HydraPart) && nearby.hurtServer(serverLevel, TFDamageTypes.getIndirectEntityDamageSource(this.level(), TFDamageTypes.HYDRA_MORTAR, this, this.getOwner(), TFEntities.HYDRA.get()), DIRECT_DAMAGE)) {
+				nearby.igniteForSeconds(BURN_FACTOR);
 			}
 		}
 
@@ -212,17 +174,21 @@ public class HydraMortar extends ThrowableProjectile {
 	}
 
 	@Override
+	public boolean deflect(ProjectileDeflection deflection, @Nullable Entity deflectingEntity, @Nullable EntityReference<Entity> newOwner, boolean byAttack, Vec3 power) {
+		setOnGround(false);
+		return super.deflect(deflection, deflectingEntity, newOwner, byAttack, power);
+	}
+
+	@Override
 	public boolean hurtServer(ServerLevel server, DamageSource source, float amount) {
 		super.hurtServer(server, source, amount);
 
-		if (source.getEntity() != null && !this.level().isClientSide()) {
-			Vec3 vec3d = source.getEntity().getLookAngle();
-			if (vec3d != null) {
-				// reflect faster and more accurately
-				this.shoot(vec3d.x(), vec3d.y(), vec3d.z(), 1.5F, 0.1F);  // reflect faster and more accurately
-				this.setOnGround(false);
-				this.fuse += 20;
-			}
+		if (source.getEntity() != null) {
+			Vec3 lookAngle = source.getEntity().getLookAngle();
+			// reflect faster and more accurately
+			this.shoot(lookAngle.x(), lookAngle.y(), lookAngle.z(), 1.5F, 0.1F);  // reflect faster and more accurately
+			this.setOnGround(false);
+			this.fuse += 20;
 
 			if (source.getEntity() instanceof LivingEntity) {
 				this.setOwner(source.getEntity());

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.phys.AABB;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.model.TFModelLayers;
 import twilightforest.client.model.entity.HydraModel;
@@ -53,6 +54,17 @@ public class HydraRenderer extends MobRenderer<Hydra, HydraRenderState, HydraMod
 	@Override
 	public HydraRenderState createRenderState() {
 		return new HydraRenderState();
+	}
+
+	// The hydra's visible body lives on the parts, which sit far outside the main entity's box
+	@Override
+	protected boolean affectedByCulling(Hydra entity) {
+		return false;
+	}
+
+	@Override
+	protected AABB getBoundingBoxForCulling(Hydra entity, float partialTicks) {
+		return entity.getBoundingBox().inflate(16.0D, 16.0D, 16.0D);
 	}
 
 	@Override
