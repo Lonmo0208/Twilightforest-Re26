@@ -121,7 +121,35 @@ tasks.named('test') {
 	enabled = false
 }
 
+// Compile-only C2ME API used by the optional density-function integration.
+// The C2ME jars are fetched from Modrinth and never bundled (C2ME is ARR);
+// at runtime the integration is only loaded when the c2me mod is present.
+configurations {
+	c2meCompileDeps
+}
+
+def c2meCompileLibs = layout.buildDirectory.dir("c2me-libs")
+
+tasks.register("extractC2meCompileDeps", Sync) {
+	from({ zipTree(configurations.c2meCompileDeps.singleFile) }) {
+		include "META-INF/jars/*.jar"
+		eachFile { it.path = it.name }
+		includeEmptyDirs = false
+	}
+	into c2meCompileLibs
+}
+
+tasks.named("compileJava") {
+	dependsOn "extractC2meCompileDeps"
+}
+
 dependencies {
+	// C2ME density-function compiler API (compile only, fetched + unpacked above)
+	c2meCompileDeps("maven.modrinth:c2me-fabric:0.4.2-alpha.0.60+26.2") { transitive = false }
+	compileOnly fileTree(dir: c2meCompileLibs, include: "*.jar")
+	compileOnly "org.ow2.asm:asm:9.10.1"
+	compileOnly "org.ow2.asm:asm-commons:9.10.1"
+
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
