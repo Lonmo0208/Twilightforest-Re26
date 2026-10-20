@@ -13,7 +13,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
@@ -370,11 +369,11 @@ public class HydraHeadContainer {
 			this.setHeadFacing();
 			this.executeAttacks();
 			this.playSounds();
-			this.setNeckPosition(); // Only update neck positions on server side
 		} else {
 			this.addMouthParticles();
 		}
 		this.animateHeadDeath();
+		this.setNeckPosition();
 	}
 
 	public boolean canRespawn() {
@@ -500,13 +499,13 @@ public class HydraHeadContainer {
 			this.faceVec(this.targetX, this.targetY, this.targetZ, 5.0F, this.hydra.getMaxHeadXRot());
 
 		} else {
-			if (this.isActive()) {
+			if (!this.isDead()) {
 				if (this.targetEntity != null) {
 					// watch the target entity
 					this.faceEntity(this.targetEntity, 5.0F, this.hydra.getMaxHeadXRot());
 				} else {
 					// while idle, look where the body is looking?
-					this.faceIdle(this.hydra.getMaxHeadXRot());
+					this.faceIdle(1.5F, this.hydra.getMaxHeadXRot());
 				}
 			}
 		}
@@ -659,61 +658,6 @@ public class HydraHeadContainer {
 		this.headEntity.setMouthOpen(getCurrentMouthOpen());
 	}
 
-	/**
-	 * Returns the authoritative world-space endpoint of this head (the exact same point
-	 * that setHeadPosition() writes into headEntity.setPos() this tick). Used by Hydra's
-	 * "passive bite" proximity check on the server: we only start a BITE_BEGINNING sequence
-	 * when the target is within ~1 block of this head endpoint, otherwise we fall back to
-	 * ranged attacks only.
-	 * <p>
-	 * Matches setHeadPosition() math byte-for-byte except it returns a Vec3 instead of
-	 * writing to the synced entity fields. partialTick is accepted for API symmetry with
-	 * the client-side animation path but is intentionally unused here — the server runs
-	 * this on integer tick boundaries when evaluating AI decisions.
-	 */
-	public Vec3 computeHeadPosition(float partialTick) {
-		// The pose of a head is driven by the per-state animation tables (setupStateRotations),
-		// so it pitches down and stretches its neck through the BITE/FLAME/MORTAR sequences.
-		float neckLength = this.getCurrentNeckLength();
-		float xRotation = this.getCurrentHeadXRotation();
-		float yRotation = this.getCurrentHeadYRotation();
-
-		float periodX = (this.headNum == 0 || this.headNum == 3) ? 20F : ((this.headNum == 1 || this.headNum == 4) ? 5.0f : 7.0F);
-		float periodY = (this.headNum == 0 || this.headNum == 4) ? 10F : ((this.headNum == 1 || this.headNum == 6) ? 6.0f : 5.0F);
-		float xSwing  = Mth.sin(this.hydra.tickCount / periodX) * 3.0F;
-		float ySwing  = Mth.sin(this.hydra.tickCount / periodY) * 5.0F;
-		if (this.isDead()) {
-			xSwing = ySwing = 0;
-		}
-
-		Vec3 vector = new Vec3(0, 0, neckLength);
-		vector = vector.xRot((xRotation * Mth.PI + xSwing) / 180.0F);
-		vector = vector.yRot((-(this.hydra.yBodyRot + yRotation + ySwing) * Mth.PI) / 180.0F);
-
-		return new Vec3(this.hydra.getX() + vector.x(), this.hydra.getY() + vector.y() + 3, this.hydra.getZ() + vector.z());
-	}
-
-	/**
-	 * Linear-interpolated position for a single neck segment along this head's neck.
-	 * idx=0 = body root, idx=4 = head endpoint (≈ computeHeadPosition). Mirrors the
-	 * server-side applyNeckInterpolations math. Only exposed for completeness; the
-	 * passive bite check uses computeHeadPosition() directly.
-	 */
-	public Vec3 computeNeckPosition(int idx, float partialTick) {
-		Vec3 headPos = computeHeadPosition(partialTick);
-		double factor = Math.max(0, Math.min(4, idx)) * 0.25D;
-		// Body root is taken as the hydra body origin + 3 block vertical offset that all
-		// neck math uses internally (matches computeHeadPosition's `+ 3` on Y).
-		double baseX = this.hydra.getX();
-		double baseY = this.hydra.getY() + 3;
-		double baseZ = this.hydra.getZ();
-		return new Vec3(
-				baseX + (headPos.x - baseX) * factor,
-				baseY + (headPos.y - baseY) * factor,
-				baseZ + (headPos.z - baseZ) * factor
-		);
-	}
-
 	private void executeAttacks() {
 		if (this.currentState == State.MORTAR_SHOOTING && this.ticksProgress % 10 == 0) {
 			HydraMortar mortar = new HydraMortar(TFEntities.HYDRA_MORTAR.get(), this.headEntity.level(), this.headEntity);
@@ -734,7 +678,7 @@ public class HydraHeadContainer {
 			for (Entity nearby : nearbyList) {
 				if (nearby instanceof LivingEntity living && nearby != this.hydra) {
 					//is a player holding a shield? Let's do some extra stuff!
-					if (nearby instanceof Player player && player.isUsingItem() && player.getUseItem().getItem() instanceof ShieldItem) {
+					if (nearby instanceof Player player && player.isBlocking()) {
 						if (!player.getCooldowns().isOnCooldown(player.getUseItem())) {
 							//cause severe damage and play a shatter sound
 							this.headEntity.level().playSound(null, player.blockPosition(), player.getUseItem().is(Items.SHIELD) ? TFSounds.WOOD_SHIELD_SHATTERS : TFSounds.METAL_SHIELD_SHATTERS, SoundSource.PLAYERS, 1.0F, player.getVoicePitch());
@@ -830,43 +774,35 @@ public class HydraHeadContainer {
 	}
 
 	private float getCurrentNeckLength() {
-		Float prevLength = this.prevState != null ? this.stateNeckLength[this.headNum].get(this.prevState) : null;
-		Float curLength = this.stateNeckLength[this.headNum].get(this.currentState);
-		float prev = prevLength != null ? prevLength : (curLength != null ? curLength : 7.0F);
-		float cur = curLength != null ? curLength : 7.0F;
-		float progress = this.ticksNeeded > 0 ? (float) this.ticksProgress / (float) this.ticksNeeded : 1.0F;
+		float prevLength = this.stateNeckLength[this.headNum].get(this.prevState);
+		float curLength = this.stateNeckLength[this.headNum].get(this.currentState);
+		float progress = (float) this.ticksProgress / (float) this.ticksNeeded;
 
-		return Mth.clampedLerp(progress, prev, cur);
+		return Mth.clampedLerp(progress, prevLength, curLength);
 	}
 
 	private float getCurrentHeadXRotation() {
-		Float prevRotation = this.prevState != null ? this.stateXRotations[this.headNum].get(this.prevState) : null;
-		Float currentRotation = this.stateXRotations[this.headNum].get(this.currentState);
-		float prev = prevRotation != null ? prevRotation : (currentRotation != null ? currentRotation : 60.0F);
-		float cur = currentRotation != null ? currentRotation : 60.0F;
-		float progress = this.ticksNeeded > 0 ? (float) this.ticksProgress / (float) this.ticksNeeded : 1.0F;
+		float prevRotation = this.stateXRotations[this.headNum].get(this.prevState);
+		float currentRotation = this.stateXRotations[this.headNum].get(this.currentState);
+		float progress = (float) this.ticksProgress / (float) this.ticksNeeded;
 
-		return Mth.clampedLerp(progress, prev, cur);
+		return Mth.clampedLerp(progress, prevRotation, currentRotation);
 	}
 
 	private float getCurrentHeadYRotation() {
-		Float prevRotation = this.prevState != null ? this.stateYRotations[this.headNum].get(this.prevState) : null;
-		Float currentRotation = this.stateYRotations[this.headNum].get(this.currentState);
-		float prev = prevRotation != null ? prevRotation : (currentRotation != null ? currentRotation : 0.0F);
-		float cur = currentRotation != null ? currentRotation : 0.0F;
-		float progress = this.ticksNeeded > 0 ? (float) this.ticksProgress / (float) this.ticksNeeded : 1.0F;
+		float prevRotation = this.stateYRotations[this.headNum].get(this.prevState);
+		float currentRotation = this.stateYRotations[this.headNum].get(this.currentState);
+		float progress = (float) this.ticksProgress / (float) this.ticksNeeded;
 
-		return Mth.clampedLerp(progress, prev, cur);
+		return Mth.clampedLerp(progress, prevRotation, currentRotation);
 	}
 
 	protected float getCurrentMouthOpen() {
-		Float prevOpen = this.prevState != null ? this.stateMouthOpen[this.headNum].get(this.prevState) : null;
-		Float curOpen = this.stateMouthOpen[this.headNum].get(this.currentState);
-		float prev = prevOpen != null ? prevOpen : (curOpen != null ? curOpen : 0.0F);
-		float cur = curOpen != null ? curOpen : 0.0F;
-		float progress = this.ticksNeeded > 0 ? (float) this.ticksProgress / (float) this.ticksNeeded : 1.0F;
+		float prevOpen = this.stateMouthOpen[this.headNum].get(this.prevState);
+		float curOpen = this.stateMouthOpen[this.headNum].get(this.currentState);
+		float progress = (float) this.ticksProgress / (float) this.ticksNeeded;
 
-		return Mth.clampedLerp(progress, prev, cur);
+		return Mth.clampedLerp(progress, prevOpen, curOpen);
 	}
 
 	/**
@@ -935,7 +871,7 @@ public class HydraHeadContainer {
 		this.necke.setXRot(endPitch + ((float) 0 - endPitch) * factor);
 	}
 
-	private void faceIdle(float pitchConstraint) {
+	private void faceIdle(float yawConstraint, float pitchConstraint) {
 		float angle = (((this.hydra.getYRot()) * 3.141593F) / 180F);
 		float distance = 30.0F;
 
@@ -943,7 +879,7 @@ public class HydraHeadContainer {
 		double dy = this.hydra.getY() + 3.0;
 		double dz = this.hydra.getZ() + Mth.cos(angle) * distance;
 
-		faceVec(dx, dy, dz, (float) 1.5, pitchConstraint);
+		faceVec(dx, dy, dz, yawConstraint, pitchConstraint);
 	}
 
 	public void faceEntity(@Nullable Entity entity, float yawConstraint, float pitchConstraint) {
@@ -993,7 +929,9 @@ public class HydraHeadContainer {
 	}
 
 	public void setHurtTime(int hurtTime) {
-		this.headEntity.hurtTime = hurtTime;
+		if (this.headEntity != null) {
+			this.headEntity.hurtTime = hurtTime;
+		}
 		this.performOnAllNecks(neck -> neck.hurtTime = hurtTime);
 	}
 
@@ -1022,16 +960,6 @@ public class HydraHeadContainer {
 	public boolean isBiting() {
 		return this.currentState == State.BITE_BEGINNING || this.currentState == State.BITE_READY
 			|| this.currentState == State.BITING || this.nextState == State.BITE_BEGINNING;
-	}
-
-	public boolean isMortar() {
-		return this.currentState == State.MORTAR_BEGINNING || this.currentState == State.MORTAR_SHOOTING
-			|| this.currentState == State.MORTAR_ENDING || this.nextState == State.MORTAR_BEGINNING;
-	}
-
-	public boolean isFlame() {
-		return this.currentState == State.FLAME_BEGINNING || this.currentState == State.FLAMING
-			|| this.currentState == State.FLAME_ENDING || this.nextState == State.FLAME_BEGINNING;
 	}
 
 	/**
