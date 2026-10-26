@@ -22,7 +22,7 @@ import com.mojang.blaze3d.vertex.*;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.DynamicGpuDataStorage;
-import net.minecraft.client.renderer.DynamicGpuDataStorageNonMapped;
+import net.minecraft.client.renderer.DynamicGpuDataStorageMapped;
 import net.minecraft.client.renderer.ShaderManager;
 
 import net.minecraft.resources.Identifier;
@@ -223,7 +223,7 @@ public class TFShaders {
 
 		private void ensureInitialized() {
 			if (!initialized && RenderSystem.tryGetDevice() != null) {
-				this.auroraUniforms = new DynamicGpuDataStorageNonMapped<>("TF Aurora UBO", AuroraSettings.SIZE, GpuBuffer.USAGE_UNIFORM, 2);
+				this.auroraUniforms = new DynamicGpuDataStorageMapped<>("TF Aurora UBO", AuroraSettings.SIZE, GpuBuffer.USAGE_UNIFORM, 2);
 				buildQuadBuffer();
 				initialized = true;
 			}
@@ -250,6 +250,10 @@ public class TFShaders {
 		public void renderAurora(LevelRenderContext context, int seed, float x, float y, float z, float intensity) {
 			ensureInitialized();
 			if (pipeline == null || !initialized) return;
+
+			// The mapped storage is a per-frame ring buffer: reset its write offset once per
+			// frame before writing the new AuroraSettings block.
+			this.auroraUniforms.endFrame();
 
 			ensureCompiled();
 			if (compiledPipeline == null || compiledPipeline.isClosed()) return;
