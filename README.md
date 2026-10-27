@@ -27,34 +27,22 @@ Download the Re26 builds from [Modrinth](https://modrinth.com/mod/twilightforest
 Translations can be submitted via pull requests.
 
 ## Maven
-### 1.20.6+
-https://maven.tamaized.com/#/releases/team-twilight/twilightforest/
+The NeoForge build is discontinued. The maintained Fabric build is available through Modrinth's Maven repository:
+https://modrinth.com/mod/twilightforest-re26/versions
 
-```
+```gradle
 repositories {
     maven {
-        url = "https://maven.tamaized.com/releases"
+        url = "https://api.modrinth.com/maven"
     }
 }
 
 dependencies {
-    implementation "team-twilight:twilightforest:{version}:universal"
+    modImplementation "maven.modrinth:twilightforest-re26:{version}"
 }
 ```
-### 1.20.5 and below
-https://modmaven.dev/teamtwilight/twilightforest/
 
-```
-repositories {
-    maven {
-        url = "https://modmaven.dev/"
-    }
-}
-
-dependencies {
-    implementation fg.deobf("teamtwilight:twilightforest:{version}:universal")
-}
-```
+Use the version number shown on the Modrinth versions page, for example `Fabric-4.8.4210`.
 
 ## YourKit
 ![](https://www.yourkit.com/images/yklogo.png)
