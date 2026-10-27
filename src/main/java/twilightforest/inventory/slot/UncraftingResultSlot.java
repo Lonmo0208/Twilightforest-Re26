@@ -68,7 +68,7 @@ public class UncraftingResultSlot extends ResultSlot {
 			}
 		}
 		
-		if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			twilightforest.TwilightForestMod.LOGGER.info("[UncraftingResultSlot] onTake: combined={}, recraftingCost={}, inputSlot={}", 
 				combined, this.uncraftingMatrix.recraftingCost, !this.inputSlot.getItem(0).isEmpty());
 		}
@@ -76,11 +76,11 @@ public class UncraftingResultSlot extends ResultSlot {
 		if (combined) {
 			// charge the player before the stacks empty
 			if (this.uncraftingMatrix.recraftingCost > 0) {
-				if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+				if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 					twilightforest.TwilightForestMod.LOGGER.info("[UncraftingResultSlot] Charging {} XP for recrafting", this.uncraftingMatrix.recraftingCost);
 				}
 				this.player.giveExperienceLevels(-this.uncraftingMatrix.recraftingCost);
-			} else if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+			} else if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 				twilightforest.TwilightForestMod.LOGGER.info("[UncraftingResultSlot] recraftingCost is 0, no XP charged");
 			}
 

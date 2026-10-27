@@ -40,7 +40,7 @@ public class CloudPuffParticle extends SingleQuadParticle {
 
 	@Override
 	public float getQuadSize(float partialTick) {
-		return this.quadSize * Mth.clamp(((float) this.age + partialTick) / (float) this.lifetime * 32.0F, 0.0F, 1.0F);
+		return this.quadSize * Math.clamp(((float) this.age + partialTick) / (float) this.lifetime * 32.0F, 0.0F, 1.0F);
 	}
 
 	@Override

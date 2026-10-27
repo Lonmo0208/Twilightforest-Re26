@@ -71,10 +71,10 @@ public abstract class StructureStartMixin implements ConqueredStructureStart {
 		}
 	}
 
-	@Inject(method = "loadStaticStart", at = @At("RETURN"))
-	private static void tf$loadConquerData(StructurePieceSerializationContext context, CompoundTag tag, long seed, CallbackInfoReturnable<StructureStart> cir) {
+	@Inject(method = "load", at = @At("RETURN"))
+	private static void tf$loadConquerData(StructurePieceSerializationContext context, CompoundTag tag, long seed, net.minecraft.world.level.levelgen.structure.Structure structure, CallbackInfoReturnable<StructureStart> cir) {
 		StructureStart start = cir.getReturnValue();
-		if (start != null && start != StructureStart.INVALID_START) {
+		if (start != null) {
 			((ConqueredStructureStart) (Object) start).loadFromTag(tag);
 		}
 	}

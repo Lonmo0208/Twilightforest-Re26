@@ -120,7 +120,7 @@ public final class LandmarkUtil {
 			if (level.hasChunk(packedX, packedZ)) {
 				StructureStart structureStart = level.getChunk(packedX, packedZ, ChunkStatus.STRUCTURE_STARTS).getStartForStructure(structure);
 
-				if (structureStart != null && structureStart.isValid()) return Optional.of(structureStart);
+				if (structureStart != null && !structureStart.getPieces().isEmpty()) return Optional.of(structureStart);
 			}
 		}
 

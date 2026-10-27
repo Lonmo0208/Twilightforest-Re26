@@ -1,5 +1,7 @@
 package twilightforest.world.components.placements;
 
+import net.minecraft.util.InclusiveRange;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -77,7 +79,7 @@ public class AvoidLandmarkModifier implements PlacementModifier {
 
 	@Override
 	public void modify(PlacementContext worldDecoratingHelper, RandomSource random, BlockPos blockPos, java.util.function.Consumer<BlockPos> collector) {
-		ChunkAccess chunk = worldDecoratingHelper.getLevel().getChunk(blockPos);
+		ChunkAccess chunk = worldDecoratingHelper.level().getChunk(blockPos);
 		Set<Map.Entry<Structure, LongSet>> structuresOverlappingChunk = chunk.getAllReferences().entrySet();
 
 		for (Map.Entry<Structure, LongSet> startsForStructure : structuresOverlappingChunk)
@@ -97,14 +99,14 @@ public class AvoidLandmarkModifier implements PlacementModifier {
 			int startChunkX = ChunkPos.getX(packedChunkCoord);
 			int startChunkZ = ChunkPos.getZ(packedChunkCoord);
 
-			ChunkAccess startChunk = worldDecoratingHelper.getLevel().getChunk(startChunkX, startChunkZ);
+			ChunkAccess startChunk = worldDecoratingHelper.level().getChunk(startChunkX, startChunkZ);
 			if (startChunk == null) {
 				continue;
 			}
 
 			StructureStart startForStructure = startChunk.getStartForStructure(structure);
 
-			if (startForStructure == null || !startForStructure.isValid())
+			if (startForStructure == null || !!startForStructure.getPieces().isEmpty())
 				continue;
 
 			BlockPos diff = blockPos.subtract(startForStructure.getBoundingBox().getCenter());
@@ -162,5 +164,10 @@ public class AvoidLandmarkModifier implements PlacementModifier {
 
 	private static DataResult<AvoidLandmarkModifier> validate(AvoidLandmarkModifier config) {
 		return config.occupiesSurface || config.occupiesUnderground || config.occupiesVegetation ? DataResult.success(config) : DataResult.error(() -> "Feature Decorator cannot have no occupancy");
+	}
+
+	@Override
+	public InclusiveRange<Integer> modifyXzDomain(InclusiveRange<Integer> domain) {
+		return domain;
 	}
 }

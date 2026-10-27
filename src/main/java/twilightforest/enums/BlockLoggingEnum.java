@@ -1,5 +1,7 @@
 package twilightforest.enums;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.StringRepresentable;
@@ -79,12 +81,12 @@ public enum BlockLoggingEnum implements StringRepresentable {
 				level.setBlock(pos, state.setValue(MULTILOGGED, AIR), Block.UPDATE_ALL);
 			}
 
-			return new ItemStack(stateFluid.getBucket());
+			return new ItemStack(BuiltInRegistries.ITEM.getValue(stateFluid.getBucket()));
 		}
 
 		@Override
-		default boolean canPlaceLiquid(@Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-			return state.hasProperty(MULTILOGGED) && Ref.FLUIDS.containsKey(fluid) && !fluid.equals(state.getValue(MULTILOGGED).fluid) && state.getValue(MULTILOGGED) == AIR;
+		default boolean canPlaceLiquid(@Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, FluidState fluidState) {
+			return state.hasProperty(MULTILOGGED) && Ref.FLUIDS.containsKey(fluidState.getType()) && !fluidState.getType().equals(state.getValue(MULTILOGGED).fluid) && state.getValue(MULTILOGGED) == AIR;
 		}
 
 		@Override

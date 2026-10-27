@@ -1,5 +1,7 @@
 package twilightforest.client;
 
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
+
 import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import com.mojang.renderpearl.api.buffers.GpuBuffer;
 import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
@@ -9,10 +11,10 @@ import com.mojang.renderpearl.api.pipeline.BlendFunction;
 import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
 import com.mojang.renderpearl.api.pipeline.ColorTargetState;
 import com.mojang.renderpearl.api.pipeline.DepthStencilState;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.renderpearl.api.pipeline.CompareOp;
 import com.mojang.renderpearl.api.pipeline.CompiledRenderPipeline;
-import com.mojang.renderpearl.api.pipeline.ShaderSource;
+import com.mojang.blaze3d.pipeline.ShaderSource;
 import com.mojang.renderpearl.api.pipeline.ShaderType;
 import com.mojang.renderpearl.api.pipeline.UniformType;
 import com.mojang.renderpearl.api.commands.RenderPass;
@@ -151,7 +153,7 @@ public class TFShaders {
 			if (this.pendingCompile == null) {
 				try {
 					this.shaderSource = new ModShaderSource(resources);
-					this.pendingCompile = RenderSystem.getDevice().compilePipeline(this.pipeline, this.shaderSource, Util.backgroundExecutor());
+					this.pendingCompile = new com.mojang.blaze3d.pipeline.PipelineBuilder(RenderSystem.getDevice()).compilePipeline(this.pipeline, this.shaderSource, Util.backgroundExecutor());
 				} catch (RuntimeException e) {
 					LOGGER.error("Failed to compile aurora render pipeline {}", pipeline.getLocation(), e);
 					this.pendingCompile = null;
@@ -207,7 +209,7 @@ public class TFShaders {
 			// must be converted to the on-disk location (…/shaders/core/aurora/aurora.vsh). Include files
 			// requested by the GLSL #include preprocessor (e.g. minecraft:shaders/include/fog.glsl) arrive
 			// with a null ShaderType and are already full resource locations.
-			Identifier location = type != null ? type.idConverter().idToFile(id) : id;
+			Identifier location = type != null ? Identifier.fromNamespaceAndPath(id.getNamespace(), "shaders/" + id.getPath() + type.getExtension()) : id;
 			try (BufferedReader reader = new BufferedReader(resources.getResourceOrThrow(location).openAsReader())) {
 				StringBuilder sb = new StringBuilder();
 				String line;

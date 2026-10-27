@@ -61,7 +61,7 @@ public class Troll extends Monster implements RangedAttackMob {
 
 	@Override
 	public void registerGoals() {
-		this.aiArrowAttack = new RangedAttackGoal(this, 1.0D, 20, 60, 15.0F);
+		this.aiArrowAttack = new RangedAttackGoal(this, 1.0D, () -> 20, () -> 60, 15.0F);
 		this.aiAttackOnCollide = new MeleeAttackGoal(this, 1.2D, false);
 
 		this.goalSelector.addGoal(1, new FloatGoal(this));

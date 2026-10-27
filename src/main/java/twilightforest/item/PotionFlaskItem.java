@@ -132,7 +132,7 @@ public class PotionFlaskItem extends Item {
 					}
 				}
 				if (!player.isCreative() && !player.isSpectator() && player instanceof ServerPlayer serverPlayer) {
-					flaskContents.potion().potion().ifPresent(potion -> TFDataAttachments.getOrEmpty(player, TFDataAttachments.FLASK_DOSES, twilightforest.components.entity.PotionFlaskTrackingAttachment::new).trackDrink(potion, serverPlayer));
+					flaskContents.potion().potion().ifPresent(potion -> TFDataAttachments.getOrCreate(player, TFDataAttachments.FLASK_DOSES, twilightforest.components.entity.PotionFlaskTrackingAttachment::new).trackDrink(potion, serverPlayer));
 				}
 
 				player.awardStat(Stats.ITEM_USED.get(this));

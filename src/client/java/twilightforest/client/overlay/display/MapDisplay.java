@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.state.MapRenderState;
-import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureHandle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
@@ -61,10 +61,10 @@ public class MapDisplay implements ItemDisplay {
 		graphics.pose().scale(mapScale, mapScale);
 
 		if (mapRenderState.texture != null) {
-			AbstractTexture texture = minecraft.getTextureManager().getTexture(mapRenderState.texture);
+			TextureHandle texture = minecraft.getTextureManager().getTexture(mapRenderState.texture);
 			graphics.blit(
-				texture.getTextureView(),
-				texture.getSampler(),
+				texture.textureView(),
+				texture.sampler(),
 				0, 0, MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE,
 				0.0F, 1.0F, 0.0F, 1.0F
 			);
@@ -95,10 +95,10 @@ public class MapDisplay implements ItemDisplay {
 		graphics.pose().scale(4.0F, 4.0F);
 		graphics.pose().translate(-0.125F, 0.125F);
 
-		AbstractTexture decorationTexture = minecraft.getTextureManager().getTexture(atlasSprite.atlasLocation());
+		TextureHandle decorationTexture = minecraft.getTextureManager().getTexture(atlasSprite.atlasLocation());
 		graphics.blit(
-			decorationTexture.getTextureView(),
-			decorationTexture.getSampler(),
+			decorationTexture.textureView(),
+			decorationTexture.sampler(),
 			-1, -1, 1, 1,
 			atlasSprite.getU0(), atlasSprite.getU1(),
 			atlasSprite.getV1(), atlasSprite.getV0()

@@ -1,5 +1,7 @@
 package twilightforest.world.components.placements;
 
+import net.minecraft.util.InclusiveRange;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -43,7 +45,7 @@ public class ChunkBlanketingModifier implements PlacementModifier {
 
 	@Override
 	public void modify(PlacementContext context, RandomSource random, BlockPos placement, Consumer<BlockPos> collector) {
-		WorldGenLevel level = context.getLevel();
+		WorldGenLevel level = context.level();
 		ChunkAccess chunk = level.getChunk(placement);
 
 		int chunkOriginX = chunk.getPos().getMinBlockX();
@@ -82,5 +84,10 @@ public class ChunkBlanketingModifier implements PlacementModifier {
 	@Override
 	public MapCodec<? extends PlacementModifier> codec() {
 		return CODEC;
+	}
+
+	@Override
+	public InclusiveRange<Integer> modifyXzDomain(InclusiveRange<Integer> domain) {
+		return domain;
 	}
 }

@@ -1,5 +1,7 @@
 package twilightforest.entity.passive;
 
+import net.minecraft.world.level.material.MapColor;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -228,7 +230,7 @@ public class QuestRam extends Animal implements EnforcedHomePoint {
 	}
 
 	private void animateAddColor(DyeColor color, int iterations) {
-		int colorVal = color.getTextureDiffuseColor();
+		int colorVal = MapColor.DYE_TO_DEFAULT_COLOR.pick(color).col;
 
 		if (!this.level().isClientSide()) {
 			for (ServerPlayer serverplayer : ((ServerLevel) this.level()).players()) {

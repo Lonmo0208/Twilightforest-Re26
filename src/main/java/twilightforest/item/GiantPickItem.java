@@ -69,7 +69,7 @@ public class GiantPickItem extends Item {
 	public boolean canDestroyBlock(ItemStack stack, BlockState state, Level level, BlockPos pos, LivingEntity user) {
 		boolean ret = super.canDestroyBlock(stack, state, level, pos, user);
 		if (ret && user instanceof Player player) {
-			var attachment = TFDataAttachments.getOrEmpty(player, TFDataAttachments.GIANT_PICKAXE_MINING, twilightforest.components.entity.GiantPickaxeMiningAttachment::new);
+			var attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.GIANT_PICKAXE_MINING, twilightforest.components.entity.GiantPickaxeMiningAttachment::new);
 			if (attachment.getMining() != level.getGameTime()) {
 				attachment.setMining(level.getGameTime());
 				attachment.setBreaking(false);

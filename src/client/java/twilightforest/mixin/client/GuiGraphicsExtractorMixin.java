@@ -1,17 +1,19 @@
 package twilightforest.mixin.client;
 
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
+
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.renderpearl.api.textures.GpuSampler;
 import com.mojang.renderpearl.api.textures.GpuTextureView;
 import java.lang.reflect.Field;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.client.renderer.state.gui.GuiTextRenderState;
-import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureHandle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -75,11 +77,11 @@ public abstract class GuiGraphicsExtractorMixin {
 
 		// Render the map background
 		if (mapRenderState.texture != null) {
-			AbstractTexture texture = minecraft.getTextureManager().getTexture(mapRenderState.texture);
+			TextureHandle texture = minecraft.getTextureManager().getTexture(mapRenderState.texture);
 			this.innerBlit(
 				RenderPipelines.GUI_TEXTURED,
-				texture.getTextureView(),
-				texture.getSampler(),
+				texture.textureView(),
+				texture.sampler(),
 				0, 0, 128, 128,
 				0.0F, 1.0F, 0.0F, 1.0F, -1
 			);
@@ -137,13 +139,13 @@ public abstract class GuiGraphicsExtractorMixin {
 
 		TextureAtlasSprite atlasSprite = decoration.atlasSprite;
 		if (atlasSprite != null) {
-			AbstractTexture decorationTexture = minecraft.getTextureManager().getTexture(atlasSprite.atlasLocation());
+			TextureHandle decorationTexture = minecraft.getTextureManager().getTexture(atlasSprite.atlasLocation());
 			// Flip V coordinates for player icons (matching MagicMapPlayerIconRenderer's UV flipping)
 			// This ensures the player icon appears correctly oriented
 			this.innerBlit(
 				RenderPipelines.GUI_TEXTURED,
-				decorationTexture.getTextureView(),
-				decorationTexture.getSampler(),
+				decorationTexture.textureView(),
+				decorationTexture.sampler(),
 				-1, -1, 1, 1,
 				atlasSprite.getU0(), atlasSprite.getU1(),
 				atlasSprite.getV1(), atlasSprite.getV0(),
@@ -156,7 +158,7 @@ public abstract class GuiGraphicsExtractorMixin {
 		if (decoration.name != null) {
 			Font font = minecraft.font;
 			float width = font.width(decoration.name);
-			float labelScale = Mth.clamp(25.0F / width, 0.0F, 6.0F / 9.0F);
+			float labelScale = Math.clamp(25.0F / width, 0.0F, 6.0F / 9.0F);
 			this.pose.pushMatrix();
 			this.pose.translate(
 				decoration.x / 2.0F + 64.0F - width * labelScale / 2.0F,

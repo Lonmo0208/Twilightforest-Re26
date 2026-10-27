@@ -205,7 +205,7 @@ public class MagicPaintingRenderer extends EntityRenderer<MagicPainting, MagicPa
 				double x = camPos.x - paintPos.x;
 				double z = camPos.z - paintPos.z;
 				double yRot = Mth.wrapDegrees((float) (Mth.atan2(z, x) * (double) (180F / (float) Math.PI)) - 90.0F - state.yRot);
-				return widthDiff + Mth.clamp(yRot * parallax.multiplier() * widthDiff, -widthDiff, widthDiff);
+				return widthDiff + Math.clamp(yRot * parallax.multiplier() * widthDiff, -widthDiff, widthDiff);
 			}
 			case SINE_TIME -> {
 				return widthDiff + (Math.sin(state.ageInTicks * parallax.multiplier()) * widthDiff);
@@ -232,7 +232,7 @@ public class MagicPaintingRenderer extends EntityRenderer<MagicPainting, MagicPa
 				double pythagoras = Math.sqrt(x * x + z * z);
 				double xRot = Mth.wrapDegrees((float) (-(Mth.atan2(y, pythagoras) * (double) (180F / (float) Math.PI))));
 
-				return heightDiff - Mth.clamp(xRot * parallax.multiplier() * heightDiff, -heightDiff, heightDiff);
+				return heightDiff - Math.clamp(xRot * parallax.multiplier() * heightDiff, -heightDiff, heightDiff);
 			}
 			case SINE_TIME -> {
 				return heightDiff - (Math.cos(state.ageInTicks * parallax.multiplier()) * heightDiff);
@@ -309,7 +309,7 @@ public class MagicPaintingRenderer extends EntityRenderer<MagicPainting, MagicPa
 			}
 		}
 
-		a = Mth.clamp(a, 0.0F, 1.0F);
+		a = Math.clamp(a, 0.0F, 1.0F);
 		if (opacityModifier.type().powerOfMultiplier()) a = (float) Math.pow(a, opacityModifier.multiplier());
 		if (opacityModifier.invert()) a = 1.0F - a;
 		a = a * (opacityModifier.max() - opacityModifier.min()) + opacityModifier.min();

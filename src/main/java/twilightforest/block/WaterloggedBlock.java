@@ -27,8 +27,8 @@ public interface WaterloggedBlock extends BucketPickup, LiquidBlockContainer {
 	BlockState setWaterlog(BlockState prior, boolean doWater);
 
 	@Override
-	default boolean canPlaceLiquid(@Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-		return !this.isStateWaterlogged(state) && fluid == Fluids.WATER;
+	default boolean canPlaceLiquid(@Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, FluidState fluidState) {
+		return !this.isStateWaterlogged(state) && fluidState.getType() == Fluids.WATER;
 	}
 
 	@Override

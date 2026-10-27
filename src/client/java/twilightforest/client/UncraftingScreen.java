@@ -1,5 +1,7 @@
 package twilightforest.client;
 
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -9,7 +11,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -132,30 +134,30 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+	public void extractRenderState(GuiGraphicsExtractor graphics) {
 		if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
-			this.recipeBookComponent.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+			this.recipeBookComponent.extractRenderState(graphics);
 		} else {
-			super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
-			this.recipeBookComponent.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+			super.extractRenderState(graphics);
+			this.recipeBookComponent.extractRenderState(graphics);
 			this.recipeBookComponent.extractGhostRecipe(graphics, true);
 		}
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+	public void extractBackground(GuiGraphicsExtractor graphics) {
 		int frameX = this.leftPos;
 		int frameY = (this.height - this.imageHeight) / 2;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, frameX, frameY, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
-		super.extractBackground(graphics, mouseX, mouseY, partialTicks);
+		super.extractBackground(graphics);
 		if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
 			// background is handled by extractBackground
 		}
 	}
 
 	@Override
-	protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-		super.extractLabels(graphics, mouseX, mouseY);
+	protected void extractLabels(GuiGraphicsExtractor graphics) {
+		super.extractLabels(graphics);
 		graphics.text(this.font, this.title, 6, 6, 4210752, false);
 		if (TFConfig.disableUncraftingOnly) {
 			graphics.text(this.font, Component.translatable("container.twilightforest.uncrafting_table.uncrafting_disabled").withStyle(ChatFormatting.DARK_RED), 6, this.imageHeight - 96 + 2, 4210752, false);
@@ -165,8 +167,8 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 	}
 
 	@Override
-	public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
-		super.extractContents(graphics, mouseX, mouseY, partialTicks);
+	public void extractContents(GuiGraphicsExtractor graphics) {
+		super.extractContents(graphics);
 
 		UncraftingMenu tfContainer = this.menu;
 
@@ -242,8 +244,8 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 	}
 
 	@Override
-	protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeft, int guiTop) {
-		return this.recipeBookComponent.hasClickedOutside(mouseX, mouseY, this.leftPos, this.topPos, this.imageWidth, this.imageHeight) && super.hasClickedOutside(mouseX, mouseY, guiLeft, guiTop);
+	protected boolean hasClickedOutside(double mouseX, double mouseY) {
+		return this.recipeBookComponent.hasClickedOutside(mouseX, mouseY, this.leftPos, this.topPos, this.imageWidth, this.imageHeight) && super.hasClickedOutside(mouseX, mouseY);
 	}
 
 	private void drawSlotAsBackground(GuiGraphicsExtractor graphics, Slot backgroundSlot, Slot appearSlot) {
@@ -263,20 +265,20 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 	}
 
 	@Override
-	protected void extractTooltip(GuiGraphicsExtractor graphics, int pX, int pY) {
+	protected void extractTooltip(GuiGraphicsExtractor graphics) {
 		UncraftingMenu container = this.menu;
 
 		for (int i = 0; i < 9; i++) {
 			if (container.getCarried().isEmpty() && container.slots.get(2 + i).hasItem() && UncraftingMenu.isMarked(container.slots.get(2 + i).getItem()) && this.hoveredSlot == container.slots.get(11 + i) && !container.slots.get(11 + i).hasItem()) {
-				graphics.setTooltipForNextFrame(this.font, java.util.List.of(Component.translatable("container.twilightforest.uncrafting_table.disabled_item").withStyle(ChatFormatting.RED)), java.util.Optional.empty(), pX, pY);
+				graphics.setTooltipForNextFrame(this.font, java.util.List.of(Component.translatable("container.twilightforest.uncrafting_table.disabled_item").withStyle(ChatFormatting.RED)), java.util.Optional.empty(), 0, 0);
 			}
 		}
 
 		//check if we're hovering over a banned uncraftable item
 		if (container.slots.getFirst().hasItem() && container.slots.getFirst().getItem().is(TFItemTags.BANNED_UNCRAFTABLES) && container.slots.getFirst().equals(this.hoveredSlot)) {
-			graphics.setTooltipForNextFrame(this.font, java.util.List.of(Component.translatable("container.twilightforest.uncrafting_table.disabled_item").withStyle(ChatFormatting.RED)), java.util.Optional.empty(), pX, pY);
+			graphics.setTooltipForNextFrame(this.font, java.util.List.of(Component.translatable("container.twilightforest.uncrafting_table.disabled_item").withStyle(ChatFormatting.RED)), java.util.Optional.empty(), 0, 0);
 		} else {
-			super.extractTooltip(graphics, pX, pY);
+			super.extractTooltip(graphics);
 		}
 	}
 
@@ -310,9 +312,9 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 		}
 
 		@Override
-		protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+		protected void extractContents(GuiGraphicsExtractor graphics) {
 			if (this.visible) {
-				this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
+				
 
 				int textureX = 176;
 				int textureY = 0;
@@ -337,9 +339,9 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 		}
 
 		@Override
-		protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+		protected void extractContents(GuiGraphicsExtractor graphics) {
 			if (this.visible) {
-				this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
+				
 
 				int textureX = 176;
 				int textureY = 41;

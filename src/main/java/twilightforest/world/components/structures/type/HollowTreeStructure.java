@@ -194,7 +194,7 @@ public class HollowTreeStructure extends Structure implements DecorationClearanc
 		int height = Math.min(this.height.sample(random) + blockPos.getY(), heightAccessor.getMaxY()) - blockPos.getY();
 
 		if (height < 16)
-			return StructureStart.INVALID_START;
+			return null;
 
 		int radius = this.radius.sample(random);
 
@@ -209,7 +209,7 @@ public class HollowTreeStructure extends Structure implements DecorationClearanc
 
 		StructurePiecesBuilder structurepiecesbuilder = stub.getPiecesBuilder();
 		StructureStart structurestart = new StructureStart(this, chunkPos, 0, structurepiecesbuilder.build());
-		return structurestart.isValid() ? structurestart : StructureStart.INVALID_START;
+		return !structurestart.getPieces().isEmpty() ? structurestart : null;
 	}
 
 	@Override

@@ -62,7 +62,7 @@ public class AlphaYeti extends BaseTFBoss implements RangedAttackMob, IHostileMo
 		this.goalSelector.addGoal(0, new FloatGoal(this));
 		this.goalSelector.addGoal(1, new YetiTiredGoal(this, 100));
 		this.goalSelector.addGoal(3, new YetiRampageGoal(this, 10, 180));
-		this.goalSelector.addGoal(4, new RangedAttackGoal(this, 1.0D, 40, 40, 40.0F) {
+		this.goalSelector.addGoal(4, new RangedAttackGoal(this, 1.0D, () -> 40, () -> 40, 40.0F) {
 			@Override
 			public boolean canUse() {
 				return AlphaYeti.this.getRandom().nextInt(50) > 0 && AlphaYeti.this.getTarget() != null && AlphaYeti.this.distanceToSqr(AlphaYeti.this.getTarget()) >= 16.0D && super.canUse(); // Give us a chance to move to the next AI

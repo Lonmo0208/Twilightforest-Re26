@@ -6,7 +6,8 @@
 
 package twilightforest.client.model.entity;
 
-import net.minecraft.client.model.BabyModelTransform;
+import net.minecraft.client.model.geom.builders.MeshTransformer;
+
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +18,7 @@ import twilightforest.client.state.entity.BirdRenderState;
 import java.util.Set;
 
 public class PenguinModel extends EntityModel<BirdRenderState> {
-	public static final MeshTransformer BABY_TRANSFORMER = new BabyModelTransform(false, 5.0F, 0.0F, Set.of("head"));
+	public static final MeshTransformer BABY_TRANSFORMER = MeshTransformer.scaling(0.5F);
 
 	public final ModelPart head;
 	public final ModelPart rightWing;

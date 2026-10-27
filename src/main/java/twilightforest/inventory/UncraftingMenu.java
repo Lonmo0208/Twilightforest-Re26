@@ -116,7 +116,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 			twilightforest.network.SyncUncraftingCostsPacket.send(serverPlayer, this.uncraftingMatrix.uncraftingCost, this.uncraftingMatrix.recraftingCost);
 		}
 
-		if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			// Debug slot listing
 			NonNullList<Slot> slots = this.slots;
 
@@ -206,7 +206,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 					}
 					// Do NOT reset recraftingCost here - it will be recalculated in Phase 2 if needed
 
-					if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+					if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 						TwilightForestMod.LOGGER.info("[UncraftingMenu] tinkerInput changed: uncraftingCost={}, recraftingCost={}, recipeType={}, assemblyEmpty={}",
 							this.uncraftingMatrix.uncraftingCost, this.uncraftingMatrix.recraftingCost, recipe.getType(), this.assemblyMatrix.isEmpty());
 					}
@@ -271,7 +271,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 					ItemStack input = this.tinkerInput.getItem(0);
 					ItemStack result = this.tinkerResult.getItem(0);
 
-					if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+					if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 						TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting check: input={}, result={}, isEmpty={}, triggeredBy={}",
 							input.getItem(), result.getItem(), result.isEmpty(), inventory == this.tinkerInput ? "tinkerInput" : "assemblyMatrix");
 					}
@@ -297,13 +297,13 @@ public class UncraftingMenu extends RecipeBookMenu {
 						this.uncraftingMatrix.uncraftingCost = 0;
 						this.uncraftingMatrix.recraftingCost = this.calculateRecraftingCost();
 
-						if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+						if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 							TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting success: recraftingCost={}, inputEnchants={}, outputEnchants={}", 
 								this.uncraftingMatrix.recraftingCost, 
 								input.getEnchantments().size(), 
 								result.getEnchantments().size());
 						}
-					} else if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+					} else if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 						if (result.isEmpty()) {
 							TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting failed: no matching recipe found for combined matrix");
 						} else {
@@ -383,7 +383,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 						ItemStack input = this.tinkerInput.getItem(0);
 						ItemStack result = this.tinkerResult.getItem(0);
 
-						if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+						if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 							TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting check: input={}, result={}, isEmpty={}",
 								input.getItem(), result.getItem(), result.isEmpty());
 						}
@@ -409,13 +409,13 @@ public class UncraftingMenu extends RecipeBookMenu {
 							this.uncraftingMatrix.uncraftingCost = 0;
 							this.uncraftingMatrix.recraftingCost = this.calculateRecraftingCost();
 
-							if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+							if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 								TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting success: recraftingCost={}, inputEnchants={}, outputEnchants={}",
 									this.uncraftingMatrix.recraftingCost,
 									input.getEnchantments().size(),
 									result.getEnchantments().size());
 							}
-						} else if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+						} else if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 							if (result.isEmpty()) {
 								TwilightForestMod.LOGGER.info("[UncraftingMenu] recrafting failed: no matching recipe found for combined matrix");
 							} else {
@@ -452,7 +452,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 		} // Close if(false) block for old code
 
 		if (!this.level.isClientSide() && this.player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
-			if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+			if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 				TwilightForestMod.LOGGER.info("[UncraftingMenu] Syncing costs to client: uncraftingCost={}, recraftingCost={}",
 					this.uncraftingMatrix.uncraftingCost, this.uncraftingMatrix.recraftingCost);
 			}
@@ -597,7 +597,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 					result.add((RecipeHolder<CraftingRecipe>) holder);
 				}
 			}
-			if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+			if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 				TwilightForestMod.LOGGER.info("[UncraftingMenu] getRecipesFor input={}, found={} recipes", input, result.size());
 			}
 			return result.toArray(new RecipeHolder[0]);
@@ -718,7 +718,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 		} else {
 			cost = 0;
 		}
-		if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			TwilightForestMod.LOGGER.info("[UncraftingMenu] calculateUncraftingCost: storedGhostRecipe={}, assemblyMatrix.isEmpty={}, cost={}",
 				this.storedGhostRecipe, this.assemblyMatrix.isEmpty(), cost);
 		}
@@ -733,7 +733,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 		ItemStack output = this.tinkerResult.getItem(0);
 
 		if (input.isEmpty() || output.isEmpty()) {
-			if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+			if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 				TwilightForestMod.LOGGER.info("[UncraftingMenu] calculateRecraftingCost: input or output empty, returning 0");
 			}
 			return 0;
@@ -759,7 +759,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 
 		int finalCost = (int) Math.round(cost * TFConfig.repairingXpCostMultiplier);
 
-		if (net.minecraft.SharedConstants.IS_RUNNING_IN_IDE) {
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			TwilightForestMod.LOGGER.info("[UncraftingMenu] calculateRecraftingCost: enchantCost={}, damagedCost={}, baseCost={}, multiplier={}, finalCost={}, inputEnchants={}, outputEnchants={}",
 				enchantCost, damagedCost, cost, TFConfig.repairingXpCostMultiplier, finalCost,
 				input.getEnchantments().size(), output.getEnchantments().size());

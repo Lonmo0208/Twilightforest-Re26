@@ -15,7 +15,7 @@ public class OminousFireDamageSource extends DamageSource {
 	@Override
 	public Component getLocalizedDeathMessage(LivingEntity living) {
 		if (living.getKillCredit() instanceof Zombie zombie && zombie.hasAttached(TFDataAttachments.ZOMBIFIED_PLAYER)) {
-			var profile = TFDataAttachments.getOrEmpty(zombie, TFDataAttachments.ZOMBIFIED_PLAYER, () -> net.minecraft.core.UUIDUtil.createOfflineProfile("GizmoTheMoonPig"));
+			var profile = TFDataAttachments.getOrCreate(zombie, TFDataAttachments.ZOMBIFIED_PLAYER, () -> net.minecraft.core.UUIDUtil.createOfflineProfile("GizmoTheMoonPig"));
 			if (living instanceof Player player && player.getGameProfile().name().equals(profile.name())) {
 				return Component.translatable("death.attack.twilightforest.ominousFire.zombified_player.self", living.getDisplayName());
 			}

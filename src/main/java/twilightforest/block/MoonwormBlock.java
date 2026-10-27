@@ -46,7 +46,7 @@ public class MoonwormBlock extends CritterBlock implements SimpleWaterloggedBloc
 
 	@Override
 	public FluidState getFluidState(BlockState state) {
-		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource() : super.getFluidState(state);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class MoonwormBlock extends CritterBlock implements SimpleWaterloggedBloc
 	}
 
 	@Override
-	public boolean canPlaceLiquid(@Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, Fluid type) {
+	public boolean canPlaceLiquid(@Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, FluidState fluidState) {
 		return true;
 	}
 

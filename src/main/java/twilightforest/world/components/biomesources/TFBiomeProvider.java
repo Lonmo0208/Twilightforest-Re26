@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeResolver;
+import net.minecraft.world.level.biome.NoiseBiomeResolver;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ import twilightforest.world.components.layer.BiomeDensitySource;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class TFBiomeProvider extends BiomeSource implements BiomeResolver {
+public class TFBiomeProvider extends BiomeSource implements NoiseBiomeResolver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TFBiomeProvider.class);
 
 	public static final MapCodec<TFBiomeProvider> TF_CODEC = BiomeDensitySource.CODEC.xmap(
@@ -71,13 +71,12 @@ public class TFBiomeProvider extends BiomeSource implements BiomeResolver {
 	}
 
 	@Override
-	public void addDebugInfo(List<String> info, BlockPos cameraPos, Climate.Sampler sampler) {
-		super.addDebugInfo(info, cameraPos, sampler);
+	public void addDebugInfo(java.util.function.BiConsumer<String, String> addFact, BlockPos cameraPos, Climate.Sampler sampler) {
+		super.addDebugInfo(addFact, cameraPos, sampler);
 
-		this.biomeTerrainDataHolder.value().addDebugInfo(info, cameraPos);
 	}
     @Override
-    public net.minecraft.world.level.biome.BiomeResolver createResolver(net.minecraft.world.level.biome.Climate.Sampler sampler) {
+    public NoiseBiomeResolver createResolver(net.minecraft.world.level.biome.Climate.Sampler sampler) {
         return this; // TODO-263: Basic implementation, may need refinement
     }
     }

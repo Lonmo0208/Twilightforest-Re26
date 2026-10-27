@@ -3,7 +3,6 @@ package twilightforest.client.overlay;
 import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -29,7 +28,7 @@ public class OreMeterOverlay implements HudElement {
 	private static final DecimalFormat FORMAT = new DecimalFormat("0.000");
 
 	@Override
-	public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, @NonNull DeltaTracker deltaTracker) {
+	public void extractRenderState(@NonNull GuiGraphicsExtractor graphics) {
 		Minecraft minecraft = Minecraft.getInstance();
 		Player player = minecraft.player;
 		if (player == null) return;

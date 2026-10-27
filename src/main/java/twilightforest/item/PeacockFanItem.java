@@ -39,7 +39,7 @@ public class PeacockFanItem extends Item {
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 
-		boolean flag = !player.onGround() && !player.isSwimming() && !Boolean.TRUE.equals(TFDataAttachments.getOrEmpty(player, TFDataAttachments.FEATHER_FAN, () -> false));
+		boolean flag = !player.onGround() && !player.isSwimming() && !Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.FEATHER_FAN, () -> false));
 
 		if (!level.isClientSide()) {
 			int fanned = this.doFan(level, player);

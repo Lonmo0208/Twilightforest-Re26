@@ -7,7 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.CarverOutput;
-import net.minecraft.world.level.levelgen.WorldGenerationContext;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
@@ -47,7 +47,7 @@ public class TFCavesCarver implements WorldCarver {
 	}
 
 	@Override
-	public boolean carve(WorldGenerationContext ctx, RandomSource random, ChunkPos pos1, ChunkPos pos2, CarverOutput output) {
+	public boolean carve(VerticalAnchor.Context ctx, RandomSource random, ChunkPos pos1, ChunkPos pos2, CarverOutput output) {
 		if (this.isHighlands && (Math.clamp(LegacyLandmarkPlacements.manhattanDistanceFromLandmarkCenter(pos2.x(), pos2.z()), 0, 0b11) & 0b1) == 1)
 			return false; // If highlands, enforces a binary grid (diagonal range of 4 chunks) of possible placements around the structure center, with center being one of the zero tiles
 

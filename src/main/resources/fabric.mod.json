@@ -38,9 +38,6 @@
 		],
 		"fabric-datagen": [
 			"twilightforest.datagen.TFDataGeneratorEntrypoint"
-		],
-		"modmenu": [
-			"twilightforest.config.ModMenuIntegration"
 		]
 	},
 	"mixins": [
@@ -53,7 +50,7 @@
 	"accessWidener": "twilightforest.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.20.0",
-		"minecraft": "26.4-snapshot-5",
+		"minecraft": "*",
 		"java": ">=25",
 		"fabric-api": "*",
 		"forgeconfigapiport": ">=26.2.0"

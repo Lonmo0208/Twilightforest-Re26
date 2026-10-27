@@ -145,7 +145,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 	@Override
 	public FluidState getFluidState(BlockState state) {
 		// The portal itself is kind of technically water, and this checks the checkbox in Sugar Cane logic to not destroy itself when portal is made.
-		return Fluids.WATER.getFlowing(1, false); // 1 is minimum value. Minecraft wiki at time of this writing has the values backwards.
+		return Fluids.WATER.getFlowing(1); // 1 is minimum value. Minecraft wiki at time of this writing has the values backwards.
 	}
 
 	public boolean tryToCreatePortal(ServerLevel level, BlockPos pos, ItemEntity catalyst, @Nullable Player player) {
@@ -233,7 +233,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 
 			if (entity.canUsePortal(false)) {
 				entity.setAsInsidePortal(this, entity.blockPosition());
-				TFDataAttachments.getOrEmpty(entity, TFDataAttachments.TF_PORTAL_COOLDOWN, twilightforest.components.entity.TFPortalAttachment::new).setInPortal(true);
+				TFDataAttachments.getOrCreate(entity, TFDataAttachments.TF_PORTAL_COOLDOWN, twilightforest.components.entity.TFPortalAttachment::new).setInPortal(true);
 			}
 		}
 	}
@@ -261,7 +261,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 	}
 
 	@Override
-	public boolean canPlaceLiquid(@Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+	public boolean canPlaceLiquid(@Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, FluidState fluidState) {
 		return false;
 	}
 

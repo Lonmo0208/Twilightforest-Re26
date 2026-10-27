@@ -1,11 +1,12 @@
 package twilightforest.client.overlay;
 
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
+
 import com.mojang.blaze3d.platform.Window;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +18,7 @@ import twilightforest.init.TFDataAttachments;
 public class PortalOverlay implements HudElement {
 
 	@Override
-	public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, @NonNull DeltaTracker deltaTracker) {
+	public void extractRenderState(@NonNull GuiGraphicsExtractor graphics) {
 		Minecraft minecraft = Minecraft.getInstance();
 		render(graphics, minecraft, minecraft.player);
 	}

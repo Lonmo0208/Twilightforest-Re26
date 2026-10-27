@@ -95,7 +95,7 @@ public class MapBiomesCommand {
 		for (int x = 0; x < img.getHeight(); x++) {
 			for (int z = 0; z < img.getWidth(); z++) {
 				ServerLevel level = source.getLevel();
-				Holder<Biome> b = level.getNoiseBiome(x - (img.getWidth() / 2), 0, z - (img.getHeight() / 2));
+				Holder<Biome> b = level.getBiome(x - (img.getWidth() / 2), 0, z - (img.getHeight() / 2));
 				Identifier key = level.registryAccess().lookupOrThrow(Registries.BIOME).getKey(b.value());
 				BiomeMapColor color = BIOME2COLOR.get(key);
 

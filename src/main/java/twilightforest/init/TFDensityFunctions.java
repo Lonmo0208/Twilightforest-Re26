@@ -124,7 +124,7 @@ public class TFDensityFunctions {
 			biomedLandscape,
 			DensityFunctions.mul(
 				rawNoiseDensity,
-				DensityFunctions.interpolated(
+				DensityFunctions.linearUpscale(
 					DensityFunctions.max(
 						DensityFunctions.zero(),
 						ambientTerrainNoise
@@ -168,7 +168,7 @@ public class TFDensityFunctions {
 
 		DensityFunction finalDensity = DensityFunctions.add(
 			new SqrtDensityFunction(
-				DensityFunctions.interpolated(skyIslandNoise, 4, 8).clamp(0, 2)
+				DensityFunctions.linearUpscale(skyIslandNoise, 4, 8).clamp(0, 2)
 			),
 			biomeDensity
 		);

@@ -109,7 +109,6 @@ public class TFDimensionData {
 
 		return new NoiseGeneratorSettings(
 			tfNoise,
-			Blocks.STONE.defaultBlockState(),
 			skylight ? Blocks.AIR.defaultBlockState() : Blocks.WATER.defaultBlockState(),
 			new NoiseRouter(
 				DensityFunctions.zero(), //temperature

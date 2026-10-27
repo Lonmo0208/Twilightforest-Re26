@@ -45,7 +45,7 @@ public class CandleDispenseBehavior extends OptionalDispenseItemBehavior {
 				if (candles < 4) {
 					level.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.CANDLES, candles + 1));
 
-					level.playSound(null, pos, SoundEvents.CANDLE_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
+					level.playSound(null, pos, SoundEvents.CANDLE.placeSound().map(sound -> sound.value()).orElse(null), SoundSource.BLOCKS, 1.0F, 1.0F);
 					level.getLightEngine().checkBlock(pos);
 					level.sendBlockUpdated(pos, state, state, 1);
 					return true;
@@ -60,7 +60,7 @@ public class CandleDispenseBehavior extends OptionalDispenseItemBehavior {
 				level.setBlockAndUpdate(pos, state.setValue(CandelabraBlock.CANDLES.get(i), true));
 				candelabra.setCandle(i, block.getBlock());
 
-				level.playSound(null, pos, SoundEvents.CANDLE_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
+				level.playSound(null, pos, SoundEvents.CANDLE.placeSound().map(sound -> sound.value()).orElse(null), SoundSource.BLOCKS, 1.0F, 1.0F);
 				level.getLightEngine().checkBlock(pos);
 				level.sendBlockUpdated(pos, state, state, 1);
 				return true;

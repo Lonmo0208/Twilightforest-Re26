@@ -29,6 +29,6 @@ public class KeepsakeCasketRenderer<T extends BlockEntity & LidBlockEntity> exte
 	}
 
 	public static Identifier getTextureLocation(int damage) {
-		return CASKET_TEXTURES.get(Mth.clamp(damage, 0, CASKET_TEXTURES.size() - 1));
+		return CASKET_TEXTURES.get(Math.clamp(damage, 0, CASKET_TEXTURES.size() - 1));
 	}
 }

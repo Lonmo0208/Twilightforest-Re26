@@ -124,7 +124,7 @@ public class HorizontalHollowLogBlock extends Block implements WaterloggedBlock 
 
 	@Override
 	public FluidState getFluidState(BlockState state) {
-		return state.getValue(VARIANT) == HollowLogVariants.Horizontal.WATERLOGGED ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+		return state.getValue(VARIANT) == HollowLogVariants.Horizontal.WATERLOGGED ? Fluids.WATER.getSource() : super.getFluidState(state);
 	}
 
 	@Override

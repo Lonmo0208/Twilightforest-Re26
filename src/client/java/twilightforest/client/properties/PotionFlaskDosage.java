@@ -23,7 +23,7 @@ public record PotionFlaskDosage(boolean normalize) implements RangeSelectItemMod
 	@Override
 	public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
 		PotionFlaskComponent contents = stack.getOrDefault(TFDataComponents.POTION_FLASK_CONTENTS, PotionFlaskComponent.EMPTY);
-		return this.normalize ? Mth.clamp((float) contents.doses() / PotionFlaskItem.DOSES, 0.0F, 1.0F) : Mth.clamp(contents.doses(), 0.0F, PotionFlaskItem.DOSES);
+		return this.normalize ? Math.clamp((float) contents.doses() / PotionFlaskItem.DOSES, 0.0F, 1.0F) : Math.clamp(contents.doses(), 0.0F, PotionFlaskItem.DOSES);
 	}
 
 	@Override

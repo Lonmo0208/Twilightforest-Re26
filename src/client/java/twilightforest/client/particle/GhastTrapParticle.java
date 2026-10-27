@@ -49,7 +49,7 @@ public class GhastTrapParticle extends SingleQuadParticle {
 	@Override
 	public float getQuadSize(float partialTicks) {
 		float f6 = (this.age + partialTicks) / this.lifetime * 32.0F;
-		f6 = Mth.clamp(f6, 0.0F, 1.0F);
+		f6 = Math.clamp(f6, 0.0F, 1.0F);
 
 		return this.reddustParticleScale * f6;
 	}

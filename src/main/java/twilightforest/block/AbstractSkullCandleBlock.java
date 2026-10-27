@@ -112,7 +112,7 @@ public abstract class AbstractSkullCandleBlock extends BaseEntityBlock implement
 				if (candles < 4) {
 					level.setBlockAndUpdate(pos, state.setValue(CANDLES, candles + 1));
 
-					level.playSound(null, pos, SoundEvents.CANDLE_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
+					level.playSound(null, pos, SoundEvents.CANDLE.placeSound().map(sound -> sound.value()).orElse(null), SoundSource.BLOCKS, 1.0F, 1.0F);
 					stack.consume(1, player);
 					level.getLightEngine().checkBlock(pos);
 					return InteractionResult.SUCCESS;
@@ -144,7 +144,7 @@ public abstract class AbstractSkullCandleBlock extends BaseEntityBlock implement
                     if (level.getBlockEntity(pos) instanceof SkullBlockEntity sc1) sc1.setComponents(components);
 				}
 			}
-			level.playSound(null, pos, SoundEvents.CANDLE_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+			level.playSound(null, pos, SoundEvents.CANDLE.breakSound().map(sound -> sound.value()).orElse(null), SoundSource.BLOCKS, 1.0F, 1.0F);
 			level.getLightEngine().checkBlock(pos);
 			ItemStack candle = new ItemStack(candleColorToCandle(CandleColors.colorFromInt(sc.candleInfo.color())));
 			if (player.hasInfiniteMaterials()) {

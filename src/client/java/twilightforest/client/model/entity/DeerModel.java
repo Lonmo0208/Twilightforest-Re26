@@ -1,6 +1,7 @@
 package twilightforest.client.model.entity;
 
-import net.minecraft.client.model.BabyModelTransform;
+import net.minecraft.client.model.geom.builders.MeshTransformer;
+
 import net.minecraft.client.model.QuadrupedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -11,7 +12,7 @@ import java.util.Set;
 
 public class DeerModel extends QuadrupedModel<LivingEntityRenderState> {
 
-	public static final MeshTransformer BABY_TRANSFORMER = new BabyModelTransform(true, 15.25F, 4.0F, Set.of("head"));
+	public static final MeshTransformer BABY_TRANSFORMER = MeshTransformer.scaling(0.5F);
 
 	public DeerModel(ModelPart root) {
 		super(root);

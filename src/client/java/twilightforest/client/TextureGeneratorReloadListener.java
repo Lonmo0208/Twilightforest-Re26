@@ -2,8 +2,7 @@ package twilightforest.client;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureResources;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -18,7 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TextureGeneratorReloadListener implements ResourceManagerReloadListener {
 	public static final TextureGeneratorReloadListener INSTANCE = new TextureGeneratorReloadListener();
-	private static final Map<String, AbstractTexture> BOAT_CACHE = new HashMap<>();
+	private static final Map<String, TextureResources> BOAT_CACHE = new HashMap<>();
 	private static final AtomicReference<NativeImage> ref = new AtomicReference<>();
 
 	private static final List<String> BOAT_TYPES = List.of(
@@ -63,7 +62,7 @@ public class TextureGeneratorReloadListener implements ResourceManagerReloadList
 
 											ref.set(newImage);
 											BOAT_CACHE.compute(type, (key, existing) -> {
-												DynamicTexture texture = new DynamicTexture(() -> "twilightforest:boat_" + key, ref.getAndSet(null));
+												TextureResources texture = TextureResources.from2dImage(() -> "twilightforest:boat_" + key, ref.getAndSet(null));
 												Minecraft.getInstance().getTextureManager().register(location, texture);
 												return texture;
 											});
@@ -77,7 +76,7 @@ public class TextureGeneratorReloadListener implements ResourceManagerReloadList
 
 											ref.set(tfImage);
 											BOAT_CACHE.compute(type, (key, existing) -> {
-												DynamicTexture texture = new DynamicTexture(() -> "twilightforest:boat_" + key, ref.getAndSet(null));
+												TextureResources texture = TextureResources.from2dImage(() -> "twilightforest:boat_" + key, ref.getAndSet(null));
 												Minecraft.getInstance().getTextureManager().register(location, texture);
 												return texture;
 											});

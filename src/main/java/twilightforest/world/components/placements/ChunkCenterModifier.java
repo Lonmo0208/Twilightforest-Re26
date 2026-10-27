@@ -1,5 +1,7 @@
 package twilightforest.world.components.placements;
 
+import net.minecraft.util.InclusiveRange;
+
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -24,5 +26,10 @@ public class ChunkCenterModifier implements PlacementModifier {
 	@Override
 	public MapCodec<? extends PlacementModifier> codec() {
 		return CODEC;
+	}
+
+	@Override
+	public InclusiveRange<Integer> modifyXzDomain(InclusiveRange<Integer> domain) {
+		return domain;
 	}
 }

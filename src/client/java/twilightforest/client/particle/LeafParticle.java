@@ -80,7 +80,7 @@ public class LeafParticle extends SingleQuadParticle {
 
 	@Override
 	public void extract(QuadParticleRenderState buffer, Camera entity, float partialTicks) {
-		this.alpha = Math.min(Mth.clamp(this.age, 0, 20) / 20.0F, Mth.clamp(this.lifetime - this.age, 0, 20) / 20.0F);
+		this.alpha = Math.min(Math.clamp(this.age, 0, 20) / 20.0F, Math.clamp(this.lifetime - this.age, 0, 20) / 20.0F);
 		Quaternionf quaternion = new Quaternionf();
 		if (this.roll != 0.0F) {
 			quaternion.rotateZ(Mth.lerp(partialTicks, this.oRoll, this.roll));

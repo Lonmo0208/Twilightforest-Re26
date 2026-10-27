@@ -19,7 +19,7 @@ public class TFStructureStart extends StructureStart {
 	public CompoundTag createTag(StructurePieceSerializationContext level, ChunkPos chunkPos) {
 		CompoundTag tag = super.createTag(level, chunkPos);
 
-		if (this.isValid())
+		if (!this.getPieces().isEmpty())
 			tag.putBoolean("conquered", this.conquered);
 
 		return tag;

@@ -1079,47 +1079,47 @@ public static final StairBlock BOLD_CASTLE_BRICK_STAIRS = Registry.register(
 public static final Block PINK_CASTLE_RUNE_BRICK = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_castle_rune_brick")),
-		new Block(BlockBehaviour.Properties.ofFullCopy(CASTLE_BRICK).mapColor(MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.MAGENTA)).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_castle_rune_brick"))))
+		new Block(BlockBehaviour.Properties.ofFullCopy(CASTLE_BRICK).mapColor(MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.MAGENTA)).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_castle_rune_brick"))))
 	);
 public static final Block BLUE_CASTLE_RUNE_BRICK = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_castle_rune_brick")),
-		new Block(BlockBehaviour.Properties.ofFullCopy(CASTLE_BRICK).mapColor(MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.LIGHT_BLUE)).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_castle_rune_brick"))))
+		new Block(BlockBehaviour.Properties.ofFullCopy(CASTLE_BRICK).mapColor(MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.LIGHT_BLUE)).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_castle_rune_brick"))))
 	);
 public static final Block YELLOW_CASTLE_RUNE_BRICK = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("yellow_castle_rune_brick")),
-		new Block(BlockBehaviour.Properties.ofFullCopy(CASTLE_BRICK).mapColor(MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.YELLOW)).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("yellow_castle_rune_brick"))))
+		new Block(BlockBehaviour.Properties.ofFullCopy(CASTLE_BRICK).mapColor(MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.YELLOW)).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("yellow_castle_rune_brick"))))
 	);
 public static final Block VIOLET_CASTLE_RUNE_BRICK = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_castle_rune_brick")),
-		new Block(BlockBehaviour.Properties.ofFullCopy(CASTLE_BRICK).mapColor(MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.PURPLE)).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_castle_rune_brick"))))
+		new Block(BlockBehaviour.Properties.ofFullCopy(CASTLE_BRICK).mapColor(MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.PURPLE)).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_castle_rune_brick"))))
 	);
 public static final Block VIOLET_FORCE_FIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_force_field")),
-		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.PURPLE)).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_force_field"))))
+		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.PURPLE)).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_force_field"))))
 	);
 public static final Block PINK_FORCE_FIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_force_field")),
-		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.MAGENTA)).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_force_field"))))
+		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.MAGENTA)).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_force_field"))))
 	);
 public static final Block ORANGE_FORCE_FIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("orange_force_field")),
-		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.ORANGE)).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("orange_force_field"))))
+		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.ORANGE)).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("orange_force_field"))))
 	);
 public static final Block GREEN_FORCE_FIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("green_force_field")),
-		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.GREEN)).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("green_force_field"))))
+		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.GREEN)).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("green_force_field"))))
 	);
 public static final Block BLUE_FORCE_FIELD = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_force_field")),
-		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.LIGHT_BLUE)).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_force_field"))))
+		new ForceFieldBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 2).mapColor(MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.LIGHT_BLUE)).noLootTable().noOcclusion().pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).strength(-1.0F, 3600000.8F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_force_field"))))
 	);
 public static final Block CINDER_FURNACE = Registry.register(
 		BuiltInRegistries.BLOCK,
@@ -1139,22 +1139,22 @@ public static final Block CINDER_WOOD = Registry.register(
 public static final Block YELLOW_CASTLE_DOOR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("yellow_castle_door")),
-		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.YELLOW)).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(BlockSoundSets.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("yellow_castle_door"))))
+		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.YELLOW)).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(BlockSoundSets.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("yellow_castle_door"))))
 	);
 public static final Block VIOLET_CASTLE_DOOR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_castle_door")),
-		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.LIGHT_BLUE)).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(BlockSoundSets.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_castle_door"))))
+		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.LIGHT_BLUE)).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(BlockSoundSets.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("violet_castle_door"))))
 	);
 public static final Block PINK_CASTLE_DOOR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_castle_door")),
-		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.MAGENTA)).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(BlockSoundSets.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_castle_door"))))
+		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.MAGENTA)).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(BlockSoundSets.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("pink_castle_door"))))
 	);
 public static final Block BLUE_CASTLE_DOOR = Registry.register(
 		BuiltInRegistries.BLOCK,
 		ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_castle_door")),
-		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : MapColor.DYE_TO_TERRACOTTA_COLOR.pick(DyeColor.PURPLE)).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(BlockSoundSets.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_castle_door"))))
+		new CastleDoorBlock(BlockBehaviour.Properties.of().forceSolidOn().mapColor((state) -> state.getValue(CastleDoorBlock.VANISHED) ? MapColor.NONE : MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.PURPLE)).pushReaction(PushReaction.IMMOVEABLE /* TODO-263: was BLOCK */).requiresCorrectToolForDrops().sound(BlockSoundSets.DEEPSLATE_TILES).strength(100.0F, 100.0F).setId(ResourceKey.create(Registries.BLOCK, TwilightForestMod.prefix("blue_castle_door"))))
 	);
 
 	//mini structures

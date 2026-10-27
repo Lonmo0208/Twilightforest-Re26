@@ -137,7 +137,7 @@ public class CandelabraBlock extends BaseEntityBlock implements LightableBlock, 
 				int i = this.getSlot(state.getValue(FACING), result.getLocation().subtract(result.getBlockPos().getX(), result.getBlockPos().getY(), result.getBlockPos().getZ()));
 				if (state.getValue(CANDLES.get(i)) && player.isShiftKeyDown()) {
 					ItemStack itemstack = new ItemStack(candelabra.removeCandle(i));
-					level.playSound(null, pos, SoundEvents.CANDLE_PLACE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+					level.playSound(null, pos, SoundEvents.CANDLE.placeSound().map(sound -> sound.value()).orElse(null), SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
 					if (player.hasInfiniteMaterials()) {
 						if (!player.getInventory().contains(itemstack)) {
 							player.getInventory().add(itemstack);
@@ -152,7 +152,7 @@ public class CandelabraBlock extends BaseEntityBlock implements LightableBlock, 
 						if (!level.isClientSide()) {
 							player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
 							candelabra.setCandle(i, block.getBlock());
-							level.playSound(null, pos, SoundEvents.CANDLE_PLACE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+							level.playSound(null, pos, SoundEvents.CANDLE.placeSound().map(sound -> sound.value()).orElse(null), SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
 							stack.consume(1, player);
 						}
 						return InteractionResult.SUCCESS;
@@ -229,7 +229,7 @@ public class CandelabraBlock extends BaseEntityBlock implements LightableBlock, 
 
 	@Override
 	public FluidState getFluidState(BlockState state) {
-		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource() : super.getFluidState(state);
 	}
 
 	@Nullable

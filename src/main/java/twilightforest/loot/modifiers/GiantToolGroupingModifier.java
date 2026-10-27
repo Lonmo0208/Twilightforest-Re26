@@ -63,7 +63,7 @@ public final class GiantToolGroupingModifier {
 			return generatedLoot;
 		}
 
-		var attachment = TFDataAttachments.getOrEmpty(player, TFDataAttachments.GIANT_PICKAXE_MINING, twilightforest.components.entity.GiantPickaxeMiningAttachment::new);
+		var attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.GIANT_PICKAXE_MINING, twilightforest.components.entity.GiantPickaxeMiningAttachment::new);
 
 		if (attachment.getMining() == 0L || !attachment.canMakeGiantBlock()) {
 			return generatedLoot;

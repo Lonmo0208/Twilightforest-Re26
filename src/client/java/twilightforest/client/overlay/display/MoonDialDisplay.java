@@ -1,9 +1,11 @@
 package twilightforest.client.overlay.display;
 
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.attribute.EnvironmentAttributes;

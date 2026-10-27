@@ -50,7 +50,7 @@ public class CapabilityEvents {
 
 	private void updateShields(FabricEvents.EntityTickEvent.Post event) {
 		if (event.getEntity() instanceof LivingEntity living && !living.level().isClientSide()) {
-			FortificationShieldAttachment attachment = TFDataAttachments.getOrEmpty(living, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
+			FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(living, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 			if (attachment != null) {
 				attachment.tick(living);
 			}
@@ -58,7 +58,7 @@ public class CapabilityEvents {
 	}
 
 	private void updatePlayerCaps(FabricEvents.PlayerTickEvent.Post event) {
-		if (Boolean.TRUE.equals(TFDataAttachments.getOrEmpty(event.getEntity(), TFDataAttachments.FEATHER_FAN, () -> false))) {
+		if (Boolean.TRUE.equals(TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.FEATHER_FAN, () -> false))) {
 			event.getEntity().setIgnoreFallDamageFromCurrentImpulse(true, event.getEntity().position());
 			event.getEntity().currentImpulseImpactPos = event.getEntity().position();
 
@@ -66,8 +66,8 @@ public class CapabilityEvents {
 				event.getEntity().setAttached(TFDataAttachments.FEATHER_FAN, false);
 			}
 		}
-		TFDataAttachments.getOrEmpty(event.getEntity(), TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new).tick(event.getEntity());
-		TFDataAttachments.getOrEmpty(event.getEntity(), TFDataAttachments.TF_PORTAL_COOLDOWN, twilightforest.components.entity.TFPortalAttachment::new).tick(event.getEntity());
+		TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new).tick(event.getEntity());
+		TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.TF_PORTAL_COOLDOWN, twilightforest.components.entity.TFPortalAttachment::new).tick(event.getEntity());
 	}
 
 	private void absorbShieldHits(FabricEvents.LivingIncomingDamageEvent event) {
@@ -75,7 +75,7 @@ public class CapabilityEvents {
 		if (living instanceof twilightforest.entity.boss.Lich) return;
 
 		if (!living.level().isClientSide() && !event.getSource().is(DamageTypeTags.BYPASSES_ARMOR)) {
-			FortificationShieldAttachment attachment = TFDataAttachments.getOrEmpty(living, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
+			FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(living, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 			if (attachment != null && attachment.shieldsLeft() > 0) {
 				boolean isCreativePlayer = living instanceof Player player && player.getAbilities().invulnerable;
 				if (!isCreativePlayer && !living.isTemporarilyInvulnerable()) {
@@ -125,7 +125,7 @@ public class CapabilityEvents {
 	}
 
 	private static void dataFixLegacyBanish(ServerPlayer player) {
-		CompoundTag tagCompound = TFDataAttachments.getOrEmpty(player, TFDataAttachments.TF_PERSISTENT_DATA, CompoundTag::new);
+		CompoundTag tagCompound = TFDataAttachments.getOrCreate(player, TFDataAttachments.TF_PERSISTENT_DATA, CompoundTag::new);
 		final String PERSISTED_NBT_TAG = "PlayerPersisted";
 		if (!tagCompound.contains(PERSISTED_NBT_TAG))
 			return;

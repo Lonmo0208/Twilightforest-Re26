@@ -168,7 +168,7 @@ public class IceBomb extends TFThrowable {
 	}
 
 	private void inflictDamage(ServerLevel level, LivingEntity entity, int dmgMultiplier) {
-		if (!entity.is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
+		if (!entity.is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES)) {
 			entity.hurtServer(level, TFDamageTypes.getIndirectEntityDamageSource(this.level(), TFDamageTypes.FROZEN, this, this.getOwner()),
 				(entity.is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES) ? 5.0F : 1.0F) * dmgMultiplier);
 			ApplyFrostedEffect.doChillAuraEffect(entity, 100 * dmgMultiplier, 0, true);

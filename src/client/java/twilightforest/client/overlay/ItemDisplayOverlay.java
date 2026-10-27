@@ -2,7 +2,6 @@ package twilightforest.client.overlay;
 
 import com.mojang.blaze3d.platform.Window;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -26,7 +25,7 @@ import java.util.List;
 public class ItemDisplayOverlay implements HudElement {
 
 	@Override
-	public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, @NonNull DeltaTracker deltaTracker) {
+	public void extractRenderState(@NonNull GuiGraphicsExtractor graphics) {
 		Minecraft minecraft = Minecraft.getInstance();
 		render(graphics, minecraft, minecraft.getWindow(), minecraft.gui, minecraft.player);
 	}

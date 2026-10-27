@@ -1,12 +1,14 @@
 package twilightforest.client.renderer;
 
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -76,7 +78,7 @@ public class TFWeatherRenderer {
 			public RenderType apply(Identifier texture) {
 				return RenderType.create(
 					"tf_weather",
-					RenderSetup.builder(RenderPipelines.WEATHER)
+					RenderSetup.builder(stage -> RenderPipelines.particle(new RenderPipelines.ParticleParameters(net.minecraft.client.renderer.pipeline.variant.ParticleRenderPipelineVariant.WEATHER, stage)))
 						.withTexture("Sampler0", texture)
 						.createRenderSetup()
 				);

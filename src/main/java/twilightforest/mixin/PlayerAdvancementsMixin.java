@@ -43,7 +43,7 @@ public abstract class PlayerAdvancementsMixin {
 
 		for (var criteria : advancement.value().criteria().entrySet()) {
 			if (criteria.getValue().trigger() instanceof DrinkFromFlaskTrigger) {
-				TFDataAttachments.getOrEmpty(player, TFDataAttachments.FLASK_DOSES, twilightforest.components.entity.PotionFlaskTrackingAttachment::new).resetDoses();
+				TFDataAttachments.getOrCreate(player, TFDataAttachments.FLASK_DOSES, twilightforest.components.entity.PotionFlaskTrackingAttachment::new).resetDoses();
 				break;
 			}
 		}

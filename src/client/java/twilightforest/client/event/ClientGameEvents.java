@@ -140,7 +140,7 @@ public class ClientGameEvents {
 		if ((aurora > 0 || lastAurora > 0) && TFShaders.AURORA != null) {
 			Vec3 pos = context.levelState().cameraRenderState.pos;
 			float intensity = (Mth.lerp(0F, lastAurora, aurora)) / 60F * 0.5F;
-			int seed = Mth.abs((int) mc.level.getBiomeManager().biomeZoomSeed);
+			int seed = Mth.abs((int) mc.level.getGameTime());
 
 			// Use the new render pipeline with proper uniform passing
 			TFShaders.AURORA.renderAurora(context, seed, (float) pos.x, (float) pos.y, (float) pos.z, intensity);
@@ -180,7 +180,7 @@ public class ClientGameEvents {
 					aurora++;
 				else
 					aurora--;
-				aurora = Mth.clamp(aurora, 0, 60);
+				aurora = Math.clamp(aurora, 0, 60);
 			} else {
 				aurora = 0;
 			}

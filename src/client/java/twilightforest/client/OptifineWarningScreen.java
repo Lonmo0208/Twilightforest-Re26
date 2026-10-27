@@ -45,21 +45,21 @@ public class OptifineWarningScreen extends Screen {
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+	public void extractRenderState(GuiGraphicsExtractor graphics) {
 		// TODO: 26.1.2 - drawCenteredString no longer exists, manually center
 		int titleWidth = this.font.width(this.title);
 		graphics.text(this.font, this.title, this.width / 2 - titleWidth / 2, 30, 16777215);
 		// TODO: 26.1.2 - renderCentered removed from MultiLineLabel; use visitLines with TextAlignment.CENTER
 		this.message.visitLines(TextAlignment.CENTER, this.width / 2, 70, this.font.lineHeight, graphics.textRenderer());
 		this.suggestions.visitLines(TextAlignment.CENTER, this.width / 2, 160, this.font.lineHeight, graphics.textRenderer());
-		super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+		super.extractRenderState(graphics);
 
-		this.exitButton.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+		this.exitButton.extractRenderState(graphics);
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
-		super.extractBackground(graphics, mouseX, mouseY, partialTicks);
+	public void extractBackground(GuiGraphicsExtractor graphics) {
+		super.extractBackground(graphics);
 	}
 
 	@Override

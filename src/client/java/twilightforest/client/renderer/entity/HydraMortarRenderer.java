@@ -34,7 +34,7 @@ public class HydraMortarRenderer extends EntityRenderer<HydraMortar, HydraMortar
 		float f = state.fuse;
 		if (state.fuse < 10.0F) {
 			float f1 = 1.0F - state.fuse / 10.0F;
-			f1 = Mth.clamp(f1, 0.0F, 1.0F);
+			f1 = Math.clamp(f1, 0.0F, 1.0F);
 			f1 *= f1;
 			f1 *= f1;
 			float f2 = 1.0F + f1 * 0.3F;

@@ -383,7 +383,7 @@ public class EntityEvents {
 		Level level = event.getLevel();
 		if (level.getBlockEntity(event.getPos()) instanceof SkullBlockEntity skull)
 			profile = skull.getOwnerProfile();
-		level.playSound(null, event.getPos(), SoundEvents.CANDLE_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
+		level.playSound(null, event.getPos(), SoundEvents.CANDLE.placeSound().map(sound -> sound.value()).orElse(null), SoundSource.BLOCKS, 1.0F, 1.0F);
 		level.setBlockAndUpdate(event.getPos(), newBlock.withPropertiesOf(level.getBlockState(event.getPos()))
 			.setValue(AbstractSkullCandleBlock.LIGHTING, LightableBlock.Lighting.NONE));
 		level.setBlockEntity(new SkullCandleBlockEntity(event.getPos(),
@@ -450,7 +450,7 @@ public class EntityEvents {
 
 		for (StructureStart start : structureStarts) {
 			if (start.getStructure() instanceof ControlledSpawns landmark) {
-				if (!start.isValid())
+				if (!!start.getPieces().isEmpty())
 					continue;
 
 				if (classification != MobCategory.MONSTER) {
@@ -532,7 +532,7 @@ public class EntityEvents {
 
 	private void addQualifiedGroupPlayerIfNeeded(FabricEvents.LivingDamageEvent.Post event) {
 		if (event.getEntity().is(TFEntityTypeTags.MULTIPLAYER_INCLUSIVE_ENTITIES)) {
-			var data = TFDataAttachments.getOrEmpty(event.getEntity(), TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new);
+			var data = TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new);
 			if (event.getSource().getEntity() != null) {
 				data.maybeAddQualifiedPlayer(event.getSource().getEntity());
 			}
@@ -541,7 +541,7 @@ public class EntityEvents {
 
 	private void grantGroupAdvancementIfNeeded(FabricEvents.LivingDeathEvent event) {
 		if (!event.isCanceled() && event.getEntity().hasAttached(TFDataAttachments.MULTIPLAYER_FIGHT)) {
-			TFDataAttachments.getOrEmpty(event.getEntity(), TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new).grantGroupAdvancement(event.getEntity());
+			TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new).grantGroupAdvancement(event.getEntity());
 		}
 	}
 
@@ -562,7 +562,7 @@ public class EntityEvents {
 	private void resetFlaskLogic(FabricEvents.AdvancementEvent.AdvancementEarnEvent event) {
 		for (var criteria : event.getAdvancement().value().criteria().entrySet()) {
 			if (criteria.getValue().trigger() instanceof DrinkFromFlaskTrigger) {
-				TFDataAttachments.getOrEmpty(event.getEntity(), TFDataAttachments.FLASK_DOSES, twilightforest.components.entity.PotionFlaskTrackingAttachment::new).resetDoses();
+				TFDataAttachments.getOrCreate(event.getEntity(), TFDataAttachments.FLASK_DOSES, twilightforest.components.entity.PotionFlaskTrackingAttachment::new).resetDoses();
 				break;
 			}
 		}
@@ -674,7 +674,7 @@ public class EntityEvents {
 			return true; // cancel
 		}
 		if (source.is(DamageTypes.FALL) && entity.hasAttached(TFDataAttachments.YETI_THROWING)) {
-			var yetiData = TFDataAttachments.getOrEmpty(entity, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new);
+			var yetiData = TFDataAttachments.getOrCreate(entity, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new);
 			if (yetiData.getThrown()) {
 				entity.hurt(TFDamageTypes.getEntityDamageSource(entity.level(), TFDamageTypes.YEETED, yetiData.getThrower()), amount);
 				return true; // cancel original fall damage
@@ -690,7 +690,7 @@ public class EntityEvents {
 	 */
 	public static void tickShields(LivingEntity entity) {
 		if (!entity.level().isClientSide()) {
-			FortificationShieldAttachment attachment = TFDataAttachments.getOrEmpty(entity, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
+			FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(entity, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 			if (attachment != null) {
 				attachment.tick(entity);
 			}

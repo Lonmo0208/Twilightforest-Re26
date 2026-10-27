@@ -1,5 +1,7 @@
 package twilightforest.client.renderer;
 
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -12,7 +14,7 @@ import twilightforest.client.renderer.entity.LichRenderer;
 //TODO check all of these in-game, im bad at writing these
 public class TFRenderTypes {
 
-	public static final RenderType RED_THREAD = RenderType.create("twilightforest:red_thread", RenderSetup.builder(TFRenderPipelines.RED_THREAD)
+	public static final RenderType RED_THREAD = RenderType.create("twilightforest:red_thread", RenderSetup.nonOitBuilder(TFRenderPipelines.RED_THREAD)
 		.withTexture("Sampler0", RedThreadRenderer.TEXTURE)
 		.affectsCrumbling()
 		.useLightmap()
@@ -20,7 +22,7 @@ public class TFRenderTypes {
 		.setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)
 		.createRenderSetup());
 
-	public static final RenderType PROTECTION_BOX = RenderType.create("twilightforest:protection_box", RenderSetup.builder(TFRenderPipelines.PROTECTION_BOX)
+	public static final RenderType PROTECTION_BOX = RenderType.create("twilightforest:protection_box", RenderSetup.nonOitBuilder(TFRenderPipelines.PROTECTION_BOX)
 		.withTexture("Sampler0", TwilightForestMod.getModelTexture("protectionbox.png"))
 		.setTextureTransform(new ProtectionBoxTextureTransform())
 		.useLightmap()
@@ -28,7 +30,7 @@ public class TFRenderTypes {
 		.sortOnUpload()
 		.createRenderSetup());
 
-	public static final RenderType SHADOW_CLONE = RenderType.create("twilightforest:shadow_clone", RenderSetup.builder(TFRenderPipelines.SHADOW_CLONE)
+	public static final RenderType SHADOW_CLONE = RenderType.create("twilightforest:shadow_clone", RenderSetup.nonOitBuilder(TFRenderPipelines.SHADOW_CLONE)
 		.withTexture("Sampler0", LichRenderer.TEXTURE)
 		.useLightmap()
 		.useOverlay()

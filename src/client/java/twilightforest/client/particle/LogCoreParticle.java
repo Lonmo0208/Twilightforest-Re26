@@ -40,7 +40,7 @@ public class LogCoreParticle extends RisingParticle {
 	@Override
 	public int getLightCoords(float partialTicks) {
 		float f = ((float) this.age + partialTicks) / (float) this.lifetime;
-		f = Mth.clamp(f, 0.0F, 1.0F);
+		f = Math.clamp(f, 0.0F, 1.0F);
 		int i = super.getLightCoords(partialTicks);
 		int j = i & 255;
 		int k = i >> 16 & 255;

@@ -26,8 +26,8 @@ public abstract class ConquerableStructure extends LandmarkStructure implements 
 	}
 
 	@Override
-	public final StructureStart generate(Holder<Structure> selected, ResourceKey<Level> dimension, RegistryAccess registryAccess, ChunkGenerator chunkGen, BiomeSource biomeSource, Climate.Sampler climateSampler, RandomState randomState, StructureTemplateManager templateManager, long seed, ChunkPos chunkPos, int references, LevelHeightAccessor heightAccessor, Predicate<Holder<Biome>> isValidBiome) {
-		return this.generateCustom(registryAccess, chunkGen, biomeSource, climateSampler, randomState, templateManager, seed, chunkPos, references, heightAccessor, isValidBiome);
+	public final StructureStart generate(Holder<Structure> selected, ResourceKey<Level> dimension, RegistryAccess registryAccess, ChunkGenerator chunkGen, BiomeSource biomeSource, Climate.Sampler climateSampler, RandomState randomState, StructureTemplateManager templateManager, long seed, ChunkPos chunkPos, LevelHeightAccessor heightAccessor, Predicate<Holder<Biome>> isValidBiome) {
+		return this.generateCustom(registryAccess, chunkGen, biomeSource, climateSampler, randomState, templateManager, seed, chunkPos, 0, heightAccessor, isValidBiome);
 	}
 
 	// [VANILLA COPY] Structure.generate
@@ -37,10 +37,10 @@ public abstract class ConquerableStructure extends LandmarkStructure implements 
 		Optional<GenerationStub> optional = this.findValidGenerationPoint(structure$generationcontext);
 		if (optional.isPresent()) {
 			StructureStart structurestart = this.createStart(chunkPos, references, optional.get());
-			if (structurestart.isValid()) return structurestart;
+			if (!structurestart.getPieces().isEmpty()) return structurestart;
 		}
 
-		return StructureStart.INVALID_START;
+		return null;
 	}
 
 	protected StructureStart createStart(ChunkPos chunkPos, int reference, GenerationStub generationStub) {

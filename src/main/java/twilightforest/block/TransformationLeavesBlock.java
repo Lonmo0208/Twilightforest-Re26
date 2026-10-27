@@ -16,7 +16,7 @@ import twilightforest.init.TFParticleType;
 public class TransformationLeavesBlock extends FallingParticlesLeavesBlock {
 
 	public TransformationLeavesBlock(BlockBehaviour.Properties properties) {
-		super(1.0F, AmbientLeavesBlockSoundPlayer.noAmbientSound(), properties);
+		super(1.0F, java.util.Optional.empty(), properties);
 	}
 
 	@Override

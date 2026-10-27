@@ -6,6 +6,8 @@
 
 package twilightforest.client.model.entity;
 
+import net.minecraft.world.level.material.MapColor;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -168,7 +170,7 @@ public class QuestRamModel extends EntityModel<QuestingRamRenderState> implement
 		super.renderToBuffer(stack, builder, light, overlay, color);
 
 		for (int i = 0; i < 16; i++) {
-			final int dyeRgb = DyeColor.byId(i).getTextureDiffuseColor();
+			final int dyeRgb = MapColor.DYE_TO_DEFAULT_COLOR.pick(DyeColor.byId(i)).col;
 			segments[i].render(stack, builder, light, overlay, dyeRgb);
 		}
 	}

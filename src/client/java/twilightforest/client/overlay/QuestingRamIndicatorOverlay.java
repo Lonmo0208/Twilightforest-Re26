@@ -1,11 +1,12 @@
 package twilightforest.client.overlay;
 
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
+
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +27,7 @@ public class QuestingRamIndicatorOverlay implements HudElement {
 	private static QuestingRamCurrentContext questingRamCurrentContext;
 
 	@Override
-	public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, @NonNull DeltaTracker deltaTracker) {
+	public void extractRenderState(@NonNull GuiGraphicsExtractor graphics) {
 		Minecraft minecraft = Minecraft.getInstance();
 		render(minecraft, graphics, minecraft.gui, minecraft.player);
 	}

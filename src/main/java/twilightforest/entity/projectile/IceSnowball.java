@@ -32,7 +32,7 @@ public class IceSnowball extends TFThrowable implements ItemSupplier {
 	@Override
 	public void tick() {
 		super.tick();
-		this.makeTrail(ParticleTypes.ITEM_SNOWBALL, 2);
+		this.makeTrail(ParticleTypes.SNOWFLAKE, 2);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class IceSnowball extends TFThrowable implements ItemSupplier {
 	public void handleEntityEvent(byte id) {
 		if (id == EntityEvent.DEATH) {
 			for (int j = 0; j < 8; ++j) {
-				this.level().addParticle(ParticleTypes.ITEM_SNOWBALL, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
+				this.level().addParticle(ParticleTypes.SNOWFLAKE, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
 			}
 		} else {
 			super.handleEntityEvent(id);

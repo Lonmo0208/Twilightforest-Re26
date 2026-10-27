@@ -555,7 +555,7 @@ public abstract class TFStructureComponentOld extends TFStructureComponent imple
 
         for (int x = minX; x <= maxX; x++) {
 			for (int z = minZ; z <= maxZ; z++) {
-				if (!predicate.test(world.getUncachedNoiseBiome(  // getUncachedNoiseBiome() requires quart pos instead of blockPos, unlike getBiome()
+				if (!predicate.test(world.getBiome(  // getUncachedNoiseBiome() requires quart pos instead of blockPos, unlike getBiome()
 					QuartPos.fromBlock(x),
 					QuartPos.fromBlock(structurePos.getY()),
 					QuartPos.fromBlock(z)).value())) return true;
