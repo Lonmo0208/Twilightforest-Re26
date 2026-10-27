@@ -57,7 +57,7 @@ dependencies {
 }
 ```
 
-Use the version number shown on the Modrinth versions page, for example `Fabric-4.8.4210`.
+Use the version number shown on the Modrinth versions page. If that number is shared by several Minecraft versions (for example `Fabric-4.8.4210` exists for both 26.2 and 26.3), use the version ID shown on the version page instead; Modrinth Maven accepts either.
 
 ## YourKit
 ![](https://www.yourkit.com/images/yklogo.png)
