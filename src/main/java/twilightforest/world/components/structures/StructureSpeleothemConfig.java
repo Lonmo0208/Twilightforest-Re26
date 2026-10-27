@@ -78,7 +78,7 @@ if (varietyConfig == null) {
 }
 
 // Ore Chance represents an interpolation between two weighted lists of A (stones) and B (ores)
-float weightedListInterpolation = Mth.clamp(varietyConfig.oreChance(), 0, 1);
+float weightedListInterpolation = Math.clamp(varietyConfig.oreChance(), 0, 1);
 
 List<Stalactite> stalactites = StalactiteReloadListener.STALACTITES_PER_HILL.get(varietyConfig.type());
 List<Stalactite> oreStalactites = StalactiteReloadListener.ORE_STALACTITES_PER_HILL.get(varietyConfig.type());
@@ -102,7 +102,7 @@ return compileSpeleothemsSimple(stalactites);
 // Loss of precision is expected regardless, but insignificant
 // Yes, digits of precision are counted through String Length.
 // But this happens once per StructureSpeleothemConfig after loading, thanks to memoization.
-final double quantizationFactor = Math.ceil(Math.pow(10, Mth.clamp((weightedListInterpolation + "" + totalWeight).length() - 4, 2, 6)));
+final double quantizationFactor = Math.ceil(Math.pow(10, Math.clamp((weightedListInterpolation + "" + totalWeight).length() - 4, 2, 6)));
 
 final double stoneCounterweight = quantizationFactor * (1 - weightedListInterpolation) / stoneWeightSum;
 final double oreCounterweight = quantizationFactor * weightedListInterpolation / oreWeightSum;

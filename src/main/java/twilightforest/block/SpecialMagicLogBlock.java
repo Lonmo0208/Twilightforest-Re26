@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.sounds.BlockSoundSets;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -22,7 +22,7 @@ public abstract class SpecialMagicLogBlock extends RotatedPillarBlock {
 	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
 	protected SpecialMagicLogBlock(BlockBehaviour.Properties properties) {
-		super(properties.strength(2.0F).sound(SoundType.WOOD).lightLevel((state) -> state.getValue(ACTIVE) ? 15 : 0));
+		super(properties.strength(2.0F).sound(BlockSoundSets.WOOD).lightLevel((state) -> state.getValue(ACTIVE) ? 15 : 0));
 
 		this.registerDefaultState(this.getStateDefinition().any().setValue(ACTIVE, false));
 	}

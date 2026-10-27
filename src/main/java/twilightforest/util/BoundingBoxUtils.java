@@ -161,7 +161,7 @@ public class BoundingBoxUtils {
 	}
 
 	public static BlockPos clampedInside(BoundingBox box, BlockPos toClamp) {
-		return new BlockPos(Mth.clamp(toClamp.getX(), box.minX(), box.maxX()), Mth.clamp(toClamp.getY(), box.minY(), box.maxY()), Mth.clamp(toClamp.getZ(), box.minZ(), box.maxZ()));
+		return new BlockPos(Math.clamp(toClamp.getX(), box.minX(), box.maxX()), Math.clamp(toClamp.getY(), box.minY(), box.maxY()), Math.clamp(toClamp.getZ(), box.minZ(), box.maxZ()));
 	}
 
 	public static int manhattanDistance(BoundingBox box, BlockPos pos) {
@@ -175,8 +175,8 @@ public class BoundingBoxUtils {
 	}
 
 	public static int horizontalManhattanDistance(BoundingBox box, BlockPos pos) {
-		int xClamped = Mth.clamp(pos.getX(), box.minX(), box.maxX());
-		int zClamped = Mth.clamp(pos.getZ(), box.minZ(), box.maxZ());
+		int xClamped = Math.clamp(pos.getX(), box.minX(), box.maxX());
+		int zClamped = Math.clamp(pos.getZ(), box.minZ(), box.maxZ());
 		return Math.abs(xClamped - pos.getX()) + Math.abs(zClamped - pos.getZ());
 	}
 

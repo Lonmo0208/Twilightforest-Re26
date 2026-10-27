@@ -21,7 +21,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.sounds.BlockSoundSets;
+import net.minecraft.world.level.block.sounds.BlockSoundSet;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -197,13 +198,13 @@ public class HorizontalHollowLogBlock extends Block implements WaterloggedBlock 
 	}
 
 	public static void playPlaceSound(BlockState state, Level level, BlockPos pos, Player player) {
-		SoundType soundtype = state.getSoundType();
-		level.playSound(null, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+		BlockSoundSet soundtype = state.getSounds(level);
+		soundtype.placeSound().ifPresent(sound -> level.playSound(null, pos, sound.value(), SoundSource.BLOCKS, (soundtype.volume() + 1.0F) / 2.0F, soundtype.pitch() * 0.8F));
 	}
 
 	public static void playBreakSound(BlockState state, Level level, BlockPos pos, Player player) {
-		SoundType soundtype = state.getSoundType();
-		level.playSound(null, pos, soundtype.getBreakSound(), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+		BlockSoundSet soundtype = state.getSounds(level);
+		soundtype.breakSound().ifPresent(sound -> level.playSound(null, pos, sound.value(), SoundSource.BLOCKS, (soundtype.volume() + 1.0F) / 2.0F, soundtype.pitch() * 0.8F));
 	}
 
 	@Override

@@ -61,7 +61,7 @@ public class TransLogCoreBlock extends SpecialMagicLogBlock {
 			LevelChunk chunkAt = level.getChunk(dPos.getX() >> 4, dPos.getZ() >> 4);
 			for (LevelChunkSection section : chunkAt.getSections()) {
 				for (int sy = 0; sy < 16; sy += 4) {
-					int y = Mth.clamp(QuartPos.fromBlock(chunkAt.getMinSectionY() + sy), minY, maxY);
+					int y = Math.clamp(QuartPos.fromBlock(chunkAt.getMinSectionY() + sy), minY, maxY);
 					if (section.getBiomes().get(x & 3, y & 3, z & 3).is(target))
 						continue;
 					if (section.getBiomes() instanceof PalettedContainer<Holder<Biome>> container)

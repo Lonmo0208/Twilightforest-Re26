@@ -33,7 +33,7 @@ public abstract class TwilightDoubleTemplateStructurePiece extends TwilightTempl
 		super(structurePieceType, compoundTag, ctx, rl2SettingsFunction);
 
 		this.templateOverlayLocation = Identifier.parse(compoundTag.getString("TemplateOverlay").orElseThrow());
-		this.templateOverlay = this.structureManager.getOrCreate(this.templateOverlayLocation);
+		this.templateOverlay = this.structureManager.getOrEmpty(this.templateOverlayLocation);
 		this.placeSettingsOverlay = placeSettingsOverlay;
 	}
 
@@ -41,7 +41,7 @@ public abstract class TwilightDoubleTemplateStructurePiece extends TwilightTempl
 		super(type, genDepth, structureManager, templateLocation, placeSettings, startPosition);
 
 		this.templateOverlayLocation = templateOverlayLocation;
-		this.templateOverlay = this.structureManager.getOrCreate(this.templateOverlayLocation);
+		this.templateOverlay = this.structureManager.getOrEmpty(this.templateOverlayLocation);
 		this.placeSettingsOverlay = placeSettingsOverlay;
 	}
 

@@ -48,7 +48,7 @@ public class TFCavesCarver implements WorldCarver {
 
 	@Override
 	public boolean carve(WorldGenerationContext ctx, RandomSource random, ChunkPos pos1, ChunkPos pos2, CarverOutput output) {
-		if (this.isHighlands && (Mth.clamp(LegacyLandmarkPlacements.manhattanDistanceFromLandmarkCenter(pos2.x(), pos2.z()), 0, 0b11) & 0b1) == 1)
+		if (this.isHighlands && (Math.clamp(LegacyLandmarkPlacements.manhattanDistanceFromLandmarkCenter(pos2.x(), pos2.z()), 0, 0b11) & 0b1) == 1)
 			return false; // If highlands, enforces a binary grid (diagonal range of 4 chunks) of possible placements around the structure center, with center being one of the zero tiles
 
 		int i = SectionPos.sectionToBlockCoord(this.getRange() * 2 - 1);

@@ -96,7 +96,7 @@ public class CinderFurnaceBlockEntity extends FurnaceBlockEntity {
 				entity.cookingTimer = 0;
 			}
 		} else if (entity.cookingTimer > 0) {
-			entity.cookingTimer = Mth.clamp(entity.cookingTimer - 2, 0, entity.cookingTotalTime);
+			entity.cookingTimer = Math.clamp(entity.cookingTimer - 2, 0, entity.cookingTotalTime);
 		}
 
 		if (wasLit != isLit) {

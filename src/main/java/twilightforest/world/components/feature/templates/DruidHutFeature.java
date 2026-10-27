@@ -31,7 +31,7 @@ public class DruidHutFeature extends TemplateFeature {
 
 	@Override
 	protected StructureTemplate getTemplate(StructureTemplateManager templateManager, RandomSource random) {
-		return templateManager.getOrCreate(Util.getRandom(DruidHutFeature.HutType.values(), random).identifier);
+		return templateManager.getOrEmpty(Util.getRandom(DruidHutFeature.HutType.values(), random).identifier);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class DruidHutFeature extends TemplateFeature {
 	@Override
 	protected void postPlacement(WorldGenLevel world, RandomSource random, StructureTemplateManager templateManager, Rotation rotation, Mirror mirror, StructurePlaceSettings placementSettings, BlockPos placementPos) {
 		if (random.nextBoolean()) {
-			StructureTemplate template = templateManager.getOrCreate(DruidHutFeature.BasementType.values()[random.nextInt(DruidHutFeature.BasementType.size)].getBasement(random.nextBoolean()));
+			StructureTemplate template = templateManager.getOrEmpty(DruidHutFeature.BasementType.values()[random.nextInt(DruidHutFeature.BasementType.size)].getBasement(random.nextBoolean()));
 
 			if (template == null) return;
 

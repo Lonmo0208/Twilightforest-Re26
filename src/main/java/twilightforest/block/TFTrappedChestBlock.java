@@ -44,7 +44,7 @@ public class TFTrappedChestBlock extends ChestBlock {
 
 	@Override
 	protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-		return Mth.clamp(ChestBlockEntity.getOpenCount(level, pos), 0, 15);
+		return Math.clamp(ChestBlockEntity.getOpenCount(level, pos), 0, 15);
 	}
 
 	@Override

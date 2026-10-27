@@ -64,7 +64,7 @@ public class RisingZombie extends Monster {
 			if (!this.level().isClientSide()) {
 				this.getEntityData().set(RISING_TICKS, this.getRisingTicks() + 1);
 				if (this.getRisingTicks() % 10 == 0 && this.getRisingTicks() < 130) {
-					this.level().playSound(null, this.blockPosition(), state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 1.0F, this.getRandom().nextFloat() * 0.15F + 0.7F);
+					state.getSounds(this.level()).breakSound().ifPresent(sound -> this.level().playSound(null, this.blockPosition(), sound.value(), SoundSource.BLOCKS, 1.0F, this.getRandom().nextFloat() * 0.15F + 0.7F));
 				}
 			} else {
 				if (!this.level().isEmptyBlock(this.blockPosition().below())) {

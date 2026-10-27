@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.sounds.BlockSoundSet;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -161,15 +162,15 @@ public class OminousCandleBlock extends BaseEntityBlock {
 
 				BlockState newState = level.getBlockState(pos);
 
-				SoundType soundtype = newState.getSoundType();
-				level.playSound(
+				BlockSoundSet soundtype = newState.getSounds(level);
+				soundtype.placeSound().ifPresent(sound -> level.playSound(
 					player,
 					pos,
-					soundtype.getPlaceSound(),
+					sound.value(),
 					SoundSource.BLOCKS,
-					(soundtype.getVolume() + 1.0F) / 2.0F,
-					soundtype.getPitch() * 0.8F
-				);
+					(soundtype.volume() + 1.0F) / 2.0F,
+					soundtype.pitch() * 0.8F
+				));
 				level.gameEvent(GameEvent.BLOCK_PLACE, pos, GameEvent.Context.of(player, newState));
 				stack.consume(1, player);
 

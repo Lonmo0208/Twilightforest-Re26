@@ -109,7 +109,7 @@ public class BoxDensityFunction implements DensityFunction {
 				default -> 0;
 			};
 
-			return Mth.clamp(densityValue, (float) this.minValue, (float) this.maxValue);
+			return Math.clamp(densityValue, (float) this.minValue, (float) this.maxValue);
 		}
 
 		@Override

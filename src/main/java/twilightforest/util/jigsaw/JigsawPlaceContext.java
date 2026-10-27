@@ -100,7 +100,7 @@ public record JigsawPlaceContext(BlockPos templatePos, StructurePlaceSettings pl
 	}
 
 	public BoundingBox makeBoundingBox(StructureTemplateManager manager) {
-		return this.makeBoundingBox(manager.getOrCreate(this.templateLocation));
+		return this.makeBoundingBox(manager.getOrEmpty(this.templateLocation));
 	}
 
 	public BoundingBox makeBoundingBox(StructureTemplate template) {

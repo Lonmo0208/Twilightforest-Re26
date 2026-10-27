@@ -44,7 +44,7 @@ return planesMatch;
 public static List<StructureTemplate.StructureBlockInfo> readConnectableJigsaws(@Nullable StructureTemplateManager manager, Identifier templateLocation, StructurePlaceSettings settings, @Nullable RandomSource random) {
 	if (manager == null)
 		return List.of();
-	return readConnectableJigsaws(manager.getOrCreate(templateLocation), settings, random);
+	return readConnectableJigsaws(manager.getOrEmpty(templateLocation), settings, random);
 }
 public static List<StructureTemplate.StructureBlockInfo> readConnectableJigsaws(@Nullable StructureTemplate template, StructurePlaceSettings settings, @Nullable RandomSource random) {
 if (template == null || BlockPos.ZERO.equals(template.getSize())) {

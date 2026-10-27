@@ -58,7 +58,7 @@ public record MultiplayerBasedNumberProvider(Holder<ContextFloatProvider> rollsP
 		if (TFConfig.multiplayerFightAdjuster.adjustsLootRolls()
 			&& context.getOptional(LootContextParams.THIS_ENTITY) instanceof Entity entity
 			&& entity.hasAttached(TFDataAttachments.MULTIPLAYER_FIGHT)) {
-			int qualifiedPlayers = TFDataAttachments.getOrCreate(entity, TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new).getQualifiedPlayers().size();
+			int qualifiedPlayers = TFDataAttachments.getOrEmpty(entity, TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new).getQualifiedPlayers().size();
 			float total = this.defaultRolls.value().getFloat(context);
 			for (int i = 0; i < qualifiedPlayers - 1; i++) {
 				total += Math.max(0, this.rollsPerPlayer.value().getFloat(context));

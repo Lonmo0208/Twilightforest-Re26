@@ -166,7 +166,7 @@ public class TravellersGearEvents {
 		LivingEntity livingEntity = event.getEntity();
 		ItemStack boots = livingEntity.getItemBySlot(EquipmentSlot.FEET);
 		Float coefficient = boots.get(TFDataComponents.SLIMY_SOLES_COEFFICIENT);
-		SlimySolesAttachment slimySolesAttachment = TFDataAttachments.getOrCreate(livingEntity, TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, twilightforest.components.entity.SlimySolesAttachment::new);
+		SlimySolesAttachment slimySolesAttachment = TFDataAttachments.getOrEmpty(livingEntity, TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, twilightforest.components.entity.SlimySolesAttachment::new);
 		if (!livingEntity.isShiftKeyDown() && TravellersModifiersManager.isModifierActive(livingEntity, boots, TravellersModifiersManager.SLIMY_SOLES_MODIFIER) && coefficient != null && (calculateFallDamage(event) > 0 || slimySolesAttachment.forceBounce)) {
 			event.setCanceled(true);
 			slimySolesAttachment.bounceVelocity = -livingEntity.getDeltaMovement().y() * Math.sqrt(coefficient);
@@ -186,7 +186,7 @@ public class TravellersGearEvents {
 
 	private void cancelSlimySolesJump(FabricEvents.LivingEvent.LivingJumpEvent event) {
 		LivingEntity livingEntity = event.getEntity();
-		SlimySolesAttachment slimySolesAttachment = TFDataAttachments.getOrCreate(livingEntity, TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, twilightforest.components.entity.SlimySolesAttachment::new);
+		SlimySolesAttachment slimySolesAttachment = TFDataAttachments.getOrEmpty(livingEntity, TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, twilightforest.components.entity.SlimySolesAttachment::new);
 		slimySolesAttachment.bounceVelocity = 0;
 		slimySolesAttachment.forceBounce = false;
 		livingEntity.setAttached(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO, slimySolesAttachment);
@@ -201,7 +201,7 @@ public class TravellersGearEvents {
 		else if (player.onGround() || player.isInLiquid() || player.onClimbable())
 			hasDoubleJump = true;
 
-		boolean currentHasDoubleJump = Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.HAS_DOUBLE_JUMP, () -> false));
+		boolean currentHasDoubleJump = Boolean.TRUE.equals(TFDataAttachments.getOrEmpty(player, TFDataAttachments.HAS_DOUBLE_JUMP, () -> false));
 		if (hasDoubleJump != null && hasDoubleJump != currentHasDoubleJump) {
 			player.setAttached(TFDataAttachments.HAS_DOUBLE_JUMP, hasDoubleJump);
 			player.setAttached(TFDataAttachments.DOUBLE_JUMP_VALIDATOR, 0);
@@ -212,7 +212,7 @@ public class TravellersGearEvents {
 
 		if (!player.level().isClientSide()) {
 			boolean modifierActive = TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.GRADUAL_GLIDE_MODIFIER);
-			if (!modifierActive && Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.IS_GRADUALLY_GLIDING, () -> false))) {
+			if (!modifierActive && Boolean.TRUE.equals(TFDataAttachments.getOrEmpty(player, TFDataAttachments.IS_GRADUALLY_GLIDING, () -> false))) {
 				player.setAttached(TFDataAttachments.IS_GRADUALLY_GLIDING, false);
 				PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new GradualGlidePacket(false, player.getUUID()));
 			}
@@ -220,7 +220,7 @@ public class TravellersGearEvents {
 
 		//reset double jump wing anim if on the ground
 		if (event.getEntity().level().isClientSide()) {
-			var anim = TFDataAttachments.getOrCreate(player, TFDataAttachments.TRAVELLERS_WINGS_ANIM, twilightforest.components.entity.TravellersWingsAnimAttachment::new);
+			var anim = TFDataAttachments.getOrEmpty(player, TFDataAttachments.TRAVELLERS_WINGS_ANIM, twilightforest.components.entity.TravellersWingsAnimAttachment::new);
 			if (anim.doubleJump && player.onGround()) {
 				anim.doubleJump = false;
 			}

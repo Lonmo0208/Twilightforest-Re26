@@ -233,7 +233,7 @@ public class TFPortalBlock extends HalfTransparentBlock implements LiquidBlockCo
 
 			if (entity.canUsePortal(false)) {
 				entity.setAsInsidePortal(this, entity.blockPosition());
-				TFDataAttachments.getOrCreate(entity, TFDataAttachments.TF_PORTAL_COOLDOWN, twilightforest.components.entity.TFPortalAttachment::new).setInPortal(true);
+				TFDataAttachments.getOrEmpty(entity, TFDataAttachments.TF_PORTAL_COOLDOWN, twilightforest.components.entity.TFPortalAttachment::new).setInPortal(true);
 			}
 		}
 	}

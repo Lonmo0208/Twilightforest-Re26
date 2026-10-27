@@ -99,7 +99,7 @@ public class ToolEvents {
 			&& result.getEntity() instanceof LivingEntity living
 			&& arrow.getOwner() != result.getEntity() && !result.getEntity().is(TFEntityTypeTags.BOSSES)) { // TODO: Port - verify BOSSES tag exists in TFEntityTypeTags
 
-			if (TFDataAttachments.getOrCreate(player, TFDataAttachments.TF_PERSISTENT_DATA, CompoundTag::new).getCompound("PlayerPersisted").orElse(new net.minecraft.nbt.CompoundTag()).contains(EnderBowItem.KEY)) {
+			if (TFDataAttachments.getOrEmpty(player, TFDataAttachments.TF_PERSISTENT_DATA, CompoundTag::new).getCompound("PlayerPersisted").orElse(new net.minecraft.nbt.CompoundTag()).contains(EnderBowItem.KEY)) {
 				double sourceX = player.getX(), sourceY = player.getY(), sourceZ = player.getZ();
 				float sourceYaw = player.getYRot(), sourcePitch = player.getXRot();
 				@Nullable Entity playerVehicle = player.getVehicle();
@@ -237,7 +237,7 @@ public class ToolEvents {
 		BlockState state = event.getState();
 
 		if (event.getPlayer() instanceof ServerPlayer player && canHarvestWithGiantPick(player, state, pos)) {
-			var attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.GIANT_PICKAXE_MINING, twilightforest.components.entity.GiantPickaxeMiningAttachment::new);
+			var attachment = TFDataAttachments.getOrEmpty(player, TFDataAttachments.GIANT_PICKAXE_MINING, twilightforest.components.entity.GiantPickaxeMiningAttachment::new);
 
 			// Initialize mining time if not already set
 			if (attachment.getMining() != player.level().getGameTime()) {

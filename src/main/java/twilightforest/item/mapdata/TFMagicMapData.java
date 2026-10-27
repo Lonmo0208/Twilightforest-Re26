@@ -127,7 +127,7 @@ public class TFMagicMapData extends MapItemSavedData {
 			}),
 			Codec.STRING.listOf().optionalFieldOf("conquered_structures", List.of()).forGetter(m -> List.copyOf(m.conqueredStructures))
 		).apply(instance, (dim, x, z, scale, colors, tracking, unlimited, locked, banners, frames, decorations, conquered) -> {
-			TFMagicMapData data = new TFMagicMapData(x, z, (byte) Mth.clamp(scale, 0, 4), tracking, unlimited, locked, dim);
+			TFMagicMapData data = new TFMagicMapData(x, z, (byte) Math.clamp(scale, 0, 4), tracking, unlimited, locked, dim);
 			if (colors.array().length == 16384) data.colors = colors.array();
 			for (MapBanner b : banners) data.bannerMarkers.put(b.getId(), b);
 			for (MapFrame f : frames) data.frameMarkers.put(f.getId(), f);

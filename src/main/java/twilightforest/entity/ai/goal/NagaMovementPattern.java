@@ -72,7 +72,7 @@ public class NagaMovementPattern extends Goal {
 						//the stunless charge has a higher chance to happen the lower the naga's health gets
 						//difficulty is also factored in. The higher the difficulty the greater the chance
 						float healthRatio = 1.0F - (this.naga.getHealth() / (this.naga.getMaxHealth())) - 0.25F;
-						float chance = Mth.clamp(healthRatio + (serverLevel.getCurrentDifficultyAt(this.naga.blockPosition()).getDifficulty().getId() * 0.05F), 0.0F, 0.5F);
+						float chance = Math.clamp(healthRatio + (serverLevel.getCurrentDifficultyAt(this.naga.blockPosition()).getDifficulty().getId() * 0.05F), 0.0F, 0.5F);
 						float randChance = this.naga.getRandom().nextFloat() * 0.75F;
 						boolean stunless = randChance < chance;
 						this.naga.setStunlessCharging(stunless);

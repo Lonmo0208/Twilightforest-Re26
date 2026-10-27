@@ -42,13 +42,13 @@ public record HollowHillFunction(float centerX, float bottomY, float centerZ, fl
 		// Because cosine is an even function, the radius multiplying cosine's result is the only variable that can affect this DensityFunction using a negative value.
 		float height = Mth.cos(dist / this.radius * Mth.PI) * this.radius * 0.3333333334f;
 
-		float normalizedDist = Mth.clamp(dist / Mth.abs(this.radius), 0, 1);
+		float normalizedDist = Math.clamp(dist / Mth.abs(this.radius), 0, 1);
 
 		if (normalizedDist >= 1) {
 			return 0;
 		}
 
-		return Mth.clamp((height * this.heightScale - dY), -1, 1);
+		return Math.clamp((height * this.heightScale - dY), -1, 1);
 	}
 
 	@Override
@@ -77,13 +77,13 @@ public record HollowHillFunction(float centerX, float bottomY, float centerZ, fl
 			// Because cosine is an even function, the radius multiplying cosine's result is the only variable that can affect this DensityFunction using a negative value.
 			float height = Mth.cos(dist / this.radius * Mth.PI) * this.radius * 0.3333333334f;
 
-			float normalizedDist = Mth.clamp(dist / Mth.abs(this.radius), 0, 1);
+			float normalizedDist = Math.clamp(dist / Mth.abs(this.radius), 0, 1);
 
 			if (normalizedDist >= 1) {
 				return 0;
 			}
 
-			return Mth.clamp((height * this.heightScale - dY), -1, 1);
+			return Math.clamp((height * this.heightScale - dY), -1, 1);
 		}
 
 		@Override

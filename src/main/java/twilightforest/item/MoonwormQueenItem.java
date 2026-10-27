@@ -19,7 +19,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.sounds.BlockSoundSets;
+import net.minecraft.world.level.block.sounds.BlockSoundSet;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -109,17 +110,13 @@ public class MoonwormQueenItem extends Item {
 					}
 				}
 
-				SoundType soundType = placedState.getSoundType();
-				level.playSound(player, pos, this.getPlaceSound(placedState, level, pos, player), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
+				BlockSoundSet soundType = placedState.getSounds(level);
+				soundType.placeSound().ifPresent(sound -> level.playSound(player, pos, sound.value(), SoundSource.BLOCKS, (soundType.volume() + 1.0F) / 2.0F, soundType.pitch() * 0.8F));
 				level.gameEvent(GameEvent.BLOCK_PLACE, pos, GameEvent.Context.of(player, placedState));
 				itemStack.hurtWithoutBreaking(1, player);
 				return InteractionResult.SUCCESS;
 			}
 		}
-	}
-
-	private SoundEvent getPlaceSound(BlockState state, Level world, BlockPos pos, Player entity) {
-		return state.getSoundType().getPlaceSound();
 	}
 
 	private @Nullable BlockState getPlacementState(BlockPlaceContext context) {

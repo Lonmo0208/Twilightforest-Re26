@@ -35,10 +35,10 @@ public class HostileMountEvents {
 			event.setCanceled(true);
 		}
 
-		if (damageSource.is(DamageTypes.FALL) && TFDataAttachments.getOrCreate(living, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new).getThrown()) {
+		if (damageSource.is(DamageTypes.FALL) && TFDataAttachments.getOrEmpty(living, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new).getThrown()) {
 			float amount = event.getAmount();
 			event.setCanceled(true);
-			living.hurt(TFDamageTypes.getEntityDamageSource(living.level(), TFDamageTypes.YEETED, TFDataAttachments.getOrCreate(living, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new).getThrower()), amount);
+			living.hurt(TFDamageTypes.getEntityDamageSource(living.level(), TFDamageTypes.YEETED, TFDataAttachments.getOrEmpty(living, TFDataAttachments.YETI_THROWING, twilightforest.components.entity.YetiThrowAttachment::new).getThrower()), amount);
 		}
 	}
 

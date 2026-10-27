@@ -69,7 +69,7 @@ public abstract class HollowTreePiece extends StructurePiece {
 		BlockState state = possibleBlocks.getState(world, random, worldPos);
 
 		if (state.hasProperty(LeavesBlock.DISTANCE)) {
-			int distance = leafHack ? 1 : Mth.clamp(origin.distManhattan(worldPos), 1, 7);
+			int distance = leafHack ? 1 : Math.clamp(origin.distManhattan(worldPos), 1, 7);
 			world.setBlock(worldPos, state.setValue(LeavesBlock.DISTANCE, distance), PLACE_FLAG);
 		} else {
 			world.setBlock(worldPos, state, PLACE_FLAG);

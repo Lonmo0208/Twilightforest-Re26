@@ -141,7 +141,7 @@ public class LichYardBox extends StructurePiece implements SortablePiece, SpawnI
 		int zBorderDist = Math.min(z - this.boundingBox.minZ(), this.boundingBox.maxZ() - z);
 		float borderDist = Math.min(xBorderDist, zBorderDist) + this.offset;
 
-		float featherLevel = borderDist > this.edgeFeatheringRange ? 1f : Mth.clamp(borderDist / this.edgeFeatheringRange, 0, 1);
+		float featherLevel = borderDist > this.edgeFeatheringRange ? 1f : Math.clamp(borderDist / this.edgeFeatheringRange, 0, 1);
 		float noise = SimplexNoise.noise(x * this.scale, y * this.scale, z * this.scale) * 0.5f - 0.5f;
 		float featheredNoise = noise + featherLevel;
 		if (featheredNoise < 0) {

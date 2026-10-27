@@ -508,7 +508,7 @@ public abstract class TFStructureComponentOld extends TFStructureComponent imple
 	protected int getAverageGroundLevel(WorldGenLevel world, ChunkGenerator generator, BoundingBox boundingBox) {
 		int yTotal = 0;
 		int count = 0;
-		int yStart = Mth.clamp(generator.getSeaLevel(), this.boundingBox.minY(), this.boundingBox.maxY());
+		int yStart = Math.clamp(generator.getSeaLevel(), this.boundingBox.minY(), this.boundingBox.maxY());
 
 		for (int z = this.boundingBox.minZ(); z <= this.boundingBox.maxZ(); ++z) {
 			for (int x = this.boundingBox.minX(); x <= this.boundingBox.maxX(); ++x) {

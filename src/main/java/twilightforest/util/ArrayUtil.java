@@ -13,7 +13,7 @@ public final class ArrayUtil {
 	}
 
 	public static <T> T clamped(T[] array, int index) {
-		return array[Mth.clamp(index, 0, array.length - 1)];
+		return array[Math.clamp(index, 0, array.length - 1)];
 	}
 
 	// TODO: handle negatives

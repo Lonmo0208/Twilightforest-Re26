@@ -259,8 +259,8 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 			JigsawPlaceContext placeableJunction = JigsawPlaceContext.pickPlaceableJunction(this.templatePosition(), topPos, connection.orientation(), this.structureManager, roomId, connection.target(), context.random());
 
 			if (placeableJunction != null) {
-				//BoundingBox aboveRoomBounds = BoundingBoxUtils.extrusionFrom(placeableJunction.makeBoundingBox(this.structureManager.getOrCreate(roomId)), Direction.UP, 11);
-				//BoundingBox aboveRoomBounds = placeableJunction.makeBoundingBox(this.structureManager.getOrCreate(roomId));
+				//BoundingBox aboveRoomBounds = BoundingBoxUtils.extrusionFrom(placeableJunction.makeBoundingBox(this.structureManager.getOrEmpty(roomId)), Direction.UP, 11);
+				//BoundingBox aboveRoomBounds = placeableJunction.makeBoundingBox(this.structureManager.getOrEmpty(roomId));
 				//BoundingBox aboveRoomBounds = BoundingBoxUtils.extrusionFrom(this.boundingBox, Direction.UP, Mth.ceil(this.boundingBox.getYSpan() * 1.5f));
 
 				// boolean canGenerateLadder = this.getSourceJigsaw().orientation().front().getAxis().isHorizontal() && random.nextBoolean() && pieceAccessor.findCollisionPiece(aboveRoomBounds) == null;
@@ -615,7 +615,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 			this.configureBaseSpawner(pos, random, parameters, spawner.getSpawner());
 
 			if (parameters.length == 3 && StringUtils.isNumeric(parameters[2])) {
-				spawner.getSpawner().spawnRange = Mth.clamp(Integer.parseInt(parameters[2]), 1, 16);
+				spawner.getSpawner().spawnRange = Math.clamp(Integer.parseInt(parameters[2]), 1, 16);
 			}
 		}
 	}
@@ -632,11 +632,11 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Spaw
 		this.configureBaseSpawner(pos, random, parameters, spawner.getSpawner());
 
 		if (parameters.length >= 3 && StringUtils.isNumeric(parameters[2])) {
-			spawner.getSpawner().spawnRange = Mth.clamp(Integer.parseInt(parameters[2]), 1, 16);
+			spawner.getSpawner().spawnRange = Math.clamp(Integer.parseInt(parameters[2]), 1, 16);
 		}
 
 		if (parameters.length >= 4 && StringUtils.isNumeric(parameters[3])) {
-			spawner.getSpawner().entityScanRange = Mth.clamp(Integer.parseInt(parameters[3]), 1, 32);
+			spawner.getSpawner().entityScanRange = Math.clamp(Integer.parseInt(parameters[3]), 1, 32);
 		} else {
 			spawner.getSpawner().entityScanRange = spawner.getSpawner().spawnRange;
 		}

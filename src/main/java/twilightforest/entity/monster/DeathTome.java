@@ -201,7 +201,7 @@ public class DeathTome extends Monster implements RangedAttackMob {
 
 			this.oFlip = this.flip;
 			float f = (this.flipT - this.flip) * 0.4F;
-			f = Mth.clamp(f, -0.2F, 0.2F);
+			f = Math.clamp(f, -0.2F, 0.2F);
 			this.flipA += (f - this.flipA) * 0.9F;
 			this.flip += this.flipA;
 		}

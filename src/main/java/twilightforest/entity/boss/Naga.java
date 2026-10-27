@@ -199,7 +199,7 @@ public class Naga extends BaseTFBoss {
 	 */
 	private void setSegmentsPerHealth() {
 		int oldSegments = this.currentSegmentCount;
-		int newSegments = Mth.clamp((int) ((this.getHealth() / this.healthPerSegment) + (this.getHealth() > 0 ? 2 : 0)), 0, MAX_SEGMENTS);
+		int newSegments = Math.clamp((int) ((this.getHealth() / this.healthPerSegment) + (this.getHealth() > 0 ? 2 : 0)), 0, MAX_SEGMENTS);
 		this.currentSegmentCount = newSegments;
 		if (newSegments < oldSegments) {
 			for (int i = newSegments; i < oldSegments; i++) {

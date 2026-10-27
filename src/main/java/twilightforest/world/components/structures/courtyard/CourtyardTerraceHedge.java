@@ -26,13 +26,13 @@ public class CourtyardTerraceHedge extends CourtyardTerrace {
 	public CourtyardTerraceHedge(StructurePieceSerializationContext ctx, CompoundTag nbt) {
 		super(TFStructurePieceTypes.TFNCHe, ctx, nbt);
 
-		this.templateBig = ctx.structureTemplateManager().getOrCreate(this.hedgeBig);
+		this.templateBig = ctx.structureTemplateManager().getOrEmpty(this.hedgeBig);
 	}
 
 	public CourtyardTerraceHedge(int i, int x, int y, int z, Rotation rotation, StructureTemplateManager structureManager) {
 		super(TFStructurePieceTypes.TFNCHe, i, x, y, z, rotation, structureManager, TwilightForestMod.prefix("courtyard/terrace_hedge"));
 
-		this.templateBig = structureManager.getOrCreate(this.hedgeBig);
+		this.templateBig = structureManager.getOrEmpty(this.hedgeBig);
 	}
 
 	@Override

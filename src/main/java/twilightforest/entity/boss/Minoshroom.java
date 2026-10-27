@@ -104,10 +104,10 @@ public class Minoshroom extends BaseTFBoss implements ITFCharger {
 		if (this.level().isClientSide()) {
 			this.prevClientSideChargeAnimation = this.clientSideChargeAnimation;
 			if (this.isGroundAttackCharge()) {
-				this.clientSideChargeAnimation = Mth.clamp(this.clientSideChargeAnimation + (1.0F / ((float) this.getEntityData().get(GROUND_CHARGE)) * 6.0F), 0.0F, 6.0F);
+				this.clientSideChargeAnimation = Math.clamp(this.clientSideChargeAnimation + (1.0F / ((float) this.getEntityData().get(GROUND_CHARGE)) * 6.0F), 0.0F, 6.0F);
 				this.groundSmashState = true;
 			} else {
-				this.clientSideChargeAnimation = Mth.clamp(this.clientSideChargeAnimation - 1.0F, 0.0F, 6.0F);
+				this.clientSideChargeAnimation = Math.clamp(this.clientSideChargeAnimation - 1.0F, 0.0F, 6.0F);
 				if (this.groundSmashState) {
 					BlockState block = this.level().getBlockState(this.blockPosition().below());
 

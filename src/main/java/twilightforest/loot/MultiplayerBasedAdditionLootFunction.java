@@ -53,11 +53,11 @@ public class MultiplayerBasedAdditionLootFunction extends LootItemConditionalFun
 		if (TFConfig.multiplayerFightAdjuster.adjustsLootRolls()
 			&& context.getOptional(LootContextParams.THIS_ENTITY) instanceof Entity entity
 			&& entity.hasAttached(TFDataAttachments.MULTIPLAYER_FIGHT)) {
-			int qualifiedPlayers = TFDataAttachments.getOrCreate(entity, TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new).getQualifiedPlayers().size();
+			int qualifiedPlayers = TFDataAttachments.getOrEmpty(entity, TFDataAttachments.MULTIPLAYER_FIGHT, twilightforest.components.entity.MultiplayerInclusivityAttachment::new).getQualifiedPlayers().size();
 			if (qualifiedPlayers > 1) {
 				int participatingPlayers = qualifiedPlayers - 1;
 				int extraItems = Math.round(this.value.value().getFloat(context)) * participatingPlayers;
-				stack.setCount(Mth.clamp(stack.getCount() + extraItems, 0, stack.getMaxStackSize()));
+				stack.setCount(Math.clamp(stack.getCount() + extraItems, 0, stack.getMaxStackSize()));
 			}
 		}
 		return stack;

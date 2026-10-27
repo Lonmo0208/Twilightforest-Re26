@@ -27,7 +27,7 @@ public class SimpleWellFeature extends TemplateFeature {
 	@Nullable
 	@Override
 	protected StructureTemplate getTemplate(StructureTemplateManager templateManager, RandomSource random) {
-		return templateManager.getOrCreate(WELL_TOP);
+		return templateManager.getOrEmpty(WELL_TOP);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class SimpleWellFeature extends TemplateFeature {
 
 	@Override
 	protected void postPlacement(WorldGenLevel world, RandomSource random, StructureTemplateManager templateManager, Rotation rotation, Mirror mirror, StructurePlaceSettings placementSettings, BlockPos placementPos) {
-		StructureTemplate template = templateManager.getOrCreate(WELL_BOTTOM);
+		StructureTemplate template = templateManager.getOrEmpty(WELL_BOTTOM);
 
 		if (template == null) return;
 

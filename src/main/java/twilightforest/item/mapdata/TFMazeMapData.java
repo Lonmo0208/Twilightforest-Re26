@@ -101,7 +101,7 @@ public class TFMazeMapData extends MapItemSavedData {
 			Codec.INT.optionalFieldOf("yCenter", 0).forGetter(m -> m.yCenter),
 			Codec.BOOL.optionalFieldOf("mapOres", false).forGetter(m -> m.ore)
 		).apply(instance, (dim, x, z, scale, colors, tracking, unlimited, locked, banners, frames, yCenter, ore) -> {
-			TFMazeMapData data = new TFMazeMapData(x, z, (byte) Mth.clamp(scale, 0, 4), tracking, unlimited, locked, dim);
+			TFMazeMapData data = new TFMazeMapData(x, z, (byte) Math.clamp(scale, 0, 4), tracking, unlimited, locked, dim);
 			if (colors.array().length == 16384) data.colors = colors.array();
 			for (MapBanner b : banners) data.bannerMarkers.put(b.getId(), b);
 			for (MapFrame f : frames) data.frameMarkers.put(f.getId(), f);

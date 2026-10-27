@@ -26,7 +26,7 @@ public record JigsawRecord(int priority, FrontAndTop orientation, BlockPos pos, 
 	public static List<JigsawRecord> allFromTemplate(StructureTemplateManager structureManager, Identifier templateLocation, StructurePlaceSettings placeSettings) {
 		// StructureTemplate#filterBlocks() does not support mirroring, force NONE
 		placeSettings.setMirror(Mirror.NONE);
-		return structureManager.getOrCreate(templateLocation).filterBlocks(BlockPos.ZERO, placeSettings, Blocks.JIGSAW).stream().map(JigsawRecord::fromJigsawBlock).toList();
+		return structureManager.getOrEmpty(templateLocation).filterBlocks(BlockPos.ZERO, placeSettings, Blocks.JIGSAW).stream().map(JigsawRecord::fromJigsawBlock).toList();
 	}
 
 	public static List<JigsawRecord> fromUnprocessedInfos(List<StructureTemplate.StructureBlockInfo> infos, StructurePlaceSettings settings, RandomSource random) {

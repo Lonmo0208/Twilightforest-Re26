@@ -119,14 +119,14 @@ public class ReactorDebrisBlockEntity extends BlockEntity {
 		// Older saves could contain a negative size because saveAdditional used to subtract in
 		// place and corrupt maxPos; normalise the box so Shapes.box never receives min > max.
 		this.minPos = new Vector3f(
-			Mth.clamp(Math.min(pos.x(), max.x()), 0.0F, 1.0F),
-			Mth.clamp(Math.min(pos.y(), max.y()), 0.0F, 1.0F),
-			Mth.clamp(Math.min(pos.z(), max.z()), 0.0F, 1.0F)
+			Math.clamp(Math.min(pos.x(), max.x()), 0.0F, 1.0F),
+			Math.clamp(Math.min(pos.y(), max.y()), 0.0F, 1.0F),
+			Math.clamp(Math.min(pos.z(), max.z()), 0.0F, 1.0F)
 		);
 		this.maxPos = new Vector3f(
-			Mth.clamp(Math.max(pos.x(), max.x()), 0.0F, 1.0F),
-			Mth.clamp(Math.max(pos.y(), max.y()), 0.0F, 1.0F),
-			Mth.clamp(Math.max(pos.z(), max.z()), 0.0F, 1.0F)
+			Math.clamp(Math.max(pos.x(), max.x()), 0.0F, 1.0F),
+			Math.clamp(Math.max(pos.y(), max.y()), 0.0F, 1.0F),
+			Math.clamp(Math.max(pos.z(), max.z()), 0.0F, 1.0F)
 		);
 
 		this.shape = Shapes.box(this.minPos.x(), this.minPos.y(), this.minPos.z(), this.maxPos.x(), this.maxPos.y(), this.maxPos.z());

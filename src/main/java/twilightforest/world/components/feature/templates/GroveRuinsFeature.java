@@ -20,7 +20,7 @@ public class GroveRuinsFeature extends TemplateFeature {
 	@Nullable
 	@Override
 	protected StructureTemplate getTemplate(StructureTemplateManager templateManager, RandomSource random) {
-		return templateManager.getOrCreate(random.nextBoolean() ? PILLAR : ARCH);
+		return templateManager.getOrEmpty(random.nextBoolean() ? PILLAR : ARCH);
 	}
 
 	@Override

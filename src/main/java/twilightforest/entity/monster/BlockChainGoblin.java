@@ -205,9 +205,9 @@ public class BlockChainGoblin extends Monster {
 
 	private void chainMove() {
 		if (this.isThrowing()) {
-			this.chainMoveLength = Mth.clamp(this.chainMoveLength + 0.5F, 0.0F, 6.0F);
+			this.chainMoveLength = Math.clamp(this.chainMoveLength + 0.5F, 0.0F, 6.0F);
 		} else {
-			this.chainMoveLength = Mth.clamp(this.chainMoveLength - 1.5F, 0.0F, 6.0F);
+			this.chainMoveLength = Math.clamp(this.chainMoveLength - 1.5F, 0.0F, 6.0F);
 		}
 	}
 

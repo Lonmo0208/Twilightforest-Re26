@@ -93,15 +93,15 @@ public class GraveyardFeature implements Feature {
 		int flags = 16 | 2 | 1;
 
 		StructureTemplateManager templatemanager = world.getLevel().getServer().getStructureTemplateManager();
-		StructureTemplate base = templatemanager.getOrCreate(GRAVEYARD);
+		StructureTemplate base = templatemanager.getOrEmpty(GRAVEYARD);
 		if (base == null)
 			return false;
 		List<Pair<GraveType, StructureTemplate>> graves = new ArrayList<>();
-		StructureTemplate trap = templatemanager.getOrCreate(TRAP);
+		StructureTemplate trap = templatemanager.getOrEmpty(TRAP);
 		if (trap == null)
 			return false;
 		for (GraveType type : GraveType.VALUES) {
-			StructureTemplate grave = templatemanager.getOrCreate(type.RL);
+			StructureTemplate grave = templatemanager.getOrEmpty(type.RL);
 			if (grave == null)
 				return false;
 			graves.add(Pair.of(type, grave));

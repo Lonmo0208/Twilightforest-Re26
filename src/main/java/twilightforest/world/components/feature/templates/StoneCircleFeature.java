@@ -19,7 +19,7 @@ public class StoneCircleFeature extends TemplateFeature {
 	@Nullable
 	@Override
 	protected StructureTemplate getTemplate(StructureTemplateManager templateManager, RandomSource random) {
-		return templateManager.getOrCreate(STONE_CIRCLE);
+		return templateManager.getOrEmpty(STONE_CIRCLE);
 	}
 
 	@Override

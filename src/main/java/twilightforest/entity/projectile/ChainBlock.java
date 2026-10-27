@@ -158,7 +158,7 @@ public class ChainBlock extends ThrowableProjectile {
 			BlockState state = level.getBlockState(pos);
 			if (!state.isAir()) {
 				boolean restrictedPlaceMode = this.getOwner() instanceof ServerPlayer player && player.gameMode.getGameModeForPlayer().isBlockPlacingRestricted();
-			var smashOwner = this.getOwner() != null ? TFDataAttachments.getOrCreate(this.getOwner(), TFDataAttachments.SMASH_BLOCKS, twilightforest.components.entity.SmashBlocksEnchantmentAttachment::new) : new twilightforest.components.entity.SmashBlocksEnchantmentAttachment();
+			var smashOwner = this.getOwner() != null ? TFDataAttachments.getOrEmpty(this.getOwner(), TFDataAttachments.SMASH_BLOCKS, twilightforest.components.entity.SmashBlocksEnchantmentAttachment::new) : new twilightforest.components.entity.SmashBlocksEnchantmentAttachment();
 			if (!canBreakBlockAt(level, pos, state, this.stack, restrictedPlaceMode) || smashOwner.getBlocksSmashed() >= 12) {
 				this.bounce(result.getDirection());
 			}
@@ -264,7 +264,7 @@ public class ChainBlock extends ThrowableProjectile {
 					// despawn if close enough
 					if (distToPlayer < 2F) {
 						if (this.stack != null && this.getOwner() instanceof LivingEntity living) {
-							var smash = TFDataAttachments.getOrCreate(living, TFDataAttachments.SMASH_BLOCKS, twilightforest.components.entity.SmashBlocksEnchantmentAttachment::new);
+							var smash = TFDataAttachments.getOrEmpty(living, TFDataAttachments.SMASH_BLOCKS, twilightforest.components.entity.SmashBlocksEnchantmentAttachment::new);
 							if (smash.getBlocksSmashed() > 0) {
 								this.stack.hurtAndBreak(Math.min(smash.getBlocksSmashed(), 3), living, this.getHand());
 							}

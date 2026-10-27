@@ -283,7 +283,7 @@ public class LichPerimeterFence extends TwilightJigsawPiece implements SortableP
 		int dY;
 		if (horizontalAxalDistance <= 20) {
 			// Begin "homing" onto Fence's vertical height if close enough to the trim
-			dY = Mth.clamp(parentFence.templatePosition().getY() - 1, destination.minY() + 2, destination.maxY() - 2) - 1 - parentFence.templatePosition().getY();
+			dY = Math.clamp(parentFence.templatePosition().getY() - 1, destination.minY() + 2, destination.maxY() - 2) - 1 - parentFence.templatePosition().getY();
 		} else {
 			dY = 0;
 		}
