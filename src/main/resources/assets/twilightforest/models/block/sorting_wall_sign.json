@@ -2,6 +2,6 @@
   "parent": "minecraft:block/template_wall_sign",
   "textures": {
     "all": "twilightforest:block/sorting_sign",
-    "particle": "twilightforest:block/wood/planks_sorting_0"
+    "particle": "twilightforest:block/wood/planks_sort_0"
   }
 }

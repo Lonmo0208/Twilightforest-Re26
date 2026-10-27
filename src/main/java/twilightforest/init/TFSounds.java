@@ -94,7 +94,6 @@ public final class TFSounds {
 	public static final SoundEvent FIRE_BEETLE_SHOOT = SoundEvent.createVariableRangeEvent(TwilightForestMod.prefix("entity.twilightforest.fire_beetle.shoot"));
 	public static final SoundEvent FIRE_BEETLE_STEP = SoundEvent.createVariableRangeEvent(TwilightForestMod.prefix("entity.twilightforest.fire_beetle.step"));
 	public static final SoundEvent FLASK_FILL = SoundEvent.createVariableRangeEvent(TwilightForestMod.prefix("item.twilightforest.flask.fill"));
-	public static final SoundEvent GHAST_TRAP_ACTIVE = SoundEvent.createVariableRangeEvent(TwilightForestMod.prefix("block.twilightforest.ghast_trap.active"));
 	public static final SoundEvent GHAST_TRAP_AMBIENT = SoundEvent.createVariableRangeEvent(TwilightForestMod.prefix("block.twilightforest.ghast_trap.ambient"));
 	public static final SoundEvent GHAST_TRAP_ON = SoundEvent.createVariableRangeEvent(TwilightForestMod.prefix("block.twilightforest.ghast_trap.on"));
 	public static final SoundEvent GHAST_TRAP_SPINDOWN = SoundEvent.createVariableRangeEvent(TwilightForestMod.prefix("block.twilightforest.ghast_trap.spindown"));
@@ -431,7 +430,6 @@ public final class TFSounds {
 		Registry.register(BuiltInRegistries.SOUND_EVENT, TwilightForestMod.prefix("entity.twilightforest.fire_beetle.shoot"), FIRE_BEETLE_SHOOT);
 		Registry.register(BuiltInRegistries.SOUND_EVENT, TwilightForestMod.prefix("entity.twilightforest.fire_beetle.step"), FIRE_BEETLE_STEP);
 		Registry.register(BuiltInRegistries.SOUND_EVENT, TwilightForestMod.prefix("item.twilightforest.flask.fill"), FLASK_FILL);
-		Registry.register(BuiltInRegistries.SOUND_EVENT, TwilightForestMod.prefix("block.twilightforest.ghast_trap.active"), GHAST_TRAP_ACTIVE);
 		Registry.register(BuiltInRegistries.SOUND_EVENT, TwilightForestMod.prefix("block.twilightforest.ghast_trap.ambient"), GHAST_TRAP_AMBIENT);
 		Registry.register(BuiltInRegistries.SOUND_EVENT, TwilightForestMod.prefix("block.twilightforest.ghast_trap.on"), GHAST_TRAP_ON);
 		Registry.register(BuiltInRegistries.SOUND_EVENT, TwilightForestMod.prefix("block.twilightforest.ghast_trap.spindown"), GHAST_TRAP_SPINDOWN);

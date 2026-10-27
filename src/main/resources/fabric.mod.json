@@ -36,6 +36,9 @@
 		"client": [
 			"twilightforest.client.TwilightForestClient"
 		],
+		"modmenu": [
+			"twilightforest.config.ModMenuIntegration"
+		],
 		"fabric-datagen": [
 			"twilightforest.datagen.TFDataGeneratorEntrypoint"
 		]

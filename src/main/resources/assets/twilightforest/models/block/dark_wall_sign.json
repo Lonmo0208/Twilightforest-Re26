@@ -2,6 +2,6 @@
   "parent": "minecraft:block/template_wall_sign",
   "textures": {
     "all": "twilightforest:block/dark_sign",
-    "particle": "twilightforest:block/wood/planks_dark_0"
+    "particle": "twilightforest:block/wood/planks_darkwood_0"
   }
 }
