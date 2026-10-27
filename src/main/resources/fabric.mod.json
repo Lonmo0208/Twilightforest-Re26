@@ -53,7 +53,7 @@
 	"accessWidener": "twilightforest.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.20.0",
-		"minecraft": "26.3",
+		"minecraft": "26.4-snapshot-5",
 		"java": ">=25",
 		"fabric-api": "*",
 		"forgeconfigapiport": ">=26.2.0"
