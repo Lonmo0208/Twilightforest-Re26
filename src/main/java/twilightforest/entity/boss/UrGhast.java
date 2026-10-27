@@ -477,7 +477,7 @@ public class UrGhast extends BaseTFBoss {
 	}
 
 	@Override
-	protected void checkFallDamage(double y, boolean onGround, BlockState state, BlockPos pos) {
+	protected void checkFallDamage(boolean onGround, BlockState state, BlockPos pos) {
 	}
 
 	//[VanillaCopy] of FlyingMob.travel

@@ -1,5 +1,6 @@
 package twilightforest.client.renderer.tooltip;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import net.minecraft.client.Minecraft;
@@ -112,11 +113,11 @@ public class PotionFlaskTooltipComponent implements ClientTooltipComponent {
 		int widthProg = segmentSplit;
 		for (int i = 1; i < this.maxDoses; i++) {
 			// 26.1.2: blitSprite now requires RenderPipeline as first parameter
-			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, DOSE_SPRITE, x + widthProg, y, 1, 13);
+			graphics.blitSprite(GuiPipeline.TEXTURED, DOSE_SPRITE, x + widthProg, y, 1, 13);
 			widthProg += segmentSplit;
 		}
 
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BORDER_SPRITE, x, y, WIDTH, 13);
+		graphics.blitSprite(GuiPipeline.TEXTURED, BORDER_SPRITE, x, y, WIDTH, 13);
 	}
 
 	private void renderPotion(GuiGraphicsExtractor graphics, int xPosition, int yPosition, int desiredWidth, int desiredHeight, int color) {

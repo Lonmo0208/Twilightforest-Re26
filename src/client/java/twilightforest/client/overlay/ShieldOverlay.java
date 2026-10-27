@@ -1,5 +1,6 @@
 package twilightforest.client.overlay;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
@@ -48,7 +49,7 @@ public class ShieldOverlay implements HudElement {
 			y += 10;
 		}
 		for (int i = 0; i < Math.min(shieldCount, 10); i++) {
-			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, FORTIFICATION_SHIELD_SPRITE, graphics.guiWidth() / 2 - 91 + (i * 8), y, 9, 9);
+			graphics.blitSprite(GuiPipeline.TEXTURED, FORTIFICATION_SHIELD_SPRITE, graphics.guiWidth() / 2 - 91 + (i * 8), y, 9, 9);
 		}
 	}
 }

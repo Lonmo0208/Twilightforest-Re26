@@ -1,5 +1,6 @@
 package twilightforest.client.event;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import com.google.common.collect.ImmutableList;
@@ -62,9 +63,9 @@ public class OverlayHandler {
 						int j = ((screenHeight - 1) / 2) - 11;
 						int k = ((screenWidth - 1) / 2) - 3;
 						if (!ram.isColorPresent(questEntry.getKey())) {
-							graphics.blitSprite(RenderPipelines.GUI_TEXTURED, QUESTING_RAM_X_SPRITE, k, j, 7, 7);
+							graphics.blitSprite(GuiPipeline.TEXTURED, QUESTING_RAM_X_SPRITE, k, j, 7, 7);
 						} else {
-							graphics.blitSprite(RenderPipelines.GUI_TEXTURED, QUESTING_RAM_CHECK_SPRITE, k, j, 7, 7);
+							graphics.blitSprite(GuiPipeline.TEXTURED, QUESTING_RAM_CHECK_SPRITE, k, j, 7, 7);
 						}
 						break;
 					}
@@ -76,7 +77,7 @@ public class OverlayHandler {
 	private static void renderShieldCount(GuiGraphicsExtractor graphics, Gui gui, int screenWidth, int screenHeight, int shieldCount) {
 		int overlayOffset = 0;
 		for (int i = 0; i < Math.min(shieldCount, 10); i++) {
-			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, FORTIFICATION_SHIELD_SPRITE, screenWidth / 2 - 91 + (i * 8), screenHeight - 39 + overlayOffset, 9, 9);
+			graphics.blitSprite(GuiPipeline.TEXTURED, FORTIFICATION_SHIELD_SPRITE, screenWidth / 2 - 91 + (i * 8), screenHeight - 39 + overlayOffset, 9, 9);
 			overlayOffset += 10;
 		}
 	}

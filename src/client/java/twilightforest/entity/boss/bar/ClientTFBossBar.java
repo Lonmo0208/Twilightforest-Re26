@@ -1,5 +1,6 @@
 package twilightforest.entity.boss.bar;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import net.minecraft.client.Minecraft;
@@ -41,12 +42,12 @@ public class ClientTFBossBar extends LerpingBossEvent {
 		// 26.1.2: RenderSystem.setShaderColor removed; use blitSprite color parameter for tinting
 		int tintColor = 0xFF000000 | (this.color & 0x00FFFFFF);
 
-		GuiGraphicsExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACKGROUND, x, y, 182, 5, tintColor);
-		if (this.overlay != BossEvent.BossBarOverlay.PROGRESS) GuiGraphicsExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, BossHealthOverlay.OVERLAY_BACKGROUND_SPRITES[this.overlay.ordinal() - 1], 182, 5, 0, 0, x, y, 182, 5);
+		GuiGraphicsExtractor.blitSprite(GuiPipeline.TEXTURED, BAR_BACKGROUND, x, y, 182, 5, tintColor);
+		if (this.overlay != BossEvent.BossBarOverlay.PROGRESS) GuiGraphicsExtractor.blitSprite(GuiPipeline.TEXTURED, BossHealthOverlay.OVERLAY_BACKGROUND_SPRITES[this.overlay.ordinal() - 1], 182, 5, 0, 0, x, y, 182, 5);
 		int i = Mth.lerpDiscrete(this.getProgress(), 0, 182);
 		if (i > 0) {
-			GuiGraphicsExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_PROGRESS, x, y, i, 5, tintColor);
-			if (this.overlay != BossEvent.BossBarOverlay.PROGRESS) GuiGraphicsExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, BossHealthOverlay.OVERLAY_PROGRESS_SPRITES[this.overlay.ordinal() - 1], 182, 5, 0, 0, x, y, i, 5);
+			GuiGraphicsExtractor.blitSprite(GuiPipeline.TEXTURED, BAR_PROGRESS, x, y, i, 5, tintColor);
+			if (this.overlay != BossEvent.BossBarOverlay.PROGRESS) GuiGraphicsExtractor.blitSprite(GuiPipeline.TEXTURED, BossHealthOverlay.OVERLAY_PROGRESS_SPRITES[this.overlay.ordinal() - 1], 182, 5, 0, 0, x, y, i, 5);
 		}
 
 		Component title = this.getName();

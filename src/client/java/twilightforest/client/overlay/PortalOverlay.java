@@ -1,5 +1,6 @@
 package twilightforest.client.overlay;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import com.mojang.blaze3d.platform.Window;
@@ -32,7 +33,7 @@ public class PortalOverlay implements HudElement {
 				var model = minecraft.getModelManager().getBlockStateModelSet().get(TFBlocks.TWILIGHT_PORTAL.defaultBlockState());
 				var particleMaterial = model.particleMaterial();
 				int color = ARGB.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F);
-				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, particleMaterial.sprite(), 0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), color);
+				graphics.blitSprite(GuiPipeline.TEXTURED, particleMaterial.sprite(), 0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), color);
 			}
 		}
 	}

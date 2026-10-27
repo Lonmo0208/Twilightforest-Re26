@@ -1,5 +1,6 @@
 package twilightforest.client.overlay.display;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import net.minecraft.client.Minecraft;
@@ -25,7 +26,7 @@ public class MoonDialDisplay implements ItemDisplay {
 		int yRow = k / 4 % 2;
 		float xMin = xRow * 8;
 		float yMin = yRow * 8;
-		graphics.blit(RenderPipelines.GUI_TEXTURED, TwilightForestMod.getGuiTexture("moon.png"), (widestWidgetWidth / 2 - 5) - minecraft.font.width(formattedcharsequence) / 2, 0, xMin, yMin, 8, 8, 32, 16);
+		graphics.blit(GuiPipeline.TEXTURED, TwilightForestMod.getGuiTexture("moon.png"), (widestWidgetWidth / 2 - 5) - minecraft.font.width(formattedcharsequence) / 2, 0, xMin, yMin, 8, 8, 32, 16);
 		graphics.text(minecraft.font, formattedcharsequence, Math.max(0, (widestWidgetWidth / 2 + 5) - minecraft.font.width(formattedcharsequence) / 2), 0, 0xFFFFFFFF);
 	}
 

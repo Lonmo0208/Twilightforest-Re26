@@ -1,5 +1,6 @@
 package twilightforest.client.renderer.tooltip;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import net.minecraft.client.gui.Font;
@@ -55,7 +56,7 @@ public class TravellersBeltTooltipComponent implements ClientTooltipComponent {
 	}
 
 	private void blit(GuiGraphicsExtractor graphics, int x, int y) {
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_SPRITE, x, y, SLOT_SIZE, SLOT_SIZE);
+		graphics.blitSprite(GuiPipeline.TEXTURED, SLOT_SPRITE, x, y, SLOT_SIZE, SLOT_SIZE);
 	}
 
 	private int backgroundWidth() {

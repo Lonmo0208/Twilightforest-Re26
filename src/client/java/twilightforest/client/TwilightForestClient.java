@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.core.registries.BuiltInClientRegistries;
 import net.minecraft.client.renderer.item.ItemModels;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
@@ -46,6 +47,7 @@ import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.world.entity.Entity;
 import twilightforest.TwilightForestMod;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import twilightforest.client.event.CloudEvents;
 import twilightforest.client.event.ColorHandler;
 import twilightforest.client.event.ClientGameEvents;
@@ -237,8 +239,8 @@ public class TwilightForestClient implements ClientModInitializer {
 
 	private void registerCustomModelTypes() {
 		// ItemModel.Unbaked types
-		ItemModels.ID_MAPPER.put(TwilightForestMod.prefix("trollsteinn"), TrollsteinnModel.Unbaked.MAP_CODEC);
-		ItemModels.ID_MAPPER.put(TwilightForestMod.prefix("travellers_gear"), TravellersGearItemModel.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.ITEM_MODEL_TYPE, TwilightForestMod.prefix("trollsteinn"), TrollsteinnModel.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.ITEM_MODEL_TYPE, TwilightForestMod.prefix("travellers_gear"), TravellersGearItemModel.Unbaked.MAP_CODEC);
 
 		// UnbakedModel deserializers (Fabric equivalent of NeoForge's ModelEvent.RegisterLoaders)
 		UnbakedModelDeserializer.register(TwilightForestMod.prefix("force_field"), ForceFieldModelLoader.INSTANCE::read);
@@ -254,29 +256,29 @@ public class TwilightForestClient implements ClientModInitializer {
 		CustomUnbakedBlockStateModel.register(TwilightForestMod.prefix("reactor_debris"), UnbakedReactorDebrisBlockStateModel.MAP_CODEC);
 
 		// SpecialModelRenderer.Unbaked types
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("brazier"), BrazierSpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("block/candelabra"), CandelabraSpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("item/cicada"), CicadaSpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("item/firefly"), FireflySpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("item/keepsake_casket"), KeepsakeCasketSpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("block/mason_jar"), MasonJarSpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("item/moonworm"), MoonwormSpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("item/mystic_crown"), MysticCrownSpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("item/skull_chest"), SkullChestSpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("item/template_skull_candle"), SkullCandleSpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("item/template_trophy"), TrophySpecialRenderer.Unbaked.MAP_CODEC);
-		SpecialModelRenderers.ID_MAPPER.put(TwilightForestMod.prefix("knightmetal_shield"), KnightmetalShieldSpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("brazier"), BrazierSpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("block/candelabra"), CandelabraSpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("item/cicada"), CicadaSpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("item/firefly"), FireflySpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("item/keepsake_casket"), KeepsakeCasketSpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("block/mason_jar"), MasonJarSpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("item/moonworm"), MoonwormSpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("item/mystic_crown"), MysticCrownSpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("item/skull_chest"), SkullChestSpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("item/template_skull_candle"), SkullCandleSpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("item/template_trophy"), TrophySpecialRenderer.Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, TwilightForestMod.prefix("knightmetal_shield"), KnightmetalShieldSpecialRenderer.Unbaked.MAP_CODEC);
 
 		// RangeSelectItemModelProperty types (numeric)
-		RangeSelectItemModelProperties.ID_MAPPER.put(TwilightForestMod.prefix("potion_flask_damage"), PotionFlaskDamage.TYPE);
-		RangeSelectItemModelProperties.ID_MAPPER.put(TwilightForestMod.prefix("potion_flask_dosage"), PotionFlaskDosage.TYPE);
+		Registry.register(BuiltInClientRegistries.RANGE_SELECT_ITEM_MODEL_PROPERTY_TYPE, TwilightForestMod.prefix("potion_flask_damage"), PotionFlaskDamage.TYPE);
+		Registry.register(BuiltInClientRegistries.RANGE_SELECT_ITEM_MODEL_PROPERTY_TYPE, TwilightForestMod.prefix("potion_flask_dosage"), PotionFlaskDosage.TYPE);
 
 		// SelectItemModelProperty types
-		SelectItemModelProperties.ID_MAPPER.put(TwilightForestMod.prefix("experiment_115_variant"), Experiment115Type.TYPE);
+		Registry.register(BuiltInClientRegistries.SELECT_ITEM_MODEL_PROPERTY_TYPE, TwilightForestMod.prefix("experiment_115_variant"), Experiment115Type.TYPE);
 
 		// ConditionalItemModelProperty types
-		ConditionalItemModelProperties.ID_MAPPER.put(TwilightForestMod.prefix("ore_meter_flash"), OreMeterFlash.TYPE);
-		ConditionalItemModelProperties.ID_MAPPER.put(TwilightForestMod.prefix("moonworm_queen_pulse"), MoonwormQueenPulse.TYPE);
+		Registry.register(BuiltInClientRegistries.CONDITIONAL_ITEM_MODEL_PROPERTY_TYPE, TwilightForestMod.prefix("ore_meter_flash"), OreMeterFlash.TYPE);
+		Registry.register(BuiltInClientRegistries.CONDITIONAL_ITEM_MODEL_PROPERTY_TYPE, TwilightForestMod.prefix("moonworm_queen_pulse"), MoonwormQueenPulse.TYPE);
 	}
 
 	private void registerTooltipComponents() {

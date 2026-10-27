@@ -263,9 +263,6 @@ accessible method net/minecraft/world/damagesource/DamageSource <init> (Lnet/min
 accessible method net/minecraft/client/renderer/entity/LivingEntityRenderer addLayer (Lnet/minecraft/client/renderer/entity/layers/RenderLayer;)Z
 
 # Custom item model and special model renderer type registration
-accessible field net/minecraft/client/renderer/item/ItemModels ID_MAPPER Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-accessible field net/minecraft/client/renderer/special/SpecialModelRenderers ID_MAPPER Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-accessible field net/minecraft/client/renderer/item/properties/conditional/ConditionalItemModelProperties ID_MAPPER Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
 
 # Armor model layer definitions
 accessible field net/minecraft/client/model/geom/LayerDefinitions INNER_ARMOR_DEFORMATION Lnet/minecraft/client/model/geom/builders/CubeDeformation;

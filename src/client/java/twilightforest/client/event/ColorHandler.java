@@ -3,9 +3,11 @@ package twilightforest.client.event;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.color.item.ItemTintSources;
+import net.minecraft.client.core.registries.BuiltInClientRegistries;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -525,8 +527,8 @@ public class ColorHandler {
 	// ======================================================================
 
 	public static void registerItemColors() {
-		ItemTintSources.ID_MAPPER.put(TwilightForestMod.prefix("potion_flask"), PotionFlaskTintSource.TYPE);
-		ItemTintSources.ID_MAPPER.put(TwilightForestMod.prefix("spawn_egg_primary"), SpawnEggTintSource.Primary.MAP_CODEC);
-		ItemTintSources.ID_MAPPER.put(TwilightForestMod.prefix("spawn_egg_secondary"), SpawnEggTintSource.Secondary.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.ITEM_TINT_SOURCE_TYPE, TwilightForestMod.prefix("potion_flask"), PotionFlaskTintSource.TYPE);
+		Registry.register(BuiltInClientRegistries.ITEM_TINT_SOURCE_TYPE, TwilightForestMod.prefix("spawn_egg_primary"), SpawnEggTintSource.Primary.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.ITEM_TINT_SOURCE_TYPE, TwilightForestMod.prefix("spawn_egg_secondary"), SpawnEggTintSource.Secondary.MAP_CODEC);
 	}
 }

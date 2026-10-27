@@ -1,5 +1,6 @@
 package twilightforest.mixin.client;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import net.minecraft.client.Minecraft;
@@ -139,10 +140,10 @@ public abstract class BossHealthOverlayMixin {
 	@Unique
 	private void twilightforest$blitBarLayer(GuiGraphicsExtractor graphics, int x, int y, int width,
 											 Identifier barSprite, Identifier[] overlaySprites, BossEvent event) {
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, barSprite,
+		graphics.blitSprite(GuiPipeline.TEXTURED, barSprite,
 			TF_BAR_WIDTH, TF_BAR_HEIGHT, 0, 0, x, y, width, TF_BAR_HEIGHT);
 		if (event.getOverlay() != BossEvent.BossBarOverlay.PROGRESS) {
-			graphics.blitSprite(RenderPipelines.GUI_TEXTURED,
+			graphics.blitSprite(GuiPipeline.TEXTURED,
 				overlaySprites[event.getOverlay().ordinal() - 1],
 				TF_BAR_WIDTH, TF_BAR_HEIGHT, 0, 0, x, y, width, TF_BAR_HEIGHT);
 		}

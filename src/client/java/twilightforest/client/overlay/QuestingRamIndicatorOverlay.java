@@ -1,5 +1,6 @@
 package twilightforest.client.overlay;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
@@ -42,9 +43,9 @@ public class QuestingRamIndicatorOverlay implements HudElement {
 							int j = ((graphics.guiHeight() - 1) / 2) - 11;
 							int k = ((graphics.guiWidth() - 1) / 2) - 3;
 							if (!ram.isColorPresent(questEntry.getKey())) {
-								graphics.blitSprite(RenderPipelines.GUI_TEXTURED, QUESTING_RAM_X_SPRITE, k, j, 7, 7);
+								graphics.blitSprite(GuiPipeline.TEXTURED, QUESTING_RAM_X_SPRITE, k, j, 7, 7);
 							} else {
-								graphics.blitSprite(RenderPipelines.GUI_TEXTURED, QUESTING_RAM_CHECK_SPRITE, k, j, 7, 7);
+								graphics.blitSprite(GuiPipeline.TEXTURED, QUESTING_RAM_CHECK_SPRITE, k, j, 7, 7);
 							}
 							break;
 						}

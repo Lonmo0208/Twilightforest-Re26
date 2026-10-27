@@ -1,8 +1,7 @@
 package twilightforest.mixin.client;
 
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.renderpearl.api.textures.GpuSampler;
 import com.mojang.renderpearl.api.textures.GpuTextureView;
 import java.lang.reflect.Field;
@@ -79,7 +78,7 @@ public abstract class GuiGraphicsExtractorMixin {
 		if (mapRenderState.texture != null) {
 			TextureHandle texture = minecraft.getTextureManager().getTexture(mapRenderState.texture);
 			this.innerBlit(
-				RenderPipelines.GUI_TEXTURED,
+				GuiPipeline.TEXTURED,
 				texture.textureView(),
 				texture.sampler(),
 				0, 0, 128, 128,
@@ -143,7 +142,7 @@ public abstract class GuiGraphicsExtractorMixin {
 			// Flip V coordinates for player icons (matching MagicMapPlayerIconRenderer's UV flipping)
 			// This ensures the player icon appears correctly oriented
 			this.innerBlit(
-				RenderPipelines.GUI_TEXTURED,
+				GuiPipeline.TEXTURED,
 				decorationTexture.textureView(),
 				decorationTexture.sampler(),
 				-1, -1, 1, 1,
@@ -180,7 +179,7 @@ public abstract class GuiGraphicsExtractorMixin {
 
 	@Shadow
 	private void innerBlit(
-		RenderPipeline renderPipeline,
+		GuiPipeline guiPipeline,
 		GpuTextureView textureView,
 		GpuSampler textureSampler,
 		int x0, int y0, int x1, int y1,

@@ -1,5 +1,6 @@
 package twilightforest.client;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import net.minecraft.ChatFormatting;
@@ -148,7 +149,7 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 	public void extractBackground(GuiGraphicsExtractor graphics) {
 		int frameX = this.leftPos;
 		int frameY = (this.height - this.imageHeight) / 2;
-		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, frameX, frameY, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
+		graphics.blit(GuiPipeline.TEXTURED, TEXTURE, frameX, frameY, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
 		super.extractBackground(graphics);
 		if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
 			// background is handled by extractBackground
@@ -324,7 +325,7 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 				// what's up
 				if (!this.up) textureY += this.height;
 
-                                                                graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY(), (float)textureX, (float)textureY, this.width, this.height, 256, 256);
+                                                                graphics.blit(GuiPipeline.TEXTURED, TEXTURE, this.getX(), this.getY(), (float)textureX, (float)textureY, this.width, this.height, 256, 256);
 			}
 		}
 	}
@@ -351,7 +352,7 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 				// what's up
 				if (!this.up) textureY += this.height;
 
-                                                                graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY(), (float)textureX, (float)textureY, this.width, this.height, 256, 256);
+                                                                graphics.blit(GuiPipeline.TEXTURED, TEXTURE, this.getX(), this.getY(), (float)textureX, (float)textureY, this.width, this.height, 256, 256);
 			}
 		}
 	}

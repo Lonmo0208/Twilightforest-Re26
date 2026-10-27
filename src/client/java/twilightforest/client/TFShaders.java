@@ -26,6 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.DynamicGpuDataStorage;
 import net.minecraft.client.renderer.DynamicGpuDataStorageMapped;
 import net.minecraft.client.renderer.ShaderManager;
+import net.minecraft.client.renderer.RenderPassLayouts;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -153,7 +154,7 @@ public class TFShaders {
 			if (this.pendingCompile == null) {
 				try {
 					this.shaderSource = new ModShaderSource(resources);
-					this.pendingCompile = new com.mojang.blaze3d.pipeline.PipelineBuilder(RenderSystem.getDevice()).compilePipeline(this.pipeline, this.shaderSource, Util.backgroundExecutor());
+					this.pendingCompile = new com.mojang.blaze3d.pipeline.PipelineBuilder(RenderSystem.getDevice()).compilePipeline(this.pipeline, RenderPassLayouts.COLOR_DEPTH.subpass(0), this.shaderSource, Util.backgroundExecutor());
 				} catch (RuntimeException e) {
 					LOGGER.error("Failed to compile aurora render pipeline {}", pipeline.getLocation(), e);
 					this.pendingCompile = null;
@@ -281,7 +282,7 @@ public class TFShaders {
 
 			try (RenderPass renderPass = RenderSystem.getDevice()
 				.createCommandEncoder()
-				.createRenderPass(() -> "TF Aurora", colorTexture, Optional.empty(), depthTexture, OptionalDouble.empty())) {
+				.createRenderPass(() -> "TF Aurora", RenderPassLayouts.COLOR_DEPTH, colorTexture, Optional.empty(), depthTexture, OptionalDouble.empty())) {
 				renderPass.setPipeline(compiledPipeline);
 				RenderSystem.bindDefaultUniforms(renderPass);
 				renderPass.setUniform("AuroraSettings", auroraSlice);
