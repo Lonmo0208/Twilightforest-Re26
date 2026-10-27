@@ -1,4 +1,4 @@
-Twilight Forest [![Modrinth](https://img.shields.io/modrinth/dt/twilightforest-re26?label=Modrinth&logo=modrinth)](https://modrinth.com/mod/twilightforest-re26)
+Twilight Forest Re:26 [![Modrinth](https://img.shields.io/modrinth/dt/twilightforest-re26?label=Modrinth&logo=modrinth)](https://modrinth.com/mod/twilightforest-re26)
 ==============
 
 This is the home of the Twilight Forest mod for Minecraft 1.12 and beyond.
