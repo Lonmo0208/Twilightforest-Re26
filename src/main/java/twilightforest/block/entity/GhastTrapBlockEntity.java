@@ -8,6 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,7 +37,7 @@ public class GhastTrapBlockEntity extends BlockEntity {
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, GhastTrapBlockEntity te) {
-		if (!level.isDebug()) {
+		if (!(level.getLevelData() instanceof WorldData worldData && worldData.isDebugWorld())) {
 			if (state.getValue(GhastTrapBlock.ACTIVE)) te.tickActive(level, pos, state, te);
 			else te.tickInactive(level, pos, state, te);
 		}

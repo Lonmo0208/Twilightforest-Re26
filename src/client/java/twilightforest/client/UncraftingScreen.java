@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.inventory.SlotWidget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
@@ -28,6 +29,11 @@ import twilightforest.config.TFConfig;
 import twilightforest.inventory.UncraftingMenu;
 import twilightforest.network.UncraftingGuiPacket;
 import twilightforest.tags.TFItemTags;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> implements RecipeUpdateListener {
 	private static final Identifier TEXTURE = TwilightForestMod.getGuiTexture("guigoblintinkering.png");
@@ -141,8 +147,13 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 		} else {
 			super.extractRenderState(graphics);
 			this.recipeBookComponent.extractRenderState(graphics);
-			this.recipeBookComponent.extractGhostRecipe(graphics, true);
 		}
+	}
+
+	@Override
+	protected void extractSlots(GuiGraphicsExtractor graphics) {
+		super.extractSlots(graphics);
+		this.recipeBookComponent.extractGhostRecipe(graphics, this.leftPos, this.topPos, true);
 	}
 
 	@Override
@@ -265,28 +276,48 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 		graphics.pose().popMatrix();
 	}
 
+	// Snapshot-7: vanilla SlotWidget draws its own tooltip, so custom "disabled item" tooltips are
+	// supplied per-slot instead of overriding an extractTooltip hook. SlotWidget only queries the
+	// suppliers while the slot is hovered and nothing is carried, matching the old conditions.
 	@Override
-	protected void extractTooltip(GuiGraphicsExtractor graphics) {
+	protected void updateSlotWidgets() {
 		UncraftingMenu container = this.menu;
+		List<SlotWidget> widgets = new ArrayList<>();
 
-		for (int i = 0; i < 9; i++) {
-			if (container.getCarried().isEmpty() && container.slots.get(2 + i).hasItem() && UncraftingMenu.isMarked(container.slots.get(2 + i).getItem()) && this.hoveredSlot == container.slots.get(11 + i) && !container.slots.get(11 + i).hasItem()) {
-				graphics.setTooltipForNextFrame(this.font, java.util.List.of(Component.translatable("container.twilightforest.uncrafting_table.disabled_item").withStyle(ChatFormatting.RED)), java.util.Optional.empty(), 0, 0);
+		for (int index = 0; index < container.slots.size(); index++) {
+			Slot slot = container.slots.get(index);
+			if (index == 0) {
+				// tinker input slot: banned uncraftables show the disabled tooltip
+				widgets.add(new SlotWidget(slot, this.minecraft, this.imageWidth, this.leftPos, this.topPos,
+					s -> s.getItem().is(TFItemTags.BANNED_UNCRAFTABLES) ? Tooltip.create(disabledItemTooltip()) : this.defaultItemTooltip(s),
+					() -> null));
+			} else if (index >= 11 && index < 20) {
+				// assembly slots: greyed-out background items show the disabled tooltip
+				int uncraftingIndex = index - 9; // slots 2 + i
+				widgets.add(new SlotWidget(slot, this.minecraft, this.imageWidth, this.leftPos, this.topPos, s -> null, () -> {
+					Slot uncrafting = container.slots.get(uncraftingIndex);
+					return uncrafting.hasItem() && UncraftingMenu.isMarked(uncrafting.getItem()) ? Tooltip.create(disabledItemTooltip()) : null;
+				}));
+			} else {
+				widgets.add(new SlotWidget(slot, this.minecraft, this.imageWidth, this.leftPos, this.topPos));
 			}
 		}
 
-		//check if we're hovering over a banned uncraftable item
-		if (container.slots.getFirst().hasItem() && container.slots.getFirst().getItem().is(TFItemTags.BANNED_UNCRAFTABLES) && container.slots.getFirst().equals(this.hoveredSlot)) {
-			graphics.setTooltipForNextFrame(this.font, java.util.List.of(Component.translatable("container.twilightforest.uncrafting_table.disabled_item").withStyle(ChatFormatting.RED)), java.util.Optional.empty(), 0, 0);
-		} else {
-			super.extractTooltip(graphics);
-		}
+		this.setSlotWidgets(widgets);
+	}
+
+	private Component disabledItemTooltip() {
+		return Component.translatable("container.twilightforest.uncrafting_table.disabled_item").withStyle(ChatFormatting.RED);
+	}
+
+	private Tooltip defaultItemTooltip(Slot slot) {
+		return Tooltip.createForItem(net.minecraft.client.gui.screens.Screen.getTooltipFromItem(this.minecraft, slot.getItem()), slot.getItem());
 	}
 
 	@Override
-	protected void slotClicked(Slot slot, int slotId, int mouseButton, ContainerInput containerInput) {
-		super.slotClicked(slot, slotId, mouseButton, containerInput);
-		this.recipeBookComponent.slotClicked(slot);
+	protected void slotClicked(SlotWidget slotWidget, int slotId, int mouseButton, ContainerInput containerInput) {
+		super.slotClicked(slotWidget, slotId, mouseButton, containerInput);
+		this.recipeBookComponent.slotClicked(slotWidget);
 	}
 
 	@Override

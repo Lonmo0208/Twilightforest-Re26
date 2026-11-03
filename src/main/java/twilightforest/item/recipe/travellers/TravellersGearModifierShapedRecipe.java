@@ -48,7 +48,7 @@ public class TravellersGearModifierShapedRecipe extends TravellersGearModifierRe
 	public NonNullList<Ingredient> getIngredients() {
 		NonNullList<Ingredient> list = NonNullList.create();
 		for (var opt : pattern.ingredients()) {
-			list.add(opt.orElse(Ingredient.of()));
+			list.add(opt.orElse(Ingredient.of(new net.minecraft.world.level.ItemLike[0])));
 		}
 		return list;
 	}

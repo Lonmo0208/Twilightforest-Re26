@@ -21,7 +21,7 @@ public class UncraftingSlot extends Slot {
 	protected final Container assemblyMatrix;
 
 	public UncraftingSlot(Player player, Container inputSlot, UncraftingContainer uncraftingMatrix, Container assemblyMatrix, int slotNum, int x, int y) {
-		super(uncraftingMatrix, slotNum, x, y);
+		super(uncraftingMatrix, slotNum, x, y, Slot.Section.INPUT);
 		this.player = player;
 		this.inputSlot = inputSlot;
 		this.uncraftingMatrix = uncraftingMatrix;

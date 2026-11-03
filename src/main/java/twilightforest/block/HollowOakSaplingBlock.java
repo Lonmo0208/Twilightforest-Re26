@@ -35,7 +35,7 @@ public class HollowOakSaplingBlock extends SaplingBlock {
 
 	public HollowOakSaplingBlock(BlockBehaviour.Properties properties) {
 		// The TreeGrower is never used: advanceTree() is fully overridden to grow the HOLLOW_TREE structure instead
-		super(new TreeGrower("hollow_oak", WeightedList.of(TFConfiguredFeatures.TWILIGHT_OAK_TREE), WeightedList.of(), WeightedList.of(), TFConfiguredFeatures.TWILIGHT_OAK_TREE), properties);
+		super(new TreeGrower(WeightedList.of(TFConfiguredFeatures.TWILIGHT_OAK_TREE), WeightedList.of(), WeightedList.of(), TFConfiguredFeatures.TWILIGHT_OAK_TREE), properties);
 	}
 
 	@Override

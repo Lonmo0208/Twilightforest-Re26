@@ -82,7 +82,7 @@ public class UncraftingMenu extends RecipeBookMenu {
 		this.level = level;
 		this.player = inventory.player;
 
-		this.addSlot(new Slot(this.tinkerInput, 0, 13, 35));
+		this.addSlot(new Slot(this.tinkerInput, 0, 13, 35, Slot.Section.INPUT));
 		this.addSlot(new UncraftingResultSlot(inventory.player, this.tinkerInput, this.uncraftingMatrix, this.assemblyMatrix, this.tinkerResult, 0, 147, 35));
 
 		int invX;
@@ -101,12 +101,12 @@ public class UncraftingMenu extends RecipeBookMenu {
 
 		for (invX = 0; invX < 3; ++invX) {
 			for (invY = 0; invY < 9; ++invY) {
-				this.addSlot(new Slot(inventory, invY + invX * 9 + 9, 8 + invY * 18, 84 + invX * 18));
+				this.addSlot(new Slot(inventory, invY + invX * 9 + 9, 8 + invY * 18, 84 + invX * 18, Slot.Section.INVENTORY));
 			}
 		}
 
 		for (invX = 0; invX < 9; ++invX) {
-			this.addSlot(new Slot(inventory, invX, 8 + invX * 18, 142));
+			this.addSlot(new Slot(inventory, invX, 8 + invX * 18, 142, Slot.Section.HOTBAR));
 		}
 
 		this.slotsChanged(this.assemblyMatrix);

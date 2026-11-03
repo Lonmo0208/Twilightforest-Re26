@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
@@ -49,7 +50,7 @@ public class CarminiteReactorBlockEntity extends BlockEntity {
 
 	public static void tick(Level level, BlockPos pos, BlockState state, CarminiteReactorBlockEntity te) {
 
-		if (!level.isDebug() && state.getValue(CarminiteReactorBlock.ACTIVE)) {
+		if (!(level.getLevelData() instanceof WorldData worldData && worldData.isDebugWorld()) && state.getValue(CarminiteReactorBlock.ACTIVE)) {
 			te.counter++;
 
 			if (!level.isClientSide()) {

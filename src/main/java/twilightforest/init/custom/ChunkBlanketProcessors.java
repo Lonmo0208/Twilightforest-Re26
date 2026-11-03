@@ -69,16 +69,16 @@ public final class ChunkBlanketProcessors {
 			.filter(modifier -> modifier.biomesForApplication().stream().anyMatch(biomesInChunk::contains))
 			.iterator();
 
-		Function<BlockPos, Holder<Biome>> biomeGetter = pos -> {
-		// Canopy sampling reads up to 4 blocks past the chunk edge. Under C2ME's
-		// parallel chunk system the neighbour chunk may be absent from the region
-		// cache ("Requested chunk unavailable"), so fall back to the chunk origin
-		// instead of letting getBiome throw.
-		if (worldGenRegion.hasChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()))) {
-			return worldGenRegion.getBiome(pos);
-		}
-		return worldGenRegion.getBiome(chunkPos.getWorldPosition());
-	};
+		// The canopy sampler reads up to 4 blocks past the chunk edge. Snapshot-7 no longer allows
+		// feature-stage WorldGenRegions to resolve neighbour chunks at the biomes status (maximum
+		// allowed status at distance 1 is structure_starts), and under C2ME the neighbour may be
+		// absent from the region cache anyway. Clamp every query into the generating chunk and read
+		// the nearest in-chunk biome instead of letting getBiome throw.
+		Function<BlockPos, Holder<Biome>> biomeGetter = pos -> worldGenRegion.getBiome(new BlockPos(
+			Math.clamp(pos.getX(), chunkPos.getMinBlockX(), chunkPos.getMaxBlockX()),
+			pos.getY(),
+			Math.clamp(pos.getZ(), chunkPos.getMinBlockZ(), chunkPos.getMaxBlockZ())
+		));
 
 		while (modifierIterator.hasNext()) {
 			modifierIterator.next().processChunk(worldGenRegion, worldGenRegion.getRandom().fork(), biomeGetter, chunkAccess);
