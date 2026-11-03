@@ -63,6 +63,7 @@ import twilightforest.init.*;
 import twilightforest.item.FieryArmorItem;
 import twilightforest.network.SyncQuestsPacket;
 import twilightforest.tags.TFEntityTypeTags;
+import twilightforest.util.datamaps.DataMapType;
 import twilightforest.util.datamaps.EntityTransformation;
 import twilightforest.util.TFEntityExtensions;
 import twilightforest.util.entities.EntityUtil;
@@ -183,7 +184,7 @@ public class EntityEvents {
 
 	private void ominousFireConversion(FabricEvents.LivingDeathEvent event) {
 		if (!event.isCanceled() && event.getSource().is(TFDamageTypes.OMINOUS_FIRE)) {
-			EntityTransformation dataMap = null; // TODO: Port - getData from registry data maps
+			EntityTransformation dataMap = DataMapType.getData(event.getEntity().getType().builtInRegistryHolder(), TFDataMaps.OMINOUS_FIRE);
 
 			if (event.getEntity() instanceof ServerPlayer player) {
 				var zombie = EntityType.ZOMBIE.create(player.level(), EntitySpawnReason.CONVERSION);
