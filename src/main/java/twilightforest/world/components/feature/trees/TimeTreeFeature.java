@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import twilightforest.init.TFBlocks;
 import twilightforest.util.RootPlacer;
+import twilightforest.world.registration.TreeConfigurations;
 import twilightforest.util.features.FeaturePlacers;
 import twilightforest.util.features.FeatureUtil;
 import twilightforest.world.components.feature.config.TFTreeFeatureConfig;
@@ -20,9 +21,10 @@ import java.util.function.BiConsumer;
 
 public class TimeTreeFeature extends HollowTreeFeature {
 	public TimeTreeFeature() {
+		this(TreeConfigurations.TIME_TREE);
 	}
 
-	protected TimeTreeFeature(TFTreeFeatureConfig config) {
+	public TimeTreeFeature(TFTreeFeatureConfig config) {
 		super(config);
 	}
 
