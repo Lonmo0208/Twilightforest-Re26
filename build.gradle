@@ -143,7 +143,7 @@ dependencies {
 	//implementation "tamaized:beanification:${project.beanification_version}"
 
 	// Forge Config API Port (provides NeoForge-compatible config API)
-	implementation files('libs/forgeconfigapiport/ForgeConfigAPIPort-26.2.1-patched.jar')
+	implementation files('libs/forgeconfigapiport/ForgeConfigAPIPort-v26.3.1-mc26.3.x-Fabric.jar')
 	// Transitive dependencies for ForgeConfigAPIPort
 	implementation 'com.electronwill.night-config:core:3.8.3'
 	implementation 'com.electronwill.night-config:toml:3.8.3'

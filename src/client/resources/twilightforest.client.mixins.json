@@ -6,6 +6,8 @@
       "client.modelloading.BlockStateModelUnbakedMixin",
       "client.modelloading.CuboidModelAccessor",
       "client.modelloading.CuboidModelMixin",
+      "client.fcap.CustomValueSetMixin",
+      "client.fcap.CycleButtonBuilderMixin",
       "client.BossHealthOverlayMixin",
       "client.CameraMixin",
       "client.MouseHandlerMixin",
