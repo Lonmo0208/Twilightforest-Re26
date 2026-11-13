@@ -2,7 +2,7 @@ package twilightforest.client.model.block.aurorablock;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
+import twilightforest.client.model.loading.CustomUnbakedBlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.SingleVariant;

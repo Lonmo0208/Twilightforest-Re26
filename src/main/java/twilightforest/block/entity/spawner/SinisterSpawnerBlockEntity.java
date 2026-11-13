@@ -1,6 +1,7 @@
 package twilightforest.block.entity.spawner;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.Registries;
@@ -61,7 +62,7 @@ public class SinisterSpawnerBlockEntity extends BlockEntity implements Spawner {
 	}
 
 	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+	public CompoundTag getUpdateTag(HolderGetter.Provider registries) {
 		CompoundTag compoundtag = this.saveCustomOnly(registries);
 		compoundtag.remove("SpawnPotentials");
 		return compoundtag;

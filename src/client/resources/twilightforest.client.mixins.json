@@ -3,6 +3,9 @@
 	"package": "twilightforest.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
+      "client.modelloading.BlockStateModelUnbakedMixin",
+      "client.modelloading.CuboidModelAccessor",
+      "client.modelloading.CuboidModelMixin",
       "client.BossHealthOverlayMixin",
       "client.CameraMixin",
       "client.MouseHandlerMixin",

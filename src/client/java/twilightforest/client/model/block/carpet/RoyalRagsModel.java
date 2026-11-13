@@ -1,6 +1,5 @@
 package twilightforest.client.model.block.carpet;
 
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
@@ -15,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 // import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.client.model.block.LevelAwareBlockStateModel;
-import twilightforest.client.model.block.LevelAwareModelEmitter;
 import twilightforest.client.model.block.connected.ConnectionLogic;
 import twilightforest.init.TFBlocks;
 
@@ -102,20 +100,9 @@ public class RoyalRagsModel implements BlockStateModel, LevelAwareBlockStateMode
 	public void collectParts(RandomSource random, List<BlockStateModelPart> output) {
 	}
 
-	// Fabric (FRAPI) world rendering entry point - routes through the level-aware collectParts
-	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
-		LevelAwareModelEmitter.emitQuads(this, emitter, level, pos, state, random, cullTest);
-	}
-
 	@Override
 	@Deprecated
 	public Material.Baked particleMaterial() {
-		return this.particle;
-	}
-
-	@Override
-	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return this.particle;
 	}
 

@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -33,7 +34,7 @@ import java.util.StringJoiner;
 public class InfoCommand {
 
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
-		return Commands.literal("info").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(this::run);
+		return Commands.literal("info").requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS)).executes(this::run);
 	}
 
 	private int run(CommandContext<CommandSourceStack> ctx) {

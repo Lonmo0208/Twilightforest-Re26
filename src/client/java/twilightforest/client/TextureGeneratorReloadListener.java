@@ -63,7 +63,7 @@ public class TextureGeneratorReloadListener implements ResourceManagerReloadList
 											ref.set(newImage);
 											BOAT_CACHE.compute(type, (key, existing) -> {
 												TextureResources texture = TextureResources.from2dImage(() -> "twilightforest:boat_" + key, ref.getAndSet(null));
-												Minecraft.getInstance().getTextureManager().register(location, texture);
+												Minecraft.getInstance().getTextureManager().registerProvider(location, new net.minecraft.client.renderer.texture.ExternalTextureProvider(texture));
 												return texture;
 											});
 										} else {
@@ -77,7 +77,7 @@ public class TextureGeneratorReloadListener implements ResourceManagerReloadList
 											ref.set(tfImage);
 											BOAT_CACHE.compute(type, (key, existing) -> {
 												TextureResources texture = TextureResources.from2dImage(() -> "twilightforest:boat_" + key, ref.getAndSet(null));
-												Minecraft.getInstance().getTextureManager().register(location, texture);
+												Minecraft.getInstance().getTextureManager().registerProvider(location, new net.minecraft.client.renderer.texture.ExternalTextureProvider(texture));
 												return texture;
 											});
 										}

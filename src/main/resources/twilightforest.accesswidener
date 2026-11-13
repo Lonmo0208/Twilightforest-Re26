@@ -142,7 +142,6 @@ accessible method net/minecraft/world/level/levelgen/feature/trunkplacers/TrunkP
 accessible method net/minecraft/world/level/block/FireBlock setFlammable (Lnet/minecraft/world/level/block/Block;II)V
 
 # TravellersGearCommand (the alternative is to copy the method verbatim into a TF class, might as well reuse the vanilla method)
-accessible method net/minecraft/commands/arguments/ResourceKeyArgument resolveKey (Lcom/mojang/brigadier/context/CommandContext;Ljava/lang/String;Lnet/minecraft/resources/ResourceKey;Lcom/mojang/brigadier/exceptions/DynamicCommandExceptionType;)Lnet/minecraft/core/Holder$Reference;
 
 # Ur-Ghast (properly adds lightning strikes to the world when a tantrum starts)
 accessible method net/minecraft/server/level/ServerLevel findLightningTargetAround (Lnet/minecraft/core/BlockPos;)Lnet/minecraft/core/BlockPos;
@@ -151,7 +150,6 @@ accessible method net/minecraft/server/level/ServerLevel findLightningTargetArou
 accessible method net/minecraft/server/level/ChunkMap generator ()Lnet/minecraft/world/level/chunk/ChunkGenerator;
 
 # MapLocatorCommand
-accessible method net/minecraft/server/commands/LocateCommand getHolders (Lnet/minecraft/commands/arguments/ResourceOrTagKeyArgument$Result;Lnet/minecraft/core/Registry;)Ljava/util/Optional;
 
 # NbtHasher
 accessible field net/minecraft/nbt/CompoundTag tags Ljava/util/Map;

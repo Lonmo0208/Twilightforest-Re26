@@ -19,7 +19,7 @@ import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
+import twilightforest.client.model.loading.CustomUnbakedBlockStateModel;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

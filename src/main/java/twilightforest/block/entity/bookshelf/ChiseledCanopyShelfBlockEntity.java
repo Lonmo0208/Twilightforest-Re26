@@ -2,6 +2,7 @@ package twilightforest.block.entity.bookshelf;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -82,7 +83,7 @@ public class ChiseledCanopyShelfBlockEntity extends ChiseledBookShelfBlockEntity
 	}
 
 	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+	public CompoundTag getUpdateTag(HolderGetter.Provider provider) {
 		CompoundTag compoundtag = this.saveCustomOnly(provider);
 		compoundtag.remove("SpawnPotentials");
 		return compoundtag;

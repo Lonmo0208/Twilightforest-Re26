@@ -1,6 +1,7 @@
 package twilightforest.events;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -281,7 +282,7 @@ public class EntityEvents {
 				ResolvableProfile checker = casket.owner;
 				if (checker != null && !casket.isEmpty()) {
 					// GameProfile now uses record accessor .id(); ResolvableProfile uses .partialProfile()
-					if (!Commands.LEVEL_ADMINS.check(player.permissions()) || !player.getGameProfile().id().equals(checker.partialProfile().id())) {
+					if (!CommandPermissionLevels.LEVEL_ADMINS.check(player.permissions()) || !player.getGameProfile().id().equals(checker.partialProfile().id())) {
 						event.setCanceled(true);
 					}
 				}

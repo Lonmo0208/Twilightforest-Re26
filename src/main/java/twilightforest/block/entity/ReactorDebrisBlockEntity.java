@@ -2,6 +2,7 @@ package twilightforest.block.entity;
 
 import com.google.common.base.MoreObjects;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
@@ -167,7 +168,7 @@ public class ReactorDebrisBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+	public CompoundTag getUpdateTag(HolderGetter.Provider registries) {
 		return this.saveCustomOnly(registries);
 	}
 }

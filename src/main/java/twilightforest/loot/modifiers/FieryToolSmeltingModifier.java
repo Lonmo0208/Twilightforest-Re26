@@ -1,5 +1,6 @@
 package twilightforest.loot.modifiers;
 
+import net.minecraft.world.level.storage.loot.ValidationContext;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -69,5 +70,16 @@ public class FieryToolSmeltingModifier implements LootItemCondition {
 	@Override
 	public MapCodec<? extends LootItemCondition> codec() {
 		return CODEC;
+	}
+
+	// 26.4-snapshot-8: LootItemCondition gained the abstract constantValue hook; these conditions are runtime-dependent, never constant
+	@org.jetbrains.annotations.Nullable
+	@Override
+	public Boolean constantValue(LootItemCondition.ConstantConditionEvaluationContext context) {
+		return null;
+	}
+	// 26.4-snapshot-8: Validatable gained the abstract validate hook
+	@Override
+	public void validate(ValidationContext context) {
 	}
 }

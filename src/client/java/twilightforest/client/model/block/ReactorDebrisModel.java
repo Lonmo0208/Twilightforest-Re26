@@ -1,6 +1,5 @@
 package twilightforest.client.model.block;
 
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
@@ -46,12 +45,6 @@ public class ReactorDebrisModel implements BlockStateModel, LevelAwareBlockState
 	@Deprecated
 	public void collectParts(RandomSource random, @NotNull List<BlockStateModelPart> parts) {
 		this.wrappedModel.collectParts(random, parts);
-	}
-
-	// Fabric (FRAPI) world rendering entry point - routes through the level-aware collectParts
-	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
-		LevelAwareModelEmitter.emitQuads(this, emitter, level, pos, state, random, cullTest);
 	}
 
 	// TODO: Port to Fabric - level-aware particleMaterial was from NeoForge DynamicBlockStateModel

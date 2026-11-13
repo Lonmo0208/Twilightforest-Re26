@@ -3,9 +3,10 @@ package twilightforest.command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceKeyArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
@@ -30,12 +31,12 @@ public class StructureDistanceCommand {
 	private DisplayUtil displayUtil;
 
 	public ArgumentBuilder<CommandSourceStack, ?> register() {
-		return Commands.literal("generator_radius").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-			.then(Commands.argument("filter_structure", ResourceKeyArgument.key(Registries.STRUCTURE)).executes(this::structureDistance));
+		return Commands.literal("generator_radius").requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
+			.then(Commands.argument("filter_structure", ResourceArgument.resource(Registries.STRUCTURE)).executes(this::structureDistance));
 	}
 
 	private int structureDistance(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-		Holder.Reference<Structure> structure = ResourceKeyArgument.getStructure(context, "filter_structure");
+		Holder.Reference<Structure> structure = ResourceArgument.getStructure(context, "filter_structure");
 
 		if (!structure.isBound()) return 0;
 

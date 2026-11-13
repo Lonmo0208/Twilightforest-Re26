@@ -4,8 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
-import net.fabricmc.fabric.api.client.model.loading.v1.FabricModelManager;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -52,23 +50,15 @@ import java.util.Map;
 
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
 	public static final Map<Item, Identifier> LID_KEYS = new HashMap<>();
-	public static final Map<Item, ExtraModelKey<BlockStateModel>> LID_MODEL_KEYS = new HashMap<>();
 	public static final Map<Item, BlockStateModel> LIDS = new HashMap<>();
 
+	// 26.4-snapshot-8: the lid models were baked through fabric-model-loading-api-v1's extra-model
+	// plugin, which Fabric disabled upstream for this snapshot (fabric-renderer-api-v1 went with it).
+	// Until that subsystem returns, getLidModel finds nothing and the jar renders without its lid.
 	public static final ResourceManagerReloadListener LID_MODEL_CACHE_RELOAD_LISTENER = new ResourceManagerReloadListener() {
 		@Override
 		public void onResourceManagerReload(ResourceManager manager) {
 			LIDS.clear();
-			FabricModelManager fmm = (FabricModelManager) Minecraft.getInstance().getModelManager();
-			for (LidResource lidResource : LID_LOCATION_LIST) {
-				ExtraModelKey<BlockStateModel> key = LID_MODEL_KEYS.get(lidResource.lid());
-				if (key != null) {
-					BlockStateModel model = fmm.getModel(key);
-					if (model != null) {
-						LIDS.put(lidResource.lid(), model);
-					}
-				}
-			}
 		}
 	};
 
@@ -144,13 +134,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		this.blockResolver = context.blockModelResolver();
 	}
 
-	public static void populateLidKeys() {
-		if (!LID_KEYS.isEmpty()) return;
-		for (LidResource lidResource : LID_LOCATION_LIST) {
-			LID_KEYS.put(lidResource.lid(), lidResource.getModelId());
-		}
-	}
-
 	public static void registerReloadListener() {
 		ResourceLoader.get(PackType.CLIENT_RESOURCES)
 			.registerReloadListener(TwilightForestMod.prefix("lid_model_cache"), LID_MODEL_CACHE_RELOAD_LISTENER);
@@ -158,20 +141,9 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 
 	public static @Nullable BlockStateModel getLidModel(Item lid) {
 		if (lid == null) return null;
-		// Fast path: ResourceManagerReloadListener already cached the model.
-		BlockStateModel cached = LIDS.get(lid);
-		if (cached != null) return cached;
-		// Fallback: Reload listener may not have fired yet, or the LID_MODEL_KEYS
-		// was populated after models were baked. Look up directly from the
-		// FabricModelManager using the registered ExtraModelKey.
-		ExtraModelKey<BlockStateModel> key = LID_MODEL_KEYS.get(lid);
-		if (key == null) return null;
-		FabricModelManager fmm = (FabricModelManager) Minecraft.getInstance().getModelManager();
-		BlockStateModel model = fmm.getModel(key);
-		if (model != null) {
-			LIDS.put(lid, model);
-		}
-		return model;
+		// Fast path: ResourceManagerReloadListener already cached the model. On snapshot-8 the
+		// extra-model plugin is gone, so this stays empty and the lid is skipped (see above).
+		return LIDS.get(lid);
 	}
 
 	@Override
@@ -192,7 +164,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 
 		this.blockResolver.update(state.jarModel, blockState, BlockDisplayContext.create());
 
-		populateLidKeys();
 		state.lid = null;
 		state.wobbleStyle = null;
 		BlockStateModel lidBsm = getLidModel(blockEntity.lid);

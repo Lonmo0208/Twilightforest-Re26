@@ -40,7 +40,7 @@ public record MultiplayerBasedNumberProvider(Holder<ContextFloatProvider> rollsP
 	}
 
 	@Override
-	public Set<ContextKey<?>> getReferencedContextParams() {
+	public Set<ContextKey<?>> getRequiredParams() {
 		return Set.of(LootContextParams.THIS_ENTITY);
 	}
 

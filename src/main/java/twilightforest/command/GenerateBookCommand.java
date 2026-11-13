@@ -4,9 +4,10 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceKeyArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -24,9 +25,9 @@ public class GenerateBookCommand {
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
 		return Commands.literal("genbook")
 			.executes(context -> generateBook(context.getSource(), null))
-			.requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
-			.then(Commands.argument("structure", ResourceKeyArgument.key(Registries.STRUCTURE))
-				.executes(context -> generateBook(context.getSource(), ResourceKeyArgument.getStructure(context, "structure"))));
+			.requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_ADMINS))
+			.then(Commands.argument("structure", ResourceArgument.resource(Registries.STRUCTURE))
+				.executes(context -> generateBook(context.getSource(), ResourceArgument.getStructure(context, "structure"))));
 	}
 
 	private int generateBook(CommandSourceStack source, @Nullable Holder.Reference<Structure> structureKey) throws CommandSyntaxException {
@@ -34,7 +35,7 @@ public class GenerateBookCommand {
 		if (structureKey == null) {
 			for (Structure structure : source.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE).stream().toList()) {
 				if (structure instanceof StructureHints hint) {
-					ItemStack book = hint.createHintBook(source.registryAccess());
+					ItemStack book = hint.createHintBook(source.getServer().registryAccess());
 					if (!book.isEmpty()) {
 						if (!player.addItem(book)) {
 							player.drop(book, true, net.minecraft.util.Prediction.SERVER_ONLY);
@@ -44,7 +45,7 @@ public class GenerateBookCommand {
 			}
 		} else {
 			if (source.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE).get(structureKey.key()).orElseThrow() instanceof StructureHints hint) {
-				ItemStack book = hint.createHintBook(source.registryAccess());
+				ItemStack book = hint.createHintBook(source.getServer().registryAccess());
 				if (!book.isEmpty()) {
 					if (!player.addItem(book)) {
 						player.drop(book, true, net.minecraft.util.Prediction.SERVER_ONLY);

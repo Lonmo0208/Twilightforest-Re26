@@ -1,7 +1,7 @@
 package twilightforest.world.components.structures.util;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -26,13 +26,13 @@ public abstract class ConquerableStructure extends LandmarkStructure implements 
 	}
 
 	@Override
-	public final StructureStart generate(Holder<Structure> selected, ResourceKey<Level> dimension, RegistryAccess registryAccess, ChunkGenerator chunkGen, BiomeSource biomeSource, Climate.Sampler climateSampler, RandomState randomState, StructureTemplateManager templateManager, long seed, ChunkPos chunkPos, LevelHeightAccessor heightAccessor, Predicate<Holder<Biome>> isValidBiome) {
+	public final StructureStart generate(Holder<Structure> selected, ResourceKey<Level> dimension, HolderGetter.Provider registryAccess, ChunkGenerator chunkGen, BiomeSource biomeSource, Climate.Sampler climateSampler, RandomState randomState, StructureTemplateManager templateManager, long seed, ChunkPos chunkPos, LevelHeightAccessor heightAccessor, Predicate<Holder<Biome>> isValidBiome) {
 		return this.generateCustom(registryAccess, chunkGen, biomeSource, climateSampler, randomState, templateManager, seed, chunkPos, 0, heightAccessor, isValidBiome);
 	}
 
 	// [VANILLA COPY] Structure.generate
 	//  StructureStart construction swapped for TFStructureStart construction
-	public StructureStart generateCustom(RegistryAccess registryAccess, ChunkGenerator chunkGen, BiomeSource biomeSource, Climate.Sampler climateSampler, RandomState randomState, StructureTemplateManager templateManager, long pseed, ChunkPos chunkPos, int references, LevelHeightAccessor heightAccessor, Predicate<Holder<Biome>> isValidBiome) {
+	public StructureStart generateCustom(HolderGetter.Provider registryAccess, ChunkGenerator chunkGen, BiomeSource biomeSource, Climate.Sampler climateSampler, RandomState randomState, StructureTemplateManager templateManager, long pseed, ChunkPos chunkPos, int references, LevelHeightAccessor heightAccessor, Predicate<Holder<Biome>> isValidBiome) {
 		GenerationContext structure$generationcontext = new GenerationContext(registryAccess, chunkGen, biomeSource, climateSampler, randomState, templateManager, pseed, chunkPos, heightAccessor, isValidBiome);
 		Optional<GenerationStub> optional = this.findValidGenerationPoint(structure$generationcontext);
 		if (optional.isPresent()) {

@@ -47,7 +47,6 @@ public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolv
 			Item testLid = jarLid == null ? this.defaultLid().orElse(null) : jarLid.lid();
 			Item lid = testLid == null || !JarRenderer.LID_KEYS.containsKey(testLid) ? null : testLid;
 			if (lid != null) {
-				JarRenderer.populateLidKeys();
 				BlockStateModel lidBsm = JarRenderer.getLidModel(lid);
 				if (lidBsm != null) {
 					BlockModel lidModel = new BlockStateModelWrapper(lidBsm, List.of(), new Matrix4f().identity());

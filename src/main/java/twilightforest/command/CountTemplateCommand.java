@@ -5,9 +5,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceKeyArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -31,8 +32,8 @@ import java.util.List;
 @twilightforest.beanification.Component
 public class CountTemplateCommand {
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
-		return Commands.literal("count_template").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-			.then(Commands.argument("filter_structure", ResourceKeyArgument.key(Registries.STRUCTURE)).executes(this::countTemplates));
+		return Commands.literal("count_template").requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
+			.then(Commands.argument("filter_structure", ResourceArgument.resource(Registries.STRUCTURE)).executes(this::countTemplates));
 	}
 
 	private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
@@ -60,7 +61,7 @@ public class CountTemplateCommand {
 	}
 
 	private int countTemplates(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-		Holder.Reference<Structure> structure = ResourceKeyArgument.getStructure(context, "filter_structure");
+		Holder.Reference<Structure> structure = ResourceArgument.getStructure(context, "filter_structure");
 
 		if (!structure.isBound()) return 0;
 

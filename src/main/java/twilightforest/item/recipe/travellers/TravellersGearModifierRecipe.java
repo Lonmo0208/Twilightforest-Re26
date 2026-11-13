@@ -129,13 +129,13 @@ public abstract class TravellersGearModifierRecipe extends CustomRecipe {
 		}
 
 		public T fromNetwork(RegistryFriendlyByteBuf buf) {
-			RegistryOps<JsonElement> registryops = buf.registryAccess().createSerializationContext(JsonOps.INSTANCE);
+			RegistryOps<JsonElement> registryops = buf.registries().createSerializationContext(JsonOps.INSTANCE);
 			JsonElement jsonelementDeserialized = GsonHelper.fromJson(new com.google.gson.Gson(), buf.readUtf(), JsonElement.class);
 			return codec.codec().decode(registryops, jsonelementDeserialized).getOrThrow().getFirst();
 		}
 
 		public void toNetwork(RegistryFriendlyByteBuf buf, T recipe) {
-			RegistryOps<JsonElement> registryops = buf.registryAccess().createSerializationContext(JsonOps.INSTANCE);
+			RegistryOps<JsonElement> registryops = buf.registries().createSerializationContext(JsonOps.INSTANCE);
 			JsonElement jsonelement = codec.codec().encodeStart(registryops, recipe).getOrThrow();
 			buf.writeUtf(jsonelement.toString());
 		}

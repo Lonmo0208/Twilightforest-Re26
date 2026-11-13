@@ -1,15 +1,16 @@
 package twilightforest.command;
 
-import com.mojang.brigadier.arguments.BoolArgumentType;
+import net.minecraft.commands.arguments.BooleanArgument;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceKeyArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
@@ -36,9 +37,9 @@ import java.util.Map;
 @twilightforest.beanification.Component
 public class CountLootCommand {
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
-		return Commands.literal("count_loot").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-			.then(Commands.argument("filter_structure", ResourceKeyArgument.key(Registries.STRUCTURE)).executes(this::countLoot)
-				.then(Commands.argument("show_common", BoolArgumentType.bool()).executes(this::countLootFiltered))
+		return Commands.literal("count_loot").requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
+			.then(Commands.argument("filter_structure", ResourceArgument.resource(Registries.STRUCTURE)).executes(this::countLoot)
+				.then(Commands.argument("show_common", BooleanArgument.bool()).executes(this::countLootFiltered))
 			);
 	}
 
@@ -47,11 +48,11 @@ public class CountLootCommand {
 	}
 
 	private int countLootFiltered(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-		return this.countLoot(context, BoolArgumentType.getBool(context, "show_common"));
+		return this.countLoot(context, BooleanArgument.getBool(context, "show_common"));
 	}
 
 	private int countLoot(CommandContext<CommandSourceStack> context, boolean showCommon) throws CommandSyntaxException {
-		Holder.Reference<Structure> structure = ResourceKeyArgument.getStructure(context, "filter_structure");
+		Holder.Reference<Structure> structure = ResourceArgument.getStructure(context, "filter_structure");
 
 		if (!structure.isBound()) return 0;
 

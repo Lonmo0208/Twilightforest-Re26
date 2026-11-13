@@ -3,7 +3,6 @@ package twilightforest.client.model.block.patch;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Transparency;
 import com.mojang.math.Quadrant;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
@@ -25,7 +24,6 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import twilightforest.block.PatchBlock;
 import twilightforest.client.model.block.LevelAwareBlockStateModel;
-import twilightforest.client.model.block.LevelAwareModelEmitter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,12 +75,6 @@ public class PatchModel implements BlockStateModel, LevelAwareBlockStateModel {
         @Deprecated
         public void collectParts(RandomSource random, @NotNull List<BlockStateModelPart> parts) {
                 parts.add(new PatchModelPart(this.getQuads(false, false, false, false, random)));
-        }
-
-        // Fabric (FRAPI) world rendering entry point - routes through the level-aware collectParts
-        @Override
-        public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
-                LevelAwareModelEmitter.emitQuads(this, emitter, level, pos, state, random, cullTest);
         }
 
         private List<BakedQuad> getQuads(boolean north, boolean east, boolean south, boolean west, RandomSource posRandom) {
@@ -222,11 +214,6 @@ public class PatchModel implements BlockStateModel, LevelAwareBlockStateModel {
                         BlockModelRotation.IDENTITY,
                         null
                 );
-        }
-
-        @Override
-        public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-                return this.particle;
         }
 
         @Override

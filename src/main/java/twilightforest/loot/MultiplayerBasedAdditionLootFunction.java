@@ -43,8 +43,7 @@ public class MultiplayerBasedAdditionLootFunction extends LootItemConditionalFun
 	}
 
 	@Override
-	public void validate(ValidationContext context) {
-		super.validate(context);
+	protected void validateCustom(ValidationContext context) {
 		Validatable.validateHolder(context, "extra_count_per_player", this.value);
 	}
 

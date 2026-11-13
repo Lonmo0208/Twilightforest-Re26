@@ -3,9 +3,10 @@ package twilightforest.command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceKeyArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,12 +36,12 @@ public class DisplayPiecesCommand {
 	private DisplayUtil displayUtil;
 
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
-		return Commands.literal("display_pieces").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-			.then(Commands.argument("filter_structure", ResourceKeyArgument.key(Registries.STRUCTURE)).executes(this::debugDisplayPieces));
+		return Commands.literal("display_pieces").requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
+			.then(Commands.argument("filter_structure", ResourceArgument.resource(Registries.STRUCTURE)).executes(this::debugDisplayPieces));
 	}
 
 	private int debugDisplayPieces(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-		Holder.Reference<Structure> structure = ResourceKeyArgument.getStructure(context, "filter_structure");
+		Holder.Reference<Structure> structure = ResourceArgument.getStructure(context, "filter_structure");
 
 		if (!structure.isBound()) return 0;
 

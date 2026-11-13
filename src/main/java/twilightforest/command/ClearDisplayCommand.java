@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.ParseContext;
 import net.minecraft.server.MinecraftServer;
 import twilightforest.beanification.Autowired;
 import twilightforest.beanification.Component;
@@ -30,7 +31,7 @@ public class ClearDisplayCommand {
 			"kill @e[type=minecraft:block_display,tag=" + this.displayUtil.tag + "]"
 		);
 		for (String command : commands) {
-			server.getCommands().performCommand(server.getCommands().getDispatcher().parse(command, context.getSource()), command);
+			Commands.performCommand(context.getSource(), server.getCommands().parseBox().parse(command, ParseContext.of(context.getSource())), command);
 		}
 
 		return 0;

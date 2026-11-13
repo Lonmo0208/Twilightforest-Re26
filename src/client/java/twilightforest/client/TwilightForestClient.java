@@ -6,9 +6,8 @@ import net.minecraft.client.renderer.pipeline.RenderPipelines;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
+import twilightforest.client.model.loading.CustomUnbakedBlockStateModel;
+import twilightforest.client.model.loading.UnbakedModelDeserializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.AtlasRegistry;
@@ -112,8 +111,6 @@ public class TwilightForestClient implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger("twilightforest");
 	@Override
 	public void onInitializeClient() {
-		// Register model loading plugin for jar lid models
-		ModelLoadingPlugin.register(new TFModelLoadingPlugin());
 
 		// After the user edits and saves a CLIENT config in the ModMenu config GUI,
 		// TFConfig fields are already re-baked on the loading thread, but MC still
@@ -546,28 +543,31 @@ public class TwilightForestClient implements ClientModInitializer {
 	}
 
 	private void registerBlockEntityRenderers() {
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.FIREFLY, FireflyRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.CICADA, CicadaRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.MOONWORM, MoonwormRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.TROPHY, TrophyRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.TF_CHEST, TFChestRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.TF_TRAPPED_CHEST, TFChestRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.SKULL_CHEST, SkullChestRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.KEEPSAKE_CASKET, KeepsakeCasketRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.SKULL_CANDLE, SkullCandleRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.REACTOR_DEBRIS, ReactorDebrisRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.RED_THREAD, RedThreadRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.CANDELABRA, CandelabraRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.JAR, JarRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.MASON_JAR, JarRenderer.MasonJarRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.OMINOUS_CANDLE, OminousCandleRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.SINISTER_SPAWNER, SinisterSpawnerRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.BRAZIER, BrazierRenderer::new);
-		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, TFBlockEntities.DRYING_RACK, DryingRackRenderer::new);
+		// 26.4-snapshot-8: BuiltInClientRegistries.BLOCK_ENTITY_RENDERER is typed Registry; the bootstrap
+		// registry backing it is still writable, so cast once for BlockEntityRenderers.register
+		var blockEntityRendererRegistry = (net.minecraft.core.WritableRegistry<net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider<?, ?>>) (Registry<net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider<?, ?>>) net.minecraft.client.core.registries.BuiltInClientRegistries.BLOCK_ENTITY_RENDERER;
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.FIREFLY, FireflyRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.CICADA, CicadaRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.MOONWORM, MoonwormRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.TROPHY, TrophyRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.TF_CHEST, TFChestRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.TF_TRAPPED_CHEST, TFChestRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.SKULL_CHEST, SkullChestRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.KEEPSAKE_CASKET, KeepsakeCasketRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.SKULL_CANDLE, SkullCandleRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.REACTOR_DEBRIS, ReactorDebrisRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.RED_THREAD, RedThreadRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.CANDELABRA, CandelabraRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.JAR, JarRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.MASON_JAR, JarRenderer.MasonJarRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.OMINOUS_CANDLE, OminousCandleRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.SINISTER_SPAWNER, SinisterSpawnerRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.BRAZIER, BrazierRenderer::new);
+		net.minecraft.client.renderer.blockentity.BlockEntityRenderers.register(blockEntityRendererRegistry, TFBlockEntities.DRYING_RACK, DryingRackRenderer::new);
 	}
 
 	private void registerScreens() {
-		MenuScreens.register(net.minecraft.client.core.registries.BuiltInClientRegistries.MENU_SCREEN, TFMenuTypes.UNCRAFTING, UncraftingScreen::new);
+		MenuScreens.register((net.minecraft.core.WritableRegistry<net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor<?, ?>>) (Registry<net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor<?, ?>>) net.minecraft.client.core.registries.BuiltInClientRegistries.MENU_SCREEN, TFMenuTypes.UNCRAFTING, UncraftingScreen::new);
 	}
 
 	private void registerParticleFactories() {

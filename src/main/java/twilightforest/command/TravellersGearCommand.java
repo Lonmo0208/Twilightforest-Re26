@@ -5,9 +5,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceKeyArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -39,20 +40,20 @@ public class TravellersGearCommand {
 	private final SimpleCommandExceptionType ERROR_ABILITY = new SimpleCommandExceptionType(Component.translatable("commands.tffeature.ability_modifier"));
 
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
-		return Commands.literal("travellers_gear").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+		return Commands.literal("travellers_gear").requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
 			.then(Commands.literal("give_set")
 				.executes(context -> this.giveMaxedSet(context.getSource())))
 			.then(Commands.literal("add_modifier")
-				.then(Commands.argument("modifier", ResourceKeyArgument.key(TFRegistries.Keys.TRAVELLERS_MODIFIERS))
-					.executes(context -> this.addModifier(context.getSource(), ResourceKeyArgument.resolveKey(context, "modifier", TFRegistries.Keys.TRAVELLERS_MODIFIERS, ERROR_INVALID_MODIFIER)))))
+				.then(Commands.argument("modifier", ResourceArgument.resource(TFRegistries.Keys.TRAVELLERS_MODIFIERS))
+					.executes(context -> this.addModifier(context.getSource(), ResourceArgument.getResource(context, "modifier", TFRegistries.Keys.TRAVELLERS_MODIFIERS)))))
 				.then(Commands.literal("remove_modifier")
-					.then(Commands.argument("modifier", ResourceKeyArgument.key(TFRegistries.Keys.TRAVELLERS_MODIFIERS))
-						.executes(context -> this.removeModifier(context.getSource(), ResourceKeyArgument.resolveKey(context, "modifier", TFRegistries.Keys.TRAVELLERS_MODIFIERS, ERROR_INVALID_MODIFIER)))));
+					.then(Commands.argument("modifier", ResourceArgument.resource(TFRegistries.Keys.TRAVELLERS_MODIFIERS))
+						.executes(context -> this.removeModifier(context.getSource(), ResourceArgument.getResource(context, "modifier", TFRegistries.Keys.TRAVELLERS_MODIFIERS)))));
 	}
 
 	private int giveMaxedSet(CommandSourceStack source) throws CommandSyntaxException {
 		if (!(source.getEntity() instanceof Player player) || player instanceof FakePlayer) throw ERROR_NOT_RUN_BY_PLAYER.create();
-		var registries = source.registryAccess();
+		var registries = source.getServer().registryAccess();
 
 		
 		ItemStack goggles = new ItemStack(TFItems.TRAVELLERS_GOGGLES);
@@ -109,18 +110,18 @@ public class TravellersGearCommand {
 
 	private int addModifier(CommandSourceStack source, Holder.Reference<TravellersModifier> modifier) throws CommandSyntaxException {
 		Context ctx = validate(source, modifier);
-		if (TravellersModifiersManager.countInsertableModifiers(source.registryAccess(), ctx.stack()) >= ctx.item().getModifierSlots()) throw ERROR_TOO_MANY_MODIFIERS.create();
-		if (TravellersModifiersManager.hasTravellersModifier(source.registryAccess(), ctx.stack(), modifier.key())) throw ERROR_HAS_MODIFIER.apply(ctx.modKey()).create();
+		if (TravellersModifiersManager.countInsertableModifiers(source.getServer().registryAccess(), ctx.stack()) >= ctx.item().getModifierSlots()) throw ERROR_TOO_MANY_MODIFIERS.create();
+		if (TravellersModifiersManager.hasTravellersModifier(source.getServer().registryAccess(), ctx.stack(), modifier.key())) throw ERROR_HAS_MODIFIER.apply(ctx.modKey()).create();
 		if (!modifier.value().group().test(ctx.player().getEquipmentSlotForItem(ctx.stack()))) throw ERROR_WRONG_SLOT.apply(ctx.modKey()).create();
 
-		TravellersModifiersManager.addModifier(source.registryAccess(), ctx.stack(), modifier.key());
+		TravellersModifiersManager.addModifier(source.getServer().registryAccess(), ctx.stack(), modifier.key());
 		source.sendSuccess(() -> Component.translatable("commands.tffeature.added_modifier", ctx.modKey(), ctx.stack().getHoverName()), true);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private int removeModifier(CommandSourceStack source, Holder.Reference<TravellersModifier> modifier) throws CommandSyntaxException {
 		Context ctx = validate(source, modifier);
-		if (!TravellersModifiersManager.hasTravellersModifier(source.registryAccess(), ctx.stack(), modifier.key())) throw ERROR_NO_MODIFIER.apply(ctx.modKey()).create();
+		if (!TravellersModifiersManager.hasTravellersModifier(source.getServer().registryAccess(), ctx.stack(), modifier.key())) throw ERROR_NO_MODIFIER.apply(ctx.modKey()).create();
 
 		((InsertableTravellersModifier) modifier.value()).removeModifier(ctx.stack());
 		source.sendSuccess(() -> Component.translatable("commands.tffeature.removed_modifier", ctx.modKey(), ctx.stack().getHoverName()), true);

@@ -1,6 +1,5 @@
 package twilightforest.client.model.block.aurorablock;
 
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
@@ -27,12 +26,6 @@ public class NoiseVaryingModel implements BlockStateModel, LevelAwareBlockStateM
 	@Override
 	public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
 		this.variants[0].collectParts(random, parts);
-	}
-
-	// Fabric (FRAPI) world rendering entry point - pick the variant for the block's position
-	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
-		this.chooseVariant(pos).emitQuads(emitter, level, pos, state, random, cullTest);
 	}
 
 	@Override

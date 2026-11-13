@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -26,7 +27,7 @@ public class TFTeleportCommand {
 
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
 		return Commands.literal("tp")
-			.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+			.requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS))
 			.executes(this::run);
 	}
 

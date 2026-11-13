@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Holder;
@@ -68,7 +69,7 @@ public class MapBiomesCommand {
 	}
 
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
-		return Commands.literal("biomepng").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(context -> createMap(context.getSource(), 4096, 4096, true))
+		return Commands.literal("biomepng").requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS)).executes(context -> createMap(context.getSource(), 4096, 4096, true))
 			.then(Commands.argument("width", IntegerArgumentType.integer(0))
 				.executes(context -> createMap(context.getSource(), IntegerArgumentType.getInteger(context, "width"), IntegerArgumentType.getInteger(context, "width"), true))
 				.then(Commands.argument("height", IntegerArgumentType.integer(0))

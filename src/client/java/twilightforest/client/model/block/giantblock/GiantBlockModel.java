@@ -1,6 +1,5 @@
 package twilightforest.client.model.block.giantblock;
 
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 // TODO: Port to Fabric - BlockStateModel imports for Fabric compatibility
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
@@ -35,12 +34,6 @@ public class GiantBlockModel implements BlockStateModel, LevelAwareBlockStateMod
 	@Override
 	public void collectParts(RandomSource random, List<BlockStateModelPart> output) {
 		this.voxels[0].collectParts(random, output);
-	}
-
-	// Fabric (FRAPI) world rendering entry point - pick the slice model for the block's position in the 4x4x4 multiblock
-	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
-		this.voxels[GiantBlock.packCoords(pos)].emitQuads(emitter, level, pos, state, random, cullTest);
 	}
 
 	// TODO: Port to Fabric - level-aware particleMaterial was from NeoForge DynamicBlockStateModel

@@ -42,7 +42,7 @@ public record LootingEnchantNumberProvider(Holder<Enchantment> enchantment, Hold
 	}
 
 	@Override
-	public Set<ContextKey<?>> getReferencedContextParams() {
+	public Set<ContextKey<?>> getRequiredParams() {
 		return Set.of(LootContextParams.ATTACKING_ENTITY);
 	}
 

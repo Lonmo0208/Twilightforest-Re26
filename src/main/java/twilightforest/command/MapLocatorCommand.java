@@ -1,22 +1,24 @@
 package twilightforest.command;
 
 import com.google.common.base.Stopwatch;
-import com.mojang.brigadier.arguments.BoolArgumentType;
+import net.minecraft.commands.arguments.BooleanArgument;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ResourceOrTagKeyArgument;
+import net.minecraft.commands.arguments.ResourceOrTagArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.server.commands.LocateCommand;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,21 +45,21 @@ public class MapLocatorCommand {
 
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
 		// TODO A magic map variation might be cool
-		return Commands.literal("map_locator").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)).then(
-			Commands.argument("structure", ResourceOrTagKeyArgument.resourceOrTagKey(Registries.STRUCTURE)).executes(context -> run(context, Collections.singleton(context.getSource().getPlayerOrException()), false)).then(
+		return Commands.literal("map_locator").requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS)).then(
+			Commands.argument("structure", ResourceOrTagArgument.resourceOrTag(Registries.STRUCTURE)).executes(context -> run(context, Collections.singleton(context.getSource().getPlayerOrException()), false)).then(
 				Commands.argument("player", EntityArgument.players()).executes(context -> run(context, EntityArgument.getPlayers(context, "player"), false)).then(
-					Commands.argument("skip_known_structures", BoolArgumentType.bool()).executes(context -> run(context, EntityArgument.getPlayers(context, "player"), BoolArgumentType.getBool(context, "skip_known_structures")))
+					Commands.argument("skip_known_structures", BooleanArgument.bool()).executes(context -> run(context, EntityArgument.getPlayers(context, "player"), BooleanArgument.getBool(context, "skip_known_structures")))
 				)
 			)
 		);
 	}
 
 	private int run(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, boolean skipKnownStructures) throws CommandSyntaxException {
-		var structure = ResourceOrTagKeyArgument.getResourceOrTagKey(context, "structure", Registries.STRUCTURE, ERROR_STRUCTURE_INVALID);
+		var structure = ResourceOrTagArgument.getResourceOrTag(context, "structure", Registries.STRUCTURE);
 		var source = context.getSource();
 
 		Registry<Structure> registry = source.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE);
-		HolderSet<Structure> holderset = LocateCommand.getHolders(structure, registry).orElseThrow(() -> ERROR_STRUCTURE_INVALID.create(structure.asPrintable()));
+		HolderSet<Structure> holderset = Either.unwrap(structure.unwrap().mapLeft(HolderSet::direct)); // [VANILLA COPY] LocateCommand.getHolders
 		BlockPos blockpos = BlockPos.containing(source.getPosition());
 		ServerLevel serverlevel = source.getLevel();
 		Stopwatch stopwatch = Stopwatch.createStarted(Util.TICKER);

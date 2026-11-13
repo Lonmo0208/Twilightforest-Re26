@@ -1,6 +1,7 @@
 package twilightforest.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -109,7 +110,7 @@ public class CandelabraBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+	public CompoundTag getUpdateTag(HolderGetter.Provider provider) {
 		return this.saveCustomOnly(provider);
 	}
 

@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.commands.CommandPermissionLevels;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -21,8 +22,8 @@ public class ConquerCommand {
 	private final SimpleCommandExceptionType NOT_IN_STRUCTURE = new SimpleCommandExceptionType(Component.translatable("commands.tffeature.structure.required"));
 
 	public LiteralArgumentBuilder<CommandSourceStack> register() {
-		LiteralArgumentBuilder<CommandSourceStack> conquer = Commands.literal("conquer").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(ctx -> changeStructureActivity(ctx.getSource(), true));
-		LiteralArgumentBuilder<CommandSourceStack> reactivate = Commands.literal("reactivate").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(ctx -> changeStructureActivity(ctx.getSource(), false));
+		LiteralArgumentBuilder<CommandSourceStack> conquer = Commands.literal("conquer").requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS)).executes(ctx -> changeStructureActivity(ctx.getSource(), true));
+		LiteralArgumentBuilder<CommandSourceStack> reactivate = Commands.literal("reactivate").requires(Commands.hasPermission(CommandPermissionLevels.LEVEL_GAMEMASTERS)).executes(ctx -> changeStructureActivity(ctx.getSource(), false));
 		return conquer.then(reactivate);
 	}
 

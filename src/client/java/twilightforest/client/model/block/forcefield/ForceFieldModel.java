@@ -20,13 +20,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.block.ForceFieldBlock;
 import twilightforest.client.model.block.LevelAwareBlockStateModel;
-import twilightforest.client.model.block.LevelAwareModelEmitter;
 import twilightforest.client.model.block.forcefield.ForceFieldModelLoader.Condition;
 
 import java.util.ArrayList;
@@ -170,18 +168,8 @@ public class ForceFieldModel implements BlockStateModel, LevelAwareBlockStateMod
         }
 
         @Override
-        public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-                return this.particle;
-        }
-
-        @Override
         public Material.Baked particleMaterial() {
                 return this.particle;
-        }
-
-        // TODO: Port to Fabric - level-aware materialFlags was from NeoForge DynamicBlockStateModel; Fabric version uses 4 args with RandomSource
-	public @MaterialFlags int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-                return BakedQuad.FLAG_TRANSLUCENT;
         }
 
         @Override
@@ -192,12 +180,6 @@ public class ForceFieldModel implements BlockStateModel, LevelAwareBlockStateMod
         @Override
         @Deprecated
         public void collectParts(RandomSource random, List<BlockStateModelPart> output) {
-        }
-
-        // Fabric (FRAPI) world rendering entry point - routes through the level-aware collectParts
-        @Override
-        public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
-                LevelAwareModelEmitter.emitQuads(this, emitter, level, pos, state, random, cullTest);
         }
 
         public enum ExtraDirection implements StringRepresentable {
