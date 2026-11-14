@@ -25,6 +25,7 @@ public class TFRenderPipelines {
 		.withBindGroupLayout(BindGroupLayouts.PROJECTION)
 		.withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
 		.withBindGroupLayout(BindGroupLayouts.SAMPLER0)
+		.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
 		.withDepthStencilState(new DepthStencilState(CompareOp.ALWAYS_PASS, false))
 		.withCull(false)
 		.build();
