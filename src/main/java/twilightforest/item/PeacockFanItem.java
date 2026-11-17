@@ -39,7 +39,9 @@ public class PeacockFanItem extends Item {
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 
-		boolean flag = !player.onGround() && !player.isSwimming() && !Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.FEATHER_FAN, () -> false));
+		boolean used = Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.FEATHER_FAN, () -> false))
+			|| (level.isClientSide() && Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.FEATHER_FAN_CLIENT, () -> false)));
+		boolean flag = !player.onGround() && !player.isSwimming() && !used;
 
 		if (!level.isClientSide()) {
 			int fanned = this.doFan(level, player);
@@ -78,11 +80,10 @@ public class PeacockFanItem extends Item {
 			// jump if the player is in the air
 			if (flag) {
 				// Mark the fan used locally on the client so the mid-air jump cannot be
-				// spammed every tick. Fabric attachments do NOT sync changes automatically
-				// (unlike NeoForge), so without this the client would never see the flag
-				// the server sets, allowing infinite flight. The flag is cleared on the
-				// client when the player lands (see TwilightForestClient tick handler).
-				player.setAttached(TFDataAttachments.FEATHER_FAN, true);
+				// spammed before the server's synced flag arrives. This must use the
+				// client-only attachment: writing the synced FEATHER_FAN attachment on
+				// the client throws "Only supported on server levels!".
+				player.setAttached(TFDataAttachments.FEATHER_FAN_CLIENT, true);
 				player.setDeltaMovement(new Vec3(
 					player.getDeltaMovement().x() * 1.05F,
 					1.5F,
