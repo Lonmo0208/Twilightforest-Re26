@@ -45,6 +45,23 @@ public class TFDataAttachments {
 		return a;
 	}
 
+	/**
+	 * Read-only attachment accessor for client-side rendering.
+	 * <p>
+	 * Rendering must never write a synced attachment: Fabric's {@code Entity#setAttached} calls
+	 * {@code PlayerLookup.tracking(...)} for synced types, which throws {@code IllegalArgumentException:
+	 * Only supported on server levels!} on a client. Entities that are rendered outside the normal
+	 * tracking flow (e.g. the fake entities used by tooltip mods such as Legendary Tooltips/Iceberg to
+	 * render a 3D item preview) have no synced attachment at all, so writing a default there crashed
+	 * the game while a tooltip was rendered.
+	 *
+	 * @return the stored attachment value, or the supplied default when absent (never written back)
+	 */
+	public static <A, E extends Entity> A getOrDefault(E entity, AttachmentType<A> type, Supplier<A> defaultSupplier) {
+		A a = entity.getAttached(type);
+		return a != null ? a : defaultSupplier.get();
+	}
+
 	public static final AttachmentType<Boolean> FEATHER_FAN = AttachmentRegistry.create(TwilightForestMod.prefix("feather_fan_falling"), builder ->
 		builder.initializer(() -> false).persistent(Codec.BOOL.fieldOf("feather_fan_falling").codec()).syncWith(ByteBufCodecs.BOOL, (entity, target) -> true));
 

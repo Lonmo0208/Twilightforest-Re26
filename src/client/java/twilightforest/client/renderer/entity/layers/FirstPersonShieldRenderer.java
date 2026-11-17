@@ -30,7 +30,7 @@ public class FirstPersonShieldRenderer {
 		if (!minecraft.options.getCameraType().isFirstPerson()) return;
 
 		Player player = minecraft.player;
-		FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(player, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
+		FortificationShieldAttachment attachment = TFDataAttachments.getOrDefault(player, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 		if (attachment == null) return;
 
 		int count = attachment.shieldsLeft();
