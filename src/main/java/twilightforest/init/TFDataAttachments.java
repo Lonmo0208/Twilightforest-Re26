@@ -65,6 +65,17 @@ public class TFDataAttachments {
 	public static final AttachmentType<Boolean> FEATHER_FAN = AttachmentRegistry.create(TwilightForestMod.prefix("feather_fan_falling"), builder ->
 		builder.initializer(() -> false).persistent(Codec.BOOL.fieldOf("feather_fan_falling").codec()).syncWith(ByteBufCodecs.BOOL, (entity, target) -> true));
 
+	/**
+	 * Client-only mirror of the "feather fan used mid-air" flag.
+	 * <p>
+	 * Deliberately NOT synced: writing a synced attachment on the client throws
+	 * {@code IllegalArgumentException: Only supported on server levels!}. This local copy exists purely
+	 * for client-side movement prediction, so the mid-air jump cannot be spammed before the server's
+	 * synced {@link #FEATHER_FAN} value reaches the client.
+	 */
+	public static final AttachmentType<Boolean> FEATHER_FAN_CLIENT = AttachmentRegistry.create(TwilightForestMod.prefix("feather_fan_falling_client"), builder ->
+		builder.initializer(() -> false));
+
 	public static final AttachmentType<PotionFlaskTrackingAttachment> FLASK_DOSES = AttachmentRegistry.create(TwilightForestMod.prefix("flask_doses"), builder ->
 		builder.initializer(PotionFlaskTrackingAttachment::new).persistent(PotionFlaskTrackingAttachment.CODEC.codec()));
 
