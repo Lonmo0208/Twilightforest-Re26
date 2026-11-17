@@ -16,7 +16,7 @@ public abstract class LivingEntityRendererMixin {
 
 	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V", at = @At("TAIL"))
 	private void tf$extractShieldCount(LivingEntity entity, LivingEntityRenderState state, float partialTicks, CallbackInfo ci) {
-		FortificationShieldAttachment attachment = TFDataAttachments.getOrCreate(entity, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
+		FortificationShieldAttachment attachment = TFDataAttachments.getOrDefault(entity, TFDataAttachments.FORTIFICATION_SHIELDS, twilightforest.components.entity.FortificationShieldAttachment::new);
 		if (attachment != null) {
 			TFShieldState.setShieldCount(state, attachment.shieldsLeft());
 		}
