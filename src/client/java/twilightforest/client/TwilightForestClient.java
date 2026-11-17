@@ -181,15 +181,15 @@ public class TwilightForestClient implements ClientModInitializer {
 		// Register client-side packet handlers (payload types already registered in TwilightForestMod)
 		registerClientHandlers();
 
-		// Clear the client-side feather-fan flag when the player lands. Fabric attachments
-		// are not synced when they change, so the client must maintain this flag locally to
-		// prevent the Peacock Feather Fan from granting an unlimited mid-air jump.
+		// Clear the client-side feather-fan flag when the player lands. This must use the
+		// client-only mirror: writing the synced FEATHER_FAN attachment on the client throws
+		// "Only supported on server levels!". The server clears its synced copy as well.
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player != null) {
 				var player = client.player;
-				if (Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.FEATHER_FAN, () -> false))
+				if (Boolean.TRUE.equals(TFDataAttachments.getOrCreate(player, TFDataAttachments.FEATHER_FAN_CLIENT, () -> false))
 					&& (player.onGround() || player.isSwimming() || player.isInWater())) {
-					player.setAttached(TFDataAttachments.FEATHER_FAN, false);
+					player.setAttached(TFDataAttachments.FEATHER_FAN_CLIENT, false);
 				}
 			}
 		});
