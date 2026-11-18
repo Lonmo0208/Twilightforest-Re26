@@ -15,6 +15,7 @@
 		"ChunkGeneratorMixin",
 		"ChunkStatusTasksMixin",
 		"BlockStateMixin",
+		"DispenserBlockMixin",
 		"EnderManMixin",
 		"EntityEquipmentMixin",
 		"EntityMixin",

@@ -52,11 +52,6 @@ public class NagaSegment extends TFPart<Naga> {
 	}
 
 	@Override
-	public boolean is(Entity entity) {
-		return entity == this || entity == this.getParent();
-	}
-
-	@Override
 	protected void readAdditionalSaveData(ValueInput compound) {
 
 	}

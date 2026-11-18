@@ -128,23 +128,23 @@ public class HydraMortar extends ThrowableProjectile {
 
 	@Override
 	protected boolean canHitEntity(Entity entity) {
-		if (!super.canHitEntity(entity) || (getOwner() != null && entity.is(getOwner())) || isPartOfHydra(entity))
+		if (!super.canHitEntity(entity) || (getOwner() != null && entity == getOwner()) || isPartOfHydra(entity))
 			return false;
-		return !(entity instanceof HydraMortar mortar) || (getOwner() != null && mortar.getOwner() != null && getOwner().is(mortar.getOwner()));
+		return !(entity instanceof HydraMortar mortar) || (getOwner() != null && mortar.getOwner() != null && getOwner() == mortar.getOwner());
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult result) {
 		Entity entity = result.getEntity();
 		if (!this.level().isClientSide() && this.getOwner() != null) {
-			if ((!(entity instanceof HydraMortar mortar) || mortar.getOwner() != null && mortar.getOwner().is(this.getOwner())) && !entity.is(this.getOwner()) && !this.isPartOfHydra(entity)) {
+			if ((!(entity instanceof HydraMortar mortar) || mortar.getOwner() != null && mortar.getOwner() == this.getOwner()) && entity != this.getOwner() && !this.isPartOfHydra(entity)) {
 				this.detonate();
 			}
 		}
 	}
 
 	private boolean isPartOfHydra(Entity entity) {
-		return this.getOwner() instanceof Hydra && entity instanceof HydraPart part && part.getParent().is(this.getOwner());
+		return this.getOwner() instanceof Hydra && entity instanceof HydraPart part && part.getParent() == this.getOwner();
 	}
 
 	@Override

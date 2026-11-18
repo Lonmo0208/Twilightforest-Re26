@@ -1,8 +1,9 @@
 package twilightforest.dispenser;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.dispenser.BlockSource;
-import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.dispenser.DispenseBehavior;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -13,12 +14,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import twilightforest.init.TFDataMaps;
 import twilightforest.util.datamaps.DataMapType;
 
-public class CrumbleDispenseBehavior extends DefaultDispenseItemBehavior {
+public class CrumbleDispenseBehavior implements DispenseBehavior {
 
-	boolean fired = false;
+	public static final CrumbleDispenseBehavior INSTANCE = new CrumbleDispenseBehavior();
+	public static final MapCodec<CrumbleDispenseBehavior> CODEC = MapCodec.unit(INSTANCE);
 
 	@Override
-	protected ItemStack execute(BlockSource source, ItemStack stack) {
+	public DispenseResult execute(BlockSource source, ItemStack stack) {
 		ServerLevel level = source.level();
 		BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
 		BlockState state = level.getBlockState(pos);
@@ -33,20 +35,14 @@ public class CrumbleDispenseBehavior extends DefaultDispenseItemBehavior {
 				}
 
 				stack.hurtAndBreak(1, level, null, item -> {});
-				this.fired = true;
+				return DispenseResult.success(stack);
 			}
 		}
-		return stack;
+		return DispenseResult.failure();
 	}
 
 	@Override
-	protected void playSound(BlockSource source) {
-		if (this.fired) {
-			super.playSound(source);
-			this.fired = false;
-		} else {
-			source.level().levelEvent(LevelEvent.SOUND_DISPENSER_FAIL, source.pos(), 0);
-		}
+	public MapCodec<? extends DispenseBehavior> codec() {
+		return CODEC;
 	}
-
 }

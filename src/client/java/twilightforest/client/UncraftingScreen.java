@@ -38,7 +38,6 @@ import java.util.function.Supplier;
 public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> implements RecipeUpdateListener {
 	private static final Identifier TEXTURE = TwilightForestMod.getGuiTexture("guigoblintinkering.png");
 	private final UncraftingRecipeBookComponent recipeBookComponent;
-	private boolean widthTooNarrow;
 
 	public UncraftingScreen(UncraftingMenu container, Inventory player, Component name) {
 		super(container, player, name);
@@ -49,12 +48,11 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 	protected void init() {
 		super.init();
 
-		this.widthTooNarrow = this.width < 379;
-		this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow);
-		this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
+		this.recipeBookComponent.init(this.width, this.height, this.minecraft);
+		this.updateScreenPositions();
 		this.addRenderableWidget(new ImageButton(this.leftPos + 145, this.topPos + 7, 20, 18, RecipeBookComponent.RECIPE_BUTTON_SPRITES, button -> {
 			this.recipeBookComponent.toggleVisibility();
-			this.repositionElements();
+			this.updateScreenPositions();
 		}));
 		this.addWidget(this.recipeBookComponent);
 		this.setInitialFocus(this.recipeBookComponent);
@@ -87,6 +85,16 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 			ClientPlayNetworking.send(new UncraftingGuiPacket(5));
 			this.menu.recipeInCycle--;
 		}, Component.translatable("container.twilightforest.uncrafting_table.cycle_back_recipe")));
+	}
+
+	@Override
+	public void updateScreenPositions() {
+		if (this.recipeBookComponent.isVisible() && !this.recipeBookComponent.isWidthTooNarrow()) {
+			this.leftPos = 177 + (this.width - this.imageWidth - 200) / 2;
+		} else {
+			this.leftPos = (this.width - this.imageWidth) / 2;
+		}
+		super.updateScreenPositions();
 	}
 
 	@Override
@@ -142,7 +150,7 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics) {
-		if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
+		if (this.recipeBookComponent.isVisible() && this.recipeBookComponent.isWidthTooNarrow()) {
 			this.recipeBookComponent.extractRenderState(graphics);
 		} else {
 			super.extractRenderState(graphics);
@@ -162,7 +170,7 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 		int frameY = (this.height - this.imageHeight) / 2;
 		graphics.blit(GuiPipeline.TEXTURED, TEXTURE, frameX, frameY, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
 		super.extractBackground(graphics);
-		if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
+		if (this.recipeBookComponent.isVisible() && this.recipeBookComponent.isWidthTooNarrow()) {
 			// background is handled by extractBackground
 		}
 	}
@@ -242,7 +250,7 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 
 	@Override
 	protected boolean isHovering(int x, int y, int width, int height, double mouseX, double mouseY) {
-		return (!this.widthTooNarrow || !this.recipeBookComponent.isVisible()) && super.isHovering(x, y, width, height, mouseX, mouseY);
+		return (!this.recipeBookComponent.isWidthTooNarrow() || !this.recipeBookComponent.isVisible()) && super.isHovering(x, y, width, height, mouseX, mouseY);
 	}
 
 	@Override
@@ -251,7 +259,7 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 			this.setFocused(this.recipeBookComponent);
 			return true;
 		} else {
-			return this.widthTooNarrow && this.recipeBookComponent.isVisible() || super.mouseClicked(event, doubleClick);
+			return this.recipeBookComponent.isWidthTooNarrow() && this.recipeBookComponent.isVisible() || super.mouseClicked(event, doubleClick);
 		}
 	}
 

@@ -1,114 +1,48 @@
 package twilightforest.dispenser;
 
-import net.minecraft.core.Position;
-import net.minecraft.core.dispenser.BlockSource;
-import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.core.dispenser.EquipmentDispenseItemBehavior;
-import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.DispenserBlock;
-import twilightforest.entity.projectile.MoonwormShot;
-import twilightforest.entity.projectile.TwilightWandBolt;
-import twilightforest.init.TFBlocks;
-import twilightforest.init.TFItems;
-import twilightforest.init.TFSounds;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.Registry;
+import net.minecraft.core.dispenser.DispenseBehavior;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import twilightforest.TwilightForestMod;
 
+import java.util.List;
+
+/**
+ * Dispense behaviors are data-driven since 26.4-snapshot-9: every item carries a
+ * {@code minecraft:dispense_behavior} component pointing at a list in the
+ * {@code <namespace>:dispense_behavior} datapack registry. Custom behavior instances are
+ * referenced from those JSON lists by their registered behavior type.
+ */
 public class TFDispenserBehaviors {
 
+	public static final ResourceKey<List<DispenseBehavior>> MOONWORM_QUEEN = key("moonworm_queen");
+	public static final ResourceKey<List<DispenseBehavior>> TWILIGHT_SCEPTER = key("twilight_scepter");
+	public static final ResourceKey<List<DispenseBehavior>> FEATHER_FAN = key("feather_fan");
+	public static final ResourceKey<List<DispenseBehavior>> CRUMBLE_HORN = key("crumble_horn");
+	public static final ResourceKey<List<DispenseBehavior>> TRANSFORMATION_POWDER = key("transformation_powder");
+	/**
+	 * Equip-only list without the vanilla {@code drop_item} fallback, matching the old
+	 * OptionalDispenseItemBehavior semantics for trophies, skull candles and bugs.
+	 */
+	public static final ResourceKey<List<DispenseBehavior>> EQUIP_ONLY = key("equip_only");
+
+	private static ResourceKey<List<DispenseBehavior>> key(String name) {
+		return ResourceKey.create(Registries.DISPENSE_BEHAVIOR, TwilightForestMod.prefix(name));
+	}
+
 	public static void init() {
-		DispenserBlock.registerBehavior(TFItems.MOONWORM_QUEEN, new DamageableStackDispenseBehavior() {
-			@Override
-			protected Projectile getProjectileEntity(Level level, Position position, ItemStack stack) {
-				return new MoonwormShot(level, position.x(), position.y(), position.z());
-			}
+		register("moonworm_shot", MoonwormShotDispenseBehavior.CODEC);
+		register("twilight_wand_bolt", TwilightWandBoltDispenseBehavior.CODEC);
+		register("feather_fan", FeatherFanDispenseBehavior.CODEC);
+		register("crumble_horn", CrumbleDispenseBehavior.CODEC);
+		register("transformation_powder", TransformationDispenseBehavior.CODEC);
+		register("candle", CandleDispenseBehavior.CODEC);
+	}
 
-			@Override
-			protected int getDamageAmount() {
-				return 2;
-			}
-
-			@Override
-			protected SoundEvent getFiredSound() {
-				return TFSounds.MOONWORM_SQUISH;
-			}
-		});
-
-		DispenseItemBehavior idispenseitembehavior = new OptionalDispenseItemBehavior() {
-			@Override
-			protected ItemStack execute(BlockSource source, ItemStack stack) {
-				this.setSuccess(EquipmentDispenseItemBehavior.dispenseEquipment(source, stack));
-				return stack;
-			}
-		};
-		DispenserBlock.registerBehavior(TFBlocks.NAGA_TROPHY.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.LICH_TROPHY.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.MINOSHROOM_TROPHY.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.HYDRA_TROPHY.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.KNIGHT_PHANTOM_TROPHY.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.UR_GHAST_TROPHY.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.ALPHA_YETI_TROPHY.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.SNOW_QUEEN_TROPHY.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.QUEST_RAM_TROPHY.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.CREEPER_SKULL_CANDLE.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.PLAYER_SKULL_CANDLE.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.SKELETON_SKULL_CANDLE.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.WITHER_SKELE_SKULL_CANDLE.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.ZOMBIE_SKULL_CANDLE.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.CICADA.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.FIREFLY.asItem(), idispenseitembehavior);
-		DispenserBlock.registerBehavior(TFBlocks.MOONWORM.asItem(), idispenseitembehavior);
-
-		DispenserBlock.registerBehavior(TFItems.PEACOCK_FEATHER_FAN.asItem(), new FeatherFanDispenseBehavior());
-		DispenserBlock.registerBehavior(TFItems.CRUMBLE_HORN.asItem(), new CrumbleDispenseBehavior());
-		DispenserBlock.registerBehavior(TFItems.TRANSFORMATION_POWDER.asItem(), new TransformationDispenseBehavior());
-
-		DispenserBlock.registerBehavior(TFItems.TWILIGHT_SCEPTER, new DamageableStackDispenseBehavior() {
-			@Override
-			protected Projectile getProjectileEntity(Level level, Position position, ItemStack stack) {
-				return new TwilightWandBolt(level, position.x(), position.y(), position.z());
-			}
-
-			@Override
-			protected int getDamageAmount() {
-				return 1;
-			}
-
-			@Override
-			protected SoundEvent getFiredSound() {
-				return SoundEvents.GHAST_SHOOT;
-			}
-
-			@Override
-			protected float getProjectileInaccuracy() {
-				return 6.0F;
-			}
-		});
-
-		DispenserBlock.registerProjectileBehavior(TFItems.ICE_BOMB);
-
-		//handling tags should be a thing smh
-		DispenserBlock.registerBehavior(Items.CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.BLACK), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.GRAY), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.LIGHT_GRAY), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.WHITE), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.RED), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.ORANGE), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.YELLOW), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.GREEN), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.LIME), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.BLUE), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.CYAN), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.LIGHT_BLUE), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.PURPLE), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.MAGENTA), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.PINK), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pick(DyeColor.BROWN), new CandleDispenseBehavior());
+	private static void register(String name, MapCodec<? extends DispenseBehavior> codec) {
+		Registry.register(BuiltInRegistries.DISPENSE_BEHAVIOR_TYPE, TwilightForestMod.prefix(name), codec);
 	}
 }

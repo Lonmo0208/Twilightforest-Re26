@@ -115,11 +115,6 @@ public abstract class HydraPart extends TFPart<Hydra> {
 	}
 
 	@Override
-	public boolean is(Entity entity) {
-		return this == entity || this.getParent() == entity;
-	}
-
-	@Override
 	protected void setRot(float yaw, float pitch) {
 		this.setYRot(yaw % 360.0F);
 		this.setXRot(pitch % 360.0F);

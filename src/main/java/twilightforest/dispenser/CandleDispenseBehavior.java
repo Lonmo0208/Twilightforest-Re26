@@ -1,8 +1,9 @@
 package twilightforest.dispenser;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.dispenser.BlockSource;
-import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
+import net.minecraft.core.dispenser.DispenseBehavior;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -18,23 +19,31 @@ import twilightforest.block.entity.CandelabraBlockEntity;
 import twilightforest.block.entity.SkullCandleBlockEntity;
 import twilightforest.init.TFBlocks;
 
-public class CandleDispenseBehavior extends OptionalDispenseItemBehavior {
+/**
+ * Lets dispensers add vanilla candles to Twilight Forest skull candles and candelabras.
+ */
+public class CandleDispenseBehavior implements DispenseBehavior {
+
+	public static final CandleDispenseBehavior INSTANCE = new CandleDispenseBehavior();
+	public static final MapCodec<CandleDispenseBehavior> CODEC = MapCodec.unit(INSTANCE);
 
 	public CandleDispenseBehavior() {
 	}
 
 	@Override
-	protected ItemStack execute(BlockSource source, ItemStack stack) {
+	public DispenseResult execute(BlockSource source, ItemStack stack) {
 		ServerLevel level = source.level();
-		if (!level.isClientSide()) {
-			BlockPos blockpos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
-			this.setSuccess(tryAddCandle(level, blockpos, stack.getItem()) || tryCreateSkullCandle(level, blockpos, stack.getItem()));
-			if (this.isSuccess()) {
-				stack.shrink(1);
-			}
+		BlockPos blockpos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+		if (tryAddCandle(level, blockpos, stack.getItem()) || tryCreateSkullCandle(level, blockpos, stack.getItem())) {
+			stack.shrink(1);
+			return DispenseResult.success(stack);
 		}
+		return DispenseResult.failure();
+	}
 
-		return stack;
+	@Override
+	public MapCodec<? extends DispenseBehavior> codec() {
+		return CODEC;
 	}
 
 	private static boolean tryAddCandle(ServerLevel level, BlockPos pos, Item candle) {

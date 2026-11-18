@@ -112,7 +112,7 @@ public class LoyalZombie extends TamableAnimal {
 	@Override
 	public InteractionResult interact(Player player, InteractionHand hand, Vec3 vec3) {
 		//feeding a loyal zombie rotten flesh will refresh its death timer, allowing your minions to stick around for longer
-		if (this.getOwner() != null && this.getOwner().is(player) && player.getItemInHand(hand).is(Items.ROTTEN_FLESH)) {
+		if (this.getOwner() != null && this.getOwner() == player && player.getItemInHand(hand).is(Items.ROTTEN_FLESH)) {
 			this.removeEffect(MobEffects.STRENGTH);
 			this.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 1200, 1));
 			this.heal(1.0F);

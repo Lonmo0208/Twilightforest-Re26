@@ -104,7 +104,7 @@ public class MiscEvents {
 		Player player = event.getEntity();
 		ItemStack stack = player.getItemInHand(event.getHand());
 
-		if (!(stack.getItem() instanceof SpawnEggItem spawnEggItem) || SpawnEggItem.getType(stack) != TFEntities.DEATH_TOME.get())
+		if (!(stack.getItem() instanceof SpawnEggItem) || !SpawnEggItem.spawnsEntity(stack, TFEntities.DEATH_TOME.get()))
 			return;
 
 		BlockPos pos = event.getPos();

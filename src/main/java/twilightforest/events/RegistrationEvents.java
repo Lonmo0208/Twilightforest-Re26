@@ -6,6 +6,7 @@ import twilightforest.beanification.Autowired;
 import twilightforest.beanification.Component;
 import twilightforest.beanification.PostConstruct;
 import twilightforest.command.TFCommand;
+import twilightforest.dispenser.TFDispenserBehaviors;
 import twilightforest.init.TFBlocks;
 import twilightforest.loot.modifiers.GiantToolGroupingModifier;
 import twilightforest.util.HolidayEvent;
@@ -37,7 +38,9 @@ public class RegistrationEvents {
 		// Initialize giant block conversions early
 		GiantToolGroupingModifier.bootstrapConversions();
 		
-		// TFDispenserBehaviors.init(); - Already handled via TFBlocks static init
+		// Custom dispense behavior types must be registered to the static registry before datapack
+		// (dispense_behavior JSON) loading, so this runs from the common mod initializer.
+		TFDispenserBehaviors.init();
 		// TFStats.init(); - Already called in onInitialize()
 
 		// Arctic armor dye washing in cauldrons - NOT PORTED: NeoForge-specific CauldronInteractions API
@@ -430,7 +433,6 @@ public class RegistrationEvents {
 
 	public void init(Object evt) {
 		evt.enqueueWork(() -> {
-			TFDispenserBehaviors.init();
 			TFStats.init();
 
 			// Arctic armor dye washing in cauldrons (26.1.2: CauldronInteractions.WATER + dyedItemIteration)

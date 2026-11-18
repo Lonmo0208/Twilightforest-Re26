@@ -82,9 +82,6 @@ accessible field net/minecraft/world/level/biome/BiomeManager biomeZoomSeed J
 mutable field net/minecraft/client/gui/components/SplashRenderer splash Lnet/minecraft/network/chat/Component;
 accessible field net/minecraft/client/gui/screens/TitleScreen splash Lnet/minecraft/client/gui/components/SplashRenderer;
 
-# TFDispenserBehaviors (fetches original dispenser behaviors for flint and steel and fire charges)
-accessible field net/minecraft/world/level/block/DispenserBlock DISPENSER_REGISTRY Ljava/util/Map;
-
 # TFMagicMapData (sets decorations dirty after being loaded from nbt)
 accessible method net/minecraft/world/level/saveddata/maps/MapItemSavedData setDecorationsDirty ()V
 accessible method net/minecraft/world/level/saveddata/maps/MapItemSavedData addDecoration (Lnet/minecraft/core/Holder;Lnet/minecraft/world/level/LevelAccessor;Ljava/lang/String;DDDLnet/minecraft/network/chat/Component;)V
