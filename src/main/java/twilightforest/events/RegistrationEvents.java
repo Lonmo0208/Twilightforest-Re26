@@ -5,6 +5,7 @@ import twilightforest.TwilightForestMod;
 import twilightforest.beanification.Autowired;
 import twilightforest.beanification.Component;
 import twilightforest.beanification.PostConstruct;
+import twilightforest.block.SortLogCoreBlock;
 import twilightforest.command.TFCommand;
 import twilightforest.init.TFBlocks;
 import twilightforest.loot.modifiers.GiantToolGroupingModifier;
@@ -37,6 +38,8 @@ public class RegistrationEvents {
 		// Initialize giant block conversions early
 		GiantToolGroupingModifier.bootstrapConversions();
 		
+		// Sorting tree core cache invalidation
+		SortLogCoreBlock.init();
 		// TFDispenserBehaviors.init(); - Already handled via TFBlocks static init
 		// TFStats.init(); - Already called in onInitialize()
 
