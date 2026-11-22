@@ -8,6 +8,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.SectionPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -226,5 +229,36 @@ public final class WorldUtil {
 		int chunkOriginZ = zInCenterChunk & ~0b1111;
 
 		return WorldUtil.adjustForTerrain(context, chunkOriginX - radiusFromCenterChunk, chunkOriginZ - radiusFromCenterChunk, chunkOriginX + 15 + radiusFromCenterChunk, chunkOriginZ + 15 + radiusFromCenterChunk, gridLength, Heightmap.Types.WORLD_SURFACE_WG);
+	}
+
+	/**
+	 * All currently loaded block entities within {@code range} blocks (Chebyshev distance) of {@code center}.
+	 * Used by the sorting tree core to find nearby chests without forcing chunks to load.
+	 */
+	public static List<BlockEntity> getLoadedBlockEntitiesInRange(ServerLevel level, BlockPos center, int range) {
+		List<BlockEntity> blockEntities = new ArrayList<>();
+		ServerChunkCache chunkSource = level.getChunkSource();
+		int minChunkX = SectionPos.blockToSectionCoord(center.getX() - range);
+		int maxChunkX = SectionPos.blockToSectionCoord(center.getX() + range);
+		int minChunkZ = SectionPos.blockToSectionCoord(center.getZ() - range);
+		int maxChunkZ = SectionPos.blockToSectionCoord(center.getZ() + range);
+
+		for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
+			for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
+				LevelChunk chunk = chunkSource.getChunkNow(chunkX, chunkZ);
+				if (chunk != null) {
+					for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
+						BlockPos pos = blockEntity.getBlockPos();
+						if (!blockEntity.isRemoved()
+							&& Math.abs(pos.getX() - center.getX()) <= range
+							&& Math.abs(pos.getY() - center.getY()) <= range
+							&& Math.abs(pos.getZ() - center.getZ()) <= range) {
+							blockEntities.add(blockEntity);
+						}
+					}
+				}
+			}
+		}
+		return blockEntities;
 	}
 }
