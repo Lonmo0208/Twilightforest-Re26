@@ -5,6 +5,7 @@ import twilightforest.TwilightForestMod;
 import twilightforest.beanification.Autowired;
 import twilightforest.beanification.Component;
 import twilightforest.beanification.PostConstruct;
+import twilightforest.block.SortLogCoreBlock;
 import twilightforest.command.TFCommand;
 import twilightforest.dispenser.TFDispenserBehaviors;
 import twilightforest.init.TFBlocks;
@@ -41,6 +42,7 @@ public class RegistrationEvents {
 		// Custom dispense behavior types must be registered to the static registry before datapack
 		// (dispense_behavior JSON) loading, so this runs from the common mod initializer.
 		TFDispenserBehaviors.init();
+		SortLogCoreBlock.init();
 		// TFStats.init(); - Already called in onInitialize()
 
 		// Arctic armor dye washing in cauldrons - NOT PORTED: NeoForge-specific CauldronInteractions API

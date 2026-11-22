@@ -5,6 +5,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -12,6 +15,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import twilightforest.TwilightForestMod;
 import twilightforest.components.entity.*;
+import twilightforest.util.BlockCapabilityDirectionalCache;
 import twilightforest.util.Codecs;
 
 import java.util.function.Supplier;
@@ -141,6 +145,13 @@ public class TFDataAttachments {
 
 	public static final AttachmentType<Integer> LAST_JUMP_KEY_PRESS_TIME = AttachmentRegistry.create(TwilightForestMod.prefix("last_jump_key_press_time"), builder ->
 		builder.initializer(() -> 0).persistent(Codec.INT.fieldOf("last_jump_key_press").codec()));
+
+	/**
+	 * Per-level cache of item handler lookups around the sorting tree core. Attached to the
+	 * {@link net.minecraft.server.level.ServerLevel}; invalidated when a nearby block entity unloads.
+	 */
+	public static final AttachmentType<BlockCapabilityDirectionalCache<Storage<ItemVariant>>> SORTING_CORE_CAPABILITY_CACHE = AttachmentRegistry.create(TwilightForestMod.prefix("sorting_core_capability_cache"), builder ->
+		builder.initializer(() -> new BlockCapabilityDirectionalCache<>(ItemStorage.SIDED)));
 
 	public static final AttachmentType<Float> LAST_HORIZONTAL_IMPULSE = AttachmentRegistry.create(TwilightForestMod.prefix("last_horizontal_impulse"), builder ->
 		builder.initializer(() -> 0F).persistent(Codec.FLOAT.fieldOf("last_horizontal_impulse").codec()));
