@@ -51,6 +51,7 @@ public class TFConfig {
 	public static boolean spawnCharmAnimationAsTotem = false;
 	public static boolean manualTravellersWingsGradualGlideDefault = true;
 	public static boolean firstPersonGloveOverlay = true;
+	public static volatile RainbowLeavesStyle rainbowLeavesStyle = RainbowLeavesStyle.VANILLA_GRID;
 
 	// --- Item Display ---
 	public static int itemDisplayXOffs = 4;
@@ -215,6 +216,7 @@ public class TFConfig {
 		rotateTrophyHeadsGui = config.rotateTrophyHeadsGui.get();
 		disableOptifineNagScreen = config.disableOptifineNagScreen.get();
 		disableLockedBiomeToasts = config.disableLockedBiomeToasts.get();
+		rainbowLeavesStyle = config.rainbowLeavesStyle.get();
 		showFortificationShieldIndicator = config.showFortificationShieldIndicator.get();
 		showFortificationShieldIndicatorInCreative = config.showFortificationShieldIndicatorInCreative.get();
 		showQuestRamCrosshairIndicator = config.showQuestRamCrosshairIndicator.get();
@@ -280,6 +282,11 @@ public class TFConfig {
 		public Component getTranslatedName() {
 			return Component.translatable(CONFIG_ID + "multiplayer_fight_adjuster." + this.name().toLowerCase(Locale.ROOT));
 		}
+	}
+
+	public enum RainbowLeavesStyle {
+		VANILLA_GRID,
+		HSV_SMOOTH
 	}
 
 	public static boolean use24HourTimeDefault() {

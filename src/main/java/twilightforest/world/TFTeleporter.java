@@ -169,7 +169,7 @@ public class TFTeleporter {
 					continue;
 				}
 
-				for (BlockPos blockpos1 = pos.offset(i1, getScanHeight(destDim, pos) - pos.getY(), j1); blockpos1.getY() >= destDim.getMinY(); blockpos1 = blockpos2) {
+				for (BlockPos blockpos1 = pos.offset(i1, getScanHeight(destDim, chunk) - pos.getY(), j1); blockpos1.getY() >= destDim.getMinY(); blockpos1 = blockpos2) {
 					blockpos2 = blockpos1.below();
 
 					// don't lookup state if inner condition would fail
@@ -197,16 +197,13 @@ public class TFTeleporter {
 		return result;
 	}
 
-	private static int getScanHeight(ServerLevel world, BlockPos pos) {
-		return getScanHeight(world, pos.getX(), pos.getZ());
+	private static int getScanHeight(ServerLevel world, int x, int z) {
+		// Checking a candidate column should never synchronously generate a chunk.
+		return getScanHeight(world, world.getChunkSource().getChunkNow(x >> 4, z >> 4));
 	}
 
-	private static int getScanHeight(ServerLevel world, int x, int z) {
+	private static int getScanHeight(ServerLevel world, @Nullable LevelChunk chunk) {
 		int worldHeight = world.getMaxY() - 1;
-		// Use getChunkNow: getChunk() synchronously generates the chunk, and findPortalCoords()
-		// calls this per-column (up to 1024x), blocking the server thread for a very long time
-		// on Moonrise/Purpur where a single stuck generation task hangs syncLoad forever.
-		LevelChunk chunk = world.getChunkSource().getChunkNow(x >> 4, z >> 4);
 		if (chunk == null) {
 			return worldHeight;
 		}

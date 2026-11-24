@@ -181,16 +181,26 @@ public class Lich extends BaseTFBoss {
 		this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 0.75D, true) { // Phase 3
 			@Override
 			public boolean canUse() {
-				return Lich.this.getPhase() == 3 && super.canUse();
+				LivingEntity target = this.mob.getTarget();
+				return Lich.this.getPhase() == 3 && target != null && target.isAlive();
 			}
 
 			@Override
 			public void tick() {
 				if (((Lich)this.mob).getTeleportInvisibility() > 0) return;
-				super.tick();
-				if (this.mob.getTarget() != null && !this.mob.isWithinMeleeAttackRange(this.mob.getTarget()) && this.mob.getNavigation().isDone()) {
-					if (!this.mob.getNavigation().moveTo(this.mob.getTarget(), this.speedModifier)) {
-						Lich.this.teleportToSightOfEntity(this.mob.getTarget());
+				LivingEntity target = this.mob.getTarget();
+				if (target == null || !target.isAlive()) return;
+
+				if (this.mob.isWithinMeleeAttackRange(target)) {
+					super.tick();
+					return;
+				}
+
+				if (this.mob.getNavigation().isDone()) {
+					boolean startedPath = this.mob.getNavigation().moveTo(target, this.speedModifier);
+					var path = this.mob.getNavigation().getPath();
+					if (!startedPath || path == null || !path.canReach()) {
+						Lich.this.teleportToSightOfEntity(target);
 					}
 				}
 			}
@@ -319,7 +329,7 @@ public class Lich extends BaseTFBoss {
 		if (this.getRestrictionPoint() == null) return false;
 		BlockPos point = this.getRestrictionPoint().pos();
 		if (this.getTarget() == null && this.getY() < point.getY() - 2) return true;
-		return point.distToCenterSqr(pos) > (this.getHomeRadius() * this.getHomeRadius()) || (this.getPhase() == 3 && this.getY() < point.getY() - 3);
+		return point.distToCenterSqr(pos) > (this.getHomeRadius() * this.getHomeRadius());
 	}
 
 	@Override
@@ -337,7 +347,7 @@ public class Lich extends BaseTFBoss {
 			this.popCooldown--;
 		}
 
-		if (this.getScepterTimeLeft() == 0 && this.getPopCooldown() < 30 && this.getItemInHand(InteractionHand.MAIN_HAND).is(TFItems.LIFEDRAIN_SCEPTER.get())) {
+		if (this.getScepterTimeLeft() == 0 && this.getItemInHand(InteractionHand.MAIN_HAND).is(TFItems.LIFEDRAIN_SCEPTER.get())) {
 			this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(this.getPhase() == 2 ? TFItems.ZOMBIE_SCEPTER.get() : Items.GOLDEN_SWORD));
 		}
 

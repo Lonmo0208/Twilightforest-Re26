@@ -59,6 +59,7 @@ import org.joml.Matrix4f;
 import tamaized.beanification.Component;
 import tamaized.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
+import twilightforest.config.ConfigSetup;
 import twilightforest.client.*;
 import twilightforest.client.model.TFModelLayers;
 import twilightforest.client.model.armor.*;
@@ -264,7 +265,14 @@ public class ClientRegistrationEvents {
 			optifinePresent = false;
 		}
 
-		evt.enqueueWork(() -> {
+		ConfigSetup.setRainbowLeavesStyleChangedListener(() -> {
+			Minecraft minecraft = Minecraft.getInstance();
+			minecraft.execute(() -> {
+				if (minecraft.level != null) {
+					minecraft.level.clearTintCaches();
+					minecraft.levelExtractor.allChanged();
+				}
+			});
 		});
 	}
 

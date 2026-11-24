@@ -18,6 +18,11 @@ public final class ConfigSetup {
 	private static final ModConfigSpec COMMON_SPEC;
 	static final TFClientConfig CLIENT_CONFIG;
 	static final TFCommonConfig COMMON_CONFIG;
+	private static volatile Runnable onRainbowLeavesStyleChanged = () -> {};
+
+	public static void setRainbowLeavesStyleChangedListener(Runnable listener) {
+		onRainbowLeavesStyleChanged = listener;
+	}
 
 	static {
 		{
@@ -42,7 +47,11 @@ public final class ConfigSetup {
 
 	public static void reloadConfigs(ModConfigEvent.Reloading event) {
 		if (event.getConfig().getSpec() == CLIENT_SPEC) {
+			var previousStyle = TFConfig.rainbowLeavesStyle;
 			TFConfig.rebakeClientOptions(CLIENT_CONFIG);
+			if (previousStyle != TFConfig.rainbowLeavesStyle) {
+				onRainbowLeavesStyleChanged.run();
+			}
 		} else if (event.getConfig().getSpec() == COMMON_SPEC) {
 			TFConfig.rebakeCommonOptions(COMMON_CONFIG);
 		}

@@ -132,9 +132,14 @@ public abstract class TFPart<T extends Entity> extends PartEntity<T> {
 
 	}
 
+	protected boolean followsParentLocally() {
+		return false;
+	}
+
 	public void readData(UpdateTFMultipartPacket.PartDataHolder data) {
-		Vec3 vec = new Vec3(data.x(), data.y(), data.z());
-		this.setPositionAndRotationDirect(vec.x(), vec.y(), vec.z(), data.yRot(), data.xRot(), 3);
+		if (!this.followsParentLocally()) {
+			this.setPositionAndRotationDirect(data.x(), data.y(), data.z(), data.yRot(), data.xRot(), 3);
+		}
 		final float w = data.width();
 		final float h = data.height();
 		this.setSize(data.fixed() ? EntityDimensions.fixed(w, h) : EntityDimensions.scalable(w, h));

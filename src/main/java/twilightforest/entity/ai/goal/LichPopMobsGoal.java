@@ -45,6 +45,7 @@ public class LichPopMobsGoal extends Goal {
 	@Override
 	public boolean canUse() {
 		return !this.lich.isShadowClone() &&
+			this.lich.getPhase() < 3 &&
 			this.lich.getHealth() < this.lich.getMaxHealth() &&
 			this.lich.getPopCooldown() == 0 &&
 			!this.lich.level().getEntitiesOfClass(Mob.class,

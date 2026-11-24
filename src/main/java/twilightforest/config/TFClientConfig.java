@@ -24,10 +24,16 @@ public class TFClientConfig {
 	final ModConfigSpec.BooleanValue spawnCharmAnimationAsTotem;
 	final ModConfigSpec.BooleanValue manualTravellersWingsGradualGlide;
 	final ModConfigSpec.BooleanValue firstPersonGloveOverlay;
+	final ModConfigSpec.EnumValue<TFConfig.RainbowLeavesStyle> rainbowLeavesStyle;
 
 	final ItemDisplay ITEM_DISPLAY = new ItemDisplay();
 
 	public TFClientConfig(ModConfigSpec.Builder builder) {
+		rainbowLeavesStyle = builder
+			.translation(TFConfig.CONFIG_ID + "rainbow_leaves_style")
+			.comment("Choose the classic grid or a smooth 3D gradient for rainbow oak leaves.")
+			.defineEnum("rainbowLeavesStyle", TFConfig.RainbowLeavesStyle.VANILLA_GRID);
+
 		silentCicadas = builder
 			.translation(TFConfig.CONFIG_ID + "silent_cicadas")
 			.comment(ConfigComments.SILENT_CICADAS)

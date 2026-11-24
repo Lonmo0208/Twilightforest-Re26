@@ -27,7 +27,7 @@ public class HydraNeckModel extends EntityModel<HydraNeckRenderState> {
 				.addBox(-16.0F, -16.0F, -16.0F, 32.0F, 32.0F, 32.0F)
 				.texOffs(128, 200)
 				.addBox(-2.0F, -23.0F, 0.0F, 4.0F, 24.0F, 24.0F),
-			PartPose.ZERO);
+			PartPose.offset(0.0F, 8.0F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 512, 256);
 	}

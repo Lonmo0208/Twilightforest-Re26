@@ -48,9 +48,12 @@ public class ShieldLayer<S extends LivingEntityRenderState, M extends EntityMode
 	}
 
 	public static int getShieldCount(LivingEntity entity) {
-		return entity instanceof Lich lich
-			? (lich.getTeleportInvisibility() > 0 ? 0 : lich.getShieldStrength())
-			: entity.getData(TFDataAttachments.FORTIFICATION_SHIELDS).shieldsLeft();
+		if (entity instanceof Lich lich) {
+			return lich.getTeleportInvisibility() > 0 ? 0 : lich.getShieldStrength();
+		}
+		return entity.hasData(TFDataAttachments.FORTIFICATION_SHIELDS)
+			? entity.getData(TFDataAttachments.FORTIFICATION_SHIELDS).shieldsLeft()
+			: 0;
 	}
 
 	private void renderShields(PoseStack stack, SubmitNodeCollector submitNodeCollector, S state, int count, int light) {

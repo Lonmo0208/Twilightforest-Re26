@@ -45,7 +45,7 @@ public class RecipeViewerConstants {
 	public static List<RecipeHolder<? extends CraftingRecipe>> getAllUncraftingRecipes(RecipeManager manager) {
 		if (!TFConfig.disableUncraftingOnly) { //we only do this if uncrafting is not disabled
 			List<RecipeHolder<? extends CraftingRecipe>> recipes = new ArrayList<>(manager.getRecipes().stream()
-				.filter(h -> h.value().getType() == RecipeType.CRAFTING)
+				.filter(h -> h.value().getType() == RecipeType.CRAFTING && !h.value().isSpecial() && !h.value().placementInfo().isImpossibleToPlace())
 				.map(h -> (RecipeHolder<? extends CraftingRecipe>) h)
 				.toList());
 			recipes = recipes.stream().filter(recipe -> {

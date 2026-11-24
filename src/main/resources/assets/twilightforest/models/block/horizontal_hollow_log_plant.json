@@ -215,7 +215,7 @@
       "faces": {
         "north": {
           "texture": "#plant",
-          "tintindex": 1,
+          "tintindex": 0,
           "uv": [
             0.0,
             3.0,
@@ -225,7 +225,7 @@
         },
         "south": {
           "texture": "#plant",
-          "tintindex": 1,
+          "tintindex": 0,
           "uv": [
             0.0,
             3.0,
@@ -260,7 +260,7 @@
       "faces": {
         "east": {
           "texture": "#plant",
-          "tintindex": 1,
+          "tintindex": 0,
           "uv": [
             0.0,
             3.0,
@@ -270,7 +270,7 @@
         },
         "west": {
           "texture": "#plant",
-          "tintindex": 1,
+          "tintindex": 0,
           "uv": [
             0.0,
             3.0,

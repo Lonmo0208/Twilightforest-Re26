@@ -16,6 +16,7 @@ import twilightforest.client.properties.PotionFlaskTintSource;
 import twilightforest.client.properties.SpawnEggTintSource;
 import twilightforest.enums.HollowLogVariants;
 import twilightforest.init.TFBlocks;
+import twilightforest.config.TFConfig;
 import twilightforest.util.ColorUtil;
 import twilightforest.util.SimplexNoiseHelper;
 
@@ -278,7 +279,10 @@ public class ColorHandler {
 
 			@Override
 			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-				// RAINBOW!
+				if (TFConfig.rainbowLeavesStyle == TFConfig.RainbowLeavesStyle.HSV_SMOOTH) {
+					double hue = pos.getX() * 1.05 / 48 + pos.getY() * 0.65 / 24 + pos.getZ() * 0.47 / 48;
+					return ColorUtil.hsvToRGB((float) (hue - Math.floor(hue)), 1.0F, 1.0F);
+				}
 				int red = pos.getX() * 32 + pos.getY() * 16;
 				if ((red & 256) != 0) {
 					red = 255 - (red & 255);

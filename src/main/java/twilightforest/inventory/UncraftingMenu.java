@@ -38,6 +38,7 @@ import twilightforest.util.TFItemStackUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 public class UncraftingMenu extends RecipeBookMenu {
@@ -316,11 +317,11 @@ public class UncraftingMenu extends RecipeBookMenu {
 	}
 
 	private static boolean isRecipeSupported(Recipe<?> recipe) {
-		return TFConfig.allowShapelessUncrafting ? recipe instanceof CraftingRecipe : recipe instanceof ShapedRecipe;
+		return !recipe.isSpecial() && !recipe.placementInfo().isImpossibleToPlace() && (TFConfig.allowShapelessUncrafting ? recipe instanceof CraftingRecipe : recipe instanceof ShapedRecipe);
 	}
 
 	private static boolean matches(ItemStack input, ItemStack output) {
-		return input.is(output.getItem()) && input.getCount() >= output.getCount();
+		return !output.isEmpty() && input.is(output.getItem()) && input.getCount() >= output.getCount();
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
@@ -615,11 +616,17 @@ public class UncraftingMenu extends RecipeBookMenu {
 	}
 
 	private ItemStack[] getIngredients(Recipe<?> recipe) {
-		List<Ingredient> ingredients = recipe.placementInfo().ingredients();
+		List<Optional<Ingredient>> ingredients = recipe instanceof ShapedRecipe shaped
+			? shaped.getIngredients()
+			: recipe.placementInfo().ingredients().stream().map(Optional::of).toList();
 		ItemStack[] stacks = new ItemStack[ingredients.size()];
 
 		for (int i = 0; i < ingredients.size(); i++) {
-			ItemStack[] matchingStacks = ingredients.get(i).items().map(h -> new ItemStack(h.value())).filter(s -> !s.is(TFItemTags.BANNED_UNCRAFTING_INGREDIENTS)).toArray(ItemStack[]::new);
+			ItemStack[] matchingStacks = ingredients.get(i).stream()
+				.flatMap(Ingredient::items)
+				.map(item -> new ItemStack(item.value()))
+				.filter(stack -> !stack.is(TFItemTags.BANNED_UNCRAFTING_INGREDIENTS))
+				.toArray(ItemStack[]::new);
 			stacks[i] = matchingStacks.length > 0 ? matchingStacks[Math.floorMod(this.ingredientsInCycle, matchingStacks.length)] : ItemStack.EMPTY;
 		}
 

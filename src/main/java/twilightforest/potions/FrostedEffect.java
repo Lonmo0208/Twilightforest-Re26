@@ -20,9 +20,15 @@ public class FrostedEffect extends MobEffect {
 
 	@Override
 	public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity mob, int amplification) {
+		// Mark as in powder snow to prevent LivingEntity.aiStep() from decreasing ticksFrozen
+		// (!isInPowderSnow || !canFreeze() -> ticksFrozen -= 2). Without this, ticksFrozen
+		// would oscillate +amplification / -2 every tick, causing the freeze overlay to jitter.
 		mob.setIsInPowderSnow(true);
-		if (amplification > 0 && mob.canFreeze()) {
-			mob.setTicksFrozen(Math.min(mob.getTicksRequiredToFreeze(), mob.getTicksFrozen() + amplification));
+		if (mob.canFreeze()) {
+			// Always add at least 1 tick of freeze progress even at amplification 0,
+			// so the ice overlay gradually builds up rather than toggling on/off
+			int addAmount = Math.max(1, amplification);
+			mob.setTicksFrozen(Math.min(mob.getTicksRequiredToFreeze(), mob.getTicksFrozen() + addAmount));
 		}
 		return true;
 	}

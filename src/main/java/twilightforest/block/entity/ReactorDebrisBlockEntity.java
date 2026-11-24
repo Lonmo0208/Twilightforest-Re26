@@ -9,6 +9,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -110,8 +111,23 @@ public class ReactorDebrisBlockEntity extends BlockEntity {
 		this.textures[4] = nonEmptyNotNull(textures.getString("north"));
 		this.textures[5] = nonEmptyNotNull(textures.getString("south"));
 
-		this.minPos = (Vector3f) input.read("pos", ExtraCodecs.VECTOR3F).orElse(new Vector3f());
-		this.maxPos = input.read("sizes", ExtraCodecs.VECTOR3F).map(size -> ((Vector3f) size).add(this.minPos)).orElse(new Vector3f(1));
+		Vector3f pos = input.read("pos", ExtraCodecs.VECTOR3F).map(Vector3f::new).orElseGet(Vector3f::new);
+		Vector3f max = input.read("sizes", ExtraCodecs.VECTOR3F)
+			.map(size -> new Vector3f(pos).add(size))
+			.orElseGet(() -> new Vector3f(1.0F));
+
+		// Older saves could contain a negative size because saveAdditional used to subtract in
+		// place and corrupt maxPos; normalise the box so Shapes.box never receives min > max.
+		this.minPos = new Vector3f(
+			Mth.clamp(Math.min(pos.x(), max.x()), 0.0F, 1.0F),
+			Mth.clamp(Math.min(pos.y(), max.y()), 0.0F, 1.0F),
+			Mth.clamp(Math.min(pos.z(), max.z()), 0.0F, 1.0F)
+		);
+		this.maxPos = new Vector3f(
+			Mth.clamp(Math.max(pos.x(), max.x()), 0.0F, 1.0F),
+			Mth.clamp(Math.max(pos.y(), max.y()), 0.0F, 1.0F),
+			Mth.clamp(Math.max(pos.z(), max.z()), 0.0F, 1.0F)
+		);
 
 		this.shape = Shapes.box(this.minPos.x(), this.minPos.y(), this.minPos.z(), this.maxPos.x(), this.maxPos.y(), this.maxPos.z());
 		this.rerolls = input.getBooleanOr("rerolls", false);
@@ -130,7 +146,8 @@ public class ReactorDebrisBlockEntity extends BlockEntity {
 		textures.putString("north", this.textures[4].toString());
 		textures.putString("south", this.textures[5].toString());
 		output.store("pos", ExtraCodecs.VECTOR3F, this.minPos);
-		output.store("sizes", ExtraCodecs.VECTOR3F, this.maxPos.sub(this.minPos));
+		// Vector3f.sub() mutates in place; copy so saving does not corrupt maxPos for later saves.
+		output.store("sizes", ExtraCodecs.VECTOR3F, new Vector3f(this.maxPos).sub(this.minPos));
 		output.putBoolean("rerolls", this.rerolls);
 		output.putBoolean("will_disappear", this.willDisappear);
 		output.putByte("time_alive", this.timeAlive);

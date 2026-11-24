@@ -33,6 +33,11 @@ public class NagaSegment extends TFPart<Naga> {
 	}
 
 	@Override
+	protected boolean followsParentLocally() {
+		return true;
+	}
+
+	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 
 	}

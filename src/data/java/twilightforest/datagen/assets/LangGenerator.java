@@ -473,6 +473,22 @@ public class LangGenerator extends TFLangProvider {
 
 		this.addBlock(TFBlocks.HEDGE, "Hedge");
 		this.addBlock(TFBlocks.ROOT_BLOCK, "Roots");
+		this.add("block.twilightforest.blackberry_bush", "Blackberry Bush");
+		this.add("block.twilightforest.blightberry_bush", "Blightberry Bush");
+		this.add("block.twilightforest.blueberry_bush", "Blueberry Bush");
+		this.add("block.twilightforest.copper_oreberry_bush", "Copper Oreberry Bush");
+		this.add("block.twilightforest.duskberry_bush", "Duskberry Bush");
+		this.add("block.twilightforest.essence_oreberry_bush", "Essence Berry Bush");
+		this.add("block.twilightforest.gold_oreberry_bush", "Gold Oreberry Bush");
+		this.add("block.twilightforest.iron_oreberry_bush", "Iron Oreberry Bush");
+		this.add("block.twilightforest.maloberry_bush", "Maloberry Bush");
+		this.add("block.twilightforest.raspberry_bush", "Raspberry Bush");
+		this.add("block.twilightforest.skyberry_bush", "Skyberry Bush");
+		this.add("block.twilightforest.stingberry_bush", "Stingberry Bush");
+		this.add("config.twilightforest.rainbow_leaves_style", "Rainbow Oak Leaves Style");
+		this.add("config.twilightforest.rainbow_leaves_style.HSV_SMOOTH", "Smooth HSV Gradient");
+		this.add("config.twilightforest.rainbow_leaves_style.VANILLA_GRID", "Classic Twilight Forest Grid");
+		this.add("config.twilightforest.rainbow_leaves_style.tooltip", "Choose the classic grid or a smooth 3D gradient for rainbow oak leaves.");
 		this.addBlock(TFBlocks.LIVEROOT_BLOCK, "Liveroots");
 		this.addBlock(TFBlocks.MANGROVE_ROOT, "Mangrove Roots");
 
