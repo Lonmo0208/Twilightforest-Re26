@@ -1,16 +1,36 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:sorting_slab"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:blocks/sorting_slab"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "conditions": [
+                        {
+                           "block": "twilightforest:sorting_slab",
+                           "condition": "minecraft:block_state_property",
+                           "properties": {
+                              "type": "double"
+                           }
+                        }
+                     ],
+                     "count": 2,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "type": "minecraft:explosion_decay"
+                  }
+               ],
+               "name": "twilightforest:sorting_slab",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:blocks/sorting_slab",
+   "type": "minecraft:block"
 }
+

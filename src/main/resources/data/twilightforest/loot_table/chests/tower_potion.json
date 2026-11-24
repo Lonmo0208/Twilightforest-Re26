@@ -1,126 +1,328 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:glistering_melon_slice"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:ghast_tear"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:fermented_spider_eye"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:blaze_powder"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:glass_bottle"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:magma_cream"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:sugar"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:gunpowder"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:nether_wart"
-        }
-      ],
-      "rolls": 4.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_carrot"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:redstone"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:glowstone_dust"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:splash_potion"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion"
-        }
-      ],
-      "rolls": 2.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_apple"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:blaze_rod"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:crown_splinter"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:brewing_stand"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:greater_potion_flask"
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:brittle_potion_flask"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:chests/tower_potion"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:glistering_melon_slice",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:ghast_tear",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:fermented_spider_eye",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 9,
+                        "min": 4,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:blaze_powder",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:glass_bottle",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:magma_cream",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 7,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:sugar",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 20,
+                        "min": 8,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:gunpowder",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 13,
+                        "min": 6,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:nether_wart",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 4
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:golden_carrot",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 7,
+                        "min": 4,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:redstone",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:glowstone_dust",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:healing",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:splash_potion",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:strength",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:potion",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:fire_resistance",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:potion",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 2
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:golden_apple",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:blaze_rod",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:strong_healing",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:potion",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:swiftness",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:potion",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:regeneration",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:potion",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:crown_splinter",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:brewing_stand",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:greater_potion_flask",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:brittle_potion_flask",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:chests/tower_potion",
+   "type": "minecraft:chest"
 }
+

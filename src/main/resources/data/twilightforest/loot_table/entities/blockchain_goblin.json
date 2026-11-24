@@ -1,16 +1,37 @@
 {
-  "type": "minecraft:entity",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:armor_shard"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:entities/blockchain_goblin"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 0,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "count": {
+                        "max": 1,
+                        "min": 0,
+                        "type": "minecraft:uniform"
+                     },
+                     "enchantment": "minecraft:looting",
+                     "type": "minecraft:enchanted_count_increase"
+                  }
+               ],
+               "name": "twilightforest:armor_shard",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:entities/blockchain_goblin",
+   "type": "minecraft:entity"
 }
+

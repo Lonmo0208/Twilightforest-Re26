@@ -1,56 +1,112 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:pumpkin_seeds"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:pumpkin_pie"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:torchberries"
-        }
-      ],
-      "rolls": 4.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:moon_dial"
-        }
-      ],
-      "rolls": 2.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:transformation_powder"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:uncrafting_table"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_apple"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:graveyard"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 32,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:pumpkin_seeds",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:pumpkin_pie",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 16,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:torchberries",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 4
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:diamond",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:moon_dial",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 2
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:transformation_powder",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:uncrafting_table",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:golden_apple",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:graveyard",
+   "type": "minecraft:chest"
 }
+

@@ -1,153 +1,380 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:loot_table",
-          "value": "twilightforest:useless",
-          "weight": 25
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:rotten_flesh"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:poisonous_potato"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:wheat"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potato"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:carrot"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:melon_slice"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:water_bucket"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:torch"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:mushroom_stew"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:milk_bucket"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:sweet_berries"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:melon_seeds"
-        }
-      ],
-      "rolls": 4.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bread"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:shika_senbei"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:cooked_beef"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:cooked_porkchop"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:baked_potato"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:cooked_chicken"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:cooked_cod"
-        }
-      ],
-      "rolls": 2.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:glistering_melon_slice"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:apple"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:map"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:charm_of_keeping_1"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_apple"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_carrot"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:cake"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:oak_boat"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:hollow_oak_sapling"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:music_disc_home"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:music_disc_radiance"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:chests/basement"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "type": "minecraft:loot_table",
+               "value": "twilightforest:useless",
+               "weight": 25
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:water",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:potion",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:rotten_flesh",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:poisonous_potato",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:wheat",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:potato",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:carrot",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:melon_slice",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:water_bucket",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:torch",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:mushroom_stew",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:milk_bucket",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 7,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:sweet_berries",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:melon_seeds",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 4
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 8,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:bread",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:shika_senbei",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:cooked_beef",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 8,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:cooked_porkchop",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 8,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:baked_potato",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 10,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:cooked_chicken",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 8,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:cooked_cod",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 2
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:glistering_melon_slice",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:apple",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:map",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:charm_of_keeping_1",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:golden_apple",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:golden_carrot",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:cake",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:oak_boat",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:hollow_oak_sapling",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:music_disc_home",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:music_disc_radiance",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:chests/basement",
+   "type": "minecraft:chest"
 }
+

@@ -1,117 +1,225 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:loot_table",
-          "value": "twilightforest:useless",
-          "weight": 25
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_ingot"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:gunpowder"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:milk_bucket"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:maze_wafer"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ironwood_ingot"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:firefly"
-        }
-      ],
-      "rolls": 4.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:steeleaf_ingot"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:charm_of_life_1"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:steeleaf_helmet"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:steeleaf_chestplate"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:steeleaf_leggings"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:steeleaf_boots"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:steeleaf_pickaxe"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ironwood_chestplate"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ironwood_sword"
-        }
-      ],
-      "rolls": 2.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ironwood_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:steeleaf_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bow"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:maze_map_focus"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:stronghold_room"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "type": "minecraft:loot_table",
+               "value": "twilightforest:useless",
+               "weight": 25
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:iron_ingot",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:gunpowder",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:milk_bucket",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:maze_wafer",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:ironwood_ingot",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:firefly",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 4
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:steeleaf_ingot",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:charm_of_life_1",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:steeleaf_helmet",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:steeleaf_chestplate",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:steeleaf_leggings",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:steeleaf_boots",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:steeleaf_pickaxe",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:ironwood_chestplate",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:ironwood_sword",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 2
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "levels": 25,
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "twilightforest:ironwood_sword",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": 20,
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "twilightforest:steeleaf_sword",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": 30,
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:iron_sword",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": 30,
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:bow",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": 15,
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:diamond_sword",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "options": "twilightforest:destruction",
+                     "type": "minecraft:enchant_randomly"
+                  }
+               ],
+               "name": "minecraft:book",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:maze_map_focus",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:stronghold_room",
+   "type": "minecraft:chest"
 }
+

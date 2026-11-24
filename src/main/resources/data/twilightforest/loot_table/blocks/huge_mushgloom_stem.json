@@ -1,40 +1,61 @@
 {
-    "type":  "minecraft:block",
-    "pools":  [
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "children": [
                   {
-                      "bonus_rolls":  0.0,
-                      "entries":  [
-                                      {
-                                          "type":  "minecraft:alternatives",
-                                          "children":  [
-                                                           {
-                                                               "type":  "minecraft:item",
-                                                               "name":  "twilightforest:huge_mushgloom_stem",
-                                                               "condition":  {
-                                                                                 "predicate":  {
-                                                                                                   "predicates":  {
-                                                                                                                      "minecraft:enchantments":  [
-                                                                                                                                                     {
-                                                                                                                                                         "enchantments":  "minecraft:silk_touch",
-                                                                                                                                                         "levels":  {
-                                                                                                                                                                        "min":  1
-                                                                                                                                                                    }
-                                                                                                                                                     }
-                                                                                                                                                 ]
-                                                                                                                  }
-                                                                                               },
-                                                                                 "type":  "minecraft:match_tool"
-                                                                             }
-                                                           },
-                                                           {
-                                                               "type":  "minecraft:item",
-                                                               "name":  "twilightforest:mushgloom"
-                                                           }
-                                                       ]
-                                      }
-                                  ],
-                      "rolls":  1.0
+                     "condition": {
+                        "predicate": {
+                           "predicates": {
+                              "minecraft:enchantments": [
+                                 {
+                                    "enchantments": "minecraft:silk_touch",
+                                    "levels": {
+                                       "min": 1
+                                    }
+                                 }
+                              ]
+                           }
+                        },
+                        "type": "minecraft:match_tool"
+                     },
+                     "name": "twilightforest:huge_mushgloom_stem",
+                     "type": "minecraft:item"
+                  },
+                  {
+                     "modifier": [
+                        {
+                           "add": false,
+                           "count": {
+                              "max": 2,
+                              "min": -6,
+                              "type": "minecraft:uniform"
+                           },
+                           "type": "minecraft:set_count"
+                        },
+                        {
+                           "limit": {
+                              "min": 0
+                           },
+                           "type": "minecraft:limit_count"
+                        },
+                        {
+                           "type": "minecraft:explosion_decay"
+                        }
+                     ],
+                     "name": "twilightforest:mushgloom",
+                     "type": "minecraft:item"
                   }
-              ],
-    "random_sequence":  "twilightforest:blocks/huge_mushgloom_stem"
+               ],
+               "type": "minecraft:alternatives"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:blocks/huge_mushgloom_stem",
+   "type": "minecraft:block"
 }
+

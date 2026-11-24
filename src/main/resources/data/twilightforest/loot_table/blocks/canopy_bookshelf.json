@@ -1,40 +1,51 @@
 {
-    "type":  "minecraft:block",
-    "pools":  [
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "children": [
                   {
-                      "bonus_rolls":  0.0,
-                      "entries":  [
-                                      {
-                                          "type":  "minecraft:alternatives",
-                                          "children":  [
-                                                           {
-                                                               "type":  "minecraft:item",
-                                                               "name":  "twilightforest:canopy_bookshelf",
-                                                               "condition":  {
-                                                                                 "predicate":  {
-                                                                                                   "predicates":  {
-                                                                                                                      "minecraft:enchantments":  [
-                                                                                                                                                     {
-                                                                                                                                                         "enchantments":  "minecraft:silk_touch",
-                                                                                                                                                         "levels":  {
-                                                                                                                                                                        "min":  1
-                                                                                                                                                                    }
-                                                                                                                                                     }
-                                                                                                                                                 ]
-                                                                                                                  }
-                                                                                               },
-                                                                                 "type":  "minecraft:match_tool"
-                                                                             }
-                                                           },
-                                                           {
-                                                               "type":  "minecraft:item",
-                                                               "name":  "minecraft:book"
-                                                           }
-                                                       ]
-                                      }
-                                  ],
-                      "rolls":  1.0
+                     "condition": {
+                        "predicate": {
+                           "predicates": {
+                              "minecraft:enchantments": [
+                                 {
+                                    "enchantments": "minecraft:silk_touch",
+                                    "levels": {
+                                       "min": 1
+                                    }
+                                 }
+                              ]
+                           }
+                        },
+                        "type": "minecraft:match_tool"
+                     },
+                     "name": "twilightforest:canopy_bookshelf",
+                     "type": "minecraft:item"
+                  },
+                  {
+                     "modifier": [
+                        {
+                           "add": false,
+                           "count": 2,
+                           "type": "minecraft:set_count"
+                        },
+                        {
+                           "type": "minecraft:explosion_decay"
+                        }
+                     ],
+                     "name": "minecraft:book",
+                     "type": "minecraft:item"
                   }
-              ],
-    "random_sequence":  "twilightforest:blocks/canopy_bookshelf"
+               ],
+               "type": "minecraft:alternatives"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:blocks/canopy_bookshelf",
+   "type": "minecraft:block"
 }
+

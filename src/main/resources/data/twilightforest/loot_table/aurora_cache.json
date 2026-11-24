@@ -1,117 +1,301 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:loot_table",
-          "value": "twilightforest:useless",
-          "weight": 25
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:stick"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:coal"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:arrow"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:ice"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:packed_ice"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ironwood_ingot"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:maze_wafer"
-        }
-      ],
-      "rolls": 4.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:charm_of_keeping_1"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ironwood_ingot"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:firefly"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:aurora_block"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:arctic_fur"
-        }
-      ],
-      "rolls": 2.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:arctic_fur"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ice_bow"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ender_bow"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ice_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:enchanted_book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:enchanted_book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:enchanted_book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:enchanted_book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:enchanted_book"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:aurora_cache"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "type": "minecraft:loot_table",
+               "value": "twilightforest:useless",
+               "weight": 25
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:stick",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:coal",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:arrow",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:ice",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:packed_ice",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:ironwood_ingot",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 9,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:maze_wafer",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 4
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "name": "twilightforest:charm_of_keeping_1",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:ironwood_ingot",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:firefly",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:aurora_block",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:arctic_fur",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 2
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 8,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:arctic_fur",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:ice_bow",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:ender_bow",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:ice_sword",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "enchantments": {
+                        "minecraft:sharpness": 4
+                     },
+                     "type": "minecraft:set_enchantments"
+                  }
+               ],
+               "name": "minecraft:enchanted_book",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "enchantments": {
+                        "minecraft:power": 4
+                     },
+                     "type": "minecraft:set_enchantments"
+                  }
+               ],
+               "name": "minecraft:enchanted_book",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "enchantments": {
+                        "minecraft:punch": 2
+                     },
+                     "type": "minecraft:set_enchantments"
+                  }
+               ],
+               "name": "minecraft:enchanted_book",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "enchantments": {
+                        "minecraft:unbreaking": 2
+                     },
+                     "type": "minecraft:set_enchantments"
+                  }
+               ],
+               "name": "minecraft:enchanted_book",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "options": "twilightforest:chill_aura",
+                     "type": "minecraft:enchant_randomly"
+                  }
+               ],
+               "name": "minecraft:book",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "enchantments": {
+                        "minecraft:infinity": 1
+                     },
+                     "type": "minecraft:set_enchantments"
+                  }
+               ],
+               "name": "minecraft:enchanted_book",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:aurora_cache",
+   "type": "minecraft:chest"
 }
+

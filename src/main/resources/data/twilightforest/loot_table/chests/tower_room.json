@@ -1,166 +1,418 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:loot_table",
-          "value": "twilightforest:useless",
-          "weight": 25
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bone"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:clay_ball"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:string"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:torch"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:candle"
-        },
-        {
-          "type": "minecraft:loot_table",
-          "value": "twilightforest:chests/suspicious_stew",
-          "weight": 75
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:gold_nugget"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_nugget"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bread"
-        }
-      ],
-      "rolls": 4.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:transformation_powder"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:magic_map"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:firefly"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:exanimate_essence"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:brittle_potion_flask"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:amethyst_shard"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:ender_pearl"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:ender_pearl"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:book"
-        }
-      ],
-      "rolls": 2.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:empty",
-          "weight": 75
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:liveroot"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:crown_splinter"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:obsidian"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_helmet"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:charm_of_life_1"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_axe"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:enchanted_golden_apple"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:moonworm_queen"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:peacock_feather_fan"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:chests/tower_room"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "type": "minecraft:loot_table",
+               "value": "twilightforest:useless",
+               "weight": 25
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 16,
+                        "min": 4,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:bone",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 6,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:clay_ball",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 8,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:string",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 24,
+                        "min": 9,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:torch",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:candle",
+               "type": "minecraft:item"
+            },
+            {
+               "type": "minecraft:loot_table",
+               "value": "twilightforest:chests/suspicious_stew",
+               "weight": 75
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 9,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:gold_nugget",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 20,
+                        "min": 6,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:iron_nugget",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:bread",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 4
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:transformation_powder",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:magic_map",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 9,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:firefly",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:exanimate_essence",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:brittle_potion_flask",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 13,
+                        "min": 4,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:amethyst_shard",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:ender_pearl",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:healing",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:potion",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:regeneration",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:potion",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:strength",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:potion",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_randomly"
+                  }
+               ],
+               "name": "minecraft:golden_sword",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:ender_pearl",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": {
+                        "max": 30,
+                        "min": 20,
+                        "type": "minecraft:uniform"
+                     },
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:book",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 2
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "type": "minecraft:empty",
+               "weight": 75
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:liveroot",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:diamond",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:crown_splinter",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:obsidian",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": {
+                        "max": 15,
+                        "min": 10,
+                        "type": "minecraft:uniform"
+                     },
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:golden_helmet",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:charm_of_life_1",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": {
+                        "max": 30,
+                        "min": 20,
+                        "type": "minecraft:uniform"
+                     },
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:book",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": 20,
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:golden_axe",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:enchanted_golden_apple",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:moonworm_queen",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:peacock_feather_fan",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:chests/tower_room",
+   "type": "minecraft:chest"
 }
+

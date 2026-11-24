@@ -1,16 +1,111 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:red_thread"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:blocks/red_thread"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": true,
+                     "conditions": [
+                        {
+                           "block": "twilightforest:red_thread",
+                           "condition": "minecraft:block_state_property",
+                           "properties": {
+                              "east": "true"
+                           }
+                        }
+                     ],
+                     "count": 1,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "add": true,
+                     "conditions": [
+                        {
+                           "block": "twilightforest:red_thread",
+                           "condition": "minecraft:block_state_property",
+                           "properties": {
+                              "west": "true"
+                           }
+                        }
+                     ],
+                     "count": 1,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "add": true,
+                     "conditions": [
+                        {
+                           "block": "twilightforest:red_thread",
+                           "condition": "minecraft:block_state_property",
+                           "properties": {
+                              "north": "true"
+                           }
+                        }
+                     ],
+                     "count": 1,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "add": true,
+                     "conditions": [
+                        {
+                           "block": "twilightforest:red_thread",
+                           "condition": "minecraft:block_state_property",
+                           "properties": {
+                              "south": "true"
+                           }
+                        }
+                     ],
+                     "count": 1,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "add": true,
+                     "conditions": [
+                        {
+                           "block": "twilightforest:red_thread",
+                           "condition": "minecraft:block_state_property",
+                           "properties": {
+                              "up": "true"
+                           }
+                        }
+                     ],
+                     "count": 1,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "add": true,
+                     "conditions": [
+                        {
+                           "block": "twilightforest:red_thread",
+                           "condition": "minecraft:block_state_property",
+                           "properties": {
+                              "down": "true"
+                           }
+                        }
+                     ],
+                     "count": 1,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "add": true,
+                     "count": -1,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "type": "minecraft:explosion_decay"
+                  }
+               ],
+               "name": "twilightforest:red_thread",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:blocks/red_thread",
+   "type": "minecraft:block"
 }
+

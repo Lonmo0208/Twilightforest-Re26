@@ -1,61 +1,150 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:rotten_flesh"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bone"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:charcoal"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:raven_feather"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:torchberries"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:stick"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bread"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potato"
-        },
-        {
-          "type": "minecraft:loot_table",
-          "value": "twilightforest:chests/suspicious_stew",
-          "weight": 3
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:charm_of_keeping_1"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond"
-        }
-      ],
-      "rolls": {
-        "type": "minecraft:uniform",
-        "max": 4.0,
-        "min": 3.0
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:rotten_flesh",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:bone",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:charcoal",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:raven_feather",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:torchberries",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:stick",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:bread",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:potato",
+               "type": "minecraft:item"
+            },
+            {
+               "type": "minecraft:loot_table",
+               "value": "twilightforest:chests/suspicious_stew",
+               "weight": 3
+            },
+            {
+               "name": "twilightforest:charm_of_keeping_1",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:diamond",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": {
+            "max": 4,
+            "min": 3,
+            "type": "minecraft:uniform"
+         }
       }
-    }
-  ],
-  "random_sequence": "twilightforest:chests/tower_foyer"
+   ],
+   "random_sequence": "twilightforest:chests/tower_foyer",
+   "type": "minecraft:chest"
 }
+
