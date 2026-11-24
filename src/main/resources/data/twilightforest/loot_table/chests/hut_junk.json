@@ -1,87 +1,215 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:cobweb"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bowl"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:glass_bottle"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:coarse_dirt"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:paper"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:sand"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:flint"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:wheat_seeds"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bone_meal"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:stick"
-        }
-      ],
-      "rolls": 9.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:loot_table",
-          "value": "twilightforest:chests/suspicious_stew",
-          "weight": 8
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:suspicious_stew"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:mushroom_stew"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bell"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_nugget"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:gold_nugget"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:chests/hut_junk"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:cobweb",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:bowl",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:glass_bottle",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "id": "minecraft:water",
+                     "type": "minecraft:set_potion"
+                  }
+               ],
+               "name": "minecraft:potion",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:coarse_dirt",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 9,
+                        "min": 3,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:paper",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:sand",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:flint",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:wheat_seeds",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:bone_meal",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 8,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:stick",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 9
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "type": "minecraft:loot_table",
+               "value": "twilightforest:chests/suspicious_stew",
+               "weight": 8
+            },
+            {
+               "name": "minecraft:suspicious_stew",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:mushroom_stew",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:bell",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:iron_nugget",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 3,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:gold_nugget",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:chests/hut_junk",
+   "type": "minecraft:chest"
 }
+

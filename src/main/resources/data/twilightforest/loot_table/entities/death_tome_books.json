@@ -1,28 +1,73 @@
 {
-  "type": "minecraft:entity",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:book"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:entities/death_tome_books"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "levels": {
+                        "max": 10,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:book",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": {
+                        "max": 20,
+                        "min": 11,
+                        "type": "minecraft:uniform"
+                     },
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:book",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": {
+                        "max": 30,
+                        "min": 21,
+                        "type": "minecraft:uniform"
+                     },
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:book",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": {
+                        "max": 40,
+                        "min": 31,
+                        "type": "minecraft:uniform"
+                     },
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "minecraft:book",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:entities/death_tome_books",
+   "type": "minecraft:entity"
 }
+

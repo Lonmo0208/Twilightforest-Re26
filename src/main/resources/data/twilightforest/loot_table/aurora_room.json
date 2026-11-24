@@ -1,96 +1,197 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:maze_wafer"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ice_bomb"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:firefly"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:ice"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:packed_ice"
-        }
-      ],
-      "rolls": 4.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:arctic_fur"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:arctic_helmet"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:arctic_chestplate"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:arctic_leggings"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:arctic_boots"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:knightmetal_chestplate"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:knightmetal_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:charm_of_life_1"
-        }
-      ],
-      "rolls": 2.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ice_bow"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ender_bow"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:ice_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:book"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:glass_sword"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:aurora_room"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 12,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:maze_wafer",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:ice_bomb",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 5,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:firefly",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:ice",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:packed_ice",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 4
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 6,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:arctic_fur",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:arctic_helmet",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:arctic_chestplate",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:arctic_leggings",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:arctic_boots",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:knightmetal_chestplate",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:knightmetal_sword",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "twilightforest:charm_of_life_1",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 2
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "levels": 30,
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "twilightforest:ice_bow",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": 5,
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "twilightforest:ender_bow",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": 25,
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "twilightforest:ice_sword",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "options": "twilightforest:chill_aura",
+                     "type": "minecraft:enchant_randomly"
+                  }
+               ],
+               "name": "minecraft:book",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "levels": 20,
+                     "options": "#minecraft:on_random_loot",
+                     "type": "minecraft:enchant_with_levels"
+                  }
+               ],
+               "name": "twilightforest:glass_sword",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:aurora_room",
+   "type": "minecraft:chest"
 }
+

@@ -1,19 +1,33 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      },
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:mason_jar"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:blocks/mason_jar"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "condition": {
+            "type": "minecraft:survives_explosion"
+         },
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "include": [
+                        "minecraft:custom_name",
+                        "minecraft:container",
+                        "minecraft:lock",
+                        "minecraft:container_loot",
+                        "twilightforest:jar_lid"
+                     ],
+                     "source": "block_entity",
+                     "type": "minecraft:copy_components"
+                  }
+               ],
+               "name": "twilightforest:mason_jar",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:blocks/mason_jar",
+   "type": "minecraft:block"
 }
+

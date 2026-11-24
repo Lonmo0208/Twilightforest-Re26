@@ -1,31 +1,46 @@
 {
-    "type":  "minecraft:block",
-    "pools":  [
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "children": [
                   {
-                      "bonus_rolls":  0.0,
-                      "entries":  [
-                                      {
-                                          "type":  "minecraft:alternatives",
-                                          "children":  [
-                                                           {
-                                                               "type":  "minecraft:item",
-                                                               "name":  "twilightforest:root_strand",
-                                                               "condition":  {
-                                                                                 "predicate":  {
-                                                                                                   "items":  "minecraft:shears"
-                                                                                               },
-                                                                                 "type":  "minecraft:match_tool"
-                                                                             }
-                                                           },
-                                                           {
-                                                               "type":  "minecraft:item",
-                                                               "name":  "minecraft:stick"
-                                                           }
-                                                       ]
-                                      }
-                                  ],
-                      "rolls":  1.0
+                     "condition": {
+                        "predicate": {
+                           "items": "minecraft:shears"
+                        },
+                        "type": "minecraft:match_tool"
+                     },
+                     "name": "twilightforest:root_strand",
+                     "type": "minecraft:item"
+                  },
+                  {
+                     "modifier": [
+                        {
+                           "add": false,
+                           "count": {
+                              "max": 3,
+                              "min": 1,
+                              "type": "minecraft:uniform"
+                           },
+                           "type": "minecraft:set_count"
+                        },
+                        {
+                           "type": "minecraft:explosion_decay"
+                        }
+                     ],
+                     "name": "minecraft:stick",
+                     "type": "minecraft:item"
                   }
-              ],
-    "random_sequence":  "twilightforest:blocks/root_strand"
+               ],
+               "type": "minecraft:alternatives"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:blocks/root_strand",
+   "type": "minecraft:block"
 }
+

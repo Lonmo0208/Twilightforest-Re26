@@ -1,16 +1,37 @@
 {
-  "type": "minecraft:entity",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:raven_feather"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:entities/raven"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 0,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "count": {
+                        "max": 1,
+                        "min": 0,
+                        "type": "minecraft:uniform"
+                     },
+                     "enchantment": "minecraft:looting",
+                     "type": "minecraft:enchanted_count_increase"
+                  }
+               ],
+               "name": "twilightforest:raven_feather",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:entities/raven",
+   "type": "minecraft:entity"
 }
+

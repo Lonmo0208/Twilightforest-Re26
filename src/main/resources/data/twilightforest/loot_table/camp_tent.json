@@ -1,86 +1,171 @@
 {
-  "type": "minecraft:chest",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:tannin"
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:venison_jerky"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:mutton_jerky"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:pork_jerky"
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:leather"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:birch_drying_rack"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:stick"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:apple"
-        }
-      ],
-      "rolls": {
-        "type": "minecraft:uniform",
-        "max": 2.0,
-        "min": 1.0
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:tannin",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:venison_jerky",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:mutton_jerky",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 4,
+                        "min": 2,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:pork_jerky",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:leather",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": 1,
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "twilightforest:birch_drying_rack",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:stick",
+               "type": "minecraft:item"
+            },
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 1,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  }
+               ],
+               "name": "minecraft:apple",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": {
+            "max": 2,
+            "min": 1,
+            "type": "minecraft:uniform"
+         }
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "name": "minecraft:leather_helmet",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:leather_chestplate",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:leather_leggings",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:leather_boots",
+               "type": "minecraft:item"
+            },
+            {
+               "name": "minecraft:shears",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
       }
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:leather_helmet"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:leather_chestplate"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:leather_leggings"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:leather_boots"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:shears"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:camp_tent"
+   ],
+   "random_sequence": "twilightforest:camp_tent",
+   "type": "minecraft:chest"
 }
+

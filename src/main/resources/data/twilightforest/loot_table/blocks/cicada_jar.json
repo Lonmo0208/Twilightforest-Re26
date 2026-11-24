@@ -1,19 +1,29 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      },
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:cicada_jar"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:blocks/cicada_jar"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "condition": {
+            "type": "minecraft:survives_explosion"
+         },
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "include": [
+                        "twilightforest:jar_lid"
+                     ],
+                     "source": "block_entity",
+                     "type": "minecraft:copy_components"
+                  }
+               ],
+               "name": "twilightforest:cicada_jar",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:blocks/cicada_jar",
+   "type": "minecraft:block"
 }
+

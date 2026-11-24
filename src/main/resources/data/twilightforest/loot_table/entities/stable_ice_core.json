@@ -1,16 +1,37 @@
 {
-  "type": "minecraft:entity",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:snowball"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:entities/stable_ice_core"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 0,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "count": {
+                        "max": 1,
+                        "min": 0,
+                        "type": "minecraft:uniform"
+                     },
+                     "enchantment": "minecraft:looting",
+                     "type": "minecraft:enchanted_count_increase"
+                  }
+               ],
+               "name": "minecraft:snowball",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:entities/stable_ice_core",
+   "type": "minecraft:entity"
 }
+

@@ -1,26 +1,67 @@
 {
-  "type": "minecraft:entity",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bone"
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "twilightforest:torchberries"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:entities/skeleton_druid"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 0,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "count": {
+                        "max": 1,
+                        "min": 0,
+                        "type": "minecraft:uniform"
+                     },
+                     "enchantment": "minecraft:looting",
+                     "type": "minecraft:enchanted_count_increase"
+                  }
+               ],
+               "name": "minecraft:bone",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      },
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "count": {
+                        "max": 2,
+                        "min": 0,
+                        "type": "minecraft:uniform"
+                     },
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "count": {
+                        "max": 1,
+                        "min": 0,
+                        "type": "minecraft:uniform"
+                     },
+                     "enchantment": "minecraft:looting",
+                     "type": "minecraft:enchanted_count_increase"
+                  }
+               ],
+               "name": "twilightforest:torchberries",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:entities/skeleton_druid",
+   "type": "minecraft:entity"
 }
+

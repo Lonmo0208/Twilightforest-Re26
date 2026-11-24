@@ -1,16 +1,64 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:magenta_candle"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "twilightforest:blocks/ominous_magenta_candle"
+   "pools": [
+      {
+         "bonus_rolls": 0,
+         "entries": [
+            {
+               "modifier": [
+                  {
+                     "add": false,
+                     "conditions": [
+                        {
+                           "block": "twilightforest:ominous_magenta_candle",
+                           "condition": "minecraft:block_state_property",
+                           "properties": {
+                              "candles": "2"
+                           }
+                        }
+                     ],
+                     "count": 2,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "add": false,
+                     "conditions": [
+                        {
+                           "block": "twilightforest:ominous_magenta_candle",
+                           "condition": "minecraft:block_state_property",
+                           "properties": {
+                              "candles": "3"
+                           }
+                        }
+                     ],
+                     "count": 3,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "add": false,
+                     "conditions": [
+                        {
+                           "block": "twilightforest:ominous_magenta_candle",
+                           "condition": "minecraft:block_state_property",
+                           "properties": {
+                              "candles": "4"
+                           }
+                        }
+                     ],
+                     "count": 4,
+                     "type": "minecraft:set_count"
+                  },
+                  {
+                     "type": "minecraft:explosion_decay"
+                  }
+               ],
+               "name": "minecraft:magenta_candle",
+               "type": "minecraft:item"
+            }
+         ],
+         "rolls": 1
+      }
+   ],
+   "random_sequence": "twilightforest:blocks/ominous_magenta_candle",
+   "type": "minecraft:block"
 }
+
