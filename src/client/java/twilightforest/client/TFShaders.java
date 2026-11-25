@@ -21,7 +21,7 @@ import com.mojang.renderpearl.api.commands.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.renderpearl.api.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.*;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderPassRenderContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.DynamicGpuDataStorage;
 import net.minecraft.client.renderer.DynamicGpuDataStorageMapped;
@@ -250,7 +250,7 @@ public class TFShaders {
 			}
 		}
 
-		public void renderAurora(LevelRenderContext context, int seed, float x, float y, float z, float intensity) {
+		public void renderAurora(LevelRenderPassRenderContext context, int seed, float x, float y, float z, float intensity) {
 			ensureInitialized();
 			if (pipeline == null || !initialized) return;
 
@@ -301,7 +301,7 @@ public class TFShaders {
 			}
 		}
 
-		private void updateSkyQuad(LevelRenderContext context, float intensity) {
+		private void updateSkyQuad(LevelRenderPassRenderContext context, float intensity) {
 			Vec3 cameraPos = context.levelState().cameraRenderState.pos;
 			float y = (float) (256F - cameraPos.y);
 			float scale = 2048F * (Minecraft.getInstance().options.renderDistance().get() / 32F);

@@ -1,7 +1,7 @@
 package twilightforest.client.event;
 
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderPassRenderContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
@@ -133,7 +133,7 @@ public class ClientGameEvents {
 	*/
 
 	// Fabric version of aurora rendering - called from TwilightForestClient via LevelRenderEvents.END_MAIN
-	public void renderAurora(LevelRenderContext context) {
+	public void renderAurora(LevelRenderPassRenderContext context) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level == null) return;
 

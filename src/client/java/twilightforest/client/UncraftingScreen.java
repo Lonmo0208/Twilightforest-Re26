@@ -297,17 +297,31 @@ public class UncraftingScreen extends AbstractContainerScreen<UncraftingMenu> im
 			if (index == 0) {
 				// tinker input slot: banned uncraftables show the disabled tooltip
 				widgets.add(new SlotWidget(slot, this.minecraft, this.imageWidth, this.leftPos, this.topPos,
-					s -> s.getItem().is(TFItemTags.BANNED_UNCRAFTABLES) ? Tooltip.create(disabledItemTooltip()) : this.defaultItemTooltip(s),
-					() -> null));
+					new SlotWidget.TooltipProvider() {
+						@Override
+						public Tooltip forFilledSlot(Slot slot, ItemStack stack) {
+							return stack.is(TFItemTags.BANNED_UNCRAFTABLES) ? Tooltip.create(disabledItemTooltip()) : defaultItemTooltip(slot);
+						}
+					}));
 			} else if (index >= 11 && index < 20) {
 				// assembly slots: greyed-out background items show the disabled tooltip
 				int uncraftingIndex = index - 9; // slots 2 + i
-				widgets.add(new SlotWidget(slot, this.minecraft, this.imageWidth, this.leftPos, this.topPos, s -> null, () -> {
-					Slot uncrafting = container.slots.get(uncraftingIndex);
-					return uncrafting.hasItem() && UncraftingMenu.isMarked(uncrafting.getItem()) ? Tooltip.create(disabledItemTooltip()) : null;
-				}));
+				widgets.add(new SlotWidget(slot, this.minecraft, this.imageWidth, this.leftPos, this.topPos,
+					new SlotWidget.TooltipProvider() {
+						@Override
+						public Tooltip forFilledSlot(Slot slot, ItemStack stack) {
+							return null;
+						}
+
+						@Override
+						public Tooltip forEmptySlot(Slot slot) {
+							Slot uncrafting = container.slots.get(uncraftingIndex);
+							return uncrafting.hasItem() && UncraftingMenu.isMarked(uncrafting.getItem()) ? Tooltip.create(disabledItemTooltip()) : null;
+						}
+					}));
 			} else {
-				widgets.add(new SlotWidget(slot, this.minecraft, this.imageWidth, this.leftPos, this.topPos));
+				widgets.add(new SlotWidget(slot, this.minecraft, this.imageWidth, this.leftPos, this.topPos,
+					SlotWidget.defaultTooltipWithCustomEmpty(this.minecraft, s -> null)));
 			}
 		}
 

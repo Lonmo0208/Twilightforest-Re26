@@ -2,7 +2,7 @@ package twilightforest.client.renderer.entity.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelSubmitContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -23,7 +23,7 @@ public class FirstPersonShieldRenderer {
 	private static final net.minecraft.client.renderer.rendertype.RenderType FRAME_RENDER_TYPE = RenderTypes.entityCutout(SHIELD_FRAME);
 	private static final net.minecraft.client.renderer.rendertype.RenderType FILL_RENDER_TYPE = RenderTypes.entityTranslucent(SHIELD_FILL);
 
-	public static void render(LevelRenderContext context) {
+	public static void render(LevelSubmitContext context) {
 		if (!TFConfig.firstPersonShieldScepterRenderer) return;
 		Minecraft minecraft = Minecraft.getInstance();
 		if (minecraft.player == null) return;
