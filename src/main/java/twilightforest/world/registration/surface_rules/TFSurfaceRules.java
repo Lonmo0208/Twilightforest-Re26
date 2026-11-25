@@ -41,7 +41,10 @@ public class TFSurfaceRules {
 			deadrockSurface(biomes),
 			snowyForestSurface(biomes),
 			glacierSurface(biomes),
-			overworldLikeFloor(biomes)
+			overworldLikeFloor(biomes),
+			// 26.4 material rules describe the whole column: a null result means air, not the noise settings' default block.
+			// Keep the deep underground on stone (vanilla's own rules end with the same fallback).
+			makeStateRule(Blocks.STONE)
 		);
 	}
 
