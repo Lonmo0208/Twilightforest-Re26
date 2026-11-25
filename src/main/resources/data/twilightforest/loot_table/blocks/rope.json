@@ -7,43 +7,37 @@
                "modifier": [
                   {
                      "add": true,
-                     "conditions": [
-                        {
-                           "block": "twilightforest:rope",
-                           "condition": "minecraft:block_state_property",
-                           "properties": {
-                              "x": "true"
-                           }
-                        }
-                     ],
+                     "condition": {
+                        "blocks": "twilightforest:rope",
+                        "state": {
+                           "x": "true"
+                        },
+                        "type": "minecraft:match_block"
+                     },
                      "count": 1,
                      "type": "minecraft:set_count"
                   },
                   {
                      "add": true,
-                     "conditions": [
-                        {
-                           "block": "twilightforest:rope",
-                           "condition": "minecraft:block_state_property",
-                           "properties": {
-                              "y": "true"
-                           }
-                        }
-                     ],
+                     "condition": {
+                        "blocks": "twilightforest:rope",
+                        "state": {
+                           "y": "true"
+                        },
+                        "type": "minecraft:match_block"
+                     },
                      "count": 1,
                      "type": "minecraft:set_count"
                   },
                   {
                      "add": true,
-                     "conditions": [
-                        {
-                           "block": "twilightforest:rope",
-                           "condition": "minecraft:block_state_property",
-                           "properties": {
-                              "z": "true"
-                           }
-                        }
-                     ],
+                     "condition": {
+                        "blocks": "twilightforest:rope",
+                        "state": {
+                           "z": "true"
+                        },
+                        "type": "minecraft:match_block"
+                     },
                      "count": 1,
                      "type": "minecraft:set_count"
                   },
