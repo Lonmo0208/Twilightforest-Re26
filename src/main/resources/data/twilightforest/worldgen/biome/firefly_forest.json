@@ -10,10 +10,105 @@
                                                               ],
                        "minecraft:visual/fog_color":  "#3a4e42",
                        "minecraft:visual/sky_color":  "#20224a",
-                       "minecraft:visual/water_fog_color":  "#050533"
+                       "minecraft:visual/water_fog_color":  "#050533",
+                       "minecraft:gameplay/natural_mob_spawns":  {
+                                                                     "spawn_costs":  {
+
+                                                                                     },
+                                                                     "spawns_by_category":  {
+                                                                                                "ambient":  [
+
+                                                                                                            ],
+                                                                                                "axolotls":  [
+
+                                                                                                             ],
+                                                                                                "creature":  [
+                                                                                                                 {
+                                                                                                                     "type":  "twilightforest:bighorn_sheep",
+                                                                                                                     "weight":  12,
+                                                                                                                     "count":  4
+                                                                                                                 },
+                                                                                                                 {
+                                                                                                                     "type":  "twilightforest:boar",
+                                                                                                                     "weight":  10,
+                                                                                                                     "count":  4
+                                                                                                                 },
+                                                                                                                 {
+                                                                                                                     "type":  "minecraft:chicken",
+                                                                                                                     "weight":  10,
+                                                                                                                     "count":  4
+                                                                                                                 },
+                                                                                                                 {
+                                                                                                                     "type":  "twilightforest:deer",
+                                                                                                                     "weight":  15,
+                                                                                                                     "count":  {
+                                                                                                                                   "type":  "minecraft:uniform",
+                                                                                                                                   "min_inclusive":  4,
+                                                                                                                                   "max_inclusive":  5
+                                                                                                                               }
+                                                                                                                 },
+                                                                                                                 {
+                                                                                                                     "type":  "minecraft:wolf",
+                                                                                                                     "weight":  5,
+                                                                                                                     "count":  4
+                                                                                                                 },
+                                                                                                                 {
+                                                                                                                     "type":  "twilightforest:tiny_bird",
+                                                                                                                     "weight":  15,
+                                                                                                                     "count":  {
+                                                                                                                                   "type":  "minecraft:uniform",
+                                                                                                                                   "min_inclusive":  4,
+                                                                                                                                   "max_inclusive":  8
+                                                                                                                               }
+                                                                                                                 },
+                                                                                                                 {
+                                                                                                                     "type":  "twilightforest:squirrel",
+                                                                                                                     "weight":  10,
+                                                                                                                     "count":  {
+                                                                                                                                   "type":  "minecraft:uniform",
+                                                                                                                                   "min_inclusive":  2,
+                                                                                                                                   "max_inclusive":  4
+                                                                                                                               }
+                                                                                                                 },
+                                                                                                                 {
+                                                                                                                     "type":  "twilightforest:dwarf_rabbit",
+                                                                                                                     "weight":  10,
+                                                                                                                     "count":  {
+                                                                                                                                   "type":  "minecraft:uniform",
+                                                                                                                                   "min_inclusive":  4,
+                                                                                                                                   "max_inclusive":  5
+                                                                                                                               }
+                                                                                                                 },
+                                                                                                                 {
+                                                                                                                     "type":  "twilightforest:raven",
+                                                                                                                     "weight":  10,
+                                                                                                                     "count":  {
+                                                                                                                                   "type":  "minecraft:uniform",
+                                                                                                                                   "min_inclusive":  1,
+                                                                                                                                   "max_inclusive":  2
+                                                                                                                               }
+                                                                                                                 }
+                                                                                                             ],
+                                                                                                "misc":  [
+
+                                                                                                         ],
+                                                                                                "monster":  [
+
+                                                                                                            ],
+                                                                                                "underground_water_creature":  [
+
+                                                                                                                               ],
+                                                                                                "water_ambient":  [
+
+                                                                                                                  ],
+                                                                                                "water_creature":  [
+
+                                                                                                                   ]
+                                                                                            }
+                                                                 },
+                       "minecraft:gameplay/creature_world_gen_spawn_probability":  0.15
                    },
     "carvers":  "twilightforest:tf_caves",
-    "creature_spawn_probability":  0.15,
     "downfall":  1,
     "effects":  {
                     "water_color":  "#3f76e4"
@@ -95,98 +190,5 @@
                      ]
                  ],
     "has_precipitation":  true,
-    "spawn_costs":  {
-
-                    },
-    "spawners":  {
-                     "ambient":  [
-
-                                 ],
-                     "axolotls":  [
-
-                                  ],
-                     "creature":  [
-                                      {
-                                          "type":  "twilightforest:bighorn_sheep",
-                                          "weight":  12,
-                                          "count":  4
-                                      },
-                                      {
-                                          "type":  "twilightforest:boar",
-                                          "weight":  10,
-                                          "count":  4
-                                      },
-                                      {
-                                          "type":  "minecraft:chicken",
-                                          "weight":  10,
-                                          "count":  4
-                                      },
-                                      {
-                                          "type":  "twilightforest:deer",
-                                          "weight":  15,
-                                          "count":  {
-                                                        "type":  "minecraft:uniform",
-                                                        "min_inclusive":  4,
-                                                        "max_inclusive":  5
-                                                    }
-                                      },
-                                      {
-                                          "type":  "minecraft:wolf",
-                                          "weight":  5,
-                                          "count":  4
-                                      },
-                                      {
-                                          "type":  "twilightforest:tiny_bird",
-                                          "weight":  15,
-                                          "count":  {
-                                                        "type":  "minecraft:uniform",
-                                                        "min_inclusive":  4,
-                                                        "max_inclusive":  8
-                                                    }
-                                      },
-                                      {
-                                          "type":  "twilightforest:squirrel",
-                                          "weight":  10,
-                                          "count":  {
-                                                        "type":  "minecraft:uniform",
-                                                        "min_inclusive":  2,
-                                                        "max_inclusive":  4
-                                                    }
-                                      },
-                                      {
-                                          "type":  "twilightforest:dwarf_rabbit",
-                                          "weight":  10,
-                                          "count":  {
-                                                        "type":  "minecraft:uniform",
-                                                        "min_inclusive":  4,
-                                                        "max_inclusive":  5
-                                                    }
-                                      },
-                                      {
-                                          "type":  "twilightforest:raven",
-                                          "weight":  10,
-                                          "count":  {
-                                                        "type":  "minecraft:uniform",
-                                                        "min_inclusive":  1,
-                                                        "max_inclusive":  2
-                                                    }
-                                      }
-                                  ],
-                     "misc":  [
-
-                              ],
-                     "monster":  [
-
-                                 ],
-                     "underground_water_creature":  [
-
-                                                    ],
-                     "water_ambient":  [
-
-                                       ],
-                     "water_creature":  [
-
-                                        ]
-                 },
     "temperature":  0.5
 }
