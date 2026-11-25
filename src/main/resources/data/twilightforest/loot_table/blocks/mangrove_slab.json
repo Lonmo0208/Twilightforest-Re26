@@ -7,15 +7,13 @@
                "modifier": [
                   {
                      "add": false,
-                     "conditions": [
-                        {
-                           "block": "twilightforest:mangrove_slab",
-                           "condition": "minecraft:block_state_property",
-                           "properties": {
-                              "type": "double"
-                           }
-                        }
-                     ],
+                     "condition": {
+                        "blocks": "twilightforest:mangrove_slab",
+                        "state": {
+                           "type": "double"
+                        },
+                        "type": "minecraft:match_block"
+                     },
                      "count": 2,
                      "type": "minecraft:set_count"
                   },

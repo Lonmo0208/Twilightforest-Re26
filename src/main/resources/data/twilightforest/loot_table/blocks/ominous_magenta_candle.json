@@ -7,43 +7,37 @@
                "modifier": [
                   {
                      "add": false,
-                     "conditions": [
-                        {
-                           "block": "twilightforest:ominous_magenta_candle",
-                           "condition": "minecraft:block_state_property",
-                           "properties": {
-                              "candles": "2"
-                           }
-                        }
-                     ],
+                     "condition": {
+                        "blocks": "twilightforest:ominous_magenta_candle",
+                        "state": {
+                           "candles": "2"
+                        },
+                        "type": "minecraft:match_block"
+                     },
                      "count": 2,
                      "type": "minecraft:set_count"
                   },
                   {
                      "add": false,
-                     "conditions": [
-                        {
-                           "block": "twilightforest:ominous_magenta_candle",
-                           "condition": "minecraft:block_state_property",
-                           "properties": {
-                              "candles": "3"
-                           }
-                        }
-                     ],
+                     "condition": {
+                        "blocks": "twilightforest:ominous_magenta_candle",
+                        "state": {
+                           "candles": "3"
+                        },
+                        "type": "minecraft:match_block"
+                     },
                      "count": 3,
                      "type": "minecraft:set_count"
                   },
                   {
                      "add": false,
-                     "conditions": [
-                        {
-                           "block": "twilightforest:ominous_magenta_candle",
-                           "condition": "minecraft:block_state_property",
-                           "properties": {
-                              "candles": "4"
-                           }
-                        }
-                     ],
+                     "condition": {
+                        "blocks": "twilightforest:ominous_magenta_candle",
+                        "state": {
+                           "candles": "4"
+                        },
+                        "type": "minecraft:match_block"
+                     },
                      "count": 4,
                      "type": "minecraft:set_count"
                   },
