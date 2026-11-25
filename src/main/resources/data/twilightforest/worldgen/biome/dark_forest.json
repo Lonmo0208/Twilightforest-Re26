@@ -1,10 +1,127 @@
 {
     "attributes":  {
                        "minecraft:visual/fog_color":  "#000000",
-                       "minecraft:visual/sky_color":  "#000000"
+                       "minecraft:visual/sky_color":  "#000000",
+                       "minecraft:gameplay/natural_mob_spawns":  {
+                                                                     "spawn_costs":  {
+                                                                                         "minecraft:enderman":  {
+                                                                                                                    "charge":  0.75,
+                                                                                                                    "energy_budget":  0.15
+                                                                                                                },
+                                                                                         "minecraft:skeleton":  {
+                                                                                                                    "charge":  0.8,
+                                                                                                                    "energy_budget":  0.15
+                                                                                                                },
+                                                                                         "minecraft:witch":  {
+                                                                                                                 "charge":  0.75,
+                                                                                                                 "energy_budget":  0.15
+                                                                                                             },
+                                                                                         "minecraft:zombie":  {
+                                                                                                                  "charge":  0.7,
+                                                                                                                  "energy_budget":  0.15
+                                                                                                              },
+                                                                                         "twilightforest:king_spider":  {
+                                                                                                                            "charge":  0.85,
+                                                                                                                            "energy_budget":  0.25
+                                                                                                                        },
+                                                                                         "twilightforest:kobold":  {
+                                                                                                                       "charge":  0.7,
+                                                                                                                       "energy_budget":  0.15
+                                                                                                                   },
+                                                                                         "twilightforest:mist_wolf":  {
+                                                                                                                          "charge":  0.75,
+                                                                                                                          "energy_budget":  0.2
+                                                                                                                      },
+                                                                                         "twilightforest:skeleton_druid":  {
+                                                                                                                               "charge":  0.8,
+                                                                                                                               "energy_budget":  0.2
+                                                                                                                           }
+                                                                                     },
+                                                                     "spawns_by_category":  {
+                                                                                                "ambient":  [
+
+                                                                                                            ],
+                                                                                                "axolotls":  [
+
+                                                                                                             ],
+                                                                                                "creature":  [
+
+                                                                                                             ],
+                                                                                                "misc":  [
+
+                                                                                                         ],
+                                                                                                "monster":  [
+                                                                                                                {
+                                                                                                                    "type":  "minecraft:enderman",
+                                                                                                                    "weight":  2,
+                                                                                                                    "count":  {
+                                                                                                                                  "type":  "minecraft:uniform",
+                                                                                                                                  "min_inclusive":  1,
+                                                                                                                                  "max_inclusive":  2
+                                                                                                                              }
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "minecraft:zombie",
+                                                                                                                    "weight":  5,
+                                                                                                                    "count":  {
+                                                                                                                                  "type":  "minecraft:uniform",
+                                                                                                                                  "min_inclusive":  1,
+                                                                                                                                  "max_inclusive":  2
+                                                                                                                              }
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "minecraft:skeleton",
+                                                                                                                    "weight":  5,
+                                                                                                                    "count":  {
+                                                                                                                                  "type":  "minecraft:uniform",
+                                                                                                                                  "min_inclusive":  1,
+                                                                                                                                  "max_inclusive":  2
+                                                                                                                              }
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "twilightforest:mist_wolf",
+                                                                                                                    "weight":  5,
+                                                                                                                    "count":  1
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "twilightforest:skeleton_druid",
+                                                                                                                    "weight":  5,
+                                                                                                                    "count":  1
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "twilightforest:king_spider",
+                                                                                                                    "weight":  1,
+                                                                                                                    "count":  1
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "twilightforest:kobold",
+                                                                                                                    "weight":  10,
+                                                                                                                    "count":  {
+                                                                                                                                  "type":  "minecraft:uniform",
+                                                                                                                                  "min_inclusive":  1,
+                                                                                                                                  "max_inclusive":  3
+                                                                                                                              }
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "minecraft:witch",
+                                                                                                                    "weight":  2,
+                                                                                                                    "count":  1
+                                                                                                                }
+                                                                                                            ],
+                                                                                                "underground_water_creature":  [
+
+                                                                                                                               ],
+                                                                                                "water_ambient":  [
+
+                                                                                                                  ],
+                                                                                                "water_creature":  [
+
+                                                                                                                   ]
+                                                                                            }
+                                                                 },
+                       "minecraft:gameplay/creature_world_gen_spawn_probability":  0.05
                    },
     "carvers":  "twilightforest:tf_caves",
-    "creature_spawn_probability":  0.05,
     "downfall":  0.8,
     "effects":  {
                     "foliage_color":  "#3b5e3f",
@@ -61,120 +178,5 @@
                      ]
                  ],
     "has_precipitation":  true,
-    "spawn_costs":  {
-                        "minecraft:enderman":  {
-                                                   "charge":  0.75,
-                                                   "energy_budget":  0.15
-                                               },
-                        "minecraft:skeleton":  {
-                                                   "charge":  0.8,
-                                                   "energy_budget":  0.15
-                                               },
-                        "minecraft:witch":  {
-                                                "charge":  0.75,
-                                                "energy_budget":  0.15
-                                            },
-                        "minecraft:zombie":  {
-                                                 "charge":  0.7,
-                                                 "energy_budget":  0.15
-                                             },
-                        "twilightforest:king_spider":  {
-                                                           "charge":  0.85,
-                                                           "energy_budget":  0.25
-                                                       },
-                        "twilightforest:kobold":  {
-                                                      "charge":  0.7,
-                                                      "energy_budget":  0.15
-                                                  },
-                        "twilightforest:mist_wolf":  {
-                                                         "charge":  0.75,
-                                                         "energy_budget":  0.2
-                                                     },
-                        "twilightforest:skeleton_druid":  {
-                                                              "charge":  0.8,
-                                                              "energy_budget":  0.2
-                                                          }
-                    },
-    "spawners":  {
-                     "ambient":  [
-
-                                 ],
-                     "axolotls":  [
-
-                                  ],
-                     "creature":  [
-
-                                  ],
-                     "misc":  [
-
-                              ],
-                     "monster":  [
-                                     {
-                                         "type":  "minecraft:enderman",
-                                         "weight":  2,
-                                         "count":  {
-                                                       "type":  "minecraft:uniform",
-                                                       "min_inclusive":  1,
-                                                       "max_inclusive":  2
-                                                   }
-                                     },
-                                     {
-                                         "type":  "minecraft:zombie",
-                                         "weight":  5,
-                                         "count":  {
-                                                       "type":  "minecraft:uniform",
-                                                       "min_inclusive":  1,
-                                                       "max_inclusive":  2
-                                                   }
-                                     },
-                                     {
-                                         "type":  "minecraft:skeleton",
-                                         "weight":  5,
-                                         "count":  {
-                                                       "type":  "minecraft:uniform",
-                                                       "min_inclusive":  1,
-                                                       "max_inclusive":  2
-                                                   }
-                                     },
-                                     {
-                                         "type":  "twilightforest:mist_wolf",
-                                         "weight":  5,
-                                         "count":  1
-                                     },
-                                     {
-                                         "type":  "twilightforest:skeleton_druid",
-                                         "weight":  5,
-                                         "count":  1
-                                     },
-                                     {
-                                         "type":  "twilightforest:king_spider",
-                                         "weight":  1,
-                                         "count":  1
-                                     },
-                                     {
-                                         "type":  "twilightforest:kobold",
-                                         "weight":  10,
-                                         "count":  {
-                                                       "type":  "minecraft:uniform",
-                                                       "min_inclusive":  1,
-                                                       "max_inclusive":  3
-                                                   }
-                                     },
-                                     {
-                                         "type":  "minecraft:witch",
-                                         "weight":  2,
-                                         "count":  1
-                                     }
-                                 ],
-                     "underground_water_creature":  [
-
-                                                    ],
-                     "water_ambient":  [
-
-                                       ],
-                     "water_creature":  [
-
-                                        ]
-                 },
     "temperature":  0.7
 }

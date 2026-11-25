@@ -1,10 +1,57 @@
 {
     "attributes":  {
                        "minecraft:visual/fog_color":  "#ffffff",
-                       "minecraft:visual/sky_color":  "#808080"
+                       "minecraft:visual/sky_color":  "#808080",
+                       "minecraft:gameplay/natural_mob_spawns":  {
+                                                                     "spawn_costs":  {
+                                                                                         "twilightforest:winter_wolf":  {
+                                                                                                                            "charge":  0.6,
+                                                                                                                            "energy_budget":  0.15
+                                                                                                                        },
+                                                                                         "twilightforest:yeti":  {
+                                                                                                                     "charge":  0.6,
+                                                                                                                     "energy_budget":  0.15
+                                                                                                                 }
+                                                                                     },
+                                                                     "spawns_by_category":  {
+                                                                                                "ambient":  [
+
+                                                                                                            ],
+                                                                                                "axolotls":  [
+
+                                                                                                             ],
+                                                                                                "creature":  [
+
+                                                                                                             ],
+                                                                                                "misc":  [
+
+                                                                                                         ],
+                                                                                                "monster":  [
+                                                                                                                {
+                                                                                                                    "type":  "twilightforest:winter_wolf",
+                                                                                                                    "weight":  5,
+                                                                                                                    "count":  1
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "type":  "twilightforest:yeti",
+                                                                                                                    "weight":  5,
+                                                                                                                    "count":  1
+                                                                                                                }
+                                                                                                            ],
+                                                                                                "underground_water_creature":  [
+
+                                                                                                                               ],
+                                                                                                "water_ambient":  [
+
+                                                                                                                  ],
+                                                                                                "water_creature":  [
+
+                                                                                                                   ]
+                                                                                            }
+                                                                 },
+                       "minecraft:gameplay/creature_world_gen_spawn_probability":  0.05
                    },
     "carvers":  "twilightforest:tf_caves",
-    "creature_spawn_probability":  0.05,
     "downfall":  0.9,
     "effects":  {
                     "foliage_color":  "#ffffff",
@@ -58,51 +105,6 @@
                      ]
                  ],
     "has_precipitation":  true,
-    "spawn_costs":  {
-                        "twilightforest:winter_wolf":  {
-                                                           "charge":  0.6,
-                                                           "energy_budget":  0.15
-                                                       },
-                        "twilightforest:yeti":  {
-                                                    "charge":  0.6,
-                                                    "energy_budget":  0.15
-                                                }
-                    },
-    "spawners":  {
-                     "ambient":  [
-
-                                 ],
-                     "axolotls":  [
-
-                                  ],
-                     "creature":  [
-
-                                  ],
-                     "misc":  [
-
-                              ],
-                     "monster":  [
-                                     {
-                                         "type":  "twilightforest:winter_wolf",
-                                         "weight":  5,
-                                         "count":  1
-                                     },
-                                     {
-                                         "type":  "twilightforest:yeti",
-                                         "weight":  5,
-                                         "count":  1
-                                     }
-                                 ],
-                     "underground_water_creature":  [
-
-                                                    ],
-                     "water_ambient":  [
-
-                                       ],
-                     "water_creature":  [
-
-                                        ]
-                 },
     "temperature":  0.09,
     "temperature_modifier":  "frozen"
 }

@@ -2,7 +2,54 @@
     "attributes":  {
                        "minecraft:visual/fog_color":  "#3a4e42",
                        "minecraft:visual/sky_color":  "#20224a",
-                       "minecraft:visual/water_fog_color":  "#050533"
+                       "minecraft:visual/water_fog_color":  "#050533",
+                       "minecraft:gameplay/natural_mob_spawns":  {
+                                                                     "spawn_costs":  {
+
+                                                                                     },
+                                                                     "spawns_by_category":  {
+                                                                                                "ambient":  [
+
+                                                                                                            ],
+                                                                                                "axolotls":  [
+
+                                                                                                             ],
+                                                                                                "creature":  [
+
+                                                                                                             ],
+                                                                                                "misc":  [
+
+                                                                                                         ],
+                                                                                                "monster":  [
+
+                                                                                                            ],
+                                                                                                "underground_water_creature":  [
+
+                                                                                                                               ],
+                                                                                                "water_ambient":  [
+                                                                                                                      {
+                                                                                                                          "type":  "minecraft:salmon",
+                                                                                                                          "weight":  5,
+                                                                                                                          "count":  {
+                                                                                                                                        "type":  "minecraft:uniform",
+                                                                                                                                        "min_inclusive":  1,
+                                                                                                                                        "max_inclusive":  5
+                                                                                                                                    }
+                                                                                                                      }
+                                                                                                                  ],
+                                                                                                "water_creature":  [
+                                                                                                                       {
+                                                                                                                           "type":  "minecraft:squid",
+                                                                                                                           "weight":  2,
+                                                                                                                           "count":  {
+                                                                                                                                         "type":  "minecraft:uniform",
+                                                                                                                                         "min_inclusive":  1,
+                                                                                                                                         "max_inclusive":  4
+                                                                                                                                     }
+                                                                                                                       }
+                                                                                                                   ]
+                                                                                            }
+                                                                 }
                    },
     "carvers":  [
 
@@ -58,50 +105,5 @@
                      ]
                  ],
     "has_precipitation":  true,
-    "spawn_costs":  {
-
-                    },
-    "spawners":  {
-                     "ambient":  [
-
-                                 ],
-                     "axolotls":  [
-
-                                  ],
-                     "creature":  [
-
-                                  ],
-                     "misc":  [
-
-                              ],
-                     "monster":  [
-
-                                 ],
-                     "underground_water_creature":  [
-
-                                                    ],
-                     "water_ambient":  [
-                                           {
-                                               "type":  "minecraft:salmon",
-                                               "weight":  5,
-                                               "count":  {
-                                                             "type":  "minecraft:uniform",
-                                                             "min_inclusive":  1,
-                                                             "max_inclusive":  5
-                                                         }
-                                           }
-                                       ],
-                     "water_creature":  [
-                                            {
-                                                "type":  "minecraft:squid",
-                                                "weight":  2,
-                                                "count":  {
-                                                              "type":  "minecraft:uniform",
-                                                              "min_inclusive":  1,
-                                                              "max_inclusive":  4
-                                                          }
-                                            }
-                                        ]
-                 },
     "temperature":  0.5
 }
