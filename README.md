@@ -27,7 +27,7 @@ This is the home of the Twilight Forest mod for Minecraft 1.12 and beyond.
 | 26.3 | `26.3.x-Fabric` (default) | Active - Fabric |
 | 26.4-pre-1 | `26.4/dev` | Dev - Fabric |
 | 26.2 | `26.2.x-Fabric` | Archived - superseded by the official Twilight Forest 26.2 release |
-| 26w14a | `26w14a-Fabric` | Snapshot port - Fabric |
+| 26w14a | `26w14a-Fabric` | LTS - critical fixes only |
 | 26.1.2 | `26.1.x-Fabric` | **Archived** - superseded by the official Twilight Forest 26.1.2 release |
 | 26.1.2 / 26.2 / 26w14a | `26.1.x`, `26.2.x`, `26w14a` | **NeoForge: discontinued** - use the official NeoForge build instead |
 
