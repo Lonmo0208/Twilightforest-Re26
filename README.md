@@ -3,6 +3,11 @@ Twilight Forest Re:26 [![Modrinth](https://img.shields.io/modrinth/dt/twilightfo
 
 This is the home of the Twilight Forest mod for Minecraft 1.12 and beyond.
 
+> **26.2 Fabric port archived / 26.2 Fabric 版已归档**
+> The `26.2.x-Fabric` branch is Archived - superseded by the official Twilight Forest 26.2 release.
+>
+> `26.2.x-Fabric` 分支已归档：官方暮色森林已发布 26.2 版本，请直接使用官方版本。
+
 > **Note about this repository / 关于本仓库**
 > Besides the upstream sources, this repository hosts the **Re26 port** for Minecraft 26.x for Fabric.
 > **The NeoForge port is discontinued**: the official Twilight Forest has been updated, so please use the official
@@ -21,7 +26,7 @@ This is the home of the Twilight Forest mod for Minecraft 1.12 and beyond.
 | --- | --- | --- |
 | 26.3 | `26.3.x-Fabric` (default) | Active - Fabric |
 | 26.4-pre-1 | `26.4/dev` | Dev - Fabric |
-| 26.2 | `26.2.x-Fabric` | Active - Fabric |
+| 26.2 | `26.2.x-Fabric` | Archived - superseded by the official Twilight Forest 26.2 release |
 | 26w14a | `26w14a-Fabric` | Snapshot port - Fabric |
 | 26.1.2 | `26.1.x-Fabric` | **Archived** - superseded by the official Twilight Forest 26.1.2 release |
 | 26.1.2 / 26.2 / 26w14a | `26.1.x`, `26.2.x`, `26w14a` | **NeoForge: discontinued** - use the official NeoForge build instead |
