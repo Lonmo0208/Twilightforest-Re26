@@ -8,6 +8,11 @@ This is the home of the Twilight Forest mod for Minecraft 1.12 and beyond.
 >
 > `26.2.x-Fabric` 分支已归档：官方暮色森林已发布 26.2 版本，请直接使用官方版本。
 
+> **LTS branch / LTS 分支**
+> This branch is in LTS mode: only critical bug fixes are accepted.
+>
+> 本分支处于 LTS 状态：仅修复严重 bug。
+
 ## Licensing
 Code unless otherwise stated default to our [LICENSE file here](LICENSE)
 
