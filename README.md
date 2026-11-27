@@ -3,6 +3,11 @@ Twilight Forest Re:26 [![Modrinth](https://img.shields.io/modrinth/dt/twilightfo
 
 This is the home of the Twilight Forest mod for Minecraft 1.12 and beyond.
 
+> **26.2 Fabric port archived / 26.2 Fabric 版已归档**
+> The `26.2.x-Fabric` branch is Archived - superseded by the official Twilight Forest 26.2 release.
+>
+> `26.2.x-Fabric` 分支已归档：官方暮色森林已发布 26.2 版本，请直接使用官方版本。
+
 ## Licensing
 Code unless otherwise stated default to our [LICENSE file here](LICENSE)
 
