@@ -16,7 +16,7 @@ import twilightforest.client.event.TravellersClientEvents;
 @Mixin(FirstPersonHandsAndItemsRenderer.class)
 public abstract class FirstPersonHandsAndItemsRendererMixin {
 
-	@Inject(method = "renderPlayerHand", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "submitPlayerHand", at = @At("HEAD"), cancellable = true)
 	private void tf$renderTravellersGlove(PoseStack poseStack, SubmitNodeCollector collector, int lightCoords, HumanoidArm arm, PlayerRenderState playerRenderState, CallbackInfo ci) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null && TravellersClientEvents.renderGlovesInFirstPerson(player, arm, collector, poseStack, lightCoords)) {

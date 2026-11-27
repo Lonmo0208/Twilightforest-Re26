@@ -57,7 +57,7 @@ public abstract class MapRendererMixin {
 		}
 	}
 
-	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "submit", at = @At("HEAD"), cancellable = true)
 	private void tf$renderMagicMap(MapRenderState mapRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, boolean showOnlyFrame, int lightCoords, CallbackInfo ci) {
 		boolean isTFMap;
 		MapItemSavedData mapData;
